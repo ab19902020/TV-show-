@@ -1,6 +1,7 @@
 """Per-drawing anatomical references (crop coords, 4x): skull centre line, chin (beard bottom), neck column."""
 import numpy as np, cv2, pickle
-P = pickle.load(open("parts.pkl", "rb")); R = pickle.load(open("align.pkl", "rb"))
+import os
+P = pickle.load(open(os.environ.get("PARTS", "parts2.pkl"), "rb")); R = pickle.load(open("align.pkl", "rb"))
 FRONT_EYES_Y = 151 * 4 - 152
 def refs(name):
     img = P[name][0]

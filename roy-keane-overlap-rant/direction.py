@@ -1,6 +1,6 @@
 """Performance + camera direction for the scene (all times global, seconds)."""
 
-# Which head drawing is used when (cross-dissolved over a few frames at each change)
+# Which head drawing is used when (swapped on a hard cut, like cut-out animation)
 EXPRESSIONS = [
     (0.00, "FRONT"),       # stern resting face before he starts
     (1.45, "SKEPTICAL"),   # "Manchester United."
@@ -10,7 +10,8 @@ EXPRESSIONS = [
     (16.05, "SAD"),        # "That shirt used to mean something."
     (18.55, "ANGRY"),      # "Stop pointing fingers, stop making excuses..."
     (25.35, "DISGUSTED"),  # "And don't give me this nonsense about confidence."
-    (28.15, "ANGRY"),      # "You're playing for Manchester United."  ...  "Run, tackle, compete."
+    (28.15, "ANGRY"),      # "You're playing for Manchester United."
+    (30.55, "SHOUTING"),   # "Run, tackle, compete."
     (33.25, "CONFUSED"),   # "Is that too much to ask?"
     (35.00, "SKEPTICAL"),
     (36.10, "DISGUSTED"),  # "I see players losing the ball and throwing their arms up."

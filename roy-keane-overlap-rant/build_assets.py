@@ -8,6 +8,7 @@ Outputs:
 import numpy as np, cv2, pickle
 from cutout import *
 from align_util import sift_similarity
+from matte import matte
 
 def on_gray(rgba):
     a = rgba[..., 3:4] / 255.0
@@ -23,7 +24,15 @@ P = {"body": cutout(sheet, (12, 32, 308, 614), (160, 300), bgc=bgc),
      "3/4 RIGHT": cutout(sheet, (1310, 38, 1522, 283), (1410, 160), bgc=bgc)}
 for name, cx in zip(EXPR, EXPR_CX):
     P[name] = cutout(sheet, (max(0, cx - 64), 646, min(1536, cx + 64), 829), (cx, 740), bgc=bgc)
-pickle.dump(P, open("parts.pkl", "wb"))
+pickle.dump(P, open("parts.pkl", "wb"))          # hard masks: used for registration only
+
+# precision mattes (soft, colour-decontaminated edges, no stray sheet lines) used for rendering
+P2 = {k: matte(sheet, box, seed, bgc) for k, (box, seed) in {
+    "body": ((12, 32, 308, 614), (160, 300)), "FRONT": ((898, 38, 1124, 283), (1010, 160)),
+    "3/4 LEFT": ((1122, 38, 1310, 283), (1215, 160)), "3/4 RIGHT": ((1310, 38, 1522, 283), (1410, 160))}.items()}
+for name, cx in zip(EXPR, EXPR_CX):
+    P2[name] = matte(sheet, (max(0, cx - 64), 646, min(1536, cx + 64), 829), (cx, 740), bgc)
+pickle.dump(P2, open("parts2.pkl", "wb"))
 
 # ---------------------------------------------------------------- 2. heads -> body
 body, boff = P["body"]; front, foff = P["FRONT"]

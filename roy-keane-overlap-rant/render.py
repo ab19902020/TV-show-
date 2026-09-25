@@ -1,7 +1,8 @@
 """Render the Roy Keane studio scene: camera, character performance, lip sync, compositing, grade."""
 import numpy as np, cv2, json, sys, subprocess, math, random
 import direction as D
-from character import Roy, CHAR_H, NECK_X
+from rig import Rig, CHAR_H
+NECK_X = 600
 FPS, OW, OH = 30, 1920, 1080
 TL = json.load(open("timeline.json"))
 N = TL["n"]
@@ -43,30 +44,21 @@ def expr_at(t):
         if t >= s: cur, start = e, s
     return cur, start
 def head_at(t):
-    """(head drawing, previous drawing, dissolve 0..1)"""
+    """(head drawing, previous drawing, time-in-drawing factor); drawings swap on a hard cut when rendering"""
     name, s = expr_at(t)
+    for ts, h in D.HEAD_TURNS:
+        pass
     turn = None
     for ts, h in D.HEAD_TURNS:
         if t >= ts: turn = (h, ts)
     if turn and turn[0] is not None: name, s = turn[0], turn[1]
+    if name == "SHOUTING": name = "ANGRY"
     prev = expr_at(s - 1e-3)[0] if s > 0 else name
     for ts, h in D.HEAD_TURNS:
         if abs(ts - s) < 1e-6 and h is None: prev = D.HEAD_TURNS[0][1]
+    if prev == "SHOUTING": prev = "ANGRY"
     k = (t - s) / 0.12
     return name, prev, float(np.clip(k, 0, 1))
-
-# blinks: natural intervals, extra blink after the head turn
-rng = random.Random(7)
-BLINKS = [1.02]
-t = 2.4
-while t < TL["total"] - 1:
-    BLINKS.append(t); t += rng.uniform(2.3, 4.6)
-def eye_at(i):
-    for b in BLINKS:
-        f0 = int(round(b * FPS)); d = i - f0
-        if d in (0, 3): return 0.5
-        if d in (1, 2): return 1.0
-    return 0.0
 
 # ---------------------------------------------------------------- camera
 def ease(u): return 0.5 - 0.5 * math.cos(math.pi * min(max(u, 0), 1))
@@ -155,45 +147,24 @@ def render_frame(i, roy, lv):
         small = cv2.GaussianBlur(small, (0, 0), sig / 2)
         bg = cv2.resize(small, (OW, OH), interpolation=cv2.INTER_LINEAR)
     # ---- character
-    head, prev, kdis = head_at(t)
-    vis = TL["track"][i]
-    if head == "3/4 RIGHT": vis_h = None
-    else: vis_h = vis
-    eye = eye_at(i)
+    head, _, _ = head_at(t)                     # drawings swap on a cut, like cut-out animation (no ghosting)
+    vis = None if head == "3/4 RIGHT" else TL["track"][i]
     th, dx, dy = motion(i)
     th += SM_T[i]
     hm = head_matrix(th, dx, dy)
     breath = 1 + 0.005 * math.sin(2 * math.pi * t / 3.6)
     bm = np.float32([[1, 0, 0], [0, breath, (1 - breath) * 1300]])
     hm[1, 2] += (1 - breath) * (1300 - 692)          # head rides on the breathing neck
-    if kdis < 1 and prev != head:
-        # compose the new drawing and dissolve from the previous one
-        char = roy.compose(prev, vis if prev != "3/4 RIGHT" else None, eye, head_M=hm, body_M=bm)
-        char2 = roy.compose(head, vis_h, eye, head_M=hm, body_M=bm)
-        char = char * (1 - kdis) + char2 * kdis
-    else:
-        char = roy.compose(head, vis_h, eye, head_M=hm, body_M=bm)
+    char = roy.compose(head, vis, head_M=hm, body_M=bm)
     sc = z * K4
     Mw = np.float32([[sc, 0, z * (T0[0] - ox)], [0, sc, z * (T0[1] - oy)]])
     if sc < 0.7:
         f = min(1.0, sc * 1.5)
         char = cv2.resize(char, None, fx=f, fy=f, interpolation=cv2.INTER_AREA)
         Mw[:, :2] /= f
-    ch = cv2.warpAffine(char, Mw, (OW, OH), flags=cv2.INTER_LINEAR if sc < 1 else cv2.INTER_CUBIC)
-    ca = np.clip(ch[..., 3:4], 0, 1); cc = ch[..., :3]
-    # ---- rim light (warm key from the shelves on the left, cool spill from the window on the right)
-    rs = max(1.0, 1.2 * z)
-    ab = cv2.GaussianBlur(ca[..., 0], (0, 0), rs)
-    gx = cv2.Sobel(ab, cv2.CV_32F, 1, 0, ksize=3) * rs
-    gy = cv2.Sobel(ab, cv2.CV_32F, 0, 1, ksize=3) * rs
-    warm = np.clip(gx, 0, 0.5)[..., None] * np.float32([60, 140, 255]) * 0.55
-    cool = np.clip(-gx, 0, 0.5)[..., None] * np.float32([255, 170, 110]) * 0.40
-    top = np.clip(gy, 0, 0.5)[..., None] * np.float32([120, 170, 230]) * 0.25
-    cc = cc + (warm + cool + top) * ca
-    # ---- soft shadow behind him (on the chair / wall)
-    sh = cv2.warpAffine(ca, np.float32([[1, 0, 4 * z], [0, 1, 6 * z]]), (OW, OH))
-    sh = cv2.GaussianBlur(sh, (0, 0), max(1.0, 5 * z))[..., None]
-    bg = bg * (1 - 0.38 * sh)
+    ch = cv2.warpAffine(char, Mw, (OW, OH), flags=cv2.INTER_LINEAR)   # no overshoot -> no edge rings
+    ca = np.clip(ch[..., 3:4], 0, 1)
+    cc = np.clip(ch[..., :3], 0, 255 * ca)
     frame = cc + bg * (1 - ca)
     frame = bg * tm + frame * (1 - tm)          # table + mug in front of him
     # ---- grade
@@ -214,7 +185,7 @@ def render_frame(i, roy, lv):
 if __name__ == "__main__":
     mode = sys.argv[1]
     smooth_tilt()
-    lv = load_assets(); roy = Roy(); PIVOT[0] = roy.neck_x
+    lv = load_assets(); roy = Rig(); PIVOT[0] = roy.neck_x
     if mode == "still":
         for s in sys.argv[2:]:
             i = int(float(s) * FPS)

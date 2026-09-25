@@ -37,18 +37,25 @@ Voice clip 1 starts at 1.6 s and clip 2 starts at 25.48 s, with a 0.6 s pause be
 4. **Visemes:** each phoneme maps to one of the sheet's mouth shapes (`visemes.py`). Mouths change one
    frame ahead of the sound, which is the usual animation convention. M/B/P and F/V closures always get at
    least 2 frames. Single-frame flicker is removed, and breaths show slightly parted lips.
-5. **Puppet:** the body, the head drawings and the mouth crops are cut out and registered to each other
-   automatically, using SIFT plus template matching (`build_assets.py`). Mouths are blended into each head
-   with a feathered, colour-matched patch (`mouthcomp.py`). Blinks are synthesised by inpainting closed
-   lids (`blinks.py`). Each head drawing is pinned to the body by its own neck column
-   (`headcenter.py`), so the head always sits dead centre on the neck and collar. Head motion is
-   rotation around the base of the neck, so it never slides sideways.
+5. **Cut-outs and rig** (`build_assets.py`, `matte.py`, `rig.py`):
+   - Every part is cut from the 4× sheet with a precision matte. Edges are soft and anti-aliased, and the
+     grey sheet colour is removed from the edge pixels, so there's no halo. Stray sheet lines are dropped,
+     and every enclosed area (beard shading, soul patch) stays solid.
+   - Roy is built as layers, like a cut-out rig: neck piece, then the head drawing's own neck, then the
+     body's collar and suit, then the head. The collar zone hidden under the original head drawing is
+     rebuilt, so nothing behind any head can ever show through.
+   - Each head drawing is pinned to the body by its own neck column (`headcenter.py`), so it sits dead
+     centre on the neck. Head motion is rotation around the base of the neck.
+   - Expression changes are hard drawing swaps, as in real cut-out animation, so there's no
+     double-exposure ghosting.
+   - **Mouths** (`mouth4.py`): each sheet mouth shape is registered onto each head. The swapped area is
+     the whole mouth: lips, teeth, skin and soul patch, covering all of the head drawing's original mouth.
+     It's feathered only inside the beard, and colour-matched on a ring of beard. The head's own mustache
+     is always layered back on top, so it never changes shape between mouth shapes.
 6. **Performance and camera** (`direction.py`, `render.py`):
    - head nods follow the loudness of the speech, with idle sway and breathing
-   - expression changes cross-dissolve
    - the camera uses TV-style shot cuts on pauses, with handheld drift
    - the background gets depth of field in close-ups
-   - Roy gets warm and cool rim light to match the set, plus a soft shadow on the chair
    - the table and mug are masked to sit in front of him
    - final grade: bloom, vignette and grain
 
