@@ -1,0 +1,13 @@
+numpy
+opencv-python-headless
+pillow
+scipy
+librosa
+soundfile
+torch
+torchaudio
+torchvision
+transformers
+faster-whisper
+phonemizer
+spandrel

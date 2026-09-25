@@ -1,0 +1,9 @@
+# regenerable build products
+models/
+src/*_x4.png
+*.pkl
+part*.mp4
+parts.txt
+scene_audio.wav
+still_*.png
+__pycache__/
