@@ -8,6 +8,7 @@ Every drawing is registered into the rig frame once (register.py / landmarks.py)
 straight from its source pixels to the screen, so nothing is resampled twice."""
 import numpy as np, cv2, pickle
 from landmarks import all_landmarks
+import extras
 
 K = lambda r: cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
 def to3(M): return np.vstack([M, [0, 0, 1]])
@@ -24,12 +25,16 @@ NECK_PIVOT = (272.0, 395.0)       # head rotates about the base of the neck
 # poses with an arm hanging straight down: the drawing cuts that sleeve at its bottom edge, so the FRONT
 # body's forearm + hand continues it (screen-left 'L' / screen-right 'R')
 HANGING = {"ARMS DOWN": "LR", "POINT LEFT": "R", "POINT RIGHT": "L", "PALM OUT STOP": "R", "THUMBS UP": "R",
-           "THUMBS DOWN": "R", "FIST PUMP": "R", "PHONE HOLD": "R", "WAVE": "R", "HOLDING CUP": "R", "OK SIGN": "R"}
+           "THUMBS DOWN": "R", "FIST PUMP": "R", "PHONE HOLD": "R", "WAVE": "R", "HOLDING CUP": "R", "OK SIGN": "R",
+           "FINGER UP": "R"}
 
 NO_STUB_CUT = {"HAND ON CHIN"}   # the 'neck stub' there is the hand itself
 
 # poses whose hand/arm comes up in front of the chin / face -> drawn over the head
-FRONT_HANDS = {"HAND ON CHIN", "ADJUST TIE", "WAVE", "OK SIGN", "FIST PUMP", "PHONE HOLD", "PALM OUT STOP", "THUMBS UP"}
+FRONT_HANDS = {"HAND ON CHIN", "ADJUST TIE", "WAVE", "OK SIGN", "FIST PUMP", "PHONE HOLD", "PALM OUT STOP", "THUMBS UP",
+               "FINGER UP"}
+LEG_TOP = 915            # legs below the jacket hem: split left / right for the pacing step cycle
+LEG_SPLIT_X = 272
 
 def classes(rgba):
     c = rgba[..., :3].astype(np.int32); b, g, r = c[..., 0], c[..., 1], c[..., 2]
@@ -88,6 +93,8 @@ def neck_fade(pm, kn, band=90, span=34):
 class Rig:
     def __init__(self, parts="parts.pkl", reg="reg.pkl"):
         P = pickle.load(open(parts, "rb")); R = pickle.load(open(reg, "rb"))
+        P["arm"]["FINGER UP"] = (extras.finger_up(P), None)
+        P["arm"]["WATCH"] = (extras.watch(P), None)
         self.P = P
         front = P["turn"]["FRONT"][0]
         H, W = front.shape[:2]
@@ -99,6 +106,12 @@ class Rig:
         low[..., 3] = (low[..., 3] * keep).astype(np.uint8)
         low[..., 3] = (low[..., 3] * np.clip((yy - LOWER_Y) / 14.0, 0, 1)).astype(np.uint8)   # soft top edge
         self.lower = (graded_premul(low), np.eye(3)[:2])
+        jk = low.copy(); jk[..., 3] = (jk[..., 3] * (yy < LEG_TOP + 15)).astype(np.uint8)
+        self.jacket = graded_premul(jk)
+        self.legs = {}
+        for k, m in (("L", xx < LEG_SPLIT_X), ("R", xx >= LEG_SPLIT_X)):
+            lg = low.copy(); lg[..., 3] = (lg[..., 3] * m * np.clip((yy - LEG_TOP) / 10.0, 0, 1)).astype(np.uint8)
+            self.legs[k] = graded_premul(lg)
         # ---- hanging forearms (screen-left 'L', screen-right 'R') from the FRONT body
         self.hang = {}
         for k, m in (("L", (xx < SLEEVE_X[0] + 6)), ("R", (xx > SLEEVE_X[1] - 6))):
@@ -142,8 +155,25 @@ class Rig:
                     if st[i, cv2.CC_STAT_AREA] > 1500: front_m |= lab == i
                 fr = t.copy(); fr[..., 3] = (fr[..., 3] * cv2.GaussianBlur(front_m.astype(np.float32), (0, 0), 1.5)).astype(np.uint8)
                 front_m = graded_premul(fr)
-            self.torso[n] = dict(img=graded_premul(t), M=M, front=front_m,
-                                 hang={k: self.hang_dx(t, M, k) for k in HANGING.get(n, "")})
+            ent = dict(img=graded_premul(t), M=M, front=front_m, hang={k: self.hang_dx(t, M, k) for k in HANGING.get(n, "")})
+            if n in extras.MOVERS:
+                mv = extras.MOVERS[n]
+                mm = extras.mover_mask(img, mv["box"]).astype(np.float32)
+                mmb = cv2.GaussianBlur(mm, (0, 0), 1.0)
+                bimg = t.copy(); bimg[..., 3] = (bimg[..., 3] * (1 - mmb)).astype(np.uint8)
+                mover = t.copy(); mover[..., 3] = (mover[..., 3] * mmb).astype(np.uint8)
+                ent.update(img=graded_premul(bimg), mover=graded_premul(mover), pivot=mv["pivot"], front=None,
+                           hole=cv2.dilate(mm, K(10)))
+            self.torso[n] = ent
+        # the chest behind a moving hand: the ARMS DOWN drawing, only inside that hand's (grown) area
+        ad = self.torso["ARMS DOWN"]
+        for n, ent in self.torso.items():
+            if "hole" not in ent: continue
+            Hh, Wh = ad["img"].shape[:2]
+            A = (np.linalg.inv(to3(ad["M"])) @ to3(ent["M"]))[:2].astype(np.float32)
+            hm = cv2.GaussianBlur(cv2.warpAffine(ent["hole"], A, (Wh, Hh)), (0, 0), 2)
+            ent["under"] = ad["img"] * hm[..., None]
+            ent["under_M"] = ad["M"]
         # ---- heads: expression head -> rig (SIFT chain), clothes stripped
         self.head = {}
         for n, (img, _) in P["head"].items():
@@ -231,9 +261,10 @@ class Rig:
         return np.dstack([c * m[..., None], m]).astype(np.float32)
 
     # ------------------------------------------------------------------ assembling a pose
-    def layers(self, torso, head, mouth=None, head_M=None, torso_M=None, hang=None):
+    def layers(self, torso, head, mouth=None, head_M=None, torso_M=None, hang=None, hand_M=None, legs=(0.0, 0.0)):
         """ordered list of (premultiplied RGBA float32, 3x3 matrix source->rig).  head_M: extra head motion
-        (rotation about the neck), torso_M: torso lean/bounce (rig frame), applied to everything above the legs."""
+        (rotation about the neck), torso_M: torso lean/bounce (rig frame), applied to everything above the legs.
+        hand_M: 3x3 motion of a MOVER hand in its pose's own coords.  legs: (lift L, lift R) rig px for pacing."""
         T = to3(torso_M) if torso_M is not None else np.eye(3)
         Hm = T @ (to3(head_M) if head_M is not None else np.eye(3))
         d = self.torso[torso]
@@ -241,13 +272,21 @@ class Rig:
         sides = d["hang"] if hang is None else hang
         for k, dx in sides.items():
             out.append((self.hang[k], T @ np.array([[1, 0, dx], [0, 1, 0], [0, 0, 1]], np.float64)))
-        out.append((self.lower[0], np.eye(3)))
+        if legs[0] == 0 and legs[1] == 0:
+            out.append((self.lower[0], np.eye(3)))
+        else:
+            for k, lift in zip("LR", legs):
+                out.append((self.legs[k], np.array([[1, 0, 0], [0, 1, -lift], [0, 0, 1]], np.float64)))
+            out.append((self.jacket, np.eye(3)))
+        if "under" in d: out.append((d["under"], T @ to3(d["under_M"])))
         out.append((d["img"], T @ to3(d["M"])))
         hd = self.head[head]
         himg = hd["img"] if mouth is None else self.mouth_head(head, mouth)
         out.append((himg, Hm @ to3(hd["M"])))
         if d["front"] is not None:
             out.append((d["front"], T @ to3(d["M"])))
+        if "mover" in d:
+            out.append((d["mover"], T @ to3(d["M"]) @ (hand_M if hand_M is not None else np.eye(3))))
         return out
 
     def mouth_head(self, head, mouth):

@@ -1,12 +1,19 @@
 """Build a per-frame viseme track from the phone alignment + energy-based onset/offset refinement.
-Clips are laid out on the scene timeline with an intro (walk-in), gaps between clips and an outro (exit)."""
+The voice is laid out on the scene timeline as SEGMENTS (a clip, or part of one), each after its own pause:
+the direction needs silences the recordings don't have (a beat after "Glazer ball licker" to start walking,
+time to walk to the windows before clip 2, the walk-out and the empty office at the end)."""
 import json, numpy as np, librosa
 
 FPS = 30
-CLIPS = ["src/audio1.mp3", "src/audio2.mp3", "src/audio3.mp3", "src/audio4.mp3"]
-INTRO = 4.0                 # walk in, turn to camera, straighten the tie
-GAPS = [1.0, 1.1, 0.9]      # silences between the clips
-OUTRO = 4.8                 # turns and hurries off to the yacht, then the empty office
+# (file, from s, to s or None = end, pause before it in s)
+SEGMENTS = [
+    ("src/audio1.mp3", 0.0, 5.05, 1.2),     # "Hi, I'm Jim Ratcliffe ... Glazer ball licker."
+    ("src/audio1.mp3", 5.05, None, 1.9),    # (dead-pan pause, starts walking) "Britain is going backwards ..."
+    ("src/audio2.mp3", 0.0, None, 2.2),     # (walks to the windows) "I can see it very clearly ..."
+    ("src/audio3.mp3", 0.0, None, 1.0),     # "What Britain needs is sacrifice ..."
+    ("src/audio4.mp3", 0.0, None, 0.9),     # "And people ask me ..."
+]
+OUTRO = 9.5                 # looks out at the yachts, picks up his phone, walks out, 2 s of empty office, fade
 
 # the mouth sheet's 19 shapes
 VIS = ["REST", "A", "E", "I", "O", "U", "FV", "L", "M", "B", "CDGK", "CHJ", "R", "TH", "W", "SZ", "T", "N", "Q"]
@@ -62,12 +69,19 @@ def clip_track(f, ph):
 
 def build():
     ph = json.load(open("phones.json"))
-    offs, t = [], INTRO
-    events, words, segs_all, durs = [], [], [], []
-    for ci, f in enumerate(CLIPS):
-        iv, segs, dur, breaths = clip_track(f, ph[f])
-        events += [(t + a, t + b, "N", "breath") for a, b in breaths]
+    cache = {}
+    offs, t = [], 0.0
+    events, words, segs_all, durs, segments = [], [], [], [], []
+    for f, a, b, pause in SEGMENTS:
+        if f not in cache: cache[f] = clip_track(f, ph[f])
+        iv, segs, dur, breaths = cache[f]
+        b = dur if b is None else b
+        t += pause
+        sh = t - a                                      # clip time -> scene time
+        inside = lambda x0, x1: a <= (x0 + x1) / 2 < b
+        events += [(sh + x0, sh + x1, "N", "breath") for x0, x1 in breaths if inside(x0, x1)]
         for k, x in enumerate(iv):
+            if not inside(x["s"], x["e"]): continue
             p = x["p"]
             if p == "HH":                        # breathy onset: mouth already shaped for the next vowel
                 nxt = iv[k + 1]["p"] if k + 1 < len(iv) else "AH"
@@ -78,15 +92,17 @@ def build():
                 v = PH.get(p, "N")
             if isinstance(v, tuple):
                 mid = x["s"] + (x["e"] - x["s"]) * 0.55
-                events += [(t + x["s"], t + mid, v[0], p), (t + mid, t + x["e"], v[1], p)]
+                events += [(sh + x["s"], sh + mid, v[0], p), (sh + mid, sh + x["e"], v[1], p)]
             else:
-                events.append((t + x["s"], t + x["e"], v, p))
+                events.append((sh + x["s"], sh + x["e"], v, p))
         for i, w in enumerate(ph[f]["words"]):
             ws = [x for x in iv if x["w"] == i]
-            words.append({"w": w["w"], "s": t + ws[0]["s"], "e": t + ws[-1]["e"], "clip": ci})
-        segs_all += [[t + a, t + b] for a, b in segs]
-        offs.append(t); durs.append(dur)
-        t += dur + (GAPS[ci] if ci < len(GAPS) else 0)
+            if not inside(ws[0]["s"], ws[-1]["e"]): continue
+            words.append({"w": w["w"], "s": sh + ws[0]["s"], "e": sh + ws[-1]["e"], "clip": len(segments)})
+        segs_all += [[sh + x0, sh + x1] for x0, x1 in segs if inside(x0, x1)]
+        segments.append({"file": f, "a": a, "b": b, "at": t})
+        offs.append(t); durs.append(b - a)
+        t += b - a
     total = offs[-1] + durs[-1] + OUTRO
     n = int(round(total * FPS))
     LEAD = 0.035  # show the mouth shape ~1 frame before the sound (animation convention)
@@ -112,7 +128,7 @@ def build():
     for i in range(1, n - 1):
         if track[i] not in MUST and track[i] not in VOWELS and track[i - 1] == track[i + 1] and track[i] != track[i - 1]:
             track[i] = track[i - 1]
-    json.dump({"fps": FPS, "n": n, "total": total, "offsets": offs, "durs": durs, "track": track,
+    json.dump({"fps": FPS, "n": n, "total": total, "offsets": offs, "durs": durs, "segments": segments, "track": track,
                "words": words, "segs": segs_all, "events": events}, open("timeline.json", "w"), indent=1)
     print("frames", n, "total %.2f" % total, "offsets", [round(o, 2) for o in offs])
     from collections import Counter; print(Counter(track))

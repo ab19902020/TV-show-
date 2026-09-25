@@ -10,6 +10,7 @@ OVERRIDE = {     # name -> {"knot": (x, y), "belt": (x, y)}  read off gridded cr
     "OPEN ARMS": {"knot": (347, 20), "belt": (350, 305)},
     "HAND ON CHIN": {"knot": (190, 25), "belt": (200, 395)},
     "HAND ON HIP": {"knot": (190, 18), "belt": (187, 263)},
+    "FINGER UP": {"knot": (190, 22), "belt": (205, 293)},        # made from OK SIGN (extras.py)
 }
 
 def red_of(rgba):

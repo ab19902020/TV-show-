@@ -7,6 +7,7 @@ from collections import OrderedDict
 import perf, direction as D
 from rig import Rig, render_layers, to3, grade, over, F_KNOT, F_FLOOR, NECK_PIVOT
 from walker import build as build_walkers
+from profile import Profile
 from mouths import Mouths
 from occlusion import S as OS
 import blink
@@ -14,10 +15,6 @@ import blink
 FPS, OW, OH = 30, 1920, 1080
 TL = perf.TL; N = TL["n"]
 BGW, BGH = 1672, 941
-FLOOR_Y = 870.0                    # world y of his feet (between the desk and the window)
-K = 612.0 / 1516.0                 # world px per rig px (he is ~612 px tall at that depth)
-DESK_PLANE_Y = FLOOR_Y - 0.75 / 1.8 * 612      # the desk-top plane seen at his depth (mirror line)
-CLIPS = ["src/audio1.mp3", "src/audio2.mp3", "src/audio3.mp3", "src/audio4.mp3"]
 # glossy desk top (world px) where he is reflected, minus the objects standing on it
 DESKTOP = [(700, 652), (1160, 662), (1185, 675), (1215, 715), (1235, 755), (1243, 790), (1225, 798), (700, 800)]
 DESK_OBJECTS = [(700, 648, 978, 730), (946, 681, 1094, 800)]
@@ -27,9 +24,12 @@ import librosa
 def build_audio():
     sr = 44100
     out = np.zeros(int(TL["total"] * sr) + sr, np.float32)
-    for f, off in zip(CLIPS, TL["offsets"]):
-        y, _ = librosa.load(f, sr=sr, mono=True)
-        a = int(round(off * sr)); out[a:a + len(y)] += y
+    for sg in TL["segments"]:                      # clips (or parts of them) at their scene times
+        y, _ = librosa.load(sg["file"], sr=sr, mono=True)
+        y = y[int(round(sg["a"] * sr)):int(round(sg["b"] * sr))]
+        n = min(len(y), 1600)                          # 36 ms fades at the cut points (no clicks)
+        y[:n] *= np.linspace(0, 1, n); y[-n:] *= np.linspace(1, 0, n)
+        a = int(round(sg["at"] * sr)); out[a:a + len(y)] += y
     return out[: int(TL["total"] * sr)], sr
 AUDIO, ASR = build_audio()
 hop = ASR // FPS
@@ -57,7 +57,8 @@ def camera(t):
 class Actor:
     def __init__(self):
         self.rig = Rig()
-        self.walk = build_walkers(self.rig.P)
+        self.walkers, self.views = build_walkers(self.rig.P)
+        self.profile = Profile(self.rig.P)
         self.mouths = Mouths()
         self.cache = OrderedDict()
         self.eyes = {h: blink.eyes_of(self.rig.head[h]["raw"], self.mouths.to_head[h])
@@ -68,6 +69,7 @@ class Actor:
         hd = self.rig.head[head]
         if vis is not None and (head not in self.mouths.to_head or head == "THINKING"): vis = None
         if head not in self.eyes: bl = 0.0
+        bl = round(bl, 2)
         if vis is None and bl == 0: return hd["img"]
         key = (head, vis, bl)
         if key in self.cache: self.cache.move_to_end(key); return self.cache[key]
@@ -78,39 +80,62 @@ class Actor:
         a = hd["img"][..., 3:4]
         img = np.dstack([grade(col).astype(np.float32) * a, a]).astype(np.float32)
         self.cache[key] = img
-        if len(self.cache) > 80: self.cache.popitem(last=False)
+        if len(self.cache) > 120: self.cache.popitem(last=False)
         return img
 
     def layers(self, i):
-        """-> (layers, 3x3 rig->world) or None"""
+        """-> dict(layers, Mw (3x3 rig->world), x, floor, k, seat) or None when he is off stage"""
         t = i / FPS
-        ws = perf.walk_state(t)
-        if ws is not None:
-            if ws[0] == "off": return None
-            mode, leg, x, bob, lean = ws
-            w = self.walk[mode]
-            Mw = np.array([[K, 0, x - K * w.hip_x], [0, K, FLOOR_Y - K * w.floor], [0, 0, 1]])
-            return w.layers(leg, bob, lean), Mw
+        (x, floor, k), b = perf.place_at(t)
+        if b["kind"] == "off": return None
+        seat = perf.SEAT_DROP * perf.seat_at(t)
+        def Mw_for(cx, frig): return np.array([[k, 0, x - k * cx], [0, k, floor + seat - k * frig], [0, 0, 1]])
+        out = dict(x=x, floor=floor, k=k, seat=seat)
+        breath = 1 + 0.006 * math.sin(2 * math.pi * t / 3.7)
+        if b["kind"] == "walk":
+            w = self.walkers[b["d"]]
+            u = t - b["t0"]; half = b["period"] / 2
+            leg = ["WALK 1", "WALK 2", "WALK 3", "WALK 4"][int(u / half) % 4]
+            bob = -10 * abs(math.sin(math.pi * u / b["period"]))
+            out.update(layers=w.layers(leg, bob, 1.5), Mw=Mw_for(w.hip_x, w.floor)); return out
+        if b["kind"] == "view":
+            v = self.views[b["name"]]
+            out.update(layers=v.layers(), Mw=Mw_for(v.cx, v.floor)); return out
+        th, dy, look = perf.head_motion(i, CH)
+        if b["kind"] == "profile":
+            pr = self.profile
+            head_M = cv2.getRotationMatrix2D((170.0, 330.0), 0.6 * th, 1.0); head_M[1, 2] += dy * 0.25
+            Br = np.array([[1, 0, 0], [0, breath, (1 - breath) * 1400]], np.float64)
+            out.update(layers=pr.layers(perf.viseme(i), perf.profile_arm(t), head_M, Br), Mw=Mw_for(pr.hip_x, pr.floor))
+            return out
+        # ---- front rig
         torso = perf.at(perf.POSES, t, "ARMS DOWN")
         head = perf.at(perf.HEADS, t, "NEUTRAL")
         vis = perf.viseme(i)
-        th, dy = perf.head_motion(i, CH)
         head_M = cv2.getRotationMatrix2D(NECK_PIVOT, th, 1.0); head_M[1, 2] += dy * 0.35
-        # torso: lean about the hips, dip on beats, settle 'pop' on swaps, breathing
+        legs, step_bob = perf.pacing_legs(t, b)
+        bdy, sx, sy = perf.body_motion(t, CH, i)
         hip = (F_KNOT[0], 900.0)
-        breath = 1 + 0.006 * math.sin(2 * math.pi * t / 3.7)
-        lean = CH["lean"][i] + 0.6 * math.sin(2 * math.pi * t / 6.1)
+        lean = CH["lean"][i] + 0.6 * math.sin(2 * math.pi * t / 6.1) + 0.5 * (legs[0] - legs[1]) / 22.0
         R = to3(cv2.getRotationMatrix2D(hip, -lean, 1.0))
-        Tb = np.array([[1, 0, 0], [0, 1, 7 * CH["dip"][i] + 6 * CH["pop"][i]], [0, 0, 1]], np.float64)
-        Br = np.array([[1, 0, 0], [0, breath, (1 - breath) * 900], [0, 0, 1]], np.float64)
-        torso_M = (Tb @ R @ Br)[:2]
-        L = self.rig.layers(torso, head, head_M=head_M, torso_M=torso_M)
-        # swap in the lip-synced head drawing (the head layer is the one using the head's matrix)
+        Tb = np.array([[1, 0, 0], [0, 1, bdy + step_bob], [0, 0, 1]], np.float64)
+        Sc = np.array([[sx, 0, (1 - sx) * hip[0]], [0, sy * breath, (1 - sy * breath) * 900], [0, 0, 1]], np.float64)
+        torso_M = (Tb @ R @ Sc)[:2]
+        hand_M = None
+        if torso in self.rig.torso and "pivot" in self.rig.torso[torso]:
+            px, py = self.rig.torso[torso]["pivot"]
+            if torso == "PALM OUT STOP":
+                d = perf.chop_dy(t); s_ = 1 + 0.0012 * max(d, 0)
+                hand_M = np.array([[s_, 0, px * (1 - s_)], [0, s_, py * (1 - s_) + d], [0, 0, 1]])
+            else:
+                s_ = 1 + perf.jab_s(t)
+                hand_M = np.array([[s_, 0, px * (1 - s_) - 60 * (s_ - 1)], [0, s_, py * (1 - s_) + 30 * (s_ - 1)], [0, 0, 1]])
+        L = self.rig.layers(torso, head, head_M=head_M, torso_M=torso_M, hand_M=hand_M,
+                            legs=legs if seat == 0 else (0.0, 0.0))
         hd = self.rig.head[head]
-        bl = blink.amount_at(i, self.blinks)
+        bl = max(blink.amount_at(i, self.blinks), 0.5 * look)            # lids lowered = looking down at the watch
         L = [(self.head_img(head, vis, bl) if img is hd["img"] else img, M) for img, M in L]
-        Mw = np.array([[K, 0, perf.MARK_X - K * F_KNOT[0]], [0, K, FLOOR_Y - K * F_FLOOR], [0, 0, 1]])
-        return L, Mw
+        out.update(layers=L, Mw=Mw_for(F_KNOT[0], F_FLOOR)); return out
 
 # ---------------------------------------------------------------- plates
 def load_plates():
@@ -163,25 +188,25 @@ def render_frame(i, actor, lv):
     C = np.array([[z, 0, -z * ox], [0, z, -z * oy], [0, 0, 1]])
     res = actor.layers(i)
     if res is not None:
-        layers, Mw = res
-        ch = render_layers(layers, C @ Mw, (OW, OH))
+        ch = render_layers(res["layers"], C @ res["Mw"], (OW, OH))
         ch = rim_light(ch, z)
-        # contact shadow on the floor (only visible where the floor is: the rug lane)
-        ws = perf.walk_state(t)
-        fx = ws[2] if ws is not None and ws[0] != "off" else perf.MARK_X
-        sh = np.zeros((OH, OW), np.float32)
-        cv2.ellipse(sh, (int(z * (fx - ox)), int(z * (FLOOR_Y + 2 - oy))), (max(1, int(z * 70)), max(1, int(z * 11))), 0, 0, 360, 1, -1)
-        sh = cv2.GaussianBlur(sh, (0, 0), max(1, 6 * z))[..., None] * 0.45
-        frame = frame * (1 - sh)
-        # soft reflection in the glossy black desk top (mirrored about the desk plane at his depth)
-        sy = z * (DESK_PLANE_Y - oy)
-        refl = cv2.warpAffine(ch, np.float32([[1, 0, 0], [0, -1, 2 * sy]]), (OW, OH), flags=cv2.INTER_LINEAR)
+        x, floor, k, seat = res["x"], res["floor"], res["k"], res["seat"]
+        # contact shadow on the floor (visible only where the floor is: in front of the windows, the rug lane)
+        if seat == 0:
+            sh = np.zeros((OH, OW), np.float32)
+            cv2.ellipse(sh, (int(z * (x - ox)), int(z * (floor + 2 - oy))), (max(1, int(z * 175 * k)), max(1, int(z * 27 * k))), 0, 0, 360, 1, -1)
+            sh = cv2.GaussianBlur(sh, (0, 0), max(1, 15 * z * k))[..., None] * 0.45
+            frame = frame * (1 - sh)
         ca = np.clip(ch[..., 3:4], 0, 1)
         frame = ch[..., :3] + frame * (1 - ca)
-        fade = np.clip(1 - (YY[..., None] - sy) / (z * 150), 0, 1)
-        ra = np.clip(refl[..., 3:4], 0, 1) * dtm * 0.20 * fade
-        rc = refl[..., :3] / np.maximum(refl[..., 3:4], 1e-3)
-        frame = frame * (1 - ra) + rc * ra
+        # soft reflection in the glossy black desk top when he stands behind it (mirrored about the desk plane)
+        if x < 1235 and seat == 0:
+            sy = z * (floor - 0.75 / 1.8 * k * 1516 - oy)
+            refl = cv2.warpAffine(ch, np.float32([[1, 0, 0], [0, -1, 2 * sy]]), (OW, OH), flags=cv2.INTER_LINEAR)
+            fade = np.clip(1 - (YY[..., None] - sy) / (z * 150), 0, 1)
+            ra = np.clip(refl[..., 3:4], 0, 1) * dtm * 0.20 * fade
+            rc = refl[..., :3] / np.maximum(refl[..., 3:4], 1e-3)
+            frame = frame * (1 - ra) + rc * ra
         # everything in front of him: desk, things on it, side table, flowers, armchairs
         frame = bg * oc + frame * (1 - oc)
     # ---- grade

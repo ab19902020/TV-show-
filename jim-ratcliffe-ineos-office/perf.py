@@ -1,9 +1,13 @@
-"""Performance: a cue sheet keyed to the spoken words -> per-frame animation state.
+"""Performance: blocking + a cue sheet keyed to the spoken words -> per-frame animation state.
 
-Replacement animation: the torso (arm pose) and the head (expression) are hard drawing swaps on the cues, and
-each swap gets a small body 'pop' so it reads as a move rather than a cut.  On top of that: spring-damped
-torso lean, emphasis beats (dip + nod), audio-driven head nods, head shakes, a question tilt, idle sway and
-breathing.  The walk-in and the run-off use the turnaround rig with the leg-pose drawings."""
+Blocking (where he is and which rig draws him) follows the director's notes:
+  desk, facing camera -> "Glazer ball licker", dead-pan pause, walks across the office -> stops, chops on
+  "going backwards" -> paces slowly, counting on his fingers -> walks to the windows, turns side-on and presents
+  the Monaco view (held) -> turns back: jacket, belt tug, point + chop -> glance over the shoulder, shrug ->
+  finger up on "SENSIBLE" -> walks back along the desk counting each word -> sits in the executive chair, crosses
+  a leg, straight-faced -> stands for three hand beats -> paces -> four points at the camera -> checks his watch,
+  looks out at the yachts, picks up his phone and walks out -> the empty office.
+Acting is restrained: stern / raised-brow heads, small beats, understated head motion, natural blinks."""
 import json, math, numpy as np
 
 FPS = 30
@@ -18,86 +22,161 @@ def W(word, nth=1, edge="s"):
             if k == nth: return w[edge]
     raise KeyError((word, nth))
 
-# ------------------------------------------------------------------ staging (world = background px)
-MARK_X = 1110.0          # where he stands behind the desk to deliver the piece
-ENTER_X = 1800.0         # walks in from behind the side table on the right
-EXIT_X = 1900.0
-WALK_START, WALK_END = 0.55, 2.95
-TURN_AT = 3.25           # 3/4 view -> facing camera
-RUN_TURN = W("waiting", 1, "e") + 0.95
-RUN_START = RUN_TURN + 0.25
-RUN_END = RUN_START + 1.15
+RIG_H = 1516.0                    # rig px from the top of the hair to the soles
+# places: (world x, floor y, world px per rig px).  Depth: further back = higher floor line, smaller.
+DESK = (1110.0, 870.0, 0.404)     # behind the desk, facing camera
+ACROSS = (840.0, 870.0, 0.404)
+PACE_END = (1040.0, 870.0, 0.404)
+WINDOW = (1310.0, 705.0, 0.307)   # on the marble in front of the windows, fully visible
+CHAIR = (455.0, 918.0, 0.480)     # at the executive chair
+FRONT_DESK = (760.0, 885.0, 0.440)
+EXIT = (1840.0, 880.0, 0.440)
+SEAT_DROP = 160.0                 # world px he sinks when sitting
 
+def head_top(place, seated=0.0):
+    x, f, k = place
+    return f - k * RIG_H + seated
+
+# ------------------------------------------------------------------ blocking
+BLOCK = []
+def front(t0, t1, a, b=None, pace=0.0): BLOCK.append(dict(t0=t0, t1=t1, kind="front", a=a, b=b or a, pace=pace))
+def walk(t0, t1, d, a, b, period=0.52): BLOCK.append(dict(t0=t0, t1=t1, kind="walk", d=d, a=a, b=b, period=period))
+def view(t0, t1, name, a): BLOCK.append(dict(t0=t0, t1=t1, kind="view", name=name, a=a, b=a))
+def profile(t0, t1, a): BLOCK.append(dict(t0=t0, t1=t1, kind="profile", a=a, b=a))
+def turn(t0, names, a, fr=2):
+    for k, n in enumerate(names): view(t0 + k * fr / FPS, t0 + (k + 1) * fr / FPS, n, a)
+    return t0 + len(names) * fr / FPS
+
+T_WALK1 = W("licker", 1, "e") + 0.65          # the dead-pan pause, then he strolls off
+T_STOP1 = W("britain") - 0.22
+T_WIN = W("that", 1, "e") + 0.35              # after "...a country like that."
+T_WIN_ARRIVE = W("i") - 0.22
+T_BACK_TO_CAM = W("means", 1, "e") + 0.35
+T_LEAVE_WIN = W("decision", 1, "e") + 0.12
+T_SIT = W("preferably") - 0.05
+T_STAND = W("absolutely", 1, "e") + 0.02
+T_PACE2 = W("industry", 1, "e") + 0.15
+T_PACE2_END = W("claims", 1, "e") + 0.2
+T_GLANCE = W("less", 1, "e") + 0.35           # after "...expect less."
+T_LOOK_OUT = W("waiting", 1, "e") + 0.12
+T_EXIT = T_LOOK_OUT + 2.25
+T_GONE = T_EXIT + 4.2
+
+front(0.0, T_WALK1, DESK)
+t = turn(T_WALK1, ["3/4 LEFT"], DESK, fr=3)
+walk(t, T_STOP1 - 0.1, "L", DESK, ACROSS)
+t = turn(T_STOP1 - 0.1, ["3/4 LEFT"], ACROSS, fr=3)
+front(t, W("we've") - 0.1, ACROSS)
+front(W("we've") - 0.1, W("you") - 0.25, ACROSS, PACE_END, pace=0.9)          # paces, counting on his fingers
+front(W("you") - 0.25, T_WIN, PACE_END)
+t = turn(T_WIN, ["3/4 RIGHT"], PACE_END, fr=3)
+walk(t, T_WIN_ARRIVE, "R", PACE_END, WINDOW)
+t = turn(T_WIN_ARRIVE, ["3/4 RIGHT", "FRONT", "3/4 LEFT"], WINDOW)
+profile(t, T_BACK_TO_CAM, WINDOW)
+t = turn(T_BACK_TO_CAM, ["3/4 LEFT"], WINDOW, fr=3)
+front(t, T_GLANCE, WINDOW)
+t = turn(T_GLANCE, ["3/4 LEFT"], WINDOW, fr=22)                                 # glances back at Monaco
+front(t, T_LEAVE_WIN, WINDOW)
+front(T_LEAVE_WIN, T_SIT, WINDOW, CHAIR, pace=0.56)                            # walks back, counting each word
+front(T_SIT, T_PACE2, CHAIR)                                                   # sits / stands handled as 'seat'
+front(T_PACE2, T_PACE2_END, CHAIR, FRONT_DESK, pace=0.8)                       # paces in the final section
+front(T_PACE2_END, T_LOOK_OUT, FRONT_DESK)
+t = turn(T_LOOK_OUT, ["3/4 LEFT"], FRONT_DESK, fr=3)
+view(t, t + 0.95, "BACK", FRONT_DESK)                                          # looks out at the yachts
+t = turn(t + 0.95, ["3/4 LEFT"], FRONT_DESK, fr=3)
+front(t, T_EXIT, FRONT_DESK)                                                   # picks up his phone
+t = turn(T_EXIT, ["3/4 RIGHT"], FRONT_DESK, fr=3)
+walk(t, T_GONE, "R", FRONT_DESK, EXIT, period=0.5)
+BLOCK.append(dict(t0=T_GONE, t1=999, kind="off", a=EXIT, b=EXIT))
+
+def smooth(u): u = min(max(u, 0.0), 1.0); return u * u * (3 - 2 * u)
+
+def block_at(t):
+    for b in BLOCK:
+        if b["t0"] <= t < b["t1"]: return b
+    return BLOCK[-1]
+
+def place_at(t):
+    b = block_at(t)
+    u = (t - b["t0"]) / max(b["t1"] - b["t0"], 1e-6)
+    u = smooth(u) if b["kind"] == "front" else (0.12 * smooth(u) + 0.88 * u)
+    return tuple(b["a"][j] + (b["b"][j] - b["a"][j]) * u for j in range(3)), b
+
+# ------------------------------------------------------------------ cue sheet
 def cues():
-    P, H, B = [], [], []          # torso poses, heads, beats (t, strength)
+    P, H, B, CH, JAB = [], [], [], [], []
     def pose(t, n): P.append((t, n))
     def head(t, n): H.append((t, n))
     def beat(t, s=1.0): B.append((t, s))
-    # --- arrives, straightens the tie
-    pose(TURN_AT, "ARMS DOWN"); head(TURN_AT, "NEUTRAL")
-    pose(TURN_AT + 0.35, "ADJUST TIE"); head(TURN_AT + 0.35, "SMILE")
-    # --- clip 1
-    pose(W("hi") - 0.2, "WAVE"); beat(W("hi"), 0.5)
-    pose(W("co") - 0.12, "THUMBS UP"); head(W("co") - 0.12, "RAISED BROW"); beat(W("manchester"), 0.6); beat(W("united"), 0.5)
-    pose(W("and") - 0.1, "ADJUST TIE"); head(W("and") - 0.1, "SMILE")
-    pose(W("britain") - 0.15, "THUMBS DOWN"); head(W("britain") - 0.15, "DISGUSTED"); beat(W("backwards"), 0.9)
-    pose(W("it") - 0.12, "ARMS CROSSED"); head(W("it") - 0.12, "RAISED BROW"); beat(W("is", 2), 0.7)
-    pose(W("and", 2) - 0.1, "REACH FORWARD"); beat(W("say"), 0.8)
-    pose(W("we've") - 0.1, "EXPLAINING 1"); head(W("we've") - 0.1, "DISGUSTED"); beat(W("too"), 0.7); beat(W("benefits"), 0.8)
-    pose(W("too", 2) - 0.12, "EXPLAINING 2"); beat(W("too", 2), 0.7); beat(W("immigration"), 0.8)
-    pose(W("too", 3) - 0.12, "BOTH HANDS OUT"); beat(W("too", 3), 0.7)
-    pose(W("spending") - 0.1, "FRUSTRATED"); beat(W("spending"), 1.0)
-    pose(W("you") - 0.12, "PALM OUT STOP"); head(W("you") - 0.12, "SAD"); beat(W("cannot"), 1.0)
-    pose(W("like") - 0.12, "PALM UP"); beat(W("that"), 0.5)
-    pose(W("that", 1, "e") + 0.45, "ARMS DOWN"); head(W("that", 1, "e") + 0.45, "NEUTRAL")
-    # --- clip 2
-    pose(W("i") - 0.15, "PRESENT"); head(W("i") - 0.15, "SMILE")
-    pose(W("from") - 0.15, "OPEN ARMS"); beat(W("monaco"), 0.7)
-    pose(W("monaco", 1, "e") + 0.7, "ARMS DOWN")
-    pose(W("britain", 2) - 0.15, "CALM DOWN"); head(W("britain", 2) - 0.15, "RAISED BROW"); beat(W("learn"), 0.6); beat(W("means"), 0.7)
-    pose(W("ordinary") - 0.12, "TALK LEFT"); head(W("ordinary") - 0.12, "DISGUSTED"); beat(W("ordinary"), 0.5)
-    pose(W("tighten") - 0.18, "HAND ON HIP"); beat(W("belts"), 0.8)
-    pose(W("work") - 0.12, "FIST PUMP"); beat(W("work"), 0.9); beat(W("harder"), 1.0)
-    pose(W("expect") - 0.12, "PALM OUT STOP"); beat(W("less"), 0.9)
-    pose(W("less", 1, "e") + 0.5, "ARMS DOWN"); head(W("less", 1, "e") + 0.5, "NEUTRAL")
-    pose(W("obviously") - 0.15, "PALM UP"); head(W("obviously") - 0.15, "WORRIED")
-    head(W("moved") - 0.15, "SMILE")
-    pose(W("moved") - 0.15, "POINT LEFT"); beat(W("monaco", 2), 0.6)
-    pose(W("but") - 0.12, "PALM OUT STOP"); head(W("but") - 0.12, "RAISED BROW"); beat(W("different"), 0.7)
-    pose(W("that", 2) - 0.12, "OK SIGN"); head(W("that", 2) - 0.12, "SMILE"); beat(W("sensible"), 0.6); beat(W("decision"), 0.7)
-    pose(W("decision", 1, "e") + 0.4, "ARMS DOWN"); head(W("decision", 1, "e") + 0.4, "NEUTRAL")
-    # --- clip 3
-    pose(W("what") - 0.12, "FIST"); head(W("what") - 0.12, "DISGUSTED"); beat(W("needs", 2), 0.6); beat(W("sacrifice"), 0.9)
-    pose(W("difficult") - 0.1, "EXPLAINING 1"); beat(W("decisions"), 0.7)
-    pose(W("cuts") - 0.12, "FIST PUMP"); head(W("cuts") - 0.12, "ANGRY"); beat(W("cuts"), 1.2)
-    pose(W("efficiency") - 0.12, "OK SIGN"); head(W("efficiency") - 0.12, "RAISED BROW"); beat(W("efficiency"), 0.6)
-    pose(W("preferably") - 0.15, "PALM UP"); head(W("preferably") - 0.15, "SMILE")
-    pose(W("somebody", 2) - 0.12, "POINT RIGHT"); beat(W("else"), 0.6)
-    pose(W("people", 3) - 0.12, "TALK RIGHT"); head(W("people", 3) - 0.12, "NEUTRAL")
-    pose(W("absolutely") - 0.12, "THUMBS UP"); head(W("absolutely") - 0.12, "RAISED BROW"); beat(W("absolutely"), 0.8)
-    pose(W("factories") - 0.12, "EXPLAINING 2"); head(W("factories") - 0.12, "SAD"); beat(W("factories"), 0.6)
-    pose(W("ships") - 0.1, "BOTH HANDS OUT"); beat(W("ships"), 0.6)
-    pose(W("industry") - 0.12, "OPEN ARMS"); beat(W("industry"), 0.7)
-    pose(W("now") - 0.12, "TALK LEFT"); head(W("now") - 0.12, "DISGUSTED")
-    pose(W("paperwork") - 0.2, "HOLDING PAPER"); beat(W("paperwork"), 0.7)
-    pose(W("benefit") - 0.12, "THUMBS DOWN"); beat(W("claims"), 0.9)
-    pose(W("claims", 1, "e") + 0.4, "ARMS DOWN"); head(W("claims", 1, "e") + 0.4, "NEUTRAL")
-    # --- clip 4
-    pose(W("people", 4) - 0.12, "PRESENT"); head(W("and", 4) - 0.1, "RAISED BROW")
-    pose(W("jim", 2) - 0.12, "WHAT"); head(W("jim", 2) - 0.12, "CONFUSED"); beat(W("solution"), 0.5)
-    pose(W("solution", 1, "e") + 0.25, "HAND ON CHIN"); head(W("solution", 1, "e") + 0.25, "THINKING")
-    pose(W("simple") - 0.15, "REACH FORWARD"); head(W("simple") - 0.15, "SMILE"); beat(W("simple"), 0.8)
-    pose(W("work", 2) - 0.12, "FIST PUMP"); head(W("work", 2) - 0.12, "DISGUSTED"); beat(W("work", 2), 0.9); beat(W("harder", 2), 1.0)
-    pose(W("spend") - 0.12, "PALM OUT STOP"); beat(W("spend"), 0.8); beat(W("less", 2), 0.9)
-    pose(W("stop") - 0.12, "FRUSTRATED"); beat(W("stop"), 1.1); beat(W("complaining"), 0.8)
-    pose(W("complaining", 1, "e") + 0.5, "ARMS DOWN"); head(W("complaining", 1, "e") + 0.5, "NEUTRAL")
-    pose(W("anyway") - 0.2, "PHONE HOLD"); head(W("anyway") - 0.2, "RAISED BROW")
-    pose(W("i'd") - 0.15, "PRESENT"); head(W("i'd") - 0.15, "SMILE")
-    pose(W("yacht's") - 0.2, "POINT LEFT"); beat(W("yacht's"), 0.6)
-    pose(W("waiting", 1, "e") + 0.25, "WAVE"); head(W("waiting", 1, "e") + 0.25, "HAPPY")
-    return sorted(P), sorted(H), sorted(B)
+    def chop(t, s=1.0): CH.append((t, s)); B.append((t, 0.6 * s))
+    def jab(t, s=1.0): JAB.append((t, s)); B.append((t, 0.5 * s))
+    # --- at the desk
+    pose(0.0, "ARMS DOWN"); head(0.0, "NEUTRAL")
+    pose(0.55, "ADJUST TIE")                                               # jacket and tie, calmly
+    pose(W("co") - 0.2, "HAND ON HIP"); head(W("co") - 0.2, "SMILE")         # proud posture
+    pose(W("and") - 0.15, "ARMS DOWN"); head(W("and") - 0.15, "NEUTRAL")     # completely serious
+    # --- walks across; "Britain is going backwards" (chop)
+    pose(T_STOP1 + 0.05, "ARMS DOWN"); head(T_STOP1 + 0.05, "DISGUSTED")
+    pose(W("going") - 0.12, "PALM OUT STOP"); chop(W("backwards") + 0.04, 1.0)
+    pose(W("it") - 0.1, "ARMS CROSSED"); head(W("it") - 0.1, "RAISED BROW"); beat(W("is", 2), 0.4)
+    pose(W("somebody") - 0.12, "TALK RIGHT"); head(W("somebody") - 0.12, "NEUTRAL"); beat(W("say"), 0.5)
+    # --- paces, counting: thumb (1), thumb + index (2), three fingers (3)
+    pose(W("too") - 0.15, "THUMBS UP"); head(W("too") - 0.15, "DISGUSTED"); beat(W("benefits"), 0.5)
+    pose(W("too", 2) - 0.15, "FINGER UP"); beat(W("immigration"), 0.5)
+    pose(W("too", 3) - 0.15, "OK SIGN"); beat(W("spending"), 0.6)
+    pose(W("you") - 0.15, "CALM DOWN"); head(W("you") - 0.15, "NEUTRAL"); beat(W("cannot"), 0.8)
+    pose(W("that", 1, "e") + 0.15, "ARMS DOWN")
+    # --- the window (profile rig handles the arm); turns back
+    head(T_BACK_TO_CAM, "NEUTRAL"); pose(T_BACK_TO_CAM, "ARMS DOWN")
+    pose(W("ordinary") - 0.2, "ADJUST TIE")                                 # straightens his own suit
+    pose(W("tighten") - 0.2, "HAND ON HIP"); head(W("tighten") - 0.2, "RAISED BROW")   # tugs his belt on "belts"
+    pose(W("work") - 0.2, "REACH FORWARD"); head(W("work") - 0.2, "NEUTRAL"); jab(W("harder"), 1.0)
+    pose(W("expect") - 0.12, "PALM OUT STOP"); chop(W("less") + 0.03, 1.0)
+    pose(W("less", 1, "e") + 0.2, "ARMS DOWN")
+    pose(W("obviously") - 0.12, "PALM UP"); head(W("obviously") - 0.12, "RAISED BROW")   # small shrug
+    pose(W("i", 2) - 0.1, "ARMS DOWN"); head(W("moved") - 0.1, "NEUTRAL")
+    pose(W("but") - 0.12, "ARMS CROSSED"); head(W("but") - 0.12, "RAISED BROW")
+    pose(W("sensible") - 0.2, "FINGER UP"); head(W("that", 2) - 0.1, "SMILE"); beat(W("sensible"), 0.6)
+    head(W("financial") - 0.1, "RAISED BROW"); beat(W("decision"), 0.4)
+    # --- walks back along the desk, one gesture per item
+    pose(T_LEAVE_WIN + 0.1, "ARMS DOWN"); head(T_LEAVE_WIN + 0.1, "NEUTRAL")
+    pose(W("sacrifice") - 0.15, "FINGER UP"); beat(W("sacrifice"), 0.5)
+    pose(W("difficult") - 0.12, "EXPLAINING 1"); beat(W("decisions"), 0.5)
+    pose(W("cuts") - 0.3, "PALM OUT STOP"); chop(W("cuts") + 0.03, 1.1)
+    pose(W("efficiency") - 0.15, "OK SIGN"); beat(W("efficiency"), 0.5)
+    # --- sits, crosses a leg: straight-faced
+    pose(T_SIT + 0.1, "HAND ON HIP"); head(T_SIT, "NEUTRAL")
+    head(W("absolutely") - 0.1, "RAISED BROW"); beat(W("absolutely"), 0.5)
+    # --- stands: three strong beats
+    pose(T_STAND + 0.2, "PALM OUT STOP"); head(T_STAND + 0.2, "NEUTRAL")
+    chop(W("factories") + 0.04, 1.1); chop(W("ships") + 0.04, 1.1)
+    pose(W("industry") - 0.12, "CALM DOWN"); beat(W("industry") + 0.05, 1.1)
+    # --- paces again, a little more animated
+    pose(W("now") - 0.15, "TALK LEFT"); head(W("now") - 0.15, "DISGUSTED"); beat(W("seem"), 0.4)
+    pose(W("paperwork") - 0.15, "EXPLAINING 2"); beat(W("paperwork"), 0.7)
+    pose(W("benefit") - 0.12, "THUMBS DOWN"); beat(W("claims"), 0.7)
+    pose(W("and", 4) - 0.12, "PRESENT"); head(W("and", 4) - 0.12, "RAISED BROW")
+    pose(W("what's") - 0.15, "WHAT"); beat(W("solution"), 0.4)
+    pose(W("solution", 1, "e") + 0.2, "HAND ON CHIN"); head(W("solution", 1, "e") + 0.2, "THINKING")
+    # --- four points at the camera
+    pose(W("simple") - 0.22, "REACH FORWARD"); head(W("simple") - 0.22, "NEUTRAL")
+    jab(W("simple") + 0.02); jab(W("work", 2) + 0.02); jab(W("spend") + 0.02); jab(W("stop") + 0.02, 1.15)
+    head(W("stop") - 0.1, "DISGUSTED")
+    pose(W("complaining", 1, "e") + 0.35, "ARMS DOWN"); head(W("complaining", 1, "e") + 0.35, "NEUTRAL")
+    # --- the watch; "the yacht's waiting"; phone
+    pose(W("anyway") - 0.3, "WATCH")
+    pose(W("i'd") - 0.15, "ARMS DOWN")
+    head(W("the", 2) - 0.1, "SMILE")
+    head(T_LOOK_OUT, "NEUTRAL"); pose(T_LOOK_OUT, "ARMS DOWN")
+    pose(T_LOOK_OUT + 1.45, "PHONE HOLD")
+    return sorted(P), sorted(H), sorted(B), sorted(CH), sorted(JAB)
 
-POSES, HEADS, BEATS = cues()
+POSES, HEADS, BEATS, CHOPS, JABS = cues()
+WATCH_LOOK = (W("anyway") - 0.2, W("i'd") - 0.2)       # looks down at the watch
+SHRUG = W("obviously") + 0.05
+TUG = W("belts") + 0.05
+LEG_CROSS = W("sacrifices") - 0.25
+PICKUP = T_LOOK_OUT + 1.2                              # reaches down to the desk for the phone
 
 def at(lst, t, default):
     cur = default
@@ -106,8 +185,7 @@ def at(lst, t, default):
         else: break
     return cur
 
-# ------------------------------------------------------------------ phrases: inside one, a closed mouth is the sheet's
-# REST mouth; in the silences between phrases the head drawing keeps its own mouth
+# ------------------------------------------------------------------ lip sync: closed mouth inside a phrase
 PHRASES = []
 for w in WORDS:
     if PHRASES and w["s"] - PHRASES[-1][1] < 0.32: PHRASES[-1][1] = w["e"]
@@ -119,7 +197,7 @@ def viseme(i):
     if v != "REST": return v
     return "REST" if any(a - 0.05 <= t <= b + 0.08 for a, b in PHRASES) else None
 
-# ------------------------------------------------------------------ solvers
+# ------------------------------------------------------------------ curves
 def lp(x, sec):
     a = 1 - math.exp(-1 / (FPS * sec)); y = np.zeros_like(x); s = x[0]
     for i, v in enumerate(x): s += a * (v - s); y[i] = s
@@ -136,77 +214,110 @@ def spring(target, freq=2.2, zeta=0.6, sub=6):
 def beat_curve(t, tb, tau=0.08):
     u = t - (tb - tau)
     if u < -0.16: return 0.0
-    if u < 0: return -0.3 * math.sin(math.pi * (u + 0.16) / 0.16)        # small lift before the hit
+    if u < 0: return -0.3 * math.sin(math.pi * (u + 0.16) / 0.16)
     return (u / tau) * math.exp(1 - u / tau)
+
+def bump(t, t0, dur, rise=0.3):
+    """0 -> 1 -> 0 over dur, with eased rise and fall"""
+    u = (t - t0) / dur
+    if u <= 0 or u >= 1: return 0.0
+    return smooth(u / rise) if u < rise else smooth((1 - u) / (1 - rise))
+
+def chop_dy(t):
+    """moving hand: small lift, fast strike down (rig px), settles part-way back"""
+    d = 0.0
+    for tc, s in CHOPS:
+        u = t - tc
+        if -0.22 < u < 0: d += -14 * s * math.sin(math.pi * (u + 0.22) / 0.22 * 0.5)
+        elif 0 <= u < 0.9: d += s * (52 * math.exp(-u / 0.10) * (1 if u > 0.035 else u / 0.035) + 10 * (1 - u / 0.9))
+    return d
+
+def jab_s(t):
+    d = 0.0
+    for tj, s in JABS:
+        u = t - tj
+        if -0.12 < u < 0: d += -0.04 * s * (u + 0.12) / 0.12
+        elif 0 <= u < 0.6: d += 0.17 * s * (min(u / 0.05, 1.0)) * math.exp(-max(u - 0.05, 0) / 0.16)
+    return d
+
+def seat_at(t):
+    """0 standing .. 1 seated"""
+    if t < T_SIT or t > T_STAND + 0.6: return 0.0
+    if t < T_SIT + 0.55: return smooth((t - T_SIT) / 0.55)
+    if t > T_STAND: return 1 - smooth((t - T_STAND) / 0.55)
+    return 1.0
 
 def channels(audio_env):
     t = np.arange(N) / FPS
-    # beats: body dip (+down) and a head nod
     dip = np.zeros(N)
     for tb, s in BEATS:
         m = (t > tb - 0.3) & (t < tb + 0.7)
         dip[m] += np.array([beat_curve(x, tb) for x in t[m]]) * s
-    # pose swaps: a quick settle 'pop' (arrives slightly high, drops into place)
     pop = np.zeros(N)
     for tp, _ in POSES:
-        m = (t >= tp) & (t < tp + 0.4)
+        m = (t >= tp) & (t < tp + 0.35)
         u = t[m] - tp
-        pop[m] += -np.exp(-u / 0.07) * np.cos(u * 30) * 1.0
-    # lean: spring toward a per-pose lean target (open gestures lean back, chops lean in)
-    LEAN = {"OPEN ARMS": -2.0, "WHAT": -2.2, "PALM UP": -1.5, "BOTH HANDS OUT": -1.2, "PRESENT": -1.0,
-            "FIST PUMP": 1.8, "FRUSTRATED": 1.5, "PALM OUT STOP": 1.2, "REACH FORWARD": 2.0, "THUMBS DOWN": 0.8,
-            "FIST": 1.2, "HAND ON HIP": -0.8, "ARMS CROSSED": -1.0, "POINT LEFT": 1.2, "POINT RIGHT": -1.2}
+        pop[m] += -np.exp(-u / 0.07) * np.cos(u * 30) * 0.5
+    LEAN = {"PALM UP": -1.0, "PRESENT": -0.8, "WHAT": -1.4, "HAND ON HIP": -0.8, "ARMS CROSSED": -1.0,
+            "REACH FORWARD": 1.8, "PALM OUT STOP": 1.2, "CALM DOWN": 0.8, "THUMBS DOWN": 0.6, "FINGER UP": 0.4}
     lean_t = np.array([LEAN.get(at(POSES, x, "ARMS DOWN"), 0.0) for x in t])
+    lean_t += np.array([-2.4 * seat_at(x) for x in t])                # leans back in the chair
     lean = spring(lean_t, 1.4, 0.75)
-    # audio-driven nods on speech onsets
     e = np.clip((20 * np.log10(audio_env + 1e-10) + 45) / 37, 0, 1)
     nod = np.clip(lp(e, 0.09) - lp(e, 0.55), 0, None); nod = lp(nod, 0.06); nod /= max(nod.max(), 1e-6)
     return dict(dip=dip, pop=pop, lean=lean, nod=nod)
 
-SHAKES = [W("backwards"), W("cannot"), W("different"), W("complaining")]
-TILTS = [(W("solution") - 0.8, 2.2, 1), (W("obviously"), 1.6, -1), (W("preferably"), 2.5, 1), (W("anyway"), 1.4, -1)]
+SHAKES = [W("cannot")]
+TILTS = [(W("obviously") - 0.1, 1.4, 1), (W("sensible") - 0.2, 2.0, -1), (W("solution") - 0.6, 1.6, 1)]
 
 def head_motion(i, ch):
-    """head rotation (deg, about the base of the neck) and vertical offset (rig px)"""
+    """understated: head rotation (deg, about the base of the neck) and vertical offset (rig px)"""
     t = i / FPS
-    th = 1.0 * math.sin(2 * math.pi * t / 5.1) + 0.45 * math.sin(2 * math.pi * t / 2.3 + 1.0)
-    dy = 3 * math.sin(2 * math.pi * t / 4.0)
-    th += 1.4 * ch["nod"][i] * (1 if int(t / 2.7) % 2 else -1)
-    dy += 14 * ch["nod"][i] + 10 * ch["dip"][i]
-    th += 1.5 * ch["dip"][i] * (1 if int(t / 3.3) % 2 else -1)
+    th = 0.7 * math.sin(2 * math.pi * t / 5.1) + 0.3 * math.sin(2 * math.pi * t / 2.3 + 1.0)
+    dy = 2.5 * math.sin(2 * math.pi * t / 4.0)
+    th += 0.9 * ch["nod"][i] * (1 if int(t / 2.7) % 2 else -1)
+    dy += 9 * ch["nod"][i] + 7 * ch["dip"][i]
+    th += 1.0 * ch["dip"][i] * (1 if int(t / 3.3) % 2 else -1)
     for s in SHAKES:
         d = t - s
-        if 0 <= d < 0.5: th += 2.4 * math.sin(2 * math.pi * 4.2 * d) * (1 - d / 0.5)
+        if 0 <= d < 0.5: th += 1.8 * math.sin(2 * math.pi * 4.0 * d) * (1 - d / 0.5)
     for s, dur, sg in TILTS:
         d = t - s
-        if 0 < d < dur: th += sg * 3.2 * math.sin(math.pi * min(d / 0.4, 1) / 2) * min(1, (dur - d) / 0.4)
-    return th, dy
+        if 0 < d < dur: th += sg * 2.4 * math.sin(math.pi * min(d / 0.4, 1) / 2) * min(1, (dur - d) / 0.4)
+    look = bump(t, WATCH_LOOK[0], WATCH_LOOK[1] - WATCH_LOOK[0], 0.2)
+    dy += 16 * look; th += 3.0 * look                                    # looks down at the watch
+    dy -= 7 * bump(t, W("co") - 0.2, W("united", 1, "e") - W("co") + 0.6, 0.25)   # chin up, proudly
+    return th, dy, look
 
-def walk_state(t):
-    """(mode, leg drawing, world x, bob rig px, lean deg) or None when he's in the front rig / off stage."""
-    if t < WALK_START: return ("off",)
-    if t < WALK_END:
-        u = (t - WALK_START) / (WALK_END - WALK_START)
-        u = u * u * (3 - 2 * u) * 0.25 + u * 0.75                    # eases in and out a little
-        x = ENTER_X + (MARK_X - ENTER_X) * u
-        f = int((t - WALK_START) * FPS)
-        leg = ["WALK 1", "WALK 2", "WALK 3", "WALK 4"][(f // 6) % 4]
-        bob = -10 * abs(math.sin(math.pi * (f % 12) / 12))             # rises on the passing positions
-        return ("in", leg, x, bob, 1.5)
-    if t < TURN_AT - 0.12: return ("in", "STANDING", MARK_X, 0.0, 0.0)
-    if t < TURN_AT: return ("in", "TURN LEFT", MARK_X, -4.0, 0.0)
-    if t < RUN_TURN: return None
-    if t < RUN_START: return ("out", "TURN RIGHT", MARK_X, -4.0, 2.0)
-    if t < RUN_END:
-        u = (t - RUN_START) / (RUN_END - RUN_START)
-        x = MARK_X + (EXIT_X - MARK_X) * (u ** 1.4)
-        f = int((t - RUN_START) * FPS)
-        leg = ["RUN 1", "RUN 2", "RUN 3"][(f // 3) % 3]
-        bob = -16 * abs(math.sin(math.pi * (f % 9) / 9))
-        return ("out", leg, x, bob, 7.0)
-    return ("off",)
+def body_motion(t, ch, i):
+    """extra torso motion in rig px: (dy, x-scale, y-scale)"""
+    dy = 7 * ch["dip"][i] + 6 * ch["pop"][i]
+    dy += 14 * bump(t, TUG - 0.05, 0.4, 0.35)                            # tugs his belt
+    dy -= 16 * bump(t, SHRUG, 0.55, 0.4)                                 # small shrug
+    dy += 60 * bump(t, PICKUP, 0.6, 0.45)                                # reaches down for the phone
+    dy -= 10 * bump(t, LEG_CROSS, 0.5, 0.4)                              # shifts in the seat to cross a leg
+    proud = bump(t, W("co") - 0.2, W("united", 1, "e") - W("co") + 0.6, 0.25)
+    return dy, 1.0 + 0.012 * proud, 1.0 + 0.025 * proud
+
+def profile_arm(t):
+    """window gag: arm swings up to present the view, is held, comes down"""
+    up0, up1 = W("very") - 0.25, W("very") + 0.2
+    dn0 = W("monaco", 1, "e") + 1.05
+    if t < up0 or t > dn0 + 0.5: return 0.0
+    if t < up1:
+        u = (t - up0) / (up1 - up0)
+        return -94 * (smooth(u) + 0.08 * math.sin(math.pi * u))
+    if t < dn0: return -94 + 1.2 * math.sin(2 * math.pi * (t - up1) / 2.2)
+    return -94 * (1 - smooth((t - dn0) / 0.5))
+
+def pacing_legs(t, b):
+    """front rig walking: alternate leg lifts + body bob, for 'front' blocks that move"""
+    if b["kind"] != "front" or b["a"] == b["b"] or b["pace"] <= 0: return (0.0, 0.0), 0.0
+    ph = 2 * math.pi * (t - b["t0"]) / (2 * b["pace"])
+    fade = min(1.0, (t - b["t0"]) / 0.25, (b["t1"] - t) / 0.25)
+    s = math.sin(ph)
+    return (22 * max(0, s) * fade, 22 * max(0, -s) * fade), -9 * abs(s) * fade
 
 if __name__ == "__main__":
-    print(len(POSES), "pose cues,", len(HEADS), "head cues,", len(BEATS), "beats,", len(PHRASES), "phrases")
-    used = sorted(set(p for _, p in POSES)); print("torsos used:", len(used), used)
-    print("heads used:", sorted(set(h for _, h in HEADS)))
+    for b in BLOCK: print(f"{b['t0']:6.2f}-{b['t1']:6.2f} {b['kind']:8s} {b.get('name', b.get('d', ''))}")
+    print(len(POSES), "poses", len(HEADS), "heads", len(BEATS), "beats", len(CHOPS), "chops", len(JABS), "jabs")

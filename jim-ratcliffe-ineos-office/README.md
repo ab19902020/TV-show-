@@ -1,51 +1,71 @@
 # Jim Ratcliffe: "Britain needs to tighten its belt" (INEOS office, Monaco)
 
-**Final video:** [`jim_ratcliffe_ineos_office.mp4`](jim_ratcliffe_ineos_office.mp4) (1920×1080, 30 fps, ~88 s, with the voice track)
+**Final video:** [`jim_ratcliffe_ineos_office.mp4`](jim_ratcliffe_ineos_office.mp4) (1920×1080, 30 fps, ~93 s, with the voice track)
 
-Jim walks into his INEOS office overlooking Monaco harbour, stops behind the desk, turns to camera and delivers
-the piece, then hurries off to his yacht. He is built entirely from the two character sheets: the turnaround
-bodies, 12 head expressions, 28 of the 30 arm poses, the walk/turn/run leg poses and the 19 speaking mouth shapes.
+A dry, straight-faced monologue in his INEOS office overlooking Monaco harbour. The comedy comes from the gap
+between what he says, where he is saying it, and what he does. The acting is restrained businessman: stern and
+raised-brow faces, small beats, understated head movement and natural blinks. He moves around the whole office:
+behind the desk, to the windows, into the executive chair, and out of the door.
+
+Everything is built from the two character sheets:
+- the turnaround views (front, 3/4, profile, back)
+- the head expressions and the arm poses
+- the WALK leg drawings
+- the 19 front and 4 side-view mouth shapes
+- two drawings made from those parts: a raised-finger hand swapped onto the OK-sign arm, and a gold watch on the
+  wrist-across pose
 
 ## What's in the scene
 
-| Time | Line | Face | Arm pose / body |
+| Time | Line | Face | Body |
 |---|---|---|---|
-| 0.5 | *(walks in from the right, behind the side table)* | 3/4 left | turnaround body over WALK 1-4 legs |
-| 3.0 | *(stops, turns to camera, straightens his tie)* | neutral → smile | TURN LEFT legs, ADJUST TIE |
-| 4.0 | "Hi, I'm Jim Ratcliffe, co-owner of Manchester United…" | smile → raised brow | WAVE, THUMBS UP |
-| 9.2 | "Britain is going backwards. It is." | disgusted → raised brow | THUMBS DOWN, ARMS CROSSED, head shake |
-| 11.8 | "And somebody has to say it." | raised brow | REACH FORWARD |
-| 13.1 | "We've got too many people on benefits, too much immigration, too much government spending." | disgusted | EXPLAINING 1 → EXPLAINING 2 → BOTH HANDS OUT → FRUSTRATED |
-| 18.4 | "You simply cannot run a country like that." | sad | PALM OUT STOP, PALM UP (close-up) |
-| 21.4 | "I can see it very clearly from here in Monaco." | smile | PRESENT → OPEN ARMS at the view (wide) |
-| 26.2 | "Britain needs to learn to live within its means." | raised brow | CALM DOWN |
-| 30.3 | "Ordinary people need to tighten their belts, work harder, expect less." | disgusted | TALK LEFT → HAND ON HIP → FIST PUMP → PALM OUT STOP |
-| 37.6 | "Obviously, I moved to Monaco." | worried → smile | PALM UP, POINT LEFT at the harbour |
-| 41.6 | "But that's different. That was a sensible financial decision." | raised brow → smile | PALM OUT STOP, OK SIGN (close-up) |
-| 47.0 | "What Britain needs is sacrifice, difficult decisions, cuts, efficiency…" | disgusted → angry → raised brow | FIST, EXPLAINING 1, FIST PUMP (punch-in on "cuts"), OK SIGN |
-| 53.9 | "…preferably sacrifices made by somebody else." | smile | PALM UP, POINT RIGHT off to someone else |
-| 57.9 | "People say Britain used to build things. Absolutely." | neutral → raised brow | TALK RIGHT, THUMBS UP |
-| 61.5 | "Factories, ships, industry." | sad | EXPLAINING 2 → BOTH HANDS OUT → OPEN ARMS |
-| 64.6 | "Now we seem to build paperwork and benefit claims." | disgusted | TALK LEFT, HOLDING PAPER, THUMBS DOWN |
-| 70.4 | "And people ask me, 'Jim, what's the solution?'" | raised brow → confused → thinking | PRESENT, WHAT, HAND ON CHIN |
-| 73.9 | "Simple. Work harder, spend less, stop complaining." | smile → disgusted | REACH FORWARD, FIST PUMP, PALM OUT STOP, FRUSTRATED (three punch-ins) |
-| 79.5 | "Anyway, I'd say more, but the yacht's waiting." | raised brow → smile | PHONE HOLD, PRESENT, POINT LEFT at the yachts |
-| 83.7 | *(waves goodbye, turns and scurries off right)* | happy | WAVE, then the profile body over RUN 1-3 legs |
+| 0.0 | *(stands behind the desk, facing camera)* | neutral | adjusts his jacket and tie (ADJUST TIE) |
+| 1.3 | "Hi, I'm Jim Ratcliffe…" | neutral | still at the tie, calmly |
+| 2.7 | "…co-owner of Manchester United…" | smug | straightens up proudly: chin up, chest out, hands on hips |
+| 4.6 | "…and a Glazer ball licker." | completely serious | arms down, dead still; slow push-in |
+| 6.8 | *(pause, then strolls across the office)* | 3/4 view | turnaround body over WALK 1-4 legs (wide shot) |
+| 8.3 | "Britain is going backwards. It is." | disgusted → raised brow | stops, turns to camera, one-hand downward chop; arms folded on "It is." |
+| 12.2 | "We've got too many people on benefits, too much immigration, too much government spending." | disgusted | paces slowly, counting on his fingers: thumb, thumb + index, three fingers |
+| 17.5 | "You simply cannot run a country like that." | neutral | palms down, small head shake (close-up) |
+| 19.8 | *(walks to the windows)* | 3/4 view | WALK legs, visible on the marble in front of the glass |
+| 21.7 | "I can see it VERY clearly from here in Monaco." | side view | turns side-on and extends his arm at the skyline and yachts, held after the line (wide) |
+| 26.5 | "Britain needs to learn to live within its means." | side view | lectures the view, lip-synced with the side-view mouths |
+| 30.6 | "Ordinary people need to tighten their belts…" | neutral → raised brow | turns back, straightens his jacket, hands to the belt and tugs it |
+| 33.9 | "…work harder, expect less." | neutral | a point jabbed at camera, then a chop |
+| 37.0 | "Obviously… I moved to Monaco." | raised brow | glances back over his shoulder at Monaco, small shrug |
+| 41.9 | "But that's different. That was a SENSIBLE financial decision." | raised brow → smug | arms folded, then one finger raised (close-up) |
+| 46.3 | "What Britain needs is sacrifice, difficult decisions, cuts, efficiency…" | neutral | walks back along the desk, one gesture per word: finger, weighing hands, chop, OK sign |
+| 54.1 | "…preferably sacrifices made by somebody else." | straight-faced | sits back in the executive chair, crosses a leg |
+| 58.1 | "People say Britain used to build things. Absolutely." | neutral → raised brow | seated |
+| 61.7 | "Factories. Ships. Industry." | neutral | stands; three strong hand beats with punch-ins |
+| 64.8 | "Now we seem to build paperwork and benefit claims." | disgusted | paces in front of the window, a little more animated |
+| 70.6 | "And people ask me, 'Jim, what's the solution?'" | raised brow → thinking | palm up, 'what', hand on chin |
+| 74.1 | "Simple. Work harder. Spend less. Stop complaining." | neutral → disgusted | points straight at camera on each one (four punch-ins) |
+| 79.7 | "Anyway…" | neutral | checks his gold watch (lids lowered, head down) |
+| 81.0 | "I'd say more — but the yacht's waiting." | smug |  |
+| 83.8 | *(turns to look out at the yachts, picks up his phone, walks out)* | back view → 3/4 | BACK turnaround, PHONE HOLD, WALK legs out past the side table |
+| 90.3 | *(the empty office for 2 s, fade out)* |  |  |
 
 The four uploaded clips were in reverse order; played back to front they make the monologue above
-(`src/audio1-4.mp3` are stored in speaking order).
+(`src/audio1-4.mp3` are stored in speaking order). Pauses are inserted where the direction needs time
+(`visemes.py` `SEGMENTS`): a dead-pan beat after "Glazer ball licker" to start walking, the walk to the windows
+before "I can see it", and the exit plus 2 s of empty office at the end.
 
 ## Staging (so nothing overlaps wrongly)
 
-- Jim stands on the floor between the desk and the windows (feet at y≈870 in the 1672×941 background), so the
-  **desk, everything on it, the glass side table, the book stack, the flowers and both foreground armchairs are
-  in front of him**, and the executive chair, windows, flag and back armchair are behind him.
-- `occlusion.py` builds that foreground matte: hand-traced polygons refined with GrabCut in a thin band, so the
-  edge snaps to the artwork's own black outlines.
-- On the way in he passes in front of the back armchair and behind the side table and flowers. His legs show only
-  in the gap between the desk and the side table, with a soft contact shadow on the rug.
-- He is reflected faintly in the glossy black desk top, lit by a warm rim light from the window behind him, and
-  the set behind him (and the desk in front) softens in close shots.
+- **Places** (`perf.py`): behind the desk, across the office, the marble floor in front of the windows, the
+  executive chair and the exit past the side table. Each place sets his position and depth. Further back means a
+  higher floor line and a smaller figure, so he is smaller at the windows and larger in the big chair.
+- **In front of him:** the desk, everything on it, the glass side table, the book stack, the flowers and both
+  foreground armchairs. `occlusion.py` builds that matte from hand-traced polygons refined with GrabCut, so its
+  edge snaps to the artwork's own outlines.
+- **Behind him:** the executive chair, the windows, the flag and the back armchair.
+- **Legs:** they show where the floor is open, in front of the windows and in the lane between the desk and the
+  side table, with a soft contact shadow.
+- **Sitting:** he sinks behind the desk into the chair with the chair back behind him, so the desk hides the
+  crossed leg.
+- **Finish:** a faint reflection in the glossy desk top, a warm rim light from the window, and depth of field on
+  the set in close shots.
 
 ## How it's made (`make_scene.sh` runs the whole pipeline)
 
@@ -82,20 +102,32 @@ GitHub releases or ships inside its PyPI wheel.
    Each frame's mouth is pasted with a feathered mask and colour-matched on a ring of beard.
 8. **Blinks** (`blink.py`): the sheet has no closed-eye drawings, so a lid sampled from the skin above each eye
    closes over it every 2.4-5.2 s.
-9. **Walk and run** (`walker.py`):
-   - The walk-in uses the 3/4-left turnaround body, cut at the jacket hem with its hands kept, over mirrored
-     WALK 1-4 legs.
-   - The exit uses the right-profile body over RUN 1-3 legs, leaning into it.
-   - The legs are planted on the floor and the body bobs over them.
-10. **Performance** (`perf.py`): a cue sheet keyed to the spoken words drives everything, e.g.
-    `pose(W("tighten") - 0.18, "HAND ON HIP")` and `beat(W("belts"), 0.8)`.
-    - Hard drawing swaps, each with a small settle "pop".
-    - Emphasis beats (a dip and a nod).
-    - A spring-damped lean per pose.
-    - Head nods driven by the speech's loudness, head shakes, question tilts, idle sway and breathing.
-11. **Camera and finish** (`direction.py`, `render.py`):
-    - TV-style shots cut on the pauses, with a headroom rule and handheld drift.
-    - Snap punch-ins on "cuts" and on "work harder, spend less, stop complaining".
+9. **Walking and turning** (`walker.py`):
+   - Walks use a 3/4 turnaround body, cut at the jacket hem with its hands kept, over the WALK 1-4 legs. The legs
+     are mirrored when he walks left.
+   - Turns step through the turnaround drawings (front → 3/4 → profile), 2-3 frames each.
+   - He looks out at the yachts in the BACK view.
+   - When he paces while talking, the front rig's legs lift alternately and his body bobs, so he can keep gesturing
+     and lip-syncing as he goes.
+10. **The window gag** (`profile.py`):
+    - The profile body is mirrored to face the harbour.
+    - Its near arm is cut out and rotated at the shoulder, with a shoulder cap and the torso painted in behind it.
+    - The mouth sheet's four side-view heads (closed / A / O / U) are placed by an NCC search and lip-synced, with
+      a drawn neck down to the collar.
+11. **Hand moves and extra drawings** (`extras.py`):
+    - The chop and camera-point hands are cut free and animated: the chop drops and foreshortens toward camera;
+      the point jabs at the lens. The chest behind a moving hand comes from the arms-down drawing.
+    - The raised finger and the watch are composited once.
+12. **Performance** (`perf.py`): the blocking plus a cue sheet keyed to the spoken words drives everything, e.g.
+    `pose(W("tighten") - 0.2, "HAND ON HIP")`, `chop(W("less") + 0.03)` and `jab(W("simple") + 0.02)`.
+    - Hard drawing swaps, each with a small settle.
+    - Emphasis beats, a spring-damped lean per pose, and the belt tug, shrug, leg-cross shift and phone pickup.
+    - Loudness-driven nods, question tilts, breathing and blinks. When he looks down at the watch, his lids lower.
+13. **Camera and finish** (`direction.py`, `render.py`):
+    - Wides for every walk, so his movement is always shown. Medium shots for the talking.
+    - Slow pushes on the dead-pan lines. Punch-ins on "Factories. Ships. Industry." and on the four points at
+      camera.
+    - A headroom rule and handheld drift.
     - Every layer is warped straight from its source pixels to the screen, so nothing is resampled twice.
     - Grade: bloom, vignette and grain.
 

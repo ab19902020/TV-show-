@@ -1,17 +1,25 @@
-"""Walking / running rig: a turnaround body (cut at the jacket hem, hands kept) over swappable leg drawings.
-Frame = that turnaround drawing's own 4x crop px; the legs are planted on its floor line."""
-import numpy as np, cv2, pickle
+"""Walking rig and turnaround views.
+Walker: a 3/4 turnaround body (cut at the jacket hem, hands kept) over the sheet's WALK leg drawings; the legs
+are planted on the body's floor line and the body bobs over them.  'L' walks screen-left (3/4 LEFT body,
+mirrored legs), 'R' walks screen-right (3/4 RIGHT body).
+View: a whole turnaround drawing, for the in-between frames of a turn (and the back view at the window)."""
+import numpy as np, cv2
 from rig import graded_premul, classes, K, to3
+
+def floor_of(img):
+    return float(np.where((img[..., 3] > 128).any(1))[0].max()) - 4
+
+def centre_of(img, y=1000):
+    xs = np.where(img[y, :, 3] > 128)[0]
+    return float((xs.min() + xs.max()) / 2)
 
 class Walker:
     def __init__(self, P, view, legs, mirror_legs, cut_y=922, leg_scale=1.52):
         body = P["turn"][view][0]
         H, W = body.shape[:2]
-        a = body[..., 3] > 128
-        self.floor = float(np.where(a.any(1))[0].max()) - 4
+        self.floor = floor_of(body)
         yy, xx = np.mgrid[0:H, 0:W]
         red, skin, white, grey = classes(body)
-        # hands (+ cuffs) hang below the hem: keep them, drop the figure's own legs
         hands = cv2.dilate((skin & (yy > cut_y - 120) & (yy < 1060)).astype(np.uint8), K(9)).astype(bool)
         n, lab, st, _ = cv2.connectedComponentsWithStats(hands.astype(np.uint8))
         hk = np.zeros_like(hands)
@@ -21,9 +29,10 @@ class Walker:
         keep = np.maximum(keep, cv2.GaussianBlur(hk.astype(np.float32), (0, 0), 2) * (yy < 1060))
         up = body.copy(); up[..., 3] = (up[..., 3] * keep).astype(np.uint8)
         self.upper = graded_premul(up)
-        # hip centre: middle of the legs just below the hem
+        a = body[..., 3] > 128
         row = np.where(a[cut_y + 60] & ~hands[cut_y + 60])[0]
         self.hip_x = float((row.min() + row.max()) / 2)
+        self.cx = self.hip_x
         self.legs = {}
         for ln in legs:
             img = P["leg"][ln][0]
@@ -33,37 +42,43 @@ class Walker:
             top_row = np.where(la[ys.min() + 8])[0]
             tcx = (top_row.min() + top_row.max()) / 2
             s = leg_scale
-            # bottom of the soles on the floor line, top centre under the hip
             M = np.array([[s, 0, self.hip_x - s * tcx], [0, s, self.floor - s * ys.max()]], np.float64)
             self.legs[ln] = (graded_premul(img), M)
-        self.body_x = self.hip_x
 
     def layers(self, leg, bob=0.0, lean=0.0):
-        """legs planted; the upper body bobs (rig px, +down) and leans (deg) about the hips."""
         img, M = self.legs[leg]
-        hip = (self.hip_x, 900.0)
-        R = to3(cv2.getRotationMatrix2D(hip, lean, 1.0))
+        R = to3(cv2.getRotationMatrix2D((self.hip_x, 900.0), lean, 1.0))
         T = np.array([[1, 0, 0], [0, 1, bob], [0, 0, 1]], np.float64)
         return [(img, to3(M)), (self.upper, T @ R)]
 
+class View:
+    def __init__(self, P, view, mirror=False):
+        img = P["turn"][view][0]
+        if mirror: img = img[:, ::-1].copy()
+        self.img = graded_premul(img)
+        self.floor = floor_of(img); self.cx = centre_of(img)
+
+    def layers(self, bob=0.0):
+        return [(self.img, np.array([[1, 0, 0], [0, 1, bob], [0, 0, 1]], np.float64))]
+
+WALK = ["WALK 1", "WALK 2", "WALK 3", "WALK 4", "STANDING"]
+
 def build(P):
-    return {"in": Walker(P, "3/4 LEFT", ["WALK 1", "WALK 2", "WALK 3", "WALK 4", "STANDING", "TURN LEFT"], True),
-            "out": Walker(P, "RIGHT", ["RUN 1", "RUN 2", "RUN 3", "TURN RIGHT", "STANDING"], False)}
+    walkers = {"L": Walker(P, "3/4 LEFT", WALK, True), "R": Walker(P, "3/4 RIGHT", WALK, False)}
+    views = {n: View(P, n) for n in ("FRONT", "3/4 LEFT", "3/4 RIGHT", "BACK")}
+    views["PROFILE L"] = View(P, "LEFT", mirror=True)
+    return walkers, views
 
 if __name__ == "__main__":
+    import pickle
     from rig import render_layers
     P = pickle.load(open("parts.pkl", "rb"))
-    W = build(P)
+    W, V = build(P)
     S = "/tmp/claude-0/-home-user-TV-show-/17c2eb03-f7c3-5c18-9c9e-6908366e9c0f/scratchpad/"
     tiles = []
-    for key, legs in (("in", ["WALK 1", "WALK 2", "WALK 3", "WALK 4", "TURN LEFT"]), ("out", ["RUN 1", "RUN 2", "RUN 3", "TURN RIGHT"])):
-        w = W[key]
-        for ln in legs:
-            V = np.array([[0.4, 0, 120], [0, 0.4, 10], [0, 0, 1]], float)
-            im = render_layers(w.layers(ln), V, (420, 640))
-            img = (im[..., :3] + np.float32([150, 175, 150]) * (1 - im[..., 3:4])).astype(np.uint8)
-            cv2.line(img, (0, int(0.4 * w.floor + 10)), (420, int(0.4 * w.floor + 10)), (0, 0, 255), 1)
-            cv2.putText(img, ln, (5, 630), 0, 0.6, (0, 0, 0), 2)
-            tiles.append(img)
-    cv2.imwrite(S + "walker.png", np.hstack(tiles))
-    print("hip", W["in"].hip_x, W["out"].hip_x, "floor", W["in"].floor, W["out"].floor)
+    for key in "LR":
+        for ln in WALK[:4]:
+            Vm = np.array([[0.4, 0, 110], [0, 0.4, 10], [0, 0, 1]], float)
+            im = render_layers(W[key].layers(ln, -6), Vm, (380, 640))
+            tiles.append((im[..., :3] + np.float32([150, 175, 150]) * (1 - im[..., 3:4])).astype(np.uint8))
+    cv2.imwrite(S + "walkers.png", np.hstack(tiles))

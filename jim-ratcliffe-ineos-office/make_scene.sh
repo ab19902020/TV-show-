@@ -22,6 +22,7 @@ R=https://github.com/xinntao/Real-ESRGAN/releases/download
 python3 visemes.py
 
 # 3. cut out every part, register them into the rig, lip-sync mouth library, office occlusion matte
+#    (the profile rig, walkers and made-up drawings are built from these at render time)
 python3 cut_parts.py
 python3 register.py
 python3 mouths.py

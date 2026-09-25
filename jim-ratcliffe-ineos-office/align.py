@@ -3,7 +3,7 @@ Two passes per clip: word segmentation, then sub-word (phone) alignment of that 
 import json, re, numpy as np, librosa
 from pocketsphinx import Decoder
 
-EXTRA = {"yacht's": "Y AA T S"}          # words missing from cmudict
+EXTRA = {"yacht's": "Y AA T S", "licker": "L IH K ER"}          # words missing from cmudict
 
 def words_of(text):
     return re.sub(r"[^a-z' ]", " ", text.lower().replace("-", " ")).split()
