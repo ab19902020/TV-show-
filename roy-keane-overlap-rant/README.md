@@ -8,21 +8,21 @@ S/Z, C/D/G/K, TH, W/Q, REST).
 
 ## What's in the scene
 
-| Time | Line | Face | Shot |
+| Time | Line | Face | Body |
 |---|---|---|---|
-| 0.0 | *(looks across at a co-host, then turns to camera)* | 3/4 RIGHT → FRONT | wide push-in |
-| 1.7 | "Manchester United." | Skeptical | wide |
-| 3.6 | "It's the same rubbish every week." | Disgusted | medium |
-| 7.3 | "No urgency, no aggression, no standards." | Angry, a head shake on every "no" | close-up |
-| 12.0 | "You lose the ball and stroll back like you're walking the dog." | Skeptical | medium-wide |
-| 16.3 | "That shirt used to mean something." | Sad | slow close-up push |
-| 18.8 | "Stop pointing fingers, stop making excuses…" | Angry | medium → close-up |
-| 25.6 | "And don't give me this nonsense about confidence." | Disgusted | medium |
-| 28.3 | "You're playing for Manchester United." | Angry | close-up |
-| 30.7 | "Run, tackle, compete." | Angry | three snap punch-ins, one per word |
-| 33.4 | "Is that too much to ask?" | Confused, head tilt | medium |
-| 36.3 | "I see players losing the ball and throwing their arms up." | Disgusted | wide push |
-| 39.9 | "Get back and win it." | Angry → stare | close-up to the end |
+| 0.0 | *(listening to a co-host, turns to camera)* | 3/4 right → front | hands on desk, slight lean |
+| 1.7 | "Manchester United." | Skeptical | open hand presenting, two small beats |
+| 3.6 | "It's the same rubbish every week." | Disgusted | both-hands shrug, then a chop on "week" |
+| 7.3 | "No urgency, no aggression, no standards." | Angry | leans in, right-hand chops on each "no", both hands on "standards", head shakes |
+| 12.0 | "You lose the ball and stroll back like you're walking the dog." | Skeptical → 3/4 left | leans back, dismissive flick, limp "dog lead" hand |
+| 16.3 | "That shirt used to mean something." | Sad | hand on heart |
+| 18.8 | "Stop pointing fingers, stop making excuses…" | Angry | leans in, one hand then both, hard chops |
+| 25.6 | "And don't give me this nonsense about confidence." | Disgusted | flicks it away, open hand on "confidence" |
+| 28.3 | "You're playing for Manchester United." | Angry | chops on "Manchester" and "United" |
+| 30.7 | "Run, tackle, compete." | Shouting | right, left, both-hands chops with three camera punch-ins |
+| 33.4 | "Is that too much to ask?" | Confused | big shrug, leans back |
+| 36.3 | "I see players losing the ball and throwing their arms up." | 3/4 left → disgusted | presents, then throws both arms up |
+| 39.9 | "Get back and win it." | Angry → the stare | chops, both hands on "win", settles to the stare |
 
 Voice clip 1 starts at 1.6 s and clip 2 starts at 25.48 s, with a 0.6 s pause between them.
 
@@ -52,12 +52,29 @@ Voice clip 1 starts at 1.6 s and clip 2 starts at 25.48 s, with a 0.6 s pause be
      the whole mouth: lips, teeth, skin and soul patch, covering all of the head drawing's original mouth.
      It's feathered only inside the beard, and colour-matched on a ring of beard. The head's own mustache
      is always layered back on top, so it never changes shape between mouth shapes.
-6. **Performance and camera** (`direction.py`, `render.py`):
-   - head nods follow the loudness of the speech, with idle sway and breathing
-   - the camera uses TV-style shot cuts on pauses, with handheld drift
+6. **Body rig** (`arms.py`, `rig2.py`): the arms are cut from the front body drawing into upper arm,
+   forearm and hand for each side, each with its own pivot (shoulder, elbow, wrist).
+   - The upper arms sit behind the torso and the forearms and hands in front, so hands can come across the
+     chest.
+   - A shoulder filler piece bridges the torso and the sleeve when an arm lifts, so the shoulder line stays
+     smooth.
+   - Elbow and shoulder caps fade in as the joints bend.
+   - The torso leans from the hips, and the head rides on the torso.
+7. **Performance** (`perf.py`): a cue sheet keyed to the spoken words drives everything.
+   - Arm poses: desk, raise, high, chest, present, shrug, arms up, flick and dangle.
+   - Chop beats on stressed words: a small wind-up, then a snap down that settles.
+   - Torso lean and lean-in toward camera, plus head drawing changes.
+   - Arms follow their targets through damped springs, so every move has follow-through and overshoot
+     instead of snapping.
+   - Head nods follow the loudness of the speech and dip with each chop. There's also idle sway and
+     breathing.
+8. **Camera and finish** (`direction.py`, `render.py`):
+   - TV-style shot cuts on the pauses, with handheld drift and three snap punch-ins on "Run, tackle,
+     compete"
    - the background gets depth of field in close-ups
    - the table and mug are masked to sit in front of him
    - final grade: bloom, vignette and grain
 
-To change the acting or the edit, edit the expression and shot lists in `direction.py`, then re-run
-`make_scene.sh`.
+To change the acting, edit the cue sheet in `perf.py` (gestures are tied to words, e.g.
+`arm(W("stop") - 0.3, "R", "raise")` and `B += [(W("stop"), "R", 1.0)]`). To change the edit, edit the shot
+list in `direction.py`. Then re-run `make_scene.sh`.

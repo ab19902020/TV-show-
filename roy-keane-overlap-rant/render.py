@@ -1,14 +1,15 @@
-"""Render the Roy Keane studio scene: camera, character performance, lip sync, compositing, grade."""
+"""Render the Roy Keane studio scene with the full-body rig: camera, performance, lip sync, compositing, grade."""
 import numpy as np, cv2, json, sys, subprocess, math, random
 import direction as D
-from rig import Rig, CHAR_H
+from rig2 import Rig2, PAD
+import perf
 NECK_X = 600
 FPS, OW, OH = 30, 1920, 1080
 TL = json.load(open("timeline.json"))
 N = TL["n"]
 BGW, BGH = 1672, 941
 K4 = 0.16                                # world px per body-crop (4x sheet) px
-T0 = np.array([668 - K4 * NECK_X, 489 - K4 * 692])   # world position of body-crop origin
+T0 = np.array([668 - K4 * NECK_X - K4 * PAD, 489 - K4 * 692])   # world position of rig-canvas origin
 
 # ---------------------------------------------------------------- audio-driven signals
 import librosa
@@ -36,29 +37,6 @@ NOD /= max(NOD.max(), 1e-6)
 # head shakes on each "no", tilt on the question
 SHAKES = [w["s"] for w in TL["words"] if w["w"] == "no"]
 QUESTION = next(w["s"] for w in TL["words"] if w["w"] == "ask") - 0.9
-
-# ---------------------------------------------------------------- expression timeline
-def expr_at(t):
-    cur = D.EXPRESSIONS[0][1]; start = 0
-    for s, e in D.EXPRESSIONS:
-        if t >= s: cur, start = e, s
-    return cur, start
-def head_at(t):
-    """(head drawing, previous drawing, time-in-drawing factor); drawings swap on a hard cut when rendering"""
-    name, s = expr_at(t)
-    for ts, h in D.HEAD_TURNS:
-        pass
-    turn = None
-    for ts, h in D.HEAD_TURNS:
-        if t >= ts: turn = (h, ts)
-    if turn and turn[0] is not None: name, s = turn[0], turn[1]
-    if name == "SHOUTING": name = "ANGRY"
-    prev = expr_at(s - 1e-3)[0] if s > 0 else name
-    for ts, h in D.HEAD_TURNS:
-        if abs(ts - s) < 1e-6 and h is None: prev = D.HEAD_TURNS[0][1]
-    if prev == "SHOUTING": prev = "ANGRY"
-    k = (t - s) / 0.12
-    return name, prev, float(np.clip(k, 0, 1))
 
 # ---------------------------------------------------------------- camera
 def ease(u): return 0.5 - 0.5 * math.cos(math.pi * min(max(u, 0), 1))
@@ -117,6 +95,9 @@ def head_matrix(th, dx, dy):
     return M
 
 # ---------------------------------------------------------------- assets
+ARMS = perf.arm_channels()
+LEAN, FWD, BOUNCE = perf.torso_channels()
+
 def load_assets():
     bg4 = cv2.imread("src/studio_x4.png")
     tm4 = cv2.imread("src/table_mask_x4.png", 0)
@@ -147,15 +128,23 @@ def render_frame(i, roy, lv):
         small = cv2.GaussianBlur(small, (0, 0), sig / 2)
         bg = cv2.resize(small, (OW, OH), interpolation=cv2.INTER_LINEAR)
     # ---- character
-    head, _, _ = head_at(t)                     # drawings swap on a cut, like cut-out animation (no ghosting)
-    vis = None if head == "3/4 RIGHT" else TL["track"][i]
+    head = perf.head_at(t)
+    vis = TL["track"][i]
     th, dx, dy = motion(i)
     th += SM_T[i]
+    # head dips with the chops
+    th += 2.0 * BOUNCE[i] * (1 if int(t / 3.1) % 2 else -1); dy += 14 * BOUNCE[i]
     hm = head_matrix(th, dx, dy)
+    # torso: lean about the hips, lean in toward camera, bounce on beats, breathing
+    hip = (NECK_X, 1390)
     breath = 1 + 0.005 * math.sin(2 * math.pi * t / 3.6)
-    bm = np.float32([[1, 0, 0], [0, breath, (1 - breath) * 1300]])
-    hm[1, 2] += (1 - breath) * (1300 - 692)          # head rides on the breathing neck
-    char = roy.compose(head, vis, head_M=hm, body_M=bm)
+    fwd = 1 + 0.05 * FWD[i]
+    Tb = np.float64([[1, 0, 0], [0, 1, 10 * BOUNCE[i] + 18 * FWD[i]], [0, 0, 1]])
+    Rl = np.vstack([cv2.getRotationMatrix2D(hip, LEAN[i] + 0.8 * math.sin(2 * math.pi * t / 6.3), fwd), [0, 0, 1]])
+    Br = np.float64([[1, 0, 0], [0, breath, (1 - breath) * 1300], [0, 0, 1]])
+    bm = (Tb @ Rl @ Br)[:2]
+    arms = {k: tuple(ARMS[k][i]) for k in "RL"}
+    char = roy.compose(head, vis, head_M=hm, body_M=bm, arms=arms)
     sc = z * K4
     Mw = np.float32([[sc, 0, z * (T0[0] - ox)], [0, sc, z * (T0[1] - oy)]])
     if sc < 0.7:
@@ -185,7 +174,7 @@ def render_frame(i, roy, lv):
 if __name__ == "__main__":
     mode = sys.argv[1]
     smooth_tilt()
-    lv = load_assets(); roy = Rig(); PIVOT[0] = roy.neck_x
+    lv = load_assets(); roy = Rig2(); PIVOT[0] = roy.neck_x
     if mode == "still":
         for s in sys.argv[2:]:
             i = int(float(s) * FPS)

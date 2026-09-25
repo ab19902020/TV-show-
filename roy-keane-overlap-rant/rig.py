@@ -4,9 +4,10 @@ import numpy as np, cv2, pickle
 from collections import OrderedDict
 
 P = pickle.load(open("parts2.pkl", "rb")); R = pickle.load(open("align.pkl", "rb"))
+import mouthcomp
 from mouth4 import composite4
 def to3(M): return np.vstack([M, [0, 0, 1]])
-HEADS = ["FRONT", "3/4 RIGHT", "SKEPTICAL", "DISGUSTED", "ANGRY", "SAD", "CONFUSED"]
+HEADS = ["FRONT", "3/4 RIGHT", "3/4 LEFT", "SKEPTICAL", "DISGUSTED", "ANGRY", "SAD", "CONFUSED", "SHOUTING", "SURPRISED"]
 HX0, HY0, HX1, HY1 = 100, 0, 1100, 900
 CHAR_H = 1400
 K = lambda r: cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
@@ -121,8 +122,11 @@ class Rig:
             under[y, xl:xr + 1] = True
         under &= ~l3m
         unknown = under & ~neck
+        known = (neck | l3m) & on
+        fillsrc = col.copy()
+        fillsrc[~known] = 0
         skin_med = np.median(col[neck & skin], axis=0).astype(np.uint8)
-        src = col.copy()
+        src = col.copy(); src[:520][..., :] = np.where(under[:520, :, None] | True, skin_med, src[:520])
         src[:520] = skin_med                                   # only neck/collar colours feed the rebuild
         col_in = cv2.inpaint(src, (unknown).astype(np.uint8) * 255, 9, cv2.INPAINT_TELEA)
         col[unknown] = col_in[unknown]
@@ -131,6 +135,7 @@ class Rig:
         self.body_col = grade(col)
         self.l1 = nk
         self.l3 = l3
+        self.body_full = body
         # head placement (neck-column anchoring)
         self.M_head, self.split = {}, {}
         rf = refs("FRONT"); mid_f = (rf["eye_y"] + rf["chin_y"]) / 2
