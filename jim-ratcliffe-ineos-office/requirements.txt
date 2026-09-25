@@ -1,0 +1,8 @@
+numpy
+opencv-python-headless
+librosa
+soundfile
+torch
+spandrel
+sherpa-onnx
+pocketsphinx
