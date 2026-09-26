@@ -83,41 +83,57 @@ GitHub releases or ships inside its PyPI wheel.
    - M/B/P and F/V closures always get at least 2 frames.
    - Breaths show slightly parted lips.
 5. **Cut-outs** (`layout.py`, `matte.py`, `cut_parts.py`): 80 parts cut from the 4× sheet with soft,
-   colour-decontaminated mattes.
-   - The red header and floor shadows are dropped.
-   - Gaps between legs and between arm and body stay see-through.
-6. **Rig** (`landmarks.py`, `register.py`, `rig.py`): replacement animation in one rig frame, the FRONT turnaround
-   body. Layers, back to front:
-   - A shaded, outlined **neck**.
-   - The FRONT body's **hanging forearm + hand**, only for poses where the drawing cuts a hanging sleeve at its
-     bottom edge.
-   - The FRONT **lower body** (legs + jacket flaps).
-   - The **arm-pose torso**. It is registered tie-knot-to-knot and belt-to-belt, because different drawings share
-     almost no SIFT features.
-   - The **head**, with its own collar, tie knot and jacket stripped. It is pinned by the tie knot drawn under its
-     chin, then its neck is faded into the torso's collar.
-   - **Hands that come up in front of the face** (chin, tie, wave, OK sign).
-7. **Lip sync** (`mouths.py`): all 19 mouth-sheet heads are registered to the closed-mouth head, so the shapes
-   line up exactly. The closed-mouth head is registered onto each expression head (SIFT, then a local NCC search).
-   Each frame's mouth is pasted with a feathered mask and colour-matched on a ring of beard.
+   colour-decontaminated mattes. His shirt, collar and cuffs are as white as the paper, so a plain background
+   flood would leave them see-through. Instead the cutter:
+   - seals the shape first (the neck opening of each headless torso, the cuff ends) and floods only from the
+     sides where the cell edge is real background;
+   - classifies every enclosed white area: shirt next to the tie, cuffs, highlights and pocket squares are
+     filled; true gaps (between an arm and the body, between the legs) stay open;
+   - splits drawings that touch on the sheet at their narrowest point (watershed), with explicit split lines
+     where a hand from one pose reaches into the next (`ARM_SPLIT`);
+   - drops the red header and floor shadows.
+6. **Rig** (`landmarks.py`, `belts.py`, `register.py`, `rig.py`): replacement animation in one rig frame, the FRONT
+   turnaround body. Every pose has the same collar, knot and shoulders. Layers, back to front:
+   - The FRONT **lower body** (legs + jacket flaps), with the belt-to-hem band warped per pose to meet that
+     pose's jacket edges.
+   - The FRONT body's **hanging forearm + hand**, only for poses whose drawing cuts a hanging sleeve.
+   - The **head** (face, hair, neck), *behind* the clothes. It is placed knot-to-knot at face scale; its neck
+     tucks down into the collar, so it can nod and tilt without ever opening a gap.
+   - **FRONT's collar, knot and shoulders**, per pose, with each side scaled to that pose's shoulder width. The
+     arm-pose drawings are cut flat just above the collar; this gives every pose the same rounded shoulders
+     and the same collar round the neck.
+   - The **arm-pose torso**. Its knot top (the first solid row of the crimson knot, never the orange neck shadow)
+     goes exactly onto FRONT's knot, its belt onto FRONT's belt. Its neck opening is cut to FRONT's collar V and
+     its top edge melts into FRONT's shoulders, so knot and collar never double up. ARMS DOWN *is* FRONT's
+     clothes.
+   - **Hands in front** (chin, tie, wave, OK sign, raised finger).
+   - **Moving hands** (the chop and the camera point) are cut free. The chest behind them comes from the other
+     arm-pose drawing that is clear of hands there and matches best around the hole (picked automatically),
+     with the pose's own chest mirrored across the tie as a fallback.
+7. **Lip sync** (`mouths.py`, `walker.py`): all 19 mouth-sheet heads are registered to the closed-mouth head, so
+   the shapes line up exactly. The closed-mouth head is registered onto each expression head (SIFT, then a local
+   NCC search).
+   - Each frame's mouth is pasted with a feathered mask and colour-matched on a ring of beard.
+   - When he talks in a 3/4 view, the same painted mouth shapes are squashed onto the 3/4 head's measured mouth
+     line.
 8. **Blinks** (`blink.py`): the sheet has no closed-eye drawings, so a lid sampled from the skin above each eye
    closes over it every 2.4-5.2 s.
 9. **Walking and turning** (`walker.py`):
-   - Walks use a 3/4 turnaround body, cut at the jacket hem with its hands kept, over the WALK 1-4 legs. The legs
-     are mirrored when he walks left.
+   - Walks use the 3/4 turnaround upper body over the WALK 1-4 legs. For a leftward walk the legs are mirrored,
+     so legs, torso and head always face the way he walks.
+   - The leg drawing is picked by the distance covered (4 drawings per step), so the feet never slide.
    - Turns step through the turnaround drawings (front → 3/4 → profile), 2-3 frames each.
    - He looks out at the yachts in the BACK view.
-   - When he paces while talking, the front rig's legs lift alternately and his body bobs, so he can keep gesturing
-     and lip-syncing as he goes.
 10. **The window gag** (`profile.py`):
     - The profile body is mirrored to face the harbour.
-    - Its near arm is cut out and rotated at the shoulder, with a shoulder cap and the torso painted in behind it.
-    - The mouth sheet's four side-view heads (closed / A / O / U) are placed by an NCC search and lip-synced, with
-      a drawn neck down to the collar.
+    - Its near arm is cut out and rotated at the shoulder; the jacket behind it is painted in.
+    - The mouth sheet's four side-view heads (closed / A / O / U) are registered face-to-face onto the
+      turnaround's own head (gradient NCC on the face, cached in `profile_fit.pkl`) and lip-synced.
+    - Below the jaw line the turnaround's own neck and collar show, so the head sits on the drawing's real neck.
 11. **Hand moves and extra drawings** (`extras.py`):
-    - The chop and camera-point hands are cut free and animated: the chop drops and foreshortens toward camera;
-      the point jabs at the lens. The chest behind a moving hand comes from the arms-down drawing.
-    - The raised finger and the watch are composited once.
+    - The chop drops and foreshortens toward camera; the point jabs at the lens.
+    - The raised finger (the OK-sign arm with the finger hand, the old hand painted out from the jacket) and the
+      gold watch are composited once.
 12. **Performance** (`perf.py`): the blocking plus a cue sheet keyed to the spoken words drives everything, e.g.
     `pose(W("tighten") - 0.2, "HAND ON HIP")`, `chop(W("less") + 0.03)` and `jab(W("simple") + 0.02)`.
     - Hard drawing swaps, each with a small settle.

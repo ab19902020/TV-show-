@@ -21,7 +21,12 @@ ARMS = {  # arm poses (headless torsos): label centre x, row
     "CALM DOWN": (876, 1), "HOLDING PAPER": (978, 1), "HOLDING CUP": (1070, 1), "OPEN ARMS": (1190, 1),
     "FINGER UP": (1298, 1), "OK SIGN": (1387, 1), "HAND ON HIP": (1482, 1)}
 ARM_ROWS = [(476, 586), (597, 701)]
-ARM_TOP_UNDER_HEADER = 495     # the red "ARM POSES" header sits over the first two poses
+ARM_TOP_UNDER_HEADER = 495
+ARM_X_LIMIT = {"PALM UP": (542, None)}     # PRESENT's reaching hand touches PALM UP's sleeve at x~541
+# where two drawings touch: the pixels that belong to the neighbour (1x sheet coords)
+ARM_SPLIT = {"PRESENT": lambda x, y: (x > 544) | ((x > 539.5) & (y < 551)),     # PALM UP's sleeve
+             "PALM UP": lambda x, y: (x < 545.6) & (y > 547.5),                  # PRESENT's thumb and fingertips
+             "HOLDING CUP": lambda x, y: (x > 1097.6) & (y > 634.5) & (y < 638.8)}   # a stray stroke off the sleeve
 
 HANDS = {  # separate hands: box x range
     "OPEN": (14, 106), "FIST": (110, 192), "POINT": (199, 284), "THUMBS UP": (298, 366), "THUMBS DOWN": (387, 457),
@@ -35,7 +40,7 @@ LEGS = {  # leg poses: box x range
     "STEP FORWARD": (431, 537), "STEP BACK": (535, 607), "TURN LEFT": (616, 680), "TURN RIGHT": (684, 773),
     "RUN 1": (788, 890), "RUN 2": (889, 982), "RUN 3": (980, 1070), "KICK": (1068, 1196), "SIT 1": (1190, 1276),
     "SIT 2": (1277, 1354), "CROUCH": (1368, 1448), "KNEEL": (1442, 1526)}
-LEG_ROW = (862, 990)
+LEG_ROW = (867, 990)          # just below the red "LEG POSES" header bar
 
 # mouth sheet: 19 front heads (all the same stern face, one mouth shape each)
 MOUTH_ROW1 = ["REST", "A", "E", "I", "O", "U", "FV", "L", "M", "B"]

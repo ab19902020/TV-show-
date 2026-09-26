@@ -26,12 +26,15 @@ RIG_H = 1516.0                    # rig px from the top of the hair to the soles
 # places: (world x, floor y, world px per rig px).  Depth: further back = higher floor line, smaller.
 DESK = (1110.0, 870.0, 0.404)     # behind the desk, facing camera
 ACROSS = (840.0, 870.0, 0.404)
-PACE_END = (1040.0, 870.0, 0.404)
+PACE_B = (1000.0, 870.0, 0.404)   # pacing stops while he counts
+PACE_END = (900.0, 870.0, 0.404)
 WINDOW = (1310.0, 705.0, 0.307)   # on the marble in front of the windows, fully visible
+MID = (900.0, 848.0, 0.392)       # half-way back from the window, counting
 CHAIR = (455.0, 918.0, 0.480)     # at the executive chair
 FRONT_DESK = (760.0, 885.0, 0.440)
 EXIT = (1840.0, 880.0, 0.440)
 SEAT_DROP = 160.0                 # world px he sinks when sitting
+STRIDE_RIG = 290.0                # one step of the WALK drawings, in rig px (4 drawings per step)
 
 def head_top(place, seated=0.0):
     x, f, k = place
@@ -39,8 +42,8 @@ def head_top(place, seated=0.0):
 
 # ------------------------------------------------------------------ blocking
 BLOCK = []
-def front(t0, t1, a, b=None, pace=0.0): BLOCK.append(dict(t0=t0, t1=t1, kind="front", a=a, b=b or a, pace=pace))
-def walk(t0, t1, d, a, b, period=0.52): BLOCK.append(dict(t0=t0, t1=t1, kind="walk", d=d, a=a, b=b, period=period))
+def front(t0, t1, a): BLOCK.append(dict(t0=t0, t1=t1, kind="front", a=a, b=a))
+def walk(t0, t1, d, a, b): BLOCK.append(dict(t0=t0, t1=t1, kind="walk", d=d, a=a, b=b))
 def view(t0, t1, name, a): BLOCK.append(dict(t0=t0, t1=t1, kind="view", name=name, a=a, b=a))
 def profile(t0, t1, a): BLOCK.append(dict(t0=t0, t1=t1, kind="profile", a=a, b=a))
 def turn(t0, names, a, fr=2):
@@ -49,44 +52,61 @@ def turn(t0, names, a, fr=2):
 
 T_WALK1 = W("licker", 1, "e") + 0.65          # the dead-pan pause, then he strolls off
 T_STOP1 = W("britain") - 0.22
+T_PACE1 = W("we've") - 0.12                   # paces while listing: walks, stops to count
+T_PACE1_STOP = W("benefits") - 0.12
+T_PACE1B = W("immigration", 1, "e") + 0.08
+T_PACE1B_STOP = W("spending") - 0.12
 T_WIN = W("that", 1, "e") + 0.35              # after "...a country like that."
 T_WIN_ARRIVE = W("i") - 0.22
 T_BACK_TO_CAM = W("means", 1, "e") + 0.35
-T_LEAVE_WIN = W("decision", 1, "e") + 0.12
-T_SIT = W("preferably") - 0.05
-T_STAND = W("absolutely", 1, "e") + 0.02
-T_PACE2 = W("industry", 1, "e") + 0.15
-T_PACE2_END = W("claims", 1, "e") + 0.2
 T_GLANCE = W("less", 1, "e") + 0.35           # after "...expect less."
+T_LEAVE_WIN = W("decision", 1, "e") + 0.12
+T_MID = W("sacrifice") - 0.14
+T_TO_CHAIR = W("efficiency", 1, "e") + 0.06
+T_SIT = W("sacrifices") - 0.30
+T_STAND = W("absolutely", 1, "e") + 0.02
+T_PACE2 = W("industry", 1, "e") + 0.35
+T_PACE2_END = W("paperwork") - 0.14
 T_LOOK_OUT = W("waiting", 1, "e") + 0.12
 T_EXIT = T_LOOK_OUT + 2.25
 T_GONE = T_EXIT + 4.2
 
+def moveto(t0, t1, d, a, b):
+    """turn to 3/4 in the direction of travel, walk, turn back to camera (turn frames included in [t0, t1])"""
+    v = "3/4 LEFT" if d == "L" else "3/4 RIGHT"
+    view(t0, t0 + 3 / FPS, v, a)
+    walk(t0 + 3 / FPS, t1 - 3 / FPS, d, a, b)
+    view(t1 - 3 / FPS, t1, v, b)
+
 front(0.0, T_WALK1, DESK)
-t = turn(T_WALK1, ["3/4 LEFT"], DESK, fr=3)
-walk(t, T_STOP1 - 0.1, "L", DESK, ACROSS)
-t = turn(T_STOP1 - 0.1, ["3/4 LEFT"], ACROSS, fr=3)
-front(t, W("we've") - 0.1, ACROSS)
-front(W("we've") - 0.1, W("you") - 0.25, ACROSS, PACE_END, pace=0.9)          # paces, counting on his fingers
-front(W("you") - 0.25, T_WIN, PACE_END)
-t = turn(T_WIN, ["3/4 RIGHT"], PACE_END, fr=3)
-walk(t, T_WIN_ARRIVE, "R", PACE_END, WINDOW)
+moveto(T_WALK1, T_STOP1, "L", DESK, ACROSS)
+front(T_STOP1, T_PACE1, ACROSS)
+moveto(T_PACE1, T_PACE1_STOP, "R", ACROSS, PACE_B)                             # "We've got too many people on..."
+front(T_PACE1_STOP, T_PACE1B, PACE_B)                                          # counts: benefits, immigration
+moveto(T_PACE1B, T_PACE1B_STOP, "L", PACE_B, PACE_END)                         # "...too much government..."
+front(T_PACE1B_STOP, T_WIN, PACE_END)                                          # ...spending. You simply cannot...
+t = T_WIN + 3 / FPS
+view(T_WIN, t, "3/4 RIGHT", PACE_END)
+walk(t, T_WIN_ARRIVE, "R", PACE_END, WINDOW)                                   # to the windows
 t = turn(T_WIN_ARRIVE, ["3/4 RIGHT", "FRONT", "3/4 LEFT"], WINDOW)
-profile(t, T_BACK_TO_CAM, WINDOW)
+profile(t, T_BACK_TO_CAM, WINDOW)                                              # presents Monaco
 t = turn(T_BACK_TO_CAM, ["3/4 LEFT"], WINDOW, fr=3)
 front(t, T_GLANCE, WINDOW)
 t = turn(T_GLANCE, ["3/4 LEFT"], WINDOW, fr=22)                                 # glances back at Monaco
 front(t, T_LEAVE_WIN, WINDOW)
-front(T_LEAVE_WIN, T_SIT, WINDOW, CHAIR, pace=0.56)                            # walks back, counting each word
-front(T_SIT, T_PACE2, CHAIR)                                                   # sits / stands handled as 'seat'
-front(T_PACE2, T_PACE2_END, CHAIR, FRONT_DESK, pace=0.8)                       # paces in the final section
+moveto(T_LEAVE_WIN, T_MID, "L", WINDOW, MID)                                   # "What Britain needs is..."
+front(T_MID, T_TO_CHAIR, MID)                                                  # counts each item
+moveto(T_TO_CHAIR, T_SIT, "L", MID, CHAIR)                                     # "Preferably..."
+front(T_SIT, T_PACE2, CHAIR)                                                   # sits / stands ('seat')
+moveto(T_PACE2, T_PACE2_END, "R", CHAIR, FRONT_DESK)                           # "Now we seem to build..."
 front(T_PACE2_END, T_LOOK_OUT, FRONT_DESK)
 t = turn(T_LOOK_OUT, ["3/4 LEFT"], FRONT_DESK, fr=3)
 view(t, t + 0.95, "BACK", FRONT_DESK)                                          # looks out at the yachts
 t = turn(t + 0.95, ["3/4 LEFT"], FRONT_DESK, fr=3)
 front(t, T_EXIT, FRONT_DESK)                                                   # picks up his phone
-t = turn(T_EXIT, ["3/4 RIGHT"], FRONT_DESK, fr=3)
-walk(t, T_GONE, "R", FRONT_DESK, EXIT, period=0.5)
+t = T_EXIT + 3 / FPS
+view(T_EXIT, t, "3/4 RIGHT", FRONT_DESK)
+walk(t, T_GONE, "R", FRONT_DESK, EXIT)
 BLOCK.append(dict(t0=T_GONE, t1=999, kind="off", a=EXIT, b=EXIT))
 
 def smooth(u): u = min(max(u, 0.0), 1.0); return u * u * (3 - 2 * u)
@@ -99,7 +119,7 @@ def block_at(t):
 def place_at(t):
     b = block_at(t)
     u = (t - b["t0"]) / max(b["t1"] - b["t0"], 1e-6)
-    u = smooth(u) if b["kind"] == "front" else (0.12 * smooth(u) + 0.88 * u)
+    u = 0.15 * smooth(u) + 0.85 * u                                       # eases into / out of the walk a little
     return tuple(b["a"][j] + (b["b"][j] - b["a"][j]) * u for j in range(3)), b
 
 # ------------------------------------------------------------------ cue sheet
@@ -123,7 +143,7 @@ def cues():
     # --- paces, counting: thumb (1), thumb + index (2), three fingers (3)
     pose(W("too") - 0.15, "THUMBS UP"); head(W("too") - 0.15, "DISGUSTED"); beat(W("benefits"), 0.5)
     pose(W("too", 2) - 0.15, "FINGER UP"); beat(W("immigration"), 0.5)
-    pose(W("too", 3) - 0.15, "OK SIGN"); beat(W("spending"), 0.6)
+    pose(T_PACE1B_STOP, "OK SIGN"); beat(W("spending"), 0.6)
     pose(W("you") - 0.15, "CALM DOWN"); head(W("you") - 0.15, "NEUTRAL"); beat(W("cannot"), 0.8)
     pose(W("that", 1, "e") + 0.15, "ARMS DOWN")
     # --- the window (profile rig handles the arm); turns back
@@ -140,24 +160,24 @@ def cues():
     head(W("financial") - 0.1, "RAISED BROW"); beat(W("decision"), 0.4)
     # --- walks back along the desk, one gesture per item
     pose(T_LEAVE_WIN + 0.1, "ARMS DOWN"); head(T_LEAVE_WIN + 0.1, "NEUTRAL")
-    pose(W("sacrifice") - 0.15, "FINGER UP"); beat(W("sacrifice"), 0.5)
+    pose(T_MID, "FINGER UP"); beat(W("sacrifice"), 0.5)
     pose(W("difficult") - 0.12, "EXPLAINING 1"); beat(W("decisions"), 0.5)
     pose(W("cuts") - 0.3, "PALM OUT STOP"); chop(W("cuts") + 0.03, 1.1)
     pose(W("efficiency") - 0.15, "OK SIGN"); beat(W("efficiency"), 0.5)
     # --- sits, crosses a leg: straight-faced
-    pose(T_SIT + 0.1, "HAND ON HIP"); head(T_SIT, "NEUTRAL")
+    pose(T_TO_CHAIR, "ARMS DOWN"); pose(T_SIT + 0.1, "HAND ON HIP"); head(T_SIT, "NEUTRAL")
     head(W("absolutely") - 0.1, "RAISED BROW"); beat(W("absolutely"), 0.5)
     # --- stands: three strong beats
     pose(T_STAND + 0.2, "PALM OUT STOP"); head(T_STAND + 0.2, "NEUTRAL")
     chop(W("factories") + 0.04, 1.1); chop(W("ships") + 0.04, 1.1)
     pose(W("industry") - 0.12, "CALM DOWN"); beat(W("industry") + 0.05, 1.1)
     # --- paces again, a little more animated
-    pose(W("now") - 0.15, "TALK LEFT"); head(W("now") - 0.15, "DISGUSTED"); beat(W("seem"), 0.4)
-    pose(W("paperwork") - 0.15, "EXPLAINING 2"); beat(W("paperwork"), 0.7)
+    head(T_PACE2, "DISGUSTED")
+    pose(T_PACE2_END, "HOLDING PAPER"); beat(W("paperwork"), 0.7)
     pose(W("benefit") - 0.12, "THUMBS DOWN"); beat(W("claims"), 0.7)
     pose(W("and", 4) - 0.12, "PRESENT"); head(W("and", 4) - 0.12, "RAISED BROW")
     pose(W("what's") - 0.15, "WHAT"); beat(W("solution"), 0.4)
-    pose(W("solution", 1, "e") + 0.2, "HAND ON CHIN"); head(W("solution", 1, "e") + 0.2, "THINKING")
+    pose(W("solution", 1, "e") + 0.2, "HAND ON CHIN"); head(W("solution", 1, "e") + 0.2, "RAISED BROW")
     # --- four points at the camera
     pose(W("simple") - 0.22, "REACH FORWARD"); head(W("simple") - 0.22, "NEUTRAL")
     jab(W("simple") + 0.02); jab(W("work", 2) + 0.02); jab(W("spend") + 0.02); jab(W("stop") + 0.02, 1.15)
@@ -310,13 +330,16 @@ def profile_arm(t):
     if t < dn0: return -94 + 1.2 * math.sin(2 * math.pi * (t - up1) / 2.2)
     return -94 * (1 - smooth((t - dn0) / 0.5))
 
-def pacing_legs(t, b):
-    """front rig walking: alternate leg lifts + body bob, for 'front' blocks that move"""
-    if b["kind"] != "front" or b["a"] == b["b"] or b["pace"] <= 0: return (0.0, 0.0), 0.0
-    ph = 2 * math.pi * (t - b["t0"]) / (2 * b["pace"])
-    fade = min(1.0, (t - b["t0"]) / 0.25, (b["t1"] - t) / 0.25)
-    s = math.sin(ph)
-    return (22 * max(0, s) * fade, 22 * max(0, -s) * fade), -9 * abs(s) * fade
+def walk_frame(t, b):
+    """-> (leg drawing, bob rig px) for a walk block: the drawing follows the distance covered (4 drawings per
+    step), so the feet travel with the ground instead of sliding"""
+    (x, f, k), _ = place_at(t)
+    dist = abs(x - b["a"][0]) + 0.6 * abs(f - b["a"][1])                  # world px covered (depth counts less)
+    step = STRIDE_RIG * k
+    ph = dist / (step / 4.0)
+    leg = ["WALK 1", "WALK 2", "WALK 3", "WALK 4"][int(ph) % 4]
+    bob = -7.0 * abs(math.sin(math.pi * (ph % 2) / 2))
+    return leg, bob
 
 if __name__ == "__main__":
     for b in BLOCK: print(f"{b['t0']:6.2f}-{b['t1']:6.2f} {b['kind']:8s} {b.get('name', b.get('d', ''))}")

@@ -19,14 +19,18 @@ def finger_up(P):
     yy, xx = np.mgrid[0:H, 0:W]
     sk = skin_of(t) & (yy < 200) & (xx < 140)
     ok = blob(sk, lambda st, c: 1 + np.argmax(st[1:, cv2.CC_STAT_AREA]))
-    okm = cv2.dilate(ok.astype(np.uint8), K(6)).astype(bool) & (yy < 200)
+    c = t[..., :3].astype(np.int32)
+    warm = (t[..., 3] > 60) & (c[..., 2] > c[..., 0] + 30) & (yy < 200) & (xx < 150)   # the OK hand's fingertips too
+    okm = cv2.dilate((ok | warm).astype(np.uint8), K(8)).astype(bool) & (yy < 200)   # every bit of the old hand
     oy, ox = np.where(ok); wy = oy.max(); wx = ox[oy > wy - 14].mean()            # wrist (bottom of the hand)
     # the torso behind the old hand: convex hull of what is left, painted in from the jacket around it
     rest = (t[..., 3] > 128) & ~okm
     hull = cv2.convexHull(cv2.findNonZero(rest.astype(np.uint8)))
     hm = np.zeros((H, W), np.uint8); cv2.fillConvexPoly(hm, hull, 1)
     fillm = okm & hm.astype(bool)
-    rgb = cv2.inpaint(np.ascontiguousarray(t[..., :3]), fillm.astype(np.uint8) * 255, 9, cv2.INPAINT_TELEA)
+    # paint it from the opaque jacket only (transparent pixels still carry the old hand's / the paper's colours)
+    src = (okm | (t[..., 3] < 128)).astype(np.uint8) * 255
+    rgb = cv2.inpaint(np.ascontiguousarray(t[..., :3]), src, 9, cv2.INPAINT_TELEA)
     t[..., :3] = np.where(fillm[..., None], rgb, t[..., :3])
     t[..., 3] = np.where(okm, np.where(fillm, 255, 0), t[..., 3]).astype(np.uint8)
     # the new hand: skin + its outline only (no cuff / sleeve), wrist on the old wrist

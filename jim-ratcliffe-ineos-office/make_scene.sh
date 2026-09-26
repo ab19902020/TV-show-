@@ -28,7 +28,8 @@ python3 register.py
 python3 mouths.py
 python3 occlusion.py
 
-# 4. render (4 parallel chunks) and mux the voice track
+# 4. render (4 parallel chunks) and mux the voice track; the window-gag head fit is computed once first
+python3 -c "import pickle; from profile import Profile; Profile(pickle.load(open('parts.pkl', 'rb')))"
 python3 render.py audio
 N=$(python3 -c "import json;print(json.load(open('timeline.json'))['n'])")
 Q=$(( (N + 3) / 4 ))

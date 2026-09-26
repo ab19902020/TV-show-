@@ -2,7 +2,7 @@
 and rigged at the shoulder so it can extend towards the skyline, and the mouth sheet's four side-view heads
 (closed / A / O / U) swapped in for lip sync."""
 import numpy as np, cv2, pickle
-from rig import graded_premul, classes, K, to3, neck_fade
+from rig import graded_premul, classes, K, to3
 from matte import matte, nearest
 
 S = 4
@@ -15,11 +15,13 @@ SIDE_OF = {"A": "A", "E": "A", "I": "A", "CDGK": "A", "L": "A", "R": "O", "TH": 
 ARM = [(236, 372), (300, 360), (340, 385), (358, 440), (360, 560), (352, 700), (345, 800), (332, 862), (290, 872),
        (282, 1004), (170, 1008), (164, 900), (186, 850), (198, 820), (202, 700), (197, 600), (202, 500), (210, 430)]
 PIVOT = (290.0, 412.0)
-# collar line of the mirrored body (4x crop px): the drawing's own head above it is replaced
-COLLAR = [(0, 352), (118, 352), (150, 332), (200, 306), (250, 292), (330, 288), (382, 298)]
-# profile neck between the side head's jaw and the collar (drawn behind the torso and the head)
-NECK = [(124, 312), (215, 272), (246, 262), (262, 296), (225, 318), (162, 344), (148, 344)]
-THROAT = [(125, 315), (137, 331), (149, 343)]
+# the mirrored body's jaw line (4x crop px): under the chin, up behind the jaw to the ear lobe, along the hair to
+# the back collar.  Below it the body drawing's own neck and collar stay; above it the talking side head takes
+# over, faded out across the same line (so the head always sits on the drawing's own neck)
+JAW = [(0, 346), (75, 344), (138, 350), (152, 300), (165, 262), (200, 245), (262, 250), (310, 270), (345, 290),
+       (385, 298)]
+JAW_KEEP = 8          # px the body's neck reaches up above the line (under the side head's jaw)
+JAW_FADE = (4, 12)    # the side head is solid to 4 px above the line and gone 12 px below it
 
 def side_heads():
     sheet = cv2.imread("src/mouths_x4.png")
@@ -39,29 +41,44 @@ def gray(rgba, g=235.0):
     a = rgba[..., 3:4] / 255.0
     return cv2.cvtColor((rgba[..., :3] * a + g * (1 - a)).astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float32)
 
-def search(head, body, D=2):
-    """side head -> body head: NCC over scale / rotation / translation on the face + hair (above the collar)."""
-    bg = cv2.resize(gray(body)[:420], None, fx=1 / D, fy=1 / D, interpolation=cv2.INTER_AREA)
+def search(head, body):
+    """side head -> body head (similarity), matched on the FACE: gradient NCC over the side head's skin and its
+    outlines (the two drawings' hair differs), scale kept to the body's face size.  Cached in profile_fit.pkl."""
+    import os, hashlib
+    key = hashlib.md5(head[..., 3].tobytes() + body[:420, :, 3].tobytes()).hexdigest()
+    try:
+        d = pickle.load(open("profile_fit.pkl", "rb"))
+        if d.get("key") == key: return d["M"]
+    except (OSError, EOFError, pickle.UnpicklingError):
+        pass
+    def feat(rgba):
+        g = gray(rgba)
+        gx = cv2.Sobel(g, cv2.CV_32F, 1, 0, ksize=3); gy = cv2.Sobel(g, cv2.CV_32F, 0, 1, ksize=3)
+        return cv2.GaussianBlur(np.sqrt(gx * gx + gy * gy), (0, 0), 2.0)
+    fb = feat(body[:420]); fh = feat(head)
+    _, skin, _, _ = classes(head)
+    mh = cv2.dilate(skin.astype(np.uint8), K(7)).astype(np.float32)
+    mh[int(0.80 * head.shape[0]):] = 0                                  # the face, not the collar
     hh, hw = head.shape[:2]
     best = (-2, None)
-    for s in np.arange(0.56, 0.78, 0.01):
-        for r in np.arange(-8, 8.1, 2):
-            f = s / D
-            Mr = cv2.getRotationMatrix2D((hw / 2, hh / 2), r, f)
-            Mr[0, 2] += hw * f / 2 - hw / 2 + 20; Mr[1, 2] += hh * f / 2 - hh / 2 + 20
-            size = (int(hw * f) + 40, int(hh * f) + 40)
-            t = cv2.warpAffine(gray(head), Mr, size, borderValue=235)
-            m = cv2.warpAffine((head[..., 3] > 128).astype(np.float32), Mr, size)
-            ys = np.where(m.any(1))[0]; cut = int(ys.min() + 0.60 * (ys.max() - ys.min()))
-            t, m = t[:cut], m[:cut]                                   # face + hair only
-            if t.shape[0] > bg.shape[0] or t.shape[1] > bg.shape[1]: continue
-            res = cv2.matchTemplate(bg, t, cv2.TM_CCORR_NORMED, mask=m)
+    for s in np.arange(0.66, 0.801, 0.01):
+        for r in np.arange(-8, 8.1, 1.0):
+            Mr = cv2.getRotationMatrix2D((hw / 2, hh / 2), r, s)
+            Mr[0, 2] += hw * s / 2 - hw / 2 + 20; Mr[1, 2] += hh * s / 2 - hh / 2 + 20
+            size = (int(hw * s) + 40, int(hh * s) + 40)
+            t = cv2.warpAffine(fh, Mr, size); m = cv2.warpAffine(mh, Mr, size)
+            ys, xs = np.where(m > 0.5)
+            t = t[ys.min():ys.max() + 1, xs.min():xs.max() + 1]; m = m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+            if t.shape[0] > fb.shape[0] or t.shape[1] > fb.shape[1]: continue
+            res = cv2.matchTemplate(fb, t, cv2.TM_CCOEFF_NORMED, mask=m)
             res[~np.isfinite(res)] = -2
             _, mv, _, ml = cv2.minMaxLoc(res)
             if mv > best[0]:
-                A = to3(Mr); A = np.array([[D, 0, D * ml[0]], [0, D, D * ml[1]], [0, 0, 1]]) @ A
+                A = np.array([[1, 0, ml[0] - xs.min()], [0, 1, ml[1] - ys.min()], [0, 0, 1]]) @ to3(Mr)
                 best = (mv, A[:2])
     print("side head -> body: score %.3f scale %.3f" % (best[0], np.sqrt(abs(np.linalg.det(best[1][:, :2])))))
+    tmp = "profile_fit.%d.tmp" % os.getpid()                             # atomic: parallel renders may race
+    pickle.dump({"key": key, "M": best[1]}, open(tmp, "wb")); os.replace(tmp, "profile_fit.pkl")
     return best[1]
 
 def ecc_shift(img, ref):
@@ -96,10 +113,13 @@ class Profile:
         col = body[..., :3].copy()
         known = inside & ~hole
         src = col.copy(); src[~inside] = np.median(col[grey & known], axis=0).astype(np.uint8)
-        fill = cv2.inpaint(src, hole.astype(np.uint8) * 255, 25, cv2.INPAINT_TELEA)
+        # bright marks next to the arm (the pocket flap's highlight, cuff) would smear white into the fill
+        vv = col.max(2)
+        glint = known & (vv > 165) & cv2.dilate(hole.astype(np.uint8), K(30)).astype(bool) & (yy > 600)
+        fill = cv2.inpaint(src, (hole | glint).astype(np.uint8) * 255, 25, cv2.INPAINT_TELEA)
         fill = cv2.GaussianBlur(fill, (0, 0), 6)
         tor = body.copy()
-        tor[..., :3] = np.where(hole[..., None], fill, col)
+        tor[..., :3] = np.where((hole | (glint & (vv > 190)))[..., None], fill, col)
         # the torso silhouette behind the arm: back edge = arm's back edge; the hanging hand's area is leg
         sil = inside | hole
         tor[..., 3] = np.where(hole, 255 * sil, tor[..., 3]).astype(np.uint8)
@@ -108,9 +128,10 @@ class Profile:
         tor[..., :3][edge] = (tor[..., :3][edge] * 0.2 + np.array([22, 18, 20]) * 0.8).astype(np.uint8)
         # jacket hem continues under the old hand
         cv2.line(tor, (150, 914), (306, 906), (30, 26, 30, 255), 6, cv2.LINE_AA)
-        # ---- remove the drawing's own head (the side heads replace it): everything above the collar line
+        # ---- remove the drawing's own face and hair (the side heads replace them): keep its neck and collar
         keep = np.zeros((H, W), np.uint8)
-        cv2.fillPoly(keep, [np.array(COLLAR + [(W, H), (0, H)], np.int32)], 1)
+        jk = [(x, y - JAW_KEEP) for x, y in JAW]
+        cv2.fillPoly(keep, [np.array(jk + [(W, H), (0, H)], np.int32)], 1)
         keep = cv2.GaussianBlur(keep.astype(np.float32), (0, 0), 1.5)
         tor[..., 3] = (tor[..., 3] * keep).astype(np.uint8)
         self.torso = graded_premul(tor)
@@ -130,27 +151,13 @@ class Profile:
             M = M0
             if n != "NEUTRAL":       # same drawing, a few px apart on the sheet: translation-only ECC
                 M = (to3(M0) @ to3(ecc_shift(img, n0)))[:2]
-            self.heads[n] = (self.strip(img), M)
-        # neck: skin sampled from the side head's cheek, darker under the jaw, outlined throat
-        hi, _ = SH["NEUTRAL"]
-        _, hskin, _, _ = classes(hi)
-        hh = hi.shape[0]
-        cheek = hi[int(hh * 0.45):int(hh * 0.65)][..., :3][hskin[int(hh * 0.45):int(hh * 0.65)]]
-        col = np.median(cheek, axis=0).astype(np.float32) * 0.86
-        nm = np.zeros((H, W), np.float32); cv2.fillPoly(nm, [np.array(NECK, np.int32)], 1.0, cv2.LINE_AA)
-        nm = cv2.GaussianBlur(nm, (0, 0), 1.2)
-        shade = np.clip(0.72 + 0.28 * (yy - 262) / 80.0, 0.72, 1.0)
-        nc = (col[None, None, :] * shade[..., None]).astype(np.float32)
-        ln = np.zeros((H, W), np.float32)
-        cv2.polylines(ln, [np.array(THROAT, np.int32)], False, 1.0, 5, cv2.LINE_AA)
-        nc = nc * (1 - ln[..., None]) + np.float32([40, 34, 42]) * ln[..., None]
-        neck = np.dstack([np.clip(nc, 0, 255).astype(np.uint8), (nm * 255).astype(np.uint8)])
-        self.neck = graded_premul(neck)
+            self.heads[n] = (self.strip(img, M), M)
         self.W, self.H = W, H
         self.hip_x = float(np.median(np.where(body[1000, :, 3] > 128)[0]))
 
-    def strip(self, img):
-        """side head: drop the jacket / shirt / tie at the bottom, fade the neck into the collar below"""
+    def strip(self, img, M):
+        """side head: drop the jacket / shirt / tie at the bottom, and fade it out across the body's jaw line (M:
+        side head px -> body px), so below the jaw the body drawing's own neck and collar show"""
         red, skin, white, grey = classes(img)
         H, W = img.shape[:2]
         yy = np.arange(H)[:, None]
@@ -171,6 +178,12 @@ class Profile:
         low = yy > H * 0.62
         solid = cv2.morphologyEx((out[..., 3] > 60).astype(np.uint8), cv2.MORPH_OPEN, K(5)).astype(bool)
         out[..., 3] = np.where(low & ~cv2.dilate(solid.astype(np.uint8), K(1)).astype(bool), 0, out[..., 3]).astype(np.uint8)
+        yy_, xx_ = np.mgrid[0:H, 0:W].astype(np.float32)
+        bx = M[0, 0] * xx_ + M[0, 1] * yy_ + M[0, 2]; by = M[1, 0] * xx_ + M[1, 1] * yy_ + M[1, 2]
+        jx, jy = np.array(JAW, np.float32).T
+        line = np.interp(bx, jx, jy)
+        f = np.clip((line + JAW_FADE[1] - by) / float(JAW_FADE[0] + JAW_FADE[1]), 0, 1)
+        out[..., 3] = (out[..., 3] * f).astype(np.uint8)
         return graded_premul(out)
 
     def layers(self, vis=None, arm=0.0, head_M=None, body_M=None):
@@ -180,7 +193,7 @@ class Profile:
         name = "NEUTRAL" if vis is None else SIDE_OF.get(vis, "NEUTRAL")
         img, M = self.heads[name]
         R = to3(cv2.getRotationMatrix2D(PIVOT, arm, 1.0))
-        return [(self.neck, Hm), (self.torso, B), (img, Hm @ to3(M)), (self.cap, B), (self.arm, B @ R)]
+        return [(self.torso, B), (img, Hm @ to3(M)), (self.cap, B), (self.arm, B @ R)]
 
 if __name__ == "__main__":
     from rig import render_layers
@@ -191,4 +204,4 @@ if __name__ == "__main__":
         V = np.array([[0.45, 0, 200], [0, 0.45, 10], [0, 0, 1]], float)
         im = render_layers(pr.layers(vis, arm), V, (420, 700))
         tiles.append((im[..., :3] + np.float32([150, 175, 150]) * (1 - im[..., 3:4])).astype(np.uint8))
-    cv2.imwrite("/tmp/claude-0/-home-user-TV-show-/17c2eb03-f7c3-5c18-9c9e-6908366e9c0f/scratchpad/profile_test.png", np.hstack(tiles))
+    cv2.imwrite("profile_test.png", np.hstack(tiles))

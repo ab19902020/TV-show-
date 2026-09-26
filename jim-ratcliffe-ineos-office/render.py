@@ -94,11 +94,12 @@ class Actor:
         breath = 1 + 0.006 * math.sin(2 * math.pi * t / 3.7)
         if b["kind"] == "walk":
             w = self.walkers[b["d"]]
-            u = t - b["t0"]; half = b["period"] / 2
-            leg = ["WALK 1", "WALK 2", "WALK 3", "WALK 4"][int(u / half) % 4]
-            bob = -10 * abs(math.sin(math.pi * u / b["period"]))
-            out.update(layers=w.layers(leg, bob, 1.5), Mw=Mw_for(w.hip_x, w.floor)); return out
+            leg, bob = perf.walk_frame(t, b)
+            out.update(layers=w.layers(leg, bob, 1.2, perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor)); return out
         if b["kind"] == "view":
+            if b["name"] in ("3/4 LEFT", "3/4 RIGHT"):                  # a turn / glance: standing, still talking
+                w = self.walkers["L" if b["name"] == "3/4 LEFT" else "R"]
+                out.update(layers=w.layers("STANDING", 0.0, 0.0, perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor)); return out
             v = self.views[b["name"]]
             out.update(layers=v.layers(), Mw=Mw_for(v.cx, v.floor)); return out
         th, dy, look = perf.head_motion(i, CH)
@@ -113,12 +114,11 @@ class Actor:
         head = perf.at(perf.HEADS, t, "NEUTRAL")
         vis = perf.viseme(i)
         head_M = cv2.getRotationMatrix2D(NECK_PIVOT, th, 1.0); head_M[1, 2] += dy * 0.35
-        legs, step_bob = perf.pacing_legs(t, b)
         bdy, sx, sy = perf.body_motion(t, CH, i)
         hip = (F_KNOT[0], 900.0)
-        lean = CH["lean"][i] + 0.6 * math.sin(2 * math.pi * t / 6.1) + 0.5 * (legs[0] - legs[1]) / 22.0
+        lean = CH["lean"][i] + 0.6 * math.sin(2 * math.pi * t / 6.1)
         R = to3(cv2.getRotationMatrix2D(hip, -lean, 1.0))
-        Tb = np.array([[1, 0, 0], [0, 1, bdy + step_bob], [0, 0, 1]], np.float64)
+        Tb = np.array([[1, 0, 0], [0, 1, bdy], [0, 0, 1]], np.float64)
         Sc = np.array([[sx, 0, (1 - sx) * hip[0]], [0, sy * breath, (1 - sy * breath) * 900], [0, 0, 1]], np.float64)
         torso_M = (Tb @ R @ Sc)[:2]
         hand_M = None
@@ -130,11 +130,9 @@ class Actor:
             else:
                 s_ = 1 + perf.jab_s(t)
                 hand_M = np.array([[s_, 0, px * (1 - s_) - 60 * (s_ - 1)], [0, s_, py * (1 - s_) + 30 * (s_ - 1)], [0, 0, 1]])
-        L = self.rig.layers(torso, head, head_M=head_M, torso_M=torso_M, hand_M=hand_M,
-                            legs=legs if seat == 0 else (0.0, 0.0))
-        hd = self.rig.head[head]
         bl = max(blink.amount_at(i, self.blinks), 0.5 * look)            # lids lowered = looking down at the watch
-        L = [(self.head_img(head, vis, bl) if img is hd["img"] else img, M) for img, M in L]
+        L = self.rig.layers(torso, head, head_img=self.head_img(head, vis, bl), head_M=head_M, torso_M=torso_M,
+                            hand_M=hand_M)
         out.update(layers=L, Mw=Mw_for(F_KNOT[0], F_FLOOR)); return out
 
 # ---------------------------------------------------------------- plates
