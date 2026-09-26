@@ -10,7 +10,7 @@ behind the desk, to the windows, into the executive chair, and out of the door.
 Everything is built from the two character sheets:
 - the turnaround views (front, 3/4, profile, back)
 - the head expressions and the arm poses
-- the WALK leg drawings
+- a leg from the WALK drawings, cut into thigh, shin and shoe and rigged for the walks
 - the 19 front and 4 side-view mouth shapes
 - two drawings made from those parts: a raised-finger hand swapped onto the OK-sign arm, and a gold watch on the
   wrist-across pose
@@ -23,11 +23,11 @@ Everything is built from the two character sheets:
 | 1.3 | "Hi, I'm Jim Ratcliffe…" | neutral | still at the tie, calmly |
 | 2.7 | "…co-owner of Manchester United…" | smug | straightens up proudly: chin up, chest out, hands on hips |
 | 4.6 | "…and a Glazer ball licker." | completely serious | arms down, dead still; slow push-in |
-| 6.8 | *(pause, then strolls across the office)* | 3/4 view | turnaround body over WALK 1-4 legs (wide shot) |
+| 6.8 | *(pause, then strolls across the office)* | 3/4 view | turnaround body over the rigged walking legs (wide shot) |
 | 8.3 | "Britain is going backwards. It is." | disgusted → raised brow | stops, turns to camera, one-hand downward chop; arms folded on "It is." |
 | 12.2 | "We've got too many people on benefits, too much immigration, too much government spending." | disgusted | paces slowly, counting on his fingers: thumb, thumb + index, three fingers |
 | 17.5 | "You simply cannot run a country like that." | neutral | palms down, small head shake (close-up) |
-| 19.8 | *(walks to the windows)* | 3/4 view | WALK legs, visible on the marble in front of the glass |
+| 19.8 | *(walks to the windows)* | 3/4 view | walking legs, visible on the marble in front of the glass |
 | 21.7 | "I can see it VERY clearly from here in Monaco." | side view | turns side-on and extends his arm at the skyline and yachts, held after the line (wide) |
 | 26.5 | "Britain needs to learn to live within its means." | side view | lectures the view, lip-synced with the side-view mouths |
 | 30.6 | "Ordinary people need to tighten their belts…" | neutral → raised brow | turns back, straightens his jacket, hands to the belt and tugs it |
@@ -43,7 +43,7 @@ Everything is built from the two character sheets:
 | 74.1 | "Simple. Work harder. Spend less. Stop complaining." | neutral → disgusted | points straight at camera on each one (four punch-ins) |
 | 79.7 | "Anyway…" | neutral | checks his gold watch (lids lowered, head down) |
 | 81.0 | "I'd say more — but the yacht's waiting." | smug |  |
-| 83.8 | *(turns to look out at the yachts, picks up his phone, walks out)* | back view → 3/4 | BACK turnaround, PHONE HOLD, WALK legs out past the side table |
+| 83.8 | *(turns to look out at the yachts, picks up his phone, walks out)* | back view → 3/4 | BACK turnaround, PHONE HOLD, walks out past the side table |
 | 90.3 | *(the empty office for 2 s, fade out)* |  |  |
 
 The four uploaded clips were in reverse order; played back to front they make the monologue above
@@ -118,10 +118,18 @@ GitHub releases or ships inside its PyPI wheel.
      line.
 8. **Blinks** (`blink.py`): the sheet has no closed-eye drawings, so a lid sampled from the skin above each eye
    closes over it every 2.4-5.2 s.
-9. **Walking and turning** (`walker.py`):
-   - Walks use the 3/4 turnaround upper body over the WALK 1-4 legs. For a leftward walk the legs are mirrored,
-     so legs, torso and head always face the way he walks.
-   - The leg drawing is picked by the distance covered (4 drawings per step), so the feet never slide.
+9. **Walking and turning** (`walker.py`, `legrig.py`): the sheet's WALK 1-4 drawings can't be swapped in as a cycle.
+   In two of them the planted shoe points backwards, and the four don't line up. So the walk is rigged:
+   - One straight leg from WALK 3 (shoe pointing the way he walks) is cut into thigh, shin and shoe, with rounded
+     overlaps at the knee and the trouser cuff over the shoe. The far leg is the same leg, darker and set back.
+   - Each foot is locked to its spot on the floor in world space (so it holds while he walks into depth). It lands
+     heel first, rolls flat, lifts at the heel and swings forward. The knees are solved from hips and ankles
+     (2-bone IK), and the hips drop just enough for the standing leg to reach, which gives the walk its bob.
+   - Every walk is a whole number of steps and starts and ends with the feet together, so it joins the standing
+     3/4 frames of the turns.
+   - Walking into the room, the stride is solved on a flat floor and sheared onto the floor's slant on screen, so
+     it stays a stride instead of turning into a lunge.
+   - A leftward walk mirrors the whole rig: legs, torso and head always face the way he walks.
    - Turns step through the turnaround drawings (front → 3/4 → profile), 2-3 frames each.
    - He looks out at the yachts in the BACK view.
 10. **The window gag** (`profile.py`):

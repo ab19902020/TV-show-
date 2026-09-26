@@ -1,10 +1,11 @@
 """Walking rig and turnaround views.
-Walker: a 3/4 turnaround body (cut at the jacket hem, hands kept) over the sheet's WALK leg drawings; the legs
-are planted on the body's floor line and the body bobs over them.  'L' walks screen-left (3/4 LEFT body,
-mirrored legs), 'R' walks screen-right (3/4 RIGHT body).
+Walker: a 3/4 turnaround body (cut at the jacket hem, hands kept) over the rigged legs (legrig.py): feet planted on
+the floor, knees solved, the body bobbing with the hips.  'L' walks screen-left (3/4 LEFT body, mirrored legs), 'R'
+walks screen-right (3/4 RIGHT body); both shoes always point the way he walks.
 View: a whole turnaround drawing, for the in-between frames of a turn (and the back view at the window)."""
 import numpy as np, cv2
 from rig import graded_premul, classes, K, to3
+from legrig import LegSprites, Legs, WalkPath
 
 def floor_of(img):
     return float(np.where((img[..., 3] > 128).any(1))[0].max()) - 4
@@ -65,7 +66,7 @@ def talk(rgba, line, vis):
     return out
 
 class Walker:
-    def __init__(self, P, view, legs, mirror_legs, cut_y=922, leg_scale=1.52):
+    def __init__(self, P, view, facing, sprites, cut_y=922):
         body = P["turn"][view][0]
         self.view = view; self._talk = {}
         H, W = body.shape[:2]
@@ -86,28 +87,33 @@ class Walker:
         row = np.where(a[cut_y + 60] & ~hands[cut_y + 60])[0]
         self.hip_x = float((row.min() + row.max()) / 2)
         self.cx = self.hip_x
-        self.legs = {}
-        for ln in legs:
-            img = P["leg"][ln][0]
-            if mirror_legs: img = img[:, ::-1].copy()
-            la = img[..., 3] > 128
-            ys = np.where(la.any(1))[0]
-            top_row = np.where(la[ys.min() + 8])[0]
-            tcx = (top_row.min() + top_row.max()) / 2
-            s = leg_scale
-            M = np.array([[s, 0, self.hip_x - s * tcx], [0, s, self.floor - s * ys.max()]], np.float64)
-            self.legs[ln] = (graded_premul(img), M)
+        self.s = facing
+        self.legs = Legs(sprites, self.hip_x, self.floor, facing)
+        self._paths = {}
 
     def upper_for(self, vis):
         if vis is None or self.view not in MOUTH_LINE: return self.upper
         if vis not in self._talk: self._talk[vis] = graded_premul(talk(self.up_rgba, MOUTH_LINE[self.view], vis))
         return self._talk[vis]
 
-    def layers(self, leg, bob=0.0, lean=0.0, vis=None):
-        img, M = self.legs[leg]
-        R = to3(cv2.getRotationMatrix2D((self.hip_x, 900.0), lean, 1.0))
-        T = np.array([[1, 0, 0], [0, 1, bob], [0, 0, 1]], np.float64)
-        return [(img, to3(M)), (self.upper_for(vis), T @ R)]
+    def path(self, b):
+        key = (b["t0"], b["t1"])
+        if key not in self._paths: self._paths[key] = WalkPath(b["a"], b["b"], self.hip_x, self.floor)
+        return self._paths[key]
+
+    def _layers(self, joints, drop, lean, vis, slope=0.0):
+        R = to3(cv2.getRotationMatrix2D((self.hip_x, 900.0), -self.s * lean, 1.0))    # leans into the walk
+        T = np.array([[1, 0, 0], [0, 1, drop], [0, 0, 1]], np.float64)
+        return self.legs.layers(joints, slope) + [(self.upper_for(vis), T @ R)]
+
+    def walk_layers(self, p, b, vis=None, lean=1.5):
+        """p: progress through walk block b (0..1)"""
+        joints, drop, slope = self.legs.walking(p, self.path(b))
+        return self._layers(joints, drop, lean, vis, slope)
+
+    def stand_layers(self, vis=None):
+        joints, drop = self.legs.standing()
+        return self._layers(joints, drop, 0.0, vis)
 
 class View:
     def __init__(self, P, view, mirror=False):
@@ -119,24 +125,9 @@ class View:
     def layers(self, bob=0.0):
         return [(self.img, np.array([[1, 0, 0], [0, 1, bob], [0, 0, 1]], np.float64))]
 
-WALK = ["WALK 1", "WALK 2", "WALK 3", "WALK 4", "STANDING"]
-
 def build(P):
-    walkers = {"L": Walker(P, "3/4 LEFT", WALK, True), "R": Walker(P, "3/4 RIGHT", WALK, False)}
+    sp = LegSprites(P)
+    walkers = {"L": Walker(P, "3/4 LEFT", -1, sp), "R": Walker(P, "3/4 RIGHT", +1, sp)}
     views = {n: View(P, n) for n in ("FRONT", "3/4 LEFT", "3/4 RIGHT", "BACK")}
     views["PROFILE L"] = View(P, "LEFT", mirror=True)
     return walkers, views
-
-if __name__ == "__main__":
-    import pickle
-    from rig import render_layers
-    P = pickle.load(open("parts.pkl", "rb"))
-    W, V = build(P)
-    S = "/tmp/claude-0/-home-user-TV-show-/17c2eb03-f7c3-5c18-9c9e-6908366e9c0f/scratchpad/"
-    tiles = []
-    for key in "LR":
-        for ln in WALK[:4]:
-            Vm = np.array([[0.4, 0, 110], [0, 0.4, 10], [0, 0, 1]], float)
-            im = render_layers(W[key].layers(ln, -6), Vm, (380, 640))
-            tiles.append((im[..., :3] + np.float32([150, 175, 150]) * (1 - im[..., 3:4])).astype(np.uint8))
-    cv2.imwrite(S + "walkers.png", np.hstack(tiles))

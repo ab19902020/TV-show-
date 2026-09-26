@@ -34,7 +34,6 @@ CHAIR = (455.0, 918.0, 0.480)     # at the executive chair
 FRONT_DESK = (760.0, 885.0, 0.440)
 EXIT = (1840.0, 880.0, 0.440)
 SEAT_DROP = 160.0                 # world px he sinks when sitting
-STRIDE_RIG = 290.0                # one step of the WALK drawings, in rig px (4 drawings per step)
 
 def head_top(place, seated=0.0):
     x, f, k = place
@@ -116,10 +115,14 @@ def block_at(t):
         if b["t0"] <= t < b["t1"]: return b
     return BLOCK[-1]
 
+def progress(t, b):
+    """0..1 through block b, easing into / out of a walk a little"""
+    u = (t - b["t0"]) / max(b["t1"] - b["t0"], 1e-6)
+    return 0.15 * smooth(u) + 0.85 * u
+
 def place_at(t):
     b = block_at(t)
-    u = (t - b["t0"]) / max(b["t1"] - b["t0"], 1e-6)
-    u = 0.15 * smooth(u) + 0.85 * u                                       # eases into / out of the walk a little
+    u = progress(t, b)
     return tuple(b["a"][j] + (b["b"][j] - b["a"][j]) * u for j in range(3)), b
 
 # ------------------------------------------------------------------ cue sheet
@@ -329,17 +332,6 @@ def profile_arm(t):
         return -94 * (smooth(u) + 0.08 * math.sin(math.pi * u))
     if t < dn0: return -94 + 1.2 * math.sin(2 * math.pi * (t - up1) / 2.2)
     return -94 * (1 - smooth((t - dn0) / 0.5))
-
-def walk_frame(t, b):
-    """-> (leg drawing, bob rig px) for a walk block: the drawing follows the distance covered (4 drawings per
-    step), so the feet travel with the ground instead of sliding"""
-    (x, f, k), _ = place_at(t)
-    dist = abs(x - b["a"][0]) + 0.6 * abs(f - b["a"][1])                  # world px covered (depth counts less)
-    step = STRIDE_RIG * k
-    ph = dist / (step / 4.0)
-    leg = ["WALK 1", "WALK 2", "WALK 3", "WALK 4"][int(ph) % 4]
-    bob = -7.0 * abs(math.sin(math.pi * (ph % 2) / 2))
-    return leg, bob
 
 if __name__ == "__main__":
     for b in BLOCK: print(f"{b['t0']:6.2f}-{b['t1']:6.2f} {b['kind']:8s} {b.get('name', b.get('d', ''))}")

@@ -94,12 +94,12 @@ class Actor:
         breath = 1 + 0.006 * math.sin(2 * math.pi * t / 3.7)
         if b["kind"] == "walk":
             w = self.walkers[b["d"]]
-            leg, bob = perf.walk_frame(t, b)
-            out.update(layers=w.layers(leg, bob, 1.2, perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor)); return out
+            out.update(layers=w.walk_layers(perf.progress(t, b), b, perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor))
+            return out
         if b["kind"] == "view":
             if b["name"] in ("3/4 LEFT", "3/4 RIGHT"):                  # a turn / glance: standing, still talking
                 w = self.walkers["L" if b["name"] == "3/4 LEFT" else "R"]
-                out.update(layers=w.layers("STANDING", 0.0, 0.0, perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor)); return out
+                out.update(layers=w.stand_layers(perf.viseme(i)), Mw=Mw_for(w.hip_x, w.floor)); return out
             v = self.views[b["name"]]
             out.update(layers=v.layers(), Mw=Mw_for(v.cx, v.floor)); return out
         th, dy, look = perf.head_motion(i, CH)
