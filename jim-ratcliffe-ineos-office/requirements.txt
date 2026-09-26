@@ -1,5 +1,6 @@
 numpy
 opencv-python-headless
+scikit-image
 librosa
 soundfile
 torch
