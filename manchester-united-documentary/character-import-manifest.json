@@ -1,0 +1,2373 @@
+{
+  "title": "Recovered character artwork — 28 September 2026",
+  "source_scope": "Today's available Manchester United character images, including originals, earlier variants and supplied references. No image generation or pixel edits.",
+  "source_count": 101,
+  "unique_images": 95,
+  "new_images": 86,
+  "sources": [
+    {
+      "source_index": 0,
+      "source_name": "Benjamin Šeško Cartoon Football Character Sheet.png",
+      "source_created_at": "2026-09-28T17:06:03.273772Z",
+      "characters": [
+        "Benjamin Sesko"
+      ],
+      "sheet_type": "combined-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/benjamin-sesko/other-styles/benjamin-sesko__combined-outfits-faces-actions__20260928T170603__c03a227c.png",
+      "git_blob_sha": "c03a227c0ff75c9c811288076b082ed83384dffb",
+      "sha256": "a79fe38cdf581e313fdff943aec813de9d1d6972fa205298685e1e5ad4d64d7d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "clean-line",
+      "style_label": "Off-style — clean thin-line cartoon"
+    },
+    {
+      "source_index": 1,
+      "source_name": "Footballer Character Rigging Asset Sheet.png",
+      "source_created_at": "2026-09-28T17:05:59.563650Z",
+      "characters": [
+        "Benjamin Sesko"
+      ],
+      "sheet_type": "combined-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/benjamin-sesko/other-styles/benjamin-sesko__combined-outfits-faces-actions__20260928T170559__0704f358.png",
+      "git_blob_sha": "0704f358eb9d42147756cc05b76171fd772c9fbb",
+      "sha256": "b1428a3bf46c62b727419220a6b07f1ce2b2efc4017e0230c43062451f7037f9",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "clean-line",
+      "style_label": "Off-style — clean thin-line cartoon"
+    },
+    {
+      "source_index": 2,
+      "source_name": "Manchester United Cartoon Character Asset Sheet.png",
+      "source_created_at": "2026-09-28T16:19:33.987268Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T161933__1bf95528.png",
+      "git_blob_sha": "1bf9552812452983942bc65e6748bc4ecf066515",
+      "sha256": "a72dcaabfda98bcb03b95ef9e5f8c671754e62b376e04ec4977296437b8ebb61",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 3,
+      "source_name": "Football Executives Animation Asset Sheet.png",
+      "source_created_at": "2026-09-28T16:19:32.478874Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T161932__7b8ae17b.png",
+      "git_blob_sha": "7b8ae17b87682076f5dad45b61325fa8371a63b4",
+      "sha256": "28c607625ac69516f23550059eeb56478d79d8e87d55894a922f405891894fe7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 4,
+      "source_name": "Manchester United Character Rig Sheet.png",
+      "source_created_at": "2026-09-28T16:19:30.784526Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T161930__e7136211.png",
+      "git_blob_sha": "e7136211f6e58b21aca633c47efe8b0ca9d47f80",
+      "sha256": "a8407fc9723f2702f9e95ee2798c0fad5ad0cff2afd9790b1be8d9fb6e34198e",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 5,
+      "source_name": "18883.png",
+      "source_created_at": "2026-09-28T16:06:11.307742Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Earlier executive variant; compare with latest group sheets",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T160611__7b9b27d2.png",
+      "git_blob_sha": "7b9b27d2d5d717613875f77ed073e3f06132c780",
+      "sha256": "b3e8bbf0ee7cff43ce386388ecc81321bc313daab87a5a55cb085e42ff2d613d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 6,
+      "source_name": "18882.png",
+      "source_created_at": "2026-09-28T16:06:11.299214Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Earlier executive variant; compare with latest group sheets",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T160611__cd03dcbf.png",
+      "git_blob_sha": "cd03dcbf87bc8169af7e68027d07ca7c95b25c15",
+      "sha256": "7477522bbc5f895c22a9f57d9c87293a06fc47a73fc61a83a88720754caca8cf",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 7,
+      "source_name": "Four-Column Executive Character Sheets.png",
+      "source_created_at": "2026-09-28T16:01:26.631731Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T160126__cef84f7e.png",
+      "git_blob_sha": "cef84f7eb35b944a63b9e633e5a8688344720f92",
+      "sha256": "e929687ce6803641ad1219c607384cc5210ff534feb3c5312b443abaf3eb44bb",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 8,
+      "source_name": "Four-Column Football Character Sheet.png",
+      "source_created_at": "2026-09-28T16:01:24.924334Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T160124__75eb227c.png",
+      "git_blob_sha": "75eb227c206874012dd63999e65afae249fe5c25",
+      "sha256": "3b9422185e76c4014ce2e8311a3333b426e9306f181308bca3dd56fc226c4604",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 9,
+      "source_name": "Football Executive Cartoon Character Sheets.png",
+      "source_created_at": "2026-09-28T16:01:23.028211Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T160123__2d9dea45.png",
+      "git_blob_sha": "2d9dea4500da94326708ca3a6a516c3a13a4b60c",
+      "sha256": "5e393a16863a734327905234bf4b800e4dca6641df43c638a728f77825ec34f8",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 10,
+      "source_name": "Cartoon Character Model Sheet Grid.png",
+      "source_created_at": "2026-09-28T15:57:26.631685Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T155726__d7dd6357.png",
+      "git_blob_sha": "d7dd63571ee6502f666acfbef29f6b36deb515a1",
+      "sha256": "e8745c40b094e93376f5423916b35febd01d471bf81b8463b26f6c43a9d37319",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 11,
+      "source_name": "Cartoon Character Reference Sheet Grid.png",
+      "source_created_at": "2026-09-28T15:57:22.609447Z",
+      "characters": [
+        "Jim Ratcliffe",
+        "Avram Glazer",
+        "Joel Glazer",
+        "Omar Berrada"
+      ],
+      "sheet_type": "group-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/owners-and-executives/house-style/owners-and-executives__group-outfits-faces-actions__20260928T155722__86205819.png",
+      "git_blob_sha": "8620581941a460795770937c744398fb0e02cd51",
+      "sha256": "1ab7e4b18f7a3cb90b39614bad92bd8387d88bffdcb86a59fe0dee302889c46b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 12,
+      "source_name": "Football Coach Character Sheet.png",
+      "source_created_at": "2026-09-28T15:53:31.729843Z",
+      "characters": [
+        "Jason Wilcox"
+      ],
+      "sheet_type": "combined-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/jason-wilcox/house-style/jason-wilcox__combined-outfits-faces-actions__20260928T155331__cd10e734.png",
+      "git_blob_sha": "cd10e734df5b8a72c2f13f215dadf3f8074cade3",
+      "sha256": "ee00aa460d2dd2ffad82564269323c637713ee200a8c8417c74696cf60797613",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 13,
+      "source_name": "Cartoon Football Manager Character Sheet.png",
+      "source_created_at": "2026-09-28T15:53:29.710235Z",
+      "characters": [
+        "Jason Wilcox"
+      ],
+      "sheet_type": "combined-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/jason-wilcox/house-style/jason-wilcox__combined-outfits-faces-actions__20260928T155329__c6db3f49.png",
+      "git_blob_sha": "c6db3f4964f29c1c5f8a2eb78d34ab38fd69debb",
+      "sha256": "fd0cf37a61425e599df9e7fb622014ae16570ed52dd93bc7d479514105026bf9",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 14,
+      "source_name": "Football Director Character Asset Sheet.png",
+      "source_created_at": "2026-09-28T15:53:27.940642Z",
+      "characters": [
+        "Jason Wilcox"
+      ],
+      "sheet_type": "combined-outfits-faces-actions",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/jason-wilcox/house-style/jason-wilcox__combined-outfits-faces-actions__20260928T155327__2ce63c58.png",
+      "git_blob_sha": "2ce63c584203f6ff22d0c55062e0c5013acde74a",
+      "sha256": "522e2f0d260ce0a56a2c2801a28d57484e94ede864c49e5429060f879c40f3fc",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 15,
+      "source_name": "18734(1).png",
+      "source_created_at": "2026-09-28T15:47:37.486192Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__outfits__20260928T154737__df7bdf79.png",
+      "git_blob_sha": "df7bdf79a23d7a785143424118e4deb5b142307a",
+      "sha256": "dc524a3c70cf50430f0accbef1abc0d01fa8d11cb357af7f88cbda42174bee2b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 16,
+      "source_name": "18735(1).png",
+      "source_created_at": "2026-09-28T15:47:37.412909Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__faces-mouths-eyes__20260928T154737__241fb04a.png",
+      "git_blob_sha": "241fb04ad60d3a2d14d219aeac17da4af6653079",
+      "sha256": "70d4fc956f8d7b6ffa65b1559f081be97bbc30536afe17fbe626524c00033f1a",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 17,
+      "source_name": "18733.png",
+      "source_created_at": "2026-09-28T15:47:37.373739Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__outfits__20260928T154737__df7bdf79.png",
+      "git_blob_sha": "df7bdf79a23d7a785143424118e4deb5b142307a",
+      "sha256": "dc524a3c70cf50430f0accbef1abc0d01fa8d11cb357af7f88cbda42174bee2b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 18,
+      "source_name": "18732.png",
+      "source_created_at": "2026-09-28T15:47:37.372793Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/house-style/bruno-fernandes__outfits__20260928T154737__9f79f73e.png",
+      "git_blob_sha": "9f79f73e16deb11b262d7441985a387cbbfb98dd",
+      "sha256": "676bea52cadfc5c1b1449c1b2bf776485cf8d7dbb27a7ecd10dd4c7e09efa952",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 19,
+      "source_name": "exec-45b4a6ec-03c6-4866-83c4-bde892d30055.png",
+      "source_created_at": "2026-09-28T15:46:26.751638Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__faces-mouths-eyes__20260928T154737__241fb04a.png",
+      "git_blob_sha": "241fb04ad60d3a2d14d219aeac17da4af6653079",
+      "sha256": "70d4fc956f8d7b6ffa65b1559f081be97bbc30536afe17fbe626524c00033f1a",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 20,
+      "source_name": "exec-f0ed4648-9625-401c-ab91-cf5dbcac0804.png",
+      "source_created_at": "2026-09-28T15:46:26.456196Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__outfits__20260928T154737__df7bdf79.png",
+      "git_blob_sha": "df7bdf79a23d7a785143424118e4deb5b142307a",
+      "sha256": "dc524a3c70cf50430f0accbef1abc0d01fa8d11cb357af7f88cbda42174bee2b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 21,
+      "source_name": "exec-f0ed4648-9625-401c-ab91-cf5dbcac0804-1.png",
+      "source_created_at": "2026-09-28T15:46:26.381027Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__outfits__20260928T154737__df7bdf79.png",
+      "git_blob_sha": "df7bdf79a23d7a785143424118e4deb5b142307a",
+      "sha256": "dc524a3c70cf50430f0accbef1abc0d01fa8d11cb357af7f88cbda42174bee2b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 22,
+      "source_name": "Jason Wilcox Three-Outfit Character Sheet.png",
+      "source_created_at": "2026-09-28T15:40:33.058583Z",
+      "characters": [
+        "Jason Wilcox"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/jason-wilcox/house-style/jason-wilcox__outfits__20260928T154033__8b393c36.png",
+      "git_blob_sha": "8b393c36be7f867bf5c7355d0e8765adbc5f114a",
+      "sha256": "1621c320e18db5e39e55b9bc2043b4f61b10efad902963039f74722113a5349b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 23,
+      "source_name": "18731.png",
+      "source_created_at": "2026-09-28T15:35:08.140883Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__faces-mouths-eyes__20260928T153508__685b9560.png",
+      "git_blob_sha": "685b95604e91c6134afb797aa51e9c94b794e3d2",
+      "sha256": "23f8d5d245939fe8d6ff0f4b607a1169f4ab74e8bb4d45bb41d260780cddcd8f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 24,
+      "source_name": "18734.png",
+      "source_created_at": "2026-09-28T15:35:08.001661Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__outfits__20260928T154737__df7bdf79.png",
+      "git_blob_sha": "df7bdf79a23d7a785143424118e4deb5b142307a",
+      "sha256": "dc524a3c70cf50430f0accbef1abc0d01fa8d11cb357af7f88cbda42174bee2b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 25,
+      "source_name": "18735.png",
+      "source_created_at": "2026-09-28T15:35:07.974359Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "User-supplied Cunha style reference; preserve original background",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__faces-mouths-eyes__20260928T154737__241fb04a.png",
+      "git_blob_sha": "241fb04ad60d3a2d14d219aeac17da4af6653079",
+      "sha256": "70d4fc956f8d7b6ffa65b1559f081be97bbc30536afe17fbe626524c00033f1a",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": true,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 27,
+      "source_name": "Football Phoneme Expression Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:13:02.276041Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__lip-sync-expressions__20260928T111302__fcfabddf.png",
+      "git_blob_sha": "fcfabddfb64c7771969b6206deb13cee34f8fcbe",
+      "sha256": "bbc0884f5dd71ddf7f91c4ee3ad6000120aaa3c7d1429f0d11a8edb5750a3c0b",
+      "dimensions": [
+        1226,
+        1283
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 28,
+      "source_name": "Harry Amass Lip-Sync Expression Sheet.png",
+      "source_created_at": "2026-09-28T11:13:00.505580Z",
+      "characters": [
+        "Harry Amass"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/harry-amass/other-styles/harry-amass__lip-sync-expressions__20260928T111300__6eacd7c7.png",
+      "git_blob_sha": "6eacd7c7a5ef1be634b0242de1e7119396203307",
+      "sha256": "c0baa7a7ed0c851cb04f0774c105fcd0fc61317f8e2ae2fc455566ccb77ccae4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 29,
+      "source_name": "Leny Yoro Lip-Sync Mouth Shapes Sheet.png",
+      "source_created_at": "2026-09-28T11:12:58.692367Z",
+      "characters": [
+        "Leny Yoro"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/leny-yoro/other-styles/leny-yoro__lip-sync-expressions__20260928T111258__45b56a11.png",
+      "git_blob_sha": "45b56a11bbfc3c0d92237d7eb34ba6f078b86376",
+      "sha256": "ad256affaaabbe84267cf657c48f605623ff999dfaae5a3f727f860aba296cba",
+      "dimensions": [
+        1225,
+        1284
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 30,
+      "source_name": "Ayden Heaven Lip-Sync Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:56.874101Z",
+      "characters": [
+        "Ayden Heaven"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/ayden-heaven/other-styles/ayden-heaven__lip-sync-expressions__20260928T111256__74640b85.png",
+      "git_blob_sha": "74640b850e792542cf814ac567313d253abca00a",
+      "sha256": "45408e1ce4c1b721c3fb0c2869766a0737e9e3cbc98dfcb717920b12d3caa03d",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 31,
+      "source_name": "Tom Heaton Goalkeeper Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:55.275552Z",
+      "characters": [
+        "Tom Heaton"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/tom-heaton/other-styles/tom-heaton__expressions-actions__20260928T111255__4c2c4c1c.png",
+      "git_blob_sha": "4c2c4c1cbac3825bcd406a7dcd3acbcf2a1fe882",
+      "sha256": "31c04da198b1e8e56ba865b33a261141dc56b73f7b87b29567d6add9cbd6b60f",
+      "dimensions": [
+        1199,
+        1312
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 32,
+      "source_name": "Harry Amass Character Model Sheet.png",
+      "source_created_at": "2026-09-28T11:12:53.476985Z",
+      "characters": [
+        "Harry Amass"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/harry-amass/other-styles/harry-amass__turnaround-cutout-parts__20260928T111253__1d945228.png",
+      "git_blob_sha": "1d945228e013b71576ea3ff9f861aa623cd5312c",
+      "sha256": "c6a1bc6bd6912b8c39003b6ac6a6bd230831c1c0f9b6873fed9d8460bfa3a858",
+      "dimensions": [
+        1224,
+        1285
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 33,
+      "source_name": "Diogo Dalot Manchester United Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:50.911348Z",
+      "characters": [
+        "Diogo Dalot"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/diogo-dalot/other-styles/diogo-dalot__turnaround-cutout-parts__20260928T111250__5e405368.png",
+      "git_blob_sha": "5e405368aec0e60f282b0acfd2306db88f2fa895",
+      "sha256": "6cf0bd203ffa2bfc798c58607941e75d1adc003234730b06f85a5ea12bd00ea9",
+      "dimensions": [
+        1222,
+        1287
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 34,
+      "source_name": "Lisandro Martínez Football Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:49.051807Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__turnaround-cutout-parts__20260928T111249__b6389069.png",
+      "git_blob_sha": "b6389069c8ea80c33811d28d4f21274b286b1a3c",
+      "sha256": "c59c8c3435bc9a3fc8c6e149ffa45dbde53a229af7c90e95ca8e46c99991821f",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 35,
+      "source_name": "Lisandro Martínez Manchester United Character Sheet(1).png",
+      "source_created_at": "2026-09-28T11:12:46.865857Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__expressions-actions__20260928T111246__da010569.png",
+      "git_blob_sha": "da010569a8d800c9ea37bce3cd16384ce6cc8749",
+      "sha256": "51fc3359107f195b45c3e6d66dd7c4d7f95fc928c1527cdc6b89ca2548f430a0",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 36,
+      "source_name": "Noussair Mazraoui Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:45.003801Z",
+      "characters": [
+        "Noussair Mazraoui"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/noussair-mazraoui/other-styles/noussair-mazraoui__turnaround-cutout-parts__20260928T111245__afc80bb6.png",
+      "git_blob_sha": "afc80bb6a4eb3d7448c8a0014b06b90a7fc9ab10",
+      "sha256": "98cc0777b95d1a0ce0dcf9b6fb5ce2cf41d733884dfa481ca7f064a080618996",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 37,
+      "source_name": "Matthijs de Ligt Footballer Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:43.288130Z",
+      "characters": [
+        "Matthijs de Ligt"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matthijs-de-ligt/other-styles/matthijs-de-ligt__turnaround-cutout-parts__20260928T111243__c67d65e6.png",
+      "git_blob_sha": "c67d65e669720032ba6d02e34c18fe1a64750bc1",
+      "sha256": "cf0a11d223a551c77d5c07c777cd2cef51e8c8575551cc85ce30c51d1e711263",
+      "dimensions": [
+        1214,
+        1295
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 38,
+      "source_name": "Ayden Heaven: Expressions & Action Poses.png",
+      "source_created_at": "2026-09-28T11:12:41.509526Z",
+      "characters": [
+        "Ayden Heaven"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/ayden-heaven/other-styles/ayden-heaven__expressions-actions__20260928T111241__b5ac676d.png",
+      "git_blob_sha": "b5ac676dffa29aa31b0b064d47a5a674174365dd",
+      "sha256": "beb151734b432819d91f07bd8d5e51f740e3bf7f0bf64df5195385bb66d28b0d",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 39,
+      "source_name": "Karl Darlow Lip-Sync Mouth Sheet.png",
+      "source_created_at": "2026-09-28T11:12:39.815408Z",
+      "characters": [
+        "Karl Darlow"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/karl-darlow/other-styles/karl-darlow__lip-sync-expressions__20260928T111239__9c7afb1d.png",
+      "git_blob_sha": "9c7afb1d62e91cd27fe781720d772b1796cc3b2b",
+      "sha256": "50584f7cdbc9eb3924df30ead93c14b57e5e235ea33824c1c87bdfbddd2bab09",
+      "dimensions": [
+        1374,
+        1145
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 40,
+      "source_name": "Lisandro Martínez Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:38.170844Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "portrait-reference-collage",
+      "review_note": "Reference collage; not a production cutout sheet",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__portrait-reference-collage__20260928T111238__578f3e00.png",
+      "git_blob_sha": "578f3e001a5700d8d1145761378726bbe76fcef5",
+      "sha256": "bba29ce66849db4e319d44e1fab9fade6cb90b2d81bf3a02ffae8a91c9e05a76",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 41,
+      "source_name": "Footballer Lip-Sync Expression Chart.png",
+      "source_created_at": "2026-09-28T11:12:36.555260Z",
+      "characters": [
+        "Matthijs de Ligt"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matthijs-de-ligt/other-styles/matthijs-de-ligt__lip-sync-expressions__20260928T111236__66c66fc6.png",
+      "git_blob_sha": "66c66fc643d22b9999727a7f75ba6d9f620573e2",
+      "sha256": "f43940c2ee9cb2b0b6d7f2680839854885ef5c48b8ba0d88dd662d264a630d8b",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 42,
+      "source_name": "Patrick Dorgu Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:34.833014Z",
+      "characters": [
+        "Patrick Dorgu"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/patrick-dorgu/other-styles/patrick-dorgu__turnaround-cutout-parts__20260928T111234__f720c2ef.png",
+      "git_blob_sha": "f720c2ef52f236ecc4d8eca52ba6bf6ab3cfd5fb",
+      "sha256": "8d445ca71e4f0d0e2e839e38dc73ac2ef8bad6264c84d5625d9d59e625a0485d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 43,
+      "source_name": "Tom Heaton Goalkeeper Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:33.229739Z",
+      "characters": [
+        "Tom Heaton"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/tom-heaton/other-styles/tom-heaton__turnaround-cutout-parts__20260928T111233__34685bf5.png",
+      "git_blob_sha": "34685bf523a2ba79b6fe1afbde28457bafbcd834",
+      "sha256": "bb325eea44f33663d31e19b20ebaefe26499b8ba3e06f2d3800ac57e7129aaeb",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 44,
+      "source_name": "Senne Lammens Goalkeeper Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:31.624676Z",
+      "characters": [
+        "Senne Lammens"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/senne-lammens/other-styles/senne-lammens__turnaround-cutout-parts__20260928T111231__25ebc2c2.png",
+      "git_blob_sha": "25ebc2c28a0c73bc5912a9f768bfeb1fd61cb1ca",
+      "sha256": "fb72bb1139a578fdd01fd7735da4c9de6d720eabcddf775465b2f86d86cac49d",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 45,
+      "source_name": "Noussair Mazraoui Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:29.940700Z",
+      "characters": [
+        "Noussair Mazraoui"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/noussair-mazraoui/other-styles/noussair-mazraoui__expressions-actions__20260928T111229__f8a58272.png",
+      "git_blob_sha": "f8a58272713d1f6502769a049933fd2fc8c252a8",
+      "sha256": "8cb49b063f3ee66694746c94aa7344b79a1abb56f09ca13da8a3b70c8d27c870",
+      "dimensions": [
+        1224,
+        1285
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 46,
+      "source_name": "Lisandro Martínez: Red Devils Profile.png",
+      "source_created_at": "2026-09-28T11:12:28.312889Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "portrait-reference-collage",
+      "review_note": "Reference collage; not a production cutout sheet",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__portrait-reference-collage__20260928T111228__5b4d7bb6.png",
+      "git_blob_sha": "5b4d7bb67949254eaa43cb1a3af15a2303fc41f0",
+      "sha256": "8db915d1389f63d7a92957585f8b361d4af457f0cb7651ccc2654ff3a7444f65",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 47,
+      "source_name": "Diogo Dalot Lip-Sync Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:26.658311Z",
+      "characters": [
+        "Diogo Dalot"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/diogo-dalot/other-styles/diogo-dalot__lip-sync-expressions__20260928T111226__cd80fc09.png",
+      "git_blob_sha": "cd80fc0919ccdd635ee83e00a8bc4823f04ba99e",
+      "sha256": "ad9938788826847d63ea335fd70de4ec018c6263032904c6383aefc43992c047",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 48,
+      "source_name": "Senne Lammens: Expressions and Action Poses.png",
+      "source_created_at": "2026-09-28T11:12:24.960021Z",
+      "characters": [
+        "Senne Lammens"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/senne-lammens/other-styles/senne-lammens__expressions-actions__20260928T111224__b94cac21.png",
+      "git_blob_sha": "b94cac2130d005b31cb1410b221d5b7d5c68db07",
+      "sha256": "9b96d0faa4bd2c565ba2fd95f6e3c891065ab2ad3de204de744abdec9721dc6e",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 49,
+      "source_name": "Senne Lammens Lip-Sync Expression Sheet.png",
+      "source_created_at": "2026-09-28T11:12:23.246232Z",
+      "characters": [
+        "Senne Lammens"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/senne-lammens/other-styles/senne-lammens__lip-sync-expressions__20260928T111223__a63925a5.png",
+      "git_blob_sha": "a63925a556a161bd4e2f3ea50c416a3b3a98cd90",
+      "sha256": "668799cef4ff40fd9fdde41b37422372f7f40f57e1499ee1ec36219ba44ba808",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 50,
+      "source_name": "Lenny Yoro Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:21.459731Z",
+      "characters": [
+        "Leny Yoro"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/leny-yoro/other-styles/leny-yoro__turnaround-cutout-parts__20260928T111221__6a08e999.png",
+      "git_blob_sha": "6a08e999f0f2cd479fb8985bf8f9ab0f2771e1a4",
+      "sha256": "792ab209584e8be5836446aa74bef2ae0cc6ffeb93e4f4cb35ef7d77a80395dd",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 51,
+      "source_name": "Leny Yoro Expressions and Action Sheet.png",
+      "source_created_at": "2026-09-28T11:12:19.726920Z",
+      "characters": [
+        "Leny Yoro"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/leny-yoro/other-styles/leny-yoro__expressions-actions__20260928T111219__a0975f6d.png",
+      "git_blob_sha": "a0975f6d3db85f49c1dcd8532b4b8306764f98c7",
+      "sha256": "34aba35df04807351f05a2abcc465e07b77109eb05054665939c710c5c9383ff",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 52,
+      "source_name": "Lisandro Martínez Manchester United Character Poster.png",
+      "source_created_at": "2026-09-28T11:12:17.881650Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "portrait-reference-collage",
+      "review_note": "Reference collage; not a production cutout sheet",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__portrait-reference-collage__20260928T111217__0f1b6bd7.png",
+      "git_blob_sha": "0f1b6bd75a69cf5eb76b75c5e38afc136a84a2f9",
+      "sha256": "1758964a3033c2e02797394982ea730d4505813c3008a0771d3264bc2267bd3d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 53,
+      "source_name": "Ayden Heaven Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:16.031386Z",
+      "characters": [
+        "Ayden Heaven"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/ayden-heaven/other-styles/ayden-heaven__turnaround-cutout-parts__20260928T111216__9d12930e.png",
+      "git_blob_sha": "9d12930e7c147ee0ee92f54d981ef247cb65bab2",
+      "sha256": "1bd5c206890f92590210be1116d2377333193953e46c7e39bba22c1fb755ea7f",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 54,
+      "source_name": "Noussair Mazraoui Lip-Sync Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:14.260754Z",
+      "characters": [
+        "Noussair Mazraoui"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/noussair-mazraoui/other-styles/noussair-mazraoui__lip-sync-expressions__20260928T111214__73d46797.png",
+      "git_blob_sha": "73d46797d54fccbec052396b2326ac970b878de2",
+      "sha256": "940c0891dd98ddecfe610eed923be09d6d79813402492025e3b12d4780e7404d",
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 55,
+      "source_name": "Casemiro Manchester United Character Sheet.png",
+      "source_created_at": "2026-09-28T11:12:12.689602Z",
+      "characters": [
+        "Casemiro"
+      ],
+      "sheet_type": "portrait-reference-collage",
+      "review_note": "Reference collage; not a production cutout sheet",
+      "path": "manchester-united-documentary/assets/characters/casemiro/other-styles/casemiro__portrait-reference-collage__20260928T111212__ae2018e1.png",
+      "git_blob_sha": "ae2018e15d2f2d46ef48dbfcc37083dc8514be31",
+      "sha256": "0ec2193d10f823fea732703fe38aa78e2ab343129069a11ba818da7741b3e304",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 56,
+      "source_name": "Lisandro Martínez: Fearless Character Board.png",
+      "source_created_at": "2026-09-28T11:12:10.959265Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "portrait-reference-collage",
+      "review_note": "Reference collage; not a production cutout sheet",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__portrait-reference-collage__20260928T111210__c396b0a2.png",
+      "git_blob_sha": "c396b0a2506bfb7f3458973e898f98d0fd959f1f",
+      "sha256": "f2c7734ed966e87cd4c8487dc621eb02aa6a63e66797282e8fde6bc2552c694d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 57,
+      "source_name": "Tom Heaton Lip-Sync Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:09.312720Z",
+      "characters": [
+        "Tom Heaton"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/tom-heaton/other-styles/tom-heaton__lip-sync-expressions__20260928T111209__8196a937.png",
+      "git_blob_sha": "8196a937397724898a06683d567119a4da66f117",
+      "sha256": "572ccd901ca8720095f5799f2316aa6c95ec737aef9612b3bfc02fe4efc032e3",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 58,
+      "source_name": "Patrick Dorgu Lip-Sync Expression Sheet.png",
+      "source_created_at": "2026-09-28T11:12:07.634546Z",
+      "characters": [
+        "Patrick Dorgu"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/patrick-dorgu/other-styles/patrick-dorgu__lip-sync-expressions__20260928T111207__5028c305.png",
+      "git_blob_sha": "5028c3051d4f215c24acc9718b2abaa648bca58c",
+      "sha256": "152ddfecfcb75d3a133847874182eb83f6a13b53f287d5be354158f430ee9a52",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 59,
+      "source_name": "Goalkeeper Expressions & Action Poses.png",
+      "source_created_at": "2026-09-28T11:12:05.914068Z",
+      "characters": [
+        "Karl Darlow"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/karl-darlow/other-styles/karl-darlow__expressions-actions__20260928T111205__d6a22ec0.png",
+      "git_blob_sha": "d6a22ec00e4e4ee103b452f2e0f9995131e24d73",
+      "sha256": "14d5b4be7573f19d07c9bc459ad2b8e4c121a9a3a4b81a649edda1572b23a1bc",
+      "dimensions": [
+        1199,
+        1312
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 60,
+      "source_name": "Matthijs de Ligt Character Reference Sheet.png",
+      "source_created_at": "2026-09-28T11:12:04.284206Z",
+      "characters": [
+        "Matthijs de Ligt"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: portrait proportions or cream panels differ from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matthijs-de-ligt/other-styles/matthijs-de-ligt__expressions-actions__20260928T111204__f4d4e1b4.png",
+      "git_blob_sha": "f4d4e1b451f1a8597c37d27002d4a2d1173053db",
+      "sha256": "f1dedeeec9c0d605fcc3edf7bc649942ec4c646b974e0dda94ff8f98c5066b7e",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "semi-realistic",
+      "style_label": "Off-style — semi-realistic labelled sheet"
+    },
+    {
+      "source_index": 61,
+      "source_name": "image-gen-3(20260928-102745).png",
+      "source_created_at": "2026-09-28T10:27:44.768034Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__expressions-actions__20260928T102744__796446a9.png",
+      "git_blob_sha": "796446a95cd52feee7cf0010d5e8e242f2d4ff02",
+      "sha256": "1de30292f75a6363fc1b22558e353bed0257c5c2d400eafd7f33ce94c5874c4d",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 62,
+      "source_name": "image-gen-2(20260928-102743).png",
+      "source_created_at": "2026-09-28T10:27:42.859496Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__lip-sync-expressions__20260928T102742__71d32aad.png",
+      "git_blob_sha": "71d32aadf4771512b1b6831a84c50edcf765da75",
+      "sha256": "686653d3ee0153340da1846a778114c18589e8563e1a4af8997cc448b9571a6d",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 63,
+      "source_name": "image-gen-1(20260928-102740).png",
+      "source_created_at": "2026-09-28T10:27:40.717056Z",
+      "characters": [
+        "Lisandro Martinez"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/lisandro-martinez/other-styles/lisandro-martinez__turnaround-cutout-parts__20260928T102740__3eccba3a.png",
+      "git_blob_sha": "3eccba3a364096e71f04cd33f320d8297cfd14f4",
+      "sha256": "f40b8901e462452fa14311d2dbaa6d048827223a70b029336eb7841caa9b7ec9",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 64,
+      "source_name": "image-gen-3(20260928-102456).png",
+      "source_created_at": "2026-09-28T10:24:56.225585Z",
+      "characters": [
+        "Luke Shaw"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/luke-shaw/other-styles/luke-shaw__expressions-actions__20260928T102456__108f95be.png",
+      "git_blob_sha": "108f95be8fe9f5a815b1af2ee5bf947e1fcd8f37",
+      "sha256": "32fc868d0a824a291c9a296697f756ed4d7c45185a2a7adcefcb0fb1ca91d9de",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 65,
+      "source_name": "image-gen-2(20260928-102454).png",
+      "source_created_at": "2026-09-28T10:24:54.176528Z",
+      "characters": [
+        "Luke Shaw"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/luke-shaw/other-styles/luke-shaw__lip-sync-expressions__20260928T102454__38b3f28e.png",
+      "git_blob_sha": "38b3f28eeb63f09a748c9f3d9bf4fa5236006108",
+      "sha256": "e75d2cb04948aad4483b538ed3be146953b8806e13d6616360357f983a9b210a",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 66,
+      "source_name": "image-gen-1(20260928-102452).png",
+      "source_created_at": "2026-09-28T10:24:51.997131Z",
+      "characters": [
+        "Luke Shaw"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/luke-shaw/other-styles/luke-shaw__turnaround-cutout-parts__20260928T102451__acd826a2.png",
+      "git_blob_sha": "acd826a2a85f4079f177cbd58fe026262be427d7",
+      "sha256": "8f6b0d1b42f16d13e4cfd6d5f85dfd33fcca2d66bfc9f3eeaf0c67d8f6261940",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 67,
+      "source_name": "image-gen-3(20260928-100948).png",
+      "source_created_at": "2026-09-28T10:09:48.046544Z",
+      "characters": [
+        "Harry Maguire"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/harry-maguire/other-styles/harry-maguire__expressions-actions__20260928T100948__7b4b3d55.png",
+      "git_blob_sha": "7b4b3d55eefc11f5bbaf7c6c0b6f1d58d4c7c381",
+      "sha256": "15638b69e3b80bd39d6d01ff224ff7fb1e4b546ced771e2d802cf57885b65a43",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 68,
+      "source_name": "image-gen-2(20260928-100946).png",
+      "source_created_at": "2026-09-28T10:09:45.890368Z",
+      "characters": [
+        "Harry Maguire"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/harry-maguire/other-styles/harry-maguire__lip-sync-expressions__20260928T100945__0784fbdd.png",
+      "git_blob_sha": "0784fbdddb0c435c5ad8304b3bd0594de8533fa9",
+      "sha256": "4f945301a905a3b2ea6c85cffb6c1904cd0856bc774042bba71641ade800a1e0",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 69,
+      "source_name": "image-gen-1(20260928-100943).png",
+      "source_created_at": "2026-09-28T10:09:43.700778Z",
+      "characters": [
+        "Harry Maguire"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/harry-maguire/other-styles/harry-maguire__turnaround-cutout-parts__20260928T100943__7710b02a.png",
+      "git_blob_sha": "7710b02acd95a9579e2edbdd2c987b1f2ff88692",
+      "sha256": "b18081629fa8c224bd1d2c2d2dad96a33674bb9dc5457e7f81388d7919530cfb",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 70,
+      "source_name": "image-gen-3(20260928-100643).png",
+      "source_created_at": "2026-09-28T10:06:43.218886Z",
+      "characters": [
+        "Kobbie Mainoo"
+      ],
+      "sheet_type": "expressions-actions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/kobbie-mainoo/other-styles/kobbie-mainoo__expressions-actions__20260928T100643__c690121e.png",
+      "git_blob_sha": "c690121e0a3467d8e336ddca3924c36d96630498",
+      "sha256": "5bf784a3d0f3a981116304503e825c99d7ef037af434f790deeb13dd3f3a5774",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 71,
+      "source_name": "image-gen-2(20260928-100641).png",
+      "source_created_at": "2026-09-28T10:06:40.913025Z",
+      "characters": [
+        "Kobbie Mainoo"
+      ],
+      "sheet_type": "lip-sync-expressions",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/kobbie-mainoo/other-styles/kobbie-mainoo__lip-sync-expressions__20260928T100640__74e80f01.png",
+      "git_blob_sha": "74e80f01875b82a4e5d76efd0430300235200bf8",
+      "sha256": "b2205df16804fb9fabe5e9c024c808ee77ff85861dde9535c2e188a6a7682c26",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 72,
+      "source_name": "image-gen-1(20260928-100638).png",
+      "source_created_at": "2026-09-28T10:06:38.525809Z",
+      "characters": [
+        "Kobbie Mainoo"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Style review: simplified flat cartoon differs from Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/kobbie-mainoo/other-styles/kobbie-mainoo__turnaround-cutout-parts__20260928T100638__89b3973e.png",
+      "git_blob_sha": "89b3973e23291e7f37147543b515c0ee489470e5",
+      "sha256": "e346f61cae65eeddeb5209cfb7f3138b77261af5d10c88cd0879b86072b38ecc",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "mode": "RGB",
+      "has_transparency": false,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "flat-cartoon",
+      "style_label": "Off-style — flat cream-paper cartoon"
+    },
+    {
+      "source_index": 73,
+      "source_name": "Manchester United Animated Cast Roster.png",
+      "source_created_at": "2026-09-28T10:00:40.768101Z",
+      "characters": [
+        "Manchester United cast guide"
+      ],
+      "sheet_type": "cast-reference-collage",
+      "review_note": "Planning reference only; names and roles are not a verified squad list",
+      "path": "manchester-united-documentary/assets/characters/manchester-united-cast-guide/other-styles/manchester-united-cast-guide__cast-reference-collage__20260928T100040__43b56f86.png",
+      "git_blob_sha": "43b56f86ad080a11787e7f99ead92300bbee7c3f",
+      "sha256": "4e524b7d3b73f5ea2c28a40770e24381c6f5acff37653e06e5da14552fd8d3c9",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "photo-reference",
+      "style_label": "Reference only — photoreal collage"
+    },
+    {
+      "source_index": 74,
+      "source_name": "Kobbie Mainoo three-outfit character sheet.png",
+      "source_created_at": "2026-09-28T09:15:00.868709Z",
+      "characters": [
+        "Kobbie Mainoo"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/kobbie-mainoo/house-style/kobbie-mainoo__outfits__20260928T091500__b46d99b6.png",
+      "git_blob_sha": "b46d99b6d53935bf78d65059042a07cf959867c2",
+      "sha256": "aa35fd3ea5965db5ab5e84429664f1be03a58609244d7ee1636c8413ceba87a7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 75,
+      "source_name": "Marcus Rashford movement character sheet.png",
+      "source_created_at": "2026-09-28T09:14:59.395871Z",
+      "characters": [
+        "Marcus Rashford"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/marcus-rashford/house-style/marcus-rashford__movement-parts__20260928T091459__57e8fb17.png",
+      "git_blob_sha": "57e8fb173e57b84a00b29fba042ce8dec192eb84",
+      "sha256": "77430d6a1a81a9fdb5860182ed11065f9576affb06b72a8d2e200b64d40f0589",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 76,
+      "source_name": "Marcus Rashford caricature facial atlas.png",
+      "source_created_at": "2026-09-28T09:14:57.847498Z",
+      "characters": [
+        "Marcus Rashford"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/marcus-rashford/house-style/marcus-rashford__faces-mouths-eyes__20260928T091457__88b99ae5.png",
+      "git_blob_sha": "88b99ae58c52c12d5ad209627f61c01903ccb066",
+      "sha256": "2d88fa25c2cfaf699b5f2143101998f78e35b7cf249ac9e96053089c58f97216",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 77,
+      "source_name": "Marcus Rashford Manchester United cast sheet.png",
+      "source_created_at": "2026-09-28T09:14:55.831881Z",
+      "characters": [
+        "Marcus Rashford"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/marcus-rashford/house-style/marcus-rashford__outfits__20260928T091455__2e768c7a.png",
+      "git_blob_sha": "2e768c7a58356a5185634cd44797fb6d11fdc269",
+      "sha256": "4e48243f4e52ff3c25e0a9294a54f962782d712aae4d544b88e4054568deced3",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 78,
+      "source_name": "Bruno Fernandes three-outfit movement atlas.png",
+      "source_created_at": "2026-09-28T08:03:40.510244Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/movement.png",
+      "git_blob_sha": "97330ede807a9818bf906e704417f276b7986bfc",
+      "sha256": "65cf79bb853ea6589ba96a4390a514d7bbabaeb591e05fc2e8a5af1699bce13f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 79,
+      "source_name": "Bruno Fernandes expressive face atlas.png",
+      "source_created_at": "2026-09-28T08:03:38.512349Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/face-visemes.png",
+      "git_blob_sha": "bd851a0146258822452e4cb64236c8f0e73e5dab",
+      "sha256": "8908ba64071a271e705d310505dd59c44fa53272226c2fea4349794b212995b4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 80,
+      "source_name": "Bruno Fernandes three-outfit character sheet(1).png",
+      "source_created_at": "2026-09-28T08:03:36.321277Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/outfits.png",
+      "git_blob_sha": "c857bbbbc47889e0eefdebecdde126659881a8ce",
+      "sha256": "ecb49d244b8f3cabec9873d894f5db591ce80b4c4dd35a2be1e18fb010953e7f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 81,
+      "source_name": "Bruno Fernandes costume movement sheet.png",
+      "source_created_at": "2026-09-28T08:03:34.645423Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/house-style/bruno-fernandes__movement-parts__20260928T080334__483c03fe.png",
+      "git_blob_sha": "483c03fe5847566a0223d81522cf1691fad0bb65",
+      "sha256": "8b0007e355888c54e2a0963562772726a5af2917437691a41bfc888347ff12b0",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 82,
+      "source_name": "Michael Carrick caricature movement sheet.png",
+      "source_created_at": "2026-09-28T08:03:32.934152Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/movement.png",
+      "git_blob_sha": "0c1446d939ffa5c0250597adea756743b01562f3",
+      "sha256": "e5c07c00e444ea3a6777afcf5139a5e915891369801b9a2d7d98e01fe7752951",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 83,
+      "source_name": "Matheus Cunha caricature movement sheet.png",
+      "source_created_at": "2026-09-28T08:03:31.257457Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/movement.png",
+      "git_blob_sha": "3256e3b89c9a4e1df4db62021ec2e27eaf270c24",
+      "sha256": "0bc026a15bda71e585391611219420c97e50a8ac554d32173759df952a25273c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 84,
+      "source_name": "Matheus Cunha facial animation atlas.png",
+      "source_created_at": "2026-09-28T08:03:29.740840Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/face-visemes.png",
+      "git_blob_sha": "ae8a96cdb9f4c5302517b2d3233bf3c853a3be3f",
+      "sha256": "3fe99ae57f9064369f7a13de2f54aa309bf9360cbb6cfe759f5ccfaa5f01d260",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 85,
+      "source_name": "Michael Carrick Facial Animation Atlas.png",
+      "source_created_at": "2026-09-28T08:03:28.099117Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/face-visemes.png",
+      "git_blob_sha": "696b3f73d82d7972ab736c29a1093127e0d2b500",
+      "sha256": "9383f528e0ba7c1f36a2fc5d04bc6c78af61ef4efffb9f5a3b770aa609ca15e0",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 86,
+      "source_name": "Bruno Fernandes facial expression atlas.png",
+      "source_created_at": "2026-09-28T08:03:26.423898Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/house-style/bruno-fernandes__faces-mouths-eyes__20260928T080326__0ba47af7.png",
+      "git_blob_sha": "0ba47af7fdee823b36cd7b07f2730c1616618ad3",
+      "sha256": "4cadcd0153e3c15ca70a2696487db0819e65602d4e1213dde1e2dc44fcf20d05",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 87,
+      "source_name": "Matheus Cunha: Three-kit character sheet.png",
+      "source_created_at": "2026-09-28T08:03:24.561834Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/outfits.png",
+      "git_blob_sha": "b7fcca057e96a8b754b3eeae40a71a1a0f0e5f61",
+      "sha256": "5581f28a5faf56869f60820764cabc231193c6471b4e3f2c2461a4b9dcf0945c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 88,
+      "source_name": "Michael Carrick in Three Signature Outfits.png",
+      "source_created_at": "2026-09-28T08:03:22.885061Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/outfits.png",
+      "git_blob_sha": "9f8a636e0b7a397998dbaf0255916878f0be75ee",
+      "sha256": "850dfe707e2633201cf8f546877dd968147771a1efb82ac52d7dcf2a6fd54b38",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": true,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 89,
+      "source_name": "Bruno Fernandes three-outfit character sheet.png",
+      "source_created_at": "2026-09-28T08:03:21.172576Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "outfits",
+      "review_note": "Caricature source; inspect likeness and parts before rigging",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/house-style/bruno-fernandes__outfits__20260928T080321__0faaa2dc.png",
+      "git_blob_sha": "0faaa2dc0cfaa92a7215d08feb9a88056102781e",
+      "sha256": "0a709bcc8ce12dc140a848631a4aa63777a9fa87aaae50e9543a2a950cf582e7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 90,
+      "source_name": "Matheus Cunha football motion atlas.png",
+      "source_created_at": "2026-09-28T07:37:21.286074Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__movement-parts__20260928T073721__380b8228.png",
+      "git_blob_sha": "380b8228a68a8dc65eed2be1229c2349f64a5cc6",
+      "sha256": "ee5ae01b01a03379c331a3d597b6f1af278516901aedca5cf15a3333cf242410",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 91,
+      "source_name": "Matheus Cunha animated face atlas.png",
+      "source_created_at": "2026-09-28T07:37:19.561042Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/house-style/matheus-cunha__faces-mouths-eyes__20260928T073719__d430bce1.png",
+      "git_blob_sha": "d430bce1628845cd03cb2055623e074c24449e96",
+      "sha256": "d1b8e0459e3a5d6ce36bde86c0fbb936547509d051f70b1de750a5d497361bf1",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "house",
+      "style_label": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)"
+    },
+    {
+      "source_index": 92,
+      "source_name": "Michael Carrick Football Motion Atlas.png",
+      "source_created_at": "2026-09-28T07:37:16.439201Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/other-styles/michael-carrick__movement-parts__20260928T073716__925e13d3.png",
+      "git_blob_sha": "925e13d3711cdf5c87a3ff3bf49c240990711090",
+      "sha256": "b34b756112ccf02f16999f5c11db157f3906c443f717883d63dc9887bf563e40",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "realistic",
+      "style_label": "Off-style — realistic painted"
+    },
+    {
+      "source_index": 93,
+      "source_name": "Michael Carrick face atlas.png",
+      "source_created_at": "2026-09-28T07:37:14.676366Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/other-styles/michael-carrick__faces-mouths-eyes__20260928T073714__28d5ad49.png",
+      "git_blob_sha": "28d5ad49774024c8d049ad7dde93bfe843fa63d6",
+      "sha256": "69072fc4b93d58bae4bc74460b5023331e76d15526dba41581fe99c45fbf147c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "realistic",
+      "style_label": "Off-style — realistic painted"
+    },
+    {
+      "source_index": 94,
+      "source_name": "Matheus Cunha Caricature Turnaround Sheet.png",
+      "source_created_at": "2026-09-28T07:37:12.617492Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/other-styles/matheus-cunha__turnaround-cutout-parts__20260928T073712__05065ceb.png",
+      "git_blob_sha": "05065cebff540c5bc03a834d0b91a5beb2509bd5",
+      "sha256": "733c257d92e25306dbe049ff467d79de6a5a91e61422e9b250b2d5e9300fb1af",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "3d-render",
+      "style_label": "Off-style — semi-3D render"
+    },
+    {
+      "source_index": 95,
+      "source_name": "Michael Carrick Coach Character Sheet.png",
+      "source_created_at": "2026-09-28T07:37:11.052647Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/other-styles/michael-carrick__turnaround-cutout-parts__20260928T073711__005dec97.png",
+      "git_blob_sha": "005dec972f8b37e053ba849b4a1a2bd5f3dcb5e5",
+      "sha256": "485576bbabffadd01de4c88c3fc4691c51efc106222065ad074e096bd62af52d",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "3d-render",
+      "style_label": "Off-style — semi-3D render"
+    },
+    {
+      "source_index": 96,
+      "source_name": "Bruno Fernandes animation movement atlas.png",
+      "source_created_at": "2026-09-28T07:37:08.852419Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "movement-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/other-styles/bruno-fernandes__movement-parts__20260928T073708__3c42212d.png",
+      "git_blob_sha": "3c42212dbf8aff7b48b716521a996de73eb4f6ee",
+      "sha256": "1104d5330fbbbbf32178ae7ce3d720787f6e048144898539ad0622e0c7bc10b7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "realistic",
+      "style_label": "Off-style — realistic painted"
+    },
+    {
+      "source_index": 97,
+      "source_name": "Bruno Fernandes facial animation atlas.png",
+      "source_created_at": "2026-09-28T07:37:07.198470Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "faces-mouths-eyes",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/other-styles/bruno-fernandes__faces-mouths-eyes__20260928T073707__5e959d4f.png",
+      "git_blob_sha": "5e959d4f95204157621ca635257c0314f1d8e856",
+      "sha256": "b5d3f15a924fc3385f880ca64ec4af4f09aaa5f27bdf00b2dbcb442db47b2594",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "realistic",
+      "style_label": "Off-style — realistic painted"
+    },
+    {
+      "source_index": 98,
+      "source_name": "Bruno Fernandes three-view character sheet.png",
+      "source_created_at": "2026-09-28T07:37:05.577381Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/other-styles/bruno-fernandes__turnaround-cutout-parts__20260928T073705__c19991a6.png",
+      "git_blob_sha": "c19991a6529e29bfce53a59181fe48421bce6d0d",
+      "sha256": "3c4408233d3c430645a62507daff734f9419e8db95683649ec008dff01bd040c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "3d-render",
+      "style_label": "Off-style — semi-3D render"
+    },
+    {
+      "source_index": 99,
+      "source_name": "Matheus Cunha Character Turnaround Sheet.png",
+      "source_created_at": "2026-09-28T07:08:47.035984Z",
+      "characters": [
+        "Matheus Cunha"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/matheus-cunha/other-styles/matheus-cunha__turnaround-cutout-parts__20260928T070847__2da95d1a.png",
+      "git_blob_sha": "2da95d1a993bc68f7fa3d58d1c1afdac299b498e",
+      "sha256": "8a8e4ca40b3a7c1559874a4ef37471fae76c7bdd156cee3c0537545f6e9ca795",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "turnaround-flat",
+      "style_label": "Off-style — thin-line labelled turnaround"
+    },
+    {
+      "source_index": 100,
+      "source_name": "Michael Carrick body turnaround sheet.png",
+      "source_created_at": "2026-09-28T07:08:45.347507Z",
+      "characters": [
+        "Michael Carrick"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/michael-carrick/other-styles/michael-carrick__turnaround-cutout-parts__20260928T070845__1ab363c5.png",
+      "git_blob_sha": "1ab363c588df8b1900b5d778d1b3a23575be3eee",
+      "sha256": "d0be31d17f7d4ecc25f014d7b239d42052f503e74758292d6405ad27bcbb54c4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "turnaround-flat",
+      "style_label": "Off-style — thin-line labelled turnaround"
+    },
+    {
+      "source_index": 101,
+      "source_name": "Bruno Fernandes — body and turnaround.png",
+      "source_created_at": "2026-09-28T07:08:43.879915Z",
+      "characters": [
+        "Bruno Fernandes"
+      ],
+      "sheet_type": "turnaround-cutout-parts",
+      "review_note": "Earlier variant; compare with approved Cunha reference",
+      "path": "manchester-united-documentary/assets/characters/bruno-fernandes/other-styles/bruno-fernandes__turnaround-cutout-parts__20260928T070843__7199626b.png",
+      "git_blob_sha": "7199626b0d526dc3a50678a4a457d568b7900fc9",
+      "sha256": "6481e0dea10ddcfb687d2706b22856342beb2075e8589fe9774678379d89c2b3",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_transparency": true,
+      "already_in_repository": false,
+      "duplicate_source": false,
+      "style": "turnaround-flat",
+      "style_label": "Off-style — thin-line labelled turnaround"
+    }
+  ],
+  "style_key": {
+    "house": "House style — bold inked caricature (matches Cunha / Bruno / Carrick)",
+    "turnaround-flat": "Off-style — thin-line labelled turnaround",
+    "3d-render": "Off-style — semi-3D render",
+    "realistic": "Off-style — realistic painted",
+    "flat-cartoon": "Off-style — flat cream-paper cartoon",
+    "semi-realistic": "Off-style — semi-realistic labelled sheet",
+    "clean-line": "Off-style — clean thin-line cartoon",
+    "photo-reference": "Reference only — photoreal collage"
+  },
+  "layout_note": "Each character folder keeps its primary three sheets at the top level, extra sheets that match the house style in house-style/, and off-style sheets kept for likeness/reference only in other-styles/."
+}

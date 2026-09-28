@@ -9,6 +9,8 @@ Animated TV-studio scenes with lip-synced characters.
 ## New animated documentary parody
 
 Character source sheets for the Manchester United documentary parody are in
-[`manchester-united-documentary/`](manchester-united-documentary/). Each character
-has home, training and match/touchline outfits, facial expressions and mouth
-shapes, and movement/gesture variants.
+[`manchester-united-documentary/`](manchester-united-documentary/). See
+[`CHARACTERS.md`](manchester-united-documentary/CHARACTERS.md) for the full cast,
+the house art style and which characters are ready in that style, and
+[`BACKGROUNDS.md`](manchester-united-documentary/BACKGROUNDS.md) for the
+background and canvas images.
