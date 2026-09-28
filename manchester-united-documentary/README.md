@@ -4,6 +4,10 @@ This folder holds the reusable source assets for the new animated series. Keep
 future backgrounds, characters, audio and scene files within this folder rather
 than mixing them into the existing Roy Keane scene.
 
+## Backgrounds
+
+[BACKGROUNDS.md](BACKGROUNDS.md) lists the background and canvas images in [`assets/backgrounds/`](assets/backgrounds/), which are grouped by location: training ground, boardroom, manager's office, stadium exterior, tunnel, press conference and TV studio.
+
 ## Characters
 
 **[CHARACTERS.md](CHARACTERS.md) is the character section.** It has the house-style guide, the status of every cast member and links to each sheet.
