@@ -6,7 +6,7 @@ than mixing them into the existing Roy Keane scene.
 
 ## Backgrounds
 
-[BACKGROUNDS.md](BACKGROUNDS.md) lists the background and canvas images in [`assets/backgrounds/`](assets/backgrounds/), which are grouped by location: training ground, boardroom, manager's office, stadium exterior, tunnel, press conference and TV studio.
+[BACKGROUNDS.md](BACKGROUNDS.md) lists the background and canvas images in [`assets/backgrounds/`](assets/backgrounds/), which are grouped by location: training ground, boardroom, manager's office, tactics room, locker room, stadium exterior, tunnel, mixed zone, press conference and TV studio.
 
 ## Characters
 
