@@ -4,3 +4,5 @@ models/
 audio_raw/
 __pycache__/
 *.pyc
+# full-size 4K masters (over GitHub's 100 MB limit, delivered separately)
+*_master.mp4
