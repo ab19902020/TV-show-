@@ -34,11 +34,11 @@ means the character only has off-style art and needs a house-style redraw.
 | Bruno Fernandes | ✅ | [outfits](assets/characters/bruno-fernandes/outfits.png) · [face-visemes](assets/characters/bruno-fernandes/face-visemes.png) · [movement](assets/characters/bruno-fernandes/movement.png) · [more](assets/characters/bruno-fernandes/house-style/) | [other-styles](assets/characters/bruno-fernandes/other-styles/) |
 | Michael Carrick | ✅ | [outfits](assets/characters/michael-carrick/outfits.png) · [face-visemes](assets/characters/michael-carrick/face-visemes.png) · [movement](assets/characters/michael-carrick/movement.png) | [other-styles](assets/characters/michael-carrick/other-styles/) |
 | Marcus Rashford | ✅ | [outfits](assets/characters/marcus-rashford/house-style/marcus-rashford__outfits__20260928T091455__2e768c7a.png) · [faces](assets/characters/marcus-rashford/house-style/marcus-rashford__faces-mouths-eyes__20260928T091457__88b99ae5.png) · [movement](assets/characters/marcus-rashford/house-style/marcus-rashford__movement-parts__20260928T091459__57e8fb17.png) | — |
-| Kobbie Mainoo | 🟡 Outfits only | [outfits](assets/characters/kobbie-mainoo/house-style/kobbie-mainoo__outfits__20260928T091500__b46d99b6.png) | [other-styles](assets/characters/kobbie-mainoo/other-styles/): flat cartoon faces, lip-sync, turnaround |
+| Kobbie Mainoo | ✅ | [outfits](assets/characters/kobbie-mainoo/house-style/kobbie-mainoo__outfits__20260928T091500__b46d99b6.png) · [players group](assets/characters/players-group/house-style/players-group__maguire-martinez-rashford-mainoo__20260929.png): heads, mouths, eyes, action poses | [other-styles](assets/characters/kobbie-mainoo/other-styles/): flat cartoon faces, lip-sync, turnaround |
 | Benjamin Sesko | ❌ Closest to house style | — | [other-styles](assets/characters/benjamin-sesko/other-styles/): clean thin-line combined sheets |
-| Harry Maguire | ❌ | — | [other-styles](assets/characters/harry-maguire/other-styles/): flat cartoon |
+| Harry Maguire | ✅ Players group sheet | [players group](assets/characters/players-group/house-style/players-group__maguire-martinez-rashford-mainoo__20260929.png): match kit, training, suit, 8 heads, mouths, eyes, action poses incl. back view | [other-styles](assets/characters/harry-maguire/other-styles/): flat cartoon, not used on screen |
 | Luke Shaw | ❌ | — | [other-styles](assets/characters/luke-shaw/other-styles/): flat cartoon |
-| Lisandro Martinez | ❌ | — | [other-styles](assets/characters/lisandro-martinez/other-styles/): flat cartoon, semi-realistic and photo collages |
+| Lisandro Martinez | ✅ Players group sheet | [players group](assets/characters/players-group/house-style/players-group__maguire-martinez-rashford-mainoo__20260929.png): match kit, training, 8 heads, mouths, eyes, action poses incl. back view | [other-styles](assets/characters/lisandro-martinez/other-styles/): flat cartoon, semi-realistic and photo collages |
 | Matthijs de Ligt | ❌ | — | [other-styles](assets/characters/matthijs-de-ligt/other-styles/): semi-realistic |
 | Senne Lammens | ❌ | — | [other-styles](assets/characters/senne-lammens/other-styles/): semi-realistic |
 | Patrick Dorgu | ❌ | — | [other-styles](assets/characters/patrick-dorgu/other-styles/): semi-realistic, no action sheet |
@@ -50,6 +50,10 @@ means the character only has off-style art and needs a house-style redraw.
 | Noussair Mazraoui | ❌ | — | [other-styles](assets/characters/noussair-mazraoui/other-styles/): semi-realistic |
 | Tom Heaton | ❌ | — | [other-styles](assets/characters/tom-heaton/other-styles/): semi-realistic |
 | Casemiro | ❌ Reference only | — | [other-styles](assets/characters/casemiro/other-styles/): photoreal collage |
+
+The [players group sheet](assets/characters/players-group/house-style/players-group__maguire-martinez-rashford-mainoo__20260929.png) (Maguire, Martínez, Rashford, Mainoo) packs four players on one 1536 × 1024 page,
+so its drawings are about half the size of the single-player sheets. Its transparency is cut slightly inside the
+ink outline in places; `episode-1-not-ideal/parts.py` re-mattes it from the drawing (`ink` mode).
 
 ### Owners and executives
 
