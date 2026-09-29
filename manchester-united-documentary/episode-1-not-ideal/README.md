@@ -3,8 +3,11 @@
 An animated football mockumentary, rendered in 4K (3840×2160, 30 fps) with the recorded voices. Scenes 1 and 2
 run 3 min 17 s and end on the title card.
 
-- **4K master:** delivered separately. At about 180 MB it is too big for GitHub's 100 MB file limit.
-- **In the repo:** [`episode1_scenes1-2_1080p.mp4`](episode1_scenes1-2_1080p.mp4), a 1080p copy of the same cut.
+- **4K master** (3840×2160, 472 MB): stored in [`4k/`](4k/) as five pieces, because GitHub files must be under
+  100 MB. Join them back into the exact file with
+  `cat 4k/episode1_scenes1-2_4k.mp4.part* > episode1_scenes1-2_4k.mp4` (checksum in `4k/SHA256SUM`).
+- **1080p:** [`episode1_scenes1-2_1080p.mp4`](episode1_scenes1-2_1080p.mp4) (93 MB).
+- **720p preview:** [`episode1_scenes1-2_720p.mp4`](episode1_scenes1-2_720p.mp4) (30 MB).
 
 ## What's in it
 
