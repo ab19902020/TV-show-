@@ -3,8 +3,10 @@ a roll of white tape. They are written as extra parts (build/parts/prop_*.png + 
 with the sheet origin at 0, 0) so cast.py / Actor place them like any other drawing.
 
   prop_bus      side view of the team coach, facing left (it drives in from the right)
-  prop_glove_L  Maguire's open-hand drawings recoloured: grey latex palm, lime / black wrist strap
+  prop_glove_L  a goalkeeper's glove drawn in the house style (bold ink, cel shading), and its mirror
   prop_glove_R
+  prop_leg_mg   Bruno's sock-and-boot drawing with Maguire's white boots, for the lace-tying insert
+  seat_*        seated players, from the standing house-style drawings
   prop_tape     a roll of white athletic tape, three-quarter view"""
 import json, numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -80,32 +82,85 @@ def bus():
     return Image.fromarray(out, "RGBA")
 
 
-def glove(src):
-    """recolour an open-hand drawing into a goalkeeper glove: skin -> grey latex, the wrist -> a lime strap"""
-    a = np.asarray(Image.open(src).convert("RGBA")).astype(np.float32)
-    rgb, al = a[..., :3], a[..., 3]
+def glove(right=False):
+    """a goalkeeper's glove, drawn in the house style (bold ink, cel shading): back of the hand, fingers up. Lime
+    backhand with a black finger-spine on each finger, grey latex showing at the palm edge, a black cuff with a lime
+    strap. 480 x 680 part px (4x). right=True mirrors it."""
+    W, H = 480, 680
+    body = Image.new("L", (W, H), 0); d = ImageDraw.Draw(body)
+    fingers = [(150, 62, 70), (228, 30, 72), (304, 44, 70), (372, 96, 60)]        # (centre x, top y, width)
+    for cx, top, w in fingers:
+        d.rounded_rectangle([cx - w / 2, top, cx + w / 2, 330], radius=w / 2, fill=255)
+    d.rounded_rectangle([108, 250, 412, 520], radius=70, fill=255)                 # the hand
+    thumb = Image.new("L", (W, H), 0); dt = ImageDraw.Draw(thumb)
+    dt.rounded_rectangle([60, 250, 140, 470], radius=40, fill=255)
+    thumb = thumb.rotate(28, center=(115, 440), resample=Image.BICUBIC)
+    body = Image.fromarray(np.maximum(np.asarray(body), np.asarray(thumb)))
+    d = ImageDraw.Draw(body)
+    d.rounded_rectangle([118, 480, 402, 660], radius=26, fill=255)                 # cuff
+    m = np.asarray(body).astype(np.float32) / 255
+    lime = np.float32([196, 238, 30]); black = np.float32([26, 26, 30]); grey = np.float32([176, 180, 176])
+    img = np.zeros((H, W, 3), np.float32) + lime
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    # the finger spines (black stripes) and the backhand panel
+    lay = Image.new("L", (W, H), 0); dl = ImageDraw.Draw(lay)
+    for cx, top, w in fingers:
+        dl.rounded_rectangle([cx - w * 0.18, top + 18, cx + w * 0.18, 300], radius=w * 0.18, fill=255)
+    dl.polygon([(150, 330), (372, 330), (390, 400), (300, 470), (130, 440)], fill=255)
+    k = np.asarray(lay).astype(np.float32)[..., None] / 255
+    img = img * (1 - k) + black * k
+    # white brand swoosh on the backhand
+    sw = Image.new("L", (W, H), 0); ds = ImageDraw.Draw(sw)
+    ds.line([(180, 420), (250, 405), (340, 360)], fill=255, width=22, joint="curve")
+    k = np.asarray(sw).astype(np.float32)[..., None] / 255
+    img = img * (1 - k) + np.float32([245, 245, 240]) * k
+    # latex showing at the thumb and the palm edge
+    k = (np.asarray(thumb).astype(np.float32)[..., None] / 255) * (xx < 150)[..., None] * 0.9
+    img = img * (1 - k) + grey * k
+    # the cuff: black with a lime strap and a white stripe
+    cuff = (yy > 486)[..., None].astype(np.float32)
+    img = img * (1 - cuff) + black * cuff
+    strap = ((yy > 530) & (yy < 610) & (xx > 150) & (xx < 402))[..., None].astype(np.float32)
+    img = img * (1 - strap) + lime * strap
+    stripe = ((yy > 560) & (yy < 578) & (xx > 150) & (xx < 402))[..., None].astype(np.float32)
+    img = img * (1 - stripe) + np.float32([245, 245, 240]) * stripe
+    # cel shading: a darker band down the right of every shape, a highlight on the left
+    shade = np.clip((xx - 300) / 140, 0, 1) * 0.28 + np.clip((yy - 380) / 300, 0, 1) * 0.1
+    img = img * (1 - shade[..., None])
+    hi = np.exp(-(((xx - 190) / 70) ** 2 + ((yy - 200) / 150) ** 2)) * 0.12
+    img = np.clip(img + hi[..., None] * 255, 0, 255)
+    # ink: the silhouette outline, the finger gaps, the cuff line
+    sil = (m > 0.5).astype(np.uint8)
+    edge = cv2.morphologyEx(sil, cv2.MORPH_GRADIENT, np.ones((13, 13), np.uint8)) > 0
+    inner = Image.new("L", (W, H), 0); di = ImageDraw.Draw(inner)
+    for (c0, _, w0), (c1, _, w1) in zip(fingers, fingers[1:]):
+        xg = (c0 + w0 / 2 + c1 - w1 / 2) / 2
+        di.line([(xg, 120), (xg, 320)], fill=255, width=9)
+    di.line([(122, 486), (398, 486)], fill=255, width=9)
+    di.arc([60, 300, 220, 520], 200, 300, fill=255, width=8)                        # the thumb's crease
+    ink = edge | ((np.asarray(inner) > 128) & (sil > 0))
+    img[ink] = np.float32(INK[:3])
+    out = np.dstack([img, (m * 255)]).astype(np.uint8)
+    im = Image.fromarray(out, "RGBA")
+    return im.transpose(Image.FLIP_LEFT_RIGHT) if right else im
+
+
+def white_boots(part):
+    """Bruno's leg drawing (sock + boot) with Maguire's boots: white with red trim (as on his outfits sheet)"""
+    a = np.asarray(Image.open(f"build/parts/{part}.png").convert("RGBA")).astype(np.float32)
+    rgb = a[..., :3]
     hsv = cv2.cvtColor(np.clip(rgb, 0, 255).astype(np.uint8), cv2.COLOR_RGB2HSV).astype(np.float32)
-    skin = (hsv[..., 1] > 40) & (hsv[..., 2] > 110) & (al > 10)
-    lum = hsv[..., 2] / 255.0
-    latex = np.stack([225 * lum, 228 * lum, 222 * lum], -1) + 18
+    H = a.shape[0]
+    boot = (np.arange(H)[:, None] > 0.72 * H) * np.ones((1, a.shape[1]))
+    red = (((hsv[..., 0] < 10) | (hsv[..., 0] > 170)) & (hsv[..., 1] > 120)) & (boot > 0)
+    white = ((hsv[..., 1] < 50) & (hsv[..., 2] > 170)) & (boot > 0)
+    v = (hsv[..., 2] / 255.0)[..., None]
     out = rgb.copy()
-    k = cv2.GaussianBlur(skin.astype(np.float32), (0, 0), 1.2)[..., None]
-    out = out * (1 - k) + latex * k
-    H, W = al.shape
-    ys = np.nonzero(al.max(1) > 10)[0]
-    y0, y1 = ys.min(), ys.max()
-    strap = (np.arange(H)[:, None] > y0 + 0.74 * (y1 - y0)) & (al > 10) & skin
-    band = (np.arange(H)[:, None] > y0 + 0.83 * (y1 - y0)) & (np.arange(H)[:, None] < y0 + 0.88 * (y1 - y0))
-    col = np.where(band[..., None], np.float32([20, 20, 22]), np.float32([196, 238, 30]) * (0.75 + 0.25 * lum[..., None]))
-    s = cv2.GaussianBlur(strap.astype(np.float32), (0, 0), 1.0)[..., None]
-    out = out * (1 - s) + col * s
-    # the strap's top edge gets an ink line
-    top = np.zeros((H, W), np.uint8)
-    yl = int(y0 + 0.74 * (y1 - y0))
-    top[yl - 4:yl + 4] = 1
-    top &= (al > 200)
-    out[top > 0] = INK[:3]
-    return Image.fromarray(np.dstack([np.clip(out, 0, 255), al]).astype(np.uint8), "RGBA")
+    k = cv2.GaussianBlur(red.astype(np.float32), (0, 0), 1.0)[..., None]
+    out = out * (1 - k) + np.float32([246, 244, 238]) * (0.55 + 0.5 * v) * k
+    k = cv2.GaussianBlur(white.astype(np.float32), (0, 0), 1.0)[..., None]
+    out = out * (1 - k) + np.float32([214, 26, 38]) * k
+    return Image.fromarray(np.dstack([np.clip(out, 0, 255), a[..., 3]]).astype(np.uint8), "RGBA")
 
 
 def tape():
@@ -126,10 +181,11 @@ def tape():
 
 # sheet rows (y) of each standing drawing: waist (shorts top), hem (shorts bottom), the knee, the feet
 SEAT = {"br_b_match": (550, 688, 706, 995), "cu_b_match": (562, 690, 708, 985), "km_b_match": (572, 692, 712, 990),
-        "mg_t_front": (357, 448, 488, 655)}
+        "mg2_b_match": (262, 306, 318, 412)}
+SEAT_NAME = {"br_b_match": "seat_br", "cu_b_match": "seat_cu", "km_b_match": "seat_km", "mg2_b_match": "seat_mg"}
 # the plain stretch of sock (sheet rows) that gets longer: these cartoon bodies have short shins, and a seated player's
 # shin runs from the bench edge to the floor, about half as long as the torso and head
-SOCK = {"br_b_match": (838, 896), "cu_b_match": (852, 886), "km_b_match": (838, 884), "mg_t_front": (530, 600)}
+SOCK = {"br_b_match": (838, 896), "cu_b_match": (852, 886), "km_b_match": (838, 884), "mg2_b_match": (358, 384)}
 SHIN = 0.5
 
 
@@ -141,23 +197,25 @@ def seated(part, meta):
     waist, hem, knee, feet = SEAT[part]
     a = np.asarray(Image.open(f"build/parts/{part}.png").convert("RGBA")).astype(np.float32)
     oy = meta[part]["off"][1]
-    r = lambda y: int(round((y - oy) * 4))
+    K = meta[part].get("scale", 4)                          # part px per sheet px
+    ov, pad = int(round(14 * K / 4)), int(round(6 * K / 4))
+    r = lambda y: int(round((y - oy) * K))
     top = a[:r(waist)]
-    shorts = a[r(waist):r(hem) + 6]
+    shorts = a[r(waist):r(hem) + pad]
     sh = cv2.resize(shorts, (shorts.shape[1], int(shorts.shape[0] * 0.6)), interpolation=cv2.INTER_AREA)
     s0, s1 = SOCK[part]
     lap = waist + 0.6 * (hem - waist + 1.5) - 3.5
     shin_now = (feet - knee)
     extra = max(0.0, SHIN * (lap - oy) - shin_now)
     mid = a[r(s0):r(s1)]
-    mid = cv2.resize(mid, (mid.shape[1], int(round(mid.shape[0] + extra * 4))), interpolation=cv2.INTER_CUBIC)
+    mid = cv2.resize(mid, (mid.shape[1], int(round(mid.shape[0] + extra * K))), interpolation=cv2.INTER_CUBIC)
     legs = np.concatenate([a[r(knee):r(s0)], mid, a[r(s1):]], 0)
-    H = top.shape[0] + sh.shape[0] + legs.shape[0] - 14
+    H = top.shape[0] + sh.shape[0] + legs.shape[0] - ov
     out = np.zeros((H, a.shape[1], 4), np.float32)
     y = 0
     out[:top.shape[0]] = top; y = top.shape[0]
     # the legs go in first, the lap (shorts) over their top edge
-    ly = y + sh.shape[0] - 14
+    ly = y + sh.shape[0] - ov
     out[ly:ly + legs.shape[0]] = legs
     pm = sh.copy(); pm[..., :3] *= pm[..., 3:4] / 255
     base = out[y:y + sh.shape[0]]
@@ -175,15 +233,18 @@ def main():
     meta = json.load(open("build/parts/meta.json"))
     for p in SEAT:
         im, fy = seated(p, meta)
-        name = "seat_" + p.split("_")[0]
+        name = SEAT_NAME[p]
         im.save(f"build/parts/{name}.png")
         waist, hem = SEAT[p][:2]
         meta[name] = dict(meta[p], src="props.py", key="props:" + name, size=[im.width, im.height], feet=fy,
                           lap=waist + 0.6 * (hem - waist + 1.5) - 3.5)
         print(name, "feet", round(fy, 1), "lap", round(meta[name]["lap"], 1))
     save("prop_bus", bus(), meta)
-    save("prop_glove_L", glove("build/parts/mg_hand_L.png"), meta)
-    save("prop_glove_R", glove("build/parts/mg_hand_R.png"), meta)
+    save("prop_glove_L", glove(), meta)
+    save("prop_glove_R", glove(right=True), meta)
+    im = white_boots("hs_leg_R")
+    im.save("build/parts/prop_leg_mg.png")
+    meta["prop_leg_mg"] = dict(meta["hs_leg_R"], src="props.py", key="props:prop_leg_mg")
     save("prop_tape", tape(), meta)
     json.dump(meta, open("build/parts/meta.json", "w"), indent=1)
     print("props", [k for k in meta if k.startswith("prop_")])

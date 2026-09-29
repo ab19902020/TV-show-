@@ -84,14 +84,15 @@ add("mg_front", "mg_t_front", mouth=(145, 100, 176, 100, 160, 102), chin=130, ey
     neck=(160, 150), head=(112, 18, 208, 140), anchors=dict(neck=(160, 150), feet=(162, 655)), ink=(0.08, 0.06, 0.06),
     lid=(0.96, 0.79, 0.64))
 add("js_body", "js_b_suit")
-# Maguire's close-up: the neutral lip-sync bust with each viseme's mouth swapped in (mgvis.py). Every mg_v_* part
-# shares the neutral bust's offset, so the landmarks are the neutral bust's (sheet px). No procedural jaw: the
-# drawn mouths do the lip sync; blinks, gaze, brows and head motion are procedural on top.
-for _v in ["rest", "A", "E", "I", "O", "U", "MBP", "FV", "L", "smile", "frown"]:
-    add("mg_v_" + _v, "mg_v_" + _v, eyes=[(146.5, 146.5, 14.5, 9.0), (207.5, 146.0, 14.5, 9.0)], chin=262,
-        neck=(177, 292), head=(96, 40, 262, 268), anchors=dict(neck=(177, 292)), ink=(0.06, 0.05, 0.05), brow_gain=0.8)
-MG_VIS = {"REST": "rest", "AI": "A", "E": "E", "I": "I", "O": "O", "U": "U", "MBP": "MBP", "FV": "FV", "L": "L",
-          "CDG": "I", "R": "U", "BREATH": "rest"}
+# ---- Harry Maguire in the house style (the players group sheet: match kit front view and back view, 8x parts).
+# Face landmarks read off a 9x grid of the sheet. Lip sync, blinks, gaze and brows are procedural, as for Bruno / Cunha.
+add("mg2_match", "mg2_b_match", mouth=(95, 124.5, 117, 124, 106, 122.5), chin=144,
+    eyes=[(93, 96.5, 7.5, 5.5), (117, 96, 7.0, 5.5)], neck=(92, 150), head=(48, 40, 135, 146),
+    anchors=dict(collar=(92, 150), feet=(86, 412)))
+add("mg2_back", "mg2_back", anchors=dict(collar=(262, 888), feet=(267, 1017)))
+MG_BACK_SCALE = 2.0                       # the back view is drawn smaller on the sheet: x this to match the front view
+# Rashford's match kit (for the Hull players, recoloured; he isn't in United's squad for this match)
+add("rs2_match", "rs2_b_match")
 
 # ---- scene 3: seated players (props.py builds them from the standing drawings; the face keeps its coordinates)
 _FEET = {}
@@ -107,19 +108,18 @@ def _seat(name, part, like):
     spec["anchors"] = anc
     add(name, part, **spec)
 try:
-    for _n, _l in (("seat_br", "br_match"), ("seat_cu", "cu_match"), ("seat_km", "km_match"), ("seat_mg", "mg_front")):
+    for _n, _l in (("seat_br", "br_match"), ("seat_cu", "cu_match"), ("seat_km", "km_match"), ("seat_mg", "mg2_match")):
         _seat(_n, _n, _l)
 except (KeyError, FileNotFoundError):
     pass
 # ---- scene 3 props and hands (sheet px; props.py parts have their origin at 0, 0)
 add("bus", "prop_bus", anchors=dict(base=(260, 158)))
-add("glove_L", "prop_glove_L", anchors=dict(wrist=(58, 150)))
-add("glove_R", "prop_glove_R", anchors=dict(wrist=(58, 150)))
+add("glove_L", "prop_glove_L", anchors=dict(wrist=(65, 165)))
+add("glove_R", "prop_glove_R", anchors=dict(wrist=(55, 165)))
 add("tape", "prop_tape", anchors=dict(c=(65, 52)))
-add("fist_L", "mg_fist_L", anchors=dict(c=(929, 843)))
-add("fist_R", "mg_fist_R", anchors=dict(c=(1043, 843)))
-add("boot_L", "mg_boot_L", anchors=dict(sole=(645, 1255)))
-add("boot_R", "mg_boot_R", anchors=dict(sole=(838, 1255)))
+add("arm_hand", "hs_arm", anchors=dict(c=(1428, 480)))           # Cunha's bent arm, the hand palm-down
+add("leg_L", "hs_leg_L", anchors=dict(sole=(1086, 788)))         # Bruno's sock and boot
+add("leg_mg", "prop_leg_mg", anchors=dict(sole=(1200, 788)))     # ... with Maguire's white boots
 
 # bust rigs: head drawing, body drawing, body cut line (sheet y; the body is kept below it)
 BUSTS = {

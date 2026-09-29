@@ -17,7 +17,8 @@ class Actor:
     def __init__(self, drawing, x, y, scale, flip=False, anchor="collar", z=0.0, clip=None, shade=0.0, rim=None,
                  name=None, light=1.0):
         self.d = cast.get(drawing) if isinstance(drawing, str) else drawing
-        self.x, self.y, self.scale, self.flip, self.z = x * 4, y * 4, scale, flip, z
+        # scale = plate px per sheet px; the matrix works in part px (4 or 8 per sheet px, see Drawing.k)
+        self.x, self.y, self.scale, self.flip, self.z = x * 4, y * 4, scale * 4 / getattr(self.d, "k", 4), flip, z
         self.anchor = self.d.anchors.get(anchor, (0.0, 0.0)) if isinstance(anchor, str) else self.d.P(*anchor)
         self.clip, self.shade, self.rim, self.light = clip, shade, rim, light
         self.name = name or self.d.name

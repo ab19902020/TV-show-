@@ -24,8 +24,11 @@ MG_T = CH + "harry-maguire/other-styles/harry-maguire__turnaround-cutout-parts__
 GEN, ANI = "RealESRGAN_x4plus", "RealESRGAN_x4plus_anime_6B"
 
 SPEC = {}
-def part(name, src, box, mode="alpha", model=GEN, markers=None):
-    SPEC[name] = dict(src=src, box=box, mode=mode, model=model, markers=markers)
+def part(name, src, box, mode="alpha", model=GEN, markers=None, erase=None, x=4, reink=0.0):
+    """erase: polygons (sheet coords) cleared from the part, for a neighbour that overlaps behind it.
+    x: 4 (one upscale pass) or 8 (two passes, then an area downsample): for drawings that are small on their sheet
+    but seen close (the house-style players group sheet packs four players on one page)"""
+    SPEC[name] = dict(src=src, box=box, mode=mode, model=model, markers=markers, erase=erase, x=x, reink=reink)
 
 def row(prefix, src, items, **kw):
     for i, b in enumerate(items): part(f"{prefix}{i}", src, b, **kw)
@@ -101,10 +104,25 @@ for i, n in enumerate(MGL):
     part("mg_l_" + n, MG_L, (x0, y0, x1, y1), mode="flood", model=ANI)
 for n, b in dict(front=(28, 8, 296, 668), side=(348, 8, 508, 668), back=(552, 8, 812, 668), q34=(838, 8, 1098, 668)).items():
     part("mg_t_" + n, MG_T, b, mode="flood", model=ANI)
-# scene 3 inserts: open hands (-> goalkeeper gloves), fists (tying the laces), boots with socks
-for n, b in dict(hand_L=(608, 778, 721, 927), hand_R=(728, 778, 840, 927), fist_L=(885, 798, 973, 888),
-                 fist_R=(998, 798, 1087, 888), boot_L=(572, 1082, 718, 1262), boot_R=(765, 1082, 912, 1262)).items():
-    part("mg_" + n, MG_T, b, mode="flood", model=ANI)
+# ---- the house-style players sheet (Maguire, Martinez, Rashford, Mainoo; real alpha): Maguire's match kit (front and
+# back view, a front head), Martinez's match kit (front, back), and the other two backs for the Hull players
+NS = CH + "players-group/house-style/players-group__maguire-martinez-rashford-mainoo__20260929.png"
+for n, b in dict(mg2_h_front=(8, 537, 97, 642), lm2_b_match=(405, 66, 533, 414), lm2_back=(672, 740, 760, 948)).items():
+    part(n, NS, b, mode="ink")
+# Maguire's hair touches the name banner; his back view touches the suit figures' legs: split them
+part("mg2_b_match", NS, (8, 34, 160, 416), markers=[(85, 230), (215, 20), (215, 250)], x=8, mode="ink")
+part("rs2_b_match", NS, (786, 40, 908, 416), markers=[(845, 230), (970, 230)], mode="ink")
+part("mg2_back", NS, (212, 838, 322, 1024), markers=[(268, 950), (205, 860), (318, 850), (322, 880), (330, 905), (120, 930)], x=8, mode="ink", reink=1.1,
+     erase=[[(284, 856), (340, 856), (340, 912), (303, 912), (301.5, 907.5), (284.5, 885.5)],     # the suit jacket behind
+            [(288.6, 917), (296, 914), (296.4, 925), (293, 937), (288.6, 937)]])                  # ... and in the armpit
+part("rs2_back", NS, (1030, 733, 1140, 964), markers=[(1085, 830), (1020, 925), (1200, 800)])
+part("km2_back", NS, (1345, 842, 1482, 1016), markers=[(1405, 930), (1250, 930), (1455, 815)])
+# scene 3 inserts in the house style: Cunha's open-hand forearms (-> the goalkeeper's gloves, and hands on the laces)
+# and Bruno's leg drawings (sock + boot) for the tape and the laces
+CU_M, BR_M = CH + "matheus-cunha/movement.png", CH + "bruno-fernandes/movement.png"
+part("hs_arm", CU_M, (1395, 300, 1515, 512), markers=[(1470, 345), (1385, 380)])      # bent arm, hand palm-down
+part("hs_leg_L", BR_M, (1050, 590, 1145, 800))
+part("hs_leg_R", BR_M, (1150, 590, 1245, 800), markers=[(1195, 700), (1098, 700), (1280, 700)])
 
 
 # executives' action poses (group sheet, bottom row), Mainoo's match kit, Carrick's tracksuit pointing arm
@@ -131,7 +149,8 @@ USED = ["ck_h_neutral", "ck_h_smile", "ck_h_frown", "ck_h_surprised", "ck_h_q34"
         "ck_b_track", "ck_arm_reach_t", "br_b_match", "br_h_smile", "br_h_angry", "br_h_q34", "br_h_front2",
         "cu_b_match", "cu_h_neutral", "cu_h_q34", "cu_h_profR", "mg_l_", "mg_t_front", "mg_t_q34", "mg_t_side", "om_h_e2",
         # scenes 3-4
-        "mg_t_back", "km_b_match", "cu_h_profL", "ck_arm_point_t", "ck_arm_palm_s", "mg_hand_", "mg_fist_", "mg_boot_"]
+        "km_b_match", "cu_h_profL", "ck_arm_point_t", "ck_arm_palm_s",
+        "mg2_", "lm2_", "rs2_", "km2_back", "hs_"]
 
 PAD = 6
 
@@ -155,6 +174,25 @@ def matte_flood(rgb):
     fg = ndimage.binary_fill_holes(ndimage.binary_opening(fg, iterations=1))
     return fg.astype(np.float32)
 
+def ink_matte(c):
+    """matte for sheets whose transparency was cut a pixel or three inside the drawn ink outline (the players group
+    sheet): grow the sheet's own mask outwards, at most 4 px, through every pixel that doesn't look like the local
+    background glow, so the ink line comes back. The local background colour is a normalised blur of the transparent
+    pixels a few px away from the figure. Returns (binary matte, background-looking pixels)."""
+    rgb = c[..., :3].astype(np.float32) / 255; A0 = c[..., 3].astype(np.float32) / 255
+    core = A0 > 0.5
+    near = cv2.dilate(core.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+    bgm = ((A0 < 0.03) & ~near).astype(np.float32)
+    num = cv2.GaussianBlur(rgb * bgm[..., None], (0, 0), 6); den = cv2.GaussianBlur(bgm, (0, 0), 6)
+    B = num / np.maximum(den, 1e-4)[..., None]
+    figlike = np.linalg.norm(rgb - B, axis=2) > 0.14
+    m = core.copy()
+    k = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], np.uint8)
+    for _ in range(4):
+        m = m | ((cv2.dilate(m.astype(np.uint8), k) > 0) & figlike)
+    return m.astype(np.float32), ~figlike
+
+
 def cut(name, sp, sheets):
     src, (x0, y0, x1, y1) = sp["src"], sp["box"]
     rgba = sheets[src]
@@ -163,6 +201,8 @@ def cut(name, sp, sheets):
     c = rgba[Y0:Y1, X0:X1].copy()
     if sp["mode"] == "alpha":
         a = smooth(c[..., 3], 40, 225)
+    elif sp["mode"] == "ink":
+        a, bgl = ink_matte(c)
     else:
         a = matte_flood(c[..., :3])
     # outside the declared box (the padding) nothing belongs to this part unless it is the same blob
@@ -176,7 +216,7 @@ def cut(name, sp, sheets):
         CX0, CY0 = max(0, min(mxs) - 250), max(0, min(mys) - 250)
         CX1, CY1 = min(W, max(mxs) + 250), min(H, max(mys) + 250)
         cc = rgba[CY0:CY1, CX0:CX1]
-        ca = smooth(cc[..., 3], 40, 225) if sp["mode"] == "alpha" else matte_flood(cc[..., :3])
+        ca = smooth(cc[..., 3], 40, 225) if sp["mode"] == "alpha" else (ink_matte(cc)[0] if sp["mode"] == "ink" else matte_flood(cc[..., :3]))
         csolid = ca > 0.35
         dist = ndimage.distance_transform_edt(csolid)
         mk = np.zeros(ca.shape, np.int32)
@@ -199,11 +239,36 @@ def cut(name, sp, sheets):
     # soft edge: grow the kept mask a little so anti-aliased edge pixels stay, then take the soft alpha there
     grow = ndimage.binary_dilation(keep, iterations=2)
     a = np.where(grow, a, 0) if sp["mode"] == "alpha" else keep.astype(np.float32)
-    # bleed colours into the transparent area so upscaling does not pull in the sheet background
+    if sp.get("erase"):
+        er = np.zeros((a.shape[0] * 4, a.shape[1] * 4), np.uint8)
+        for poly in sp["erase"]:
+            cv2.fillPoly(er, [np.int32(np.round((np.float32(poly) - np.float32([X0, Y0])) * 4 * 4))], 255, cv2.LINE_AA, 2)
+        er = cv2.resize(er, (a.shape[1], a.shape[0]), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+        a = a * (1 - er)
+    # bleed colours into the transparent area so upscaling does not pull in the sheet background. On the alpha
+    # sheets the semi-transparent edge pixels carry the glow painted behind the figures (a warm fringe), so every
+    # pixel that is not solid takes the colour of the nearest solid one: the ink line is the edge colour
     rgb = c[..., :3].copy()
-    idx = ndimage.distance_transform_edt(a < 0.5, return_distances=False, return_indices=True)
+    solid = ((c[..., 3] >= 235) & (a > 0.5)) if sp["mode"] == "alpha" else (a >= 0.5)
+    if sp["mode"] == "ink":
+        solid = solid & ~bgl                  # glow caught inside the sheet's mask takes the nearest drawn colour
+    idx = ndimage.distance_transform_edt(~solid, return_distances=False, return_indices=True)
     rgb = rgb[idx[0], idx[1]]
     return rgb, a, (X0, Y0)
+
+def reink(rgb, A, w):
+    """for a drawing whose source edge is ragged (the small back view): smooth the silhouette (lumps under ~1 sheet
+    px go), then draw an even ink line just inside the new edge, w part px wide, like the house style's bold outline"""
+    s = w * 0.9
+    As = cv2.GaussianBlur(A.astype(np.float32), (0, 0), s)
+    As = smooth(As * 255, 110, 145)
+    inside = (As > 0.5).astype(np.uint8)
+    d = cv2.distanceTransform(inside, cv2.DIST_L2, 5)
+    line = np.clip(1 - (d - w) / 1.5, 0, 1) * (As > 0.02)
+    ink = np.float32([22, 16, 16])
+    out = rgb.astype(np.float32) * (1 - line[..., None]) + ink * line[..., None]
+    return np.clip(out, 0, 255).astype(np.uint8), As
+
 
 def main(names=None):
     import upscale
@@ -217,20 +282,36 @@ def main(names=None):
     for n in todo:
         sp = SPEC[n]
         out = f"build/parts/{n}.png"
-        key = json.dumps([sp["src"], sp["box"], sp["mode"], sp["model"], sp["markers"]])
+        key = json.dumps([sp["src"], sp["box"], sp["mode"], sp["model"], sp["markers"]] + (["ink-edge"] if sp["mode"] == "alpha" else [])
+                         + ([sp["erase"]] if sp.get("erase") else []) + ([sp["x"]] if sp.get("x", 4) != 4 else [])
+                         + ([sp["reink"]] if sp.get("reink") else []))
         if os.path.exists(out) and meta.get(n, {}).get("key") == key:
             continue
         if sp["src"] not in sheets: sheets[sp["src"]] = load(sp["src"])[0]
         rgb, a, off = cut(n, sp, sheets)
+        X = sp.get("x", 4)
         big = upscale.upscale(np.ascontiguousarray(rgb), sp["model"])
-        A = cv2.resize(a, (a.shape[1] * 4, a.shape[0] * 4), interpolation=cv2.INTER_CUBIC)
-        A = smooth(np.clip(A, 0, 1) * 255, 70, 185) if sp["mode"] == "alpha" else cv2.GaussianBlur(np.clip(A, 0, 1), (0, 0), 1.2)
+        if X == 8:                     # second pass (16x), then an area downsample to 8x: crisper lines than a plain 2x
+            big = upscale.upscale(np.ascontiguousarray(big), sp["model"])
+            big = cv2.resize(big, (a.shape[1] * 8, a.shape[0] * 8), interpolation=cv2.INTER_AREA)
+        if sp["mode"] == "ink":               # the edge goes through the same upscaler as the art: smooth curves
+            m8 = (np.clip(a, 0, 1) * 255 + 0.5).astype(np.uint8)
+            A = upscale.upscale(np.ascontiguousarray(np.dstack([m8] * 3)), sp["model"])
+            if X == 8:
+                A = upscale.upscale(np.ascontiguousarray(A), sp["model"])
+                A = cv2.resize(A, (a.shape[1] * 8, a.shape[0] * 8), interpolation=cv2.INTER_AREA)
+            A = smooth(A.astype(np.float32).mean(2), 95, 165)
+        else:
+            A = cv2.resize(a, (a.shape[1] * X, a.shape[0] * X), interpolation=cv2.INTER_CUBIC)
+            A = smooth(np.clip(A, 0, 1) * 255, 70, 185) if sp["mode"] == "alpha" else cv2.GaussianBlur(np.clip(A, 0, 1), (0, 0), 1.2 * X / 4)
+        if sp.get("reink"):
+            big, A = reink(big, A, sp["reink"] * X)
         out_img = np.dstack([big, (np.clip(A, 0, 1) * 255 + 0.5).astype(np.uint8)])
         ys, xs = np.nonzero(out_img[..., 3] > 0)
         t, b, l, r = max(0, ys.min() - 8), ys.max() + 9, max(0, xs.min() - 8), xs.max() + 9
         out_img = out_img[t:b, l:r]
         Image.fromarray(out_img).save(out)
-        meta[n] = dict(src=sp["src"], box=sp["box"], off=[off[0] + l / 4, off[1] + t / 4], scale=4, size=[out_img.shape[1], out_img.shape[0]], key=key)
+        meta[n] = dict(src=sp["src"], box=sp["box"], off=[off[0] + l / X, off[1] + t / X], scale=X, size=[out_img.shape[1], out_img.shape[0]], key=key)
         json.dump(meta, open("build/parts/meta.json", "w"), indent=1)
         print("cut", n, out_img.shape, flush=True)
 

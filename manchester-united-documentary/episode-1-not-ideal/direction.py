@@ -155,7 +155,7 @@ shot(W("ck_newly_promoted", "crowd") - 0.1, W("ck_newly_promoted", "do") - 0.12,
 shot(W("ck_newly_promoted", "do") - 0.12, E("ck_newly_promoted") + 0.3, "dress_bruno", (1440, 228, 380), (1440, 226, 350), dof=4.0)
 shot(E("ck_newly_promoted") + 0.3, W("ck_set_pieces", "set") - 0.3, "carrick_board", (440, 318, 690), (448, 320, 640), dof=2.5)
 shot(W("ck_set_pieces", "set") - 0.3, E("ck_set_pieces") + 0.2, "board_point", (175, 215, 360), (178, 214, 320), dof=0, punch=True)
-shot(E("ck_set_pieces") + 0.2, E("mg_set_pieces") + 0.28, "dress_maguire", (262, 218, 400), (260, 220, 372), dof=4.5)
+shot(E("ck_set_pieces") + 0.2, E("mg_set_pieces") + 0.28, "dress_maguire", (258, 237, 533), (258, 240, 500), dof=4.5)
 shot(E("mg_set_pieces") + 0.28, m("s4"), "dress_carrick", (836, 262, 520), (836, 260, 505), dof=3.0)
 # ================================================================ SCENE 4: HULL MATCH (the 3D pitch, hull.py)
 shot(m("s4"), m("crowd"), "match_wide", None)
@@ -401,7 +401,9 @@ key(BR, "look", bl + 0.55, (1.0, 0.0), 0.28); key(BR, "turn", bl + 0.55, 0.35, 0
 key(BR, "brow", bl + 0.6, -1.0, 0.3)
 mt = m("maguire_turns")
 key(MG, "look", mt - 0.5, (-0.7, 0.0), 0.01); key(MG, "brow", mt - 0.5, 0.2, 0.01)
-key(MG, "look", mt + 0.35, (0.4, 0.1), 0.25)
+key(MG, "look", mt + 0.35, (0.4, 0.1), 0.25)             # his eyes leave Bruno's...
+key(MG, "turn", mt + 0.75, 0.45, 0.45); key(MG, "look", mt + 0.75, (0.9, 0.05), 0.3)   # ...then the head goes
+key(MG, "brow", mt + 0.35, 0.05, 0.3)
 
 perf.finalize()
 SHOTS.sort(key=lambda s: s["t0"])

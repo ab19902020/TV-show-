@@ -83,7 +83,7 @@ end of the title card to the hard cut after the final whistle. `./render34.sh` r
 | Time | Shot | What happens |
 |---|---|---|
 | 0:00 | Stadium exterior, dusk | The crowd builds and a chant drifts out of the ground. Fans in amber scarves cross the plaza, and the United coach rolls in and stops with a hiss of air brakes. Lower third: **HULL AWAY**, *Premier League, Matchday 1, Kick-off 20:00*. A low pre-match pulse starts at 80 bpm. |
-| 0:03.75 | Eight fast inserts, one cut on every beat or two of the pulse | Boots under the bench (a rack focus). Shirts on their hangers. White tape wound round a sock at the ankle. The goalkeeper's gloves come up and clap. Carrick walking down the tunnel, the floodlit pitch behind him. Bruno's captain routine at the front of the line: up on his toes, armband on, a nod, a look back down the line. Maguire's fists pull his laces tight. Cunha staring at the tactics board: **SET PIECES!** |
+| 0:03.75 | Eight fast inserts, one cut on every beat or two of the pulse | Boots under the bench (a rack focus). Shirts on their hangers. White tape wound round a sock at the ankle. The goalkeeper's gloves come up and clap. Carrick walking down the tunnel, the floodlit pitch behind him. Bruno's captain routine at the front of the line: up on his toes, armband on, a nod, a look back down the line. Maguire's hands pull the laces of his white boots tight. Cunha staring at the tactics board: **SET PIECES!** |
 | 0:12 | The dressing room wide | Carrick stands in the middle of the room. The players sit round him on the benches: Maguire and Bruno on the side benches, Mainoo and Cunha on the back bench. Bruno is intensely focused. Maguire nods along. |
 | 0:13.5 | "Newly promoted team. Crowd'll be up for it. Do the basics." | The wide, then Carrick (the two on the back bench out of focus behind him), then Bruno's close-up on "Do the basics". |
 | 0:18 | "And most importantly..." | Carrick turns to the tactics board. On "SET PIECES" his finger taps the writing twice (a punch-in). |
@@ -97,7 +97,7 @@ end of the title card to the hard cut after the final whistle. `./render34.sh` r
 | 0:35.8 | Later: another dead ball | A free kick whipped in pinballs around the six-yard box (off four players) and over the line. Broadcast caption: **SET PIECE** *(again)*. |
 | 0:39.8 | **HULL 2 – 0 UNITED** (61') | |
 | 0:41.2 | Bruno | 90+4 on the clock. Bruno looks across toward Maguire. |
-| 0:43.3 | Maguire | ...who slowly turns away: front, three-quarter, side, back. |
+| 0:43.3 | Maguire | ...who slowly turns away. He holds the look, his eyes slide off, his head goes, then he turns his back. |
 | 0:46.2 | Full time | Three blasts of the whistle, and a hard cut to black and silence. |
 
 All four spoken lines are the recorded audio, word for word, cut at the quietest point between words and
@@ -106,32 +106,55 @@ players act without dialogue.
 
 ## How scenes 3–4 are made
 
-Everything specific to scenes 3–4 is in its own files, so it doesn't touch scenes 1–2:
-`hull.py` (every setup), `hull_audio.py` (the sound), `pitch3d.py` (the match), `mgvis.py`, `props.py` and
-`defringe.py` (extra art). `timeline.py` and `direction.py` hold the beats, shots and acting as for scenes 1–2.
+Everything on screen is in the house style (the Bruno / Cunha / Mainoo / Carrick sheets, and the house-style players
+sheet with Maguire, Martínez, Rashford and Mainoo, stored as
+[`players-group/house-style/`](../assets/characters/players-group/house-style/)).
 
+Everything specific to scenes 3–4 is in its own files, so it doesn't touch scenes 1–2: `hull.py` (every setup),
+`hull_audio.py` (the sound), `pitch3d.py` (the match) and `props.py` (props and seated players). `timeline.py` and
+`direction.py` hold the beats, shots and acting as for scenes 1–2.
+
+- **Clean cut-outs** (`parts.py`):
+  - On the Bruno / Cunha / Mainoo / Carrick sheets, the half-transparent edge pixels carry the glow painted
+    behind the figures, which gave a washed-out rim. Every edge pixel now takes the colour of the nearest solid
+    pixel, so the ink line is the edge.
+  - On the players sheet the transparency was cut 1–3 px inside the drawn ink outline, so arms and boots lost
+    their outline. That sheet is re-matted from the drawing (`ink` mode). The mask grows outwards, at most 4 px,
+    through every pixel that doesn't match the local background glow. The final edge goes through the same
+    upscaler as the art, so the curves are smooth.
+  - Every part used was checked at full resolution on dark, light and magenta backdrops.
+- **Maguire** comes from the players sheet. That sheet packs four players on a page, so his drawings are half the
+  size of Bruno's. They are upscaled 8× (two upscaler passes, then an area downsample) so his close-up stays as
+  crisp as everyone else's.
+  - His lip sync, blinks, gaze, brows and nod are procedural on his own drawn head, as for Bruno and Cunha.
+  - For the turn-away, the front view narrows edge-on and opens out as the back view. The small back-view drawing
+    has its silhouette smoothed and an even ink line drawn just inside the edge.
 - **The match is 3D** (`pitch3d.py`): a real 105 × 68 m pitch (stripes, every marking, goals with nets that
-  bulge) seen through a pinhole broadcast camera. The one painted stand we have (the view out of the tunnel mouth)
-  is relit for a night game, filled with a drawn crowd (Hull amber and black, with a red away end; arms up for the
-  goals) and mapped onto three billboard stands. So the broadcast wide, the corner, the free kick, the home-end
-  telephoto and the blurred backgrounds behind Carrick, Bruno and Maguire all come from the same stadium, with
-  correct perspective. The tunnel shots show the same floodlit pitch through the tunnel mouth.
-- **Players on the pitch** are the character drawings scaled to 1.85 m. United wear the house-style drawings. The
-  Hull players are Maguire's flat drawings recoloured into amber stripes and black shorts, each with his own hair
-  colour and skin tone, so nobody recognisable plays for Hull.
-- **Maguire's close-up** (`mgvis.py`): his 12 lip-sync busts are separately drawn and shift from bust to bust, so
-  every viseme is the neutral bust with only the mouth swapped in. Each bust is registered onto the neutral one
-  (sub-pixel), colour-matched and pasted through a feathered ellipse. The busts stop square at the shoulders, so
-  his turnaround body goes underneath, scaled so its shoulder slope lies on the bust's own outline. Blinks, gaze,
-  brows and the nod are procedural on top.
+  bulge) seen through a pinhole broadcast camera.
+  - The one painted stand we have (the view out of the tunnel mouth) is relit for a night game. It's filled with
+    a drawn crowd (Hull amber and black, with a red away end; arms up for the goals) and mapped onto three
+    billboard stands.
+  - So the broadcast wide, the corner, the free kick, the home-end telephoto and the blurred backgrounds behind
+    Carrick, Bruno and Maguire all come from the same stadium, with correct perspective.
+- **Players on the pitch** are the house-style drawings scaled to 1.85 m. United are Bruno, Cunha, Mainoo, Maguire
+  and Martínez. Maguire is the one who gets the weak header on the corner. The Hull players are house-style
+  bodies recoloured into amber stripes and black shorts, mostly Rashford's (he isn't in United's squad here).
 - **Seated players** (`props.py`): the sheets only have standing poses. Seen from the front, a seated player's
   thighs point at the camera, so the shorts become a short lap and the knees sit under the hem. The plain part of
   the socks is lengthened so the shin is half the torso's height. They're placed with the lap on the bench edge
   and the feet on the floor, at scales that follow the painting's perspective (its horizon is at seated eye level).
-- **Props**: the team coach is drawn in the inked style. The goalkeeper's gloves are Maguire's open-hand drawings
-  recoloured (latex palm, lime strap). The tape roll and the lace pulls use his fists and boots. `defringe.py`
-  peels the cream-paper fringe off every part cut from his sheets.
-- **Sound** (`hull_audio.py`): the crowd building outside, a terrace chant with claps, the coach's diesel and air
-  brakes, the 80 bpm pulse (a kick on every insert cut), foley for each insert (studs, hanger, tape, glove clap,
-  laces, marker), the dressing room with the crowd muffled through the walls, the stadium, the kick-off whistle,
-  the corner (strike, header, shot, net, roar), the free-kick pinball with an "ooh", full time and a hard cut.
+- **Props and inserts**:
+  - The team coach and the goalkeeper's gloves are drawn in the inked house style.
+  - The tape and lace inserts use Bruno's sock-and-boot drawing (with Maguire's white boots for the laces) and
+    Cunha's hand.
+- **Sound** (`hull_audio.py`):
+  - The crowd building outside, a terrace chant with claps, and the coach's diesel and air brakes.
+  - The 80 bpm pulse, with a kick on every insert cut, and foley for each insert (studs, hanger, tape, glove
+    clap, laces, marker).
+  - The dressing room, with the crowd muffled through the walls.
+  - The stadium: the kick-off whistle, the corner (strike, header, shot, net, roar), and the free-kick pinball
+    with an "ooh".
+  - Full time, then a hard cut to silence.
+
+If you have a house-style sheet for a generic Hull player or for Senne Lammens, send it: they'd replace the
+recoloured bodies in the match shots.

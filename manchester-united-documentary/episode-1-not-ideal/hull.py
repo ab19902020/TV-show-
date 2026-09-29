@@ -6,7 +6,7 @@ Scene 3  ext_stadium   dusk: fans walk to the ground, the United coach pulls in,
          ins_*         eight fast inserts: boots, shirts, tape, goalkeeper gloves, Carrick walking, Bruno's captain
                        routine, Maguire tying his boots, Cunha staring at the tactics board
          dress_*       the team talk: the wide (Carrick centre, players seated around him), Carrick, Bruno, the
-                       board, the SET PIECES tap, Maguire's close-up (drawn lip sync: mgvis.py)
+                       board, the SET PIECES tap, Maguire's close-up (the house-style players sheet)
 Scene 4  match_*       the broadcast camera on the 3D pitch (pitch3d.py): kick-off, the home end, the corner, the
                        second dead ball; pitch-level shots of Carrick, Bruno and Maguire in front of the far stand"""
 import math, os, functools, types, numpy as np, cv2
@@ -179,39 +179,47 @@ CID = np.array([[0.25, 0, 0], [0, 0.25, 0], [0, 0, 1]], np.float64)     # world 
 
 def screen_actor(name, x, y, k, anchor):
     """an actor placed straight in screen px (x, y) with k screen px per sheet px (drawn through CID)"""
-    a = Actor(name, 0, 0, 1.0, anchor=anchor, z=2)
-    a.x, a.y, a.scale = x * 4, y * 4, k
+    a = Actor(name, 0, 0, k, anchor=anchor, z=2)
+    a.x, a.y = x * 4, y * 4
     return a
 
 
+def to_screen(actor, cam, body=None):
+    """sheet coords of an actor's drawing -> screen px (for drawing on top of it)"""
+    M = screen_C(cam) @ actor.matrix(body)
+    d = actor.d
+    def S(x, y):
+        q = M @ np.float64([(x - d.ox) * d.k, (y - d.oy) * d.k, 1]); return q[0], q[1]
+    return S
+
+
 def render_ins_tape(s, t, cam):
-    """close on a sock: white tape goes round the ankle, the roll in a fist sweeping across"""
+    """close on the ankle: white tape goes round the sock, the roll in his hand sweeping across (Bruno's sock and
+    boot drawing, Cunha's hand, both house style)"""
     u = (t - s["t0"]) / (s["t1"] - s["t0"])
-    boot = Actor("boot_L", 900, 760, 2.05, anchor="sole", z=1)
-    C = screen_C(cam)
-    fr = R.st("locker_board").render(cam, [(boot, None, None, 1.0)], dof=6.0)
-    M = C @ boot.matrix()
-    def S(x, y):                                           # sheet coords -> screen
-        q = M @ np.float64([(x - boot.d.ox) * 4, (y - boot.d.oy) * 4, 1]); return q[0], q[1]
+    leg = Actor("leg_L", 900, 790, 3.1, anchor="sole", z=1)
+    fr = R.st("locker_board").render(cam, [(leg, None, None, 1.0)], dof=6.0)
+    S = to_screen(leg, cam)
+    k = sheet_px(cam, leg.scale)
     lay = np.zeros((OH, OW, 3), np.float32); al = np.zeros((OH, OW), np.float32)
     ink = (0.07, 0.06, 0.06)
     wrap = min(1.0, max(0.0, (u - 0.05) / 0.6))
-    for j, yb in enumerate((1146.0, 1161.0)):              # two turns of tape round the ankle; the second one goes on now
+    X0, X1 = 1082.0, 1112.5                                 # the sock at the ankle
+    for j, yb in enumerate((699.0, 709.0)):                 # two turns of tape: the second goes on now
         kk = 1.0 if j == 0 else wrap
         if kk <= 0.01: continue
-        x0, x1 = 639.5, 639.5 + 51 * kk                    # the sock at the ankle: sheet x 640-690
-        top = [S(xx, yb - 5 + 3 * math.sin((xx - 639.5) / 51 * math.pi)) for xx in np.linspace(x0, x1, 16)]
-        bot = [S(xx, yb + 5 + 3 * math.sin((xx - 639.5) / 51 * math.pi)) for xx in np.linspace(x1, x0, 16)]
+        x1 = X0 + (X1 - X0) * kk
+        top = [S(xx, yb - 3.2 + 1.6 * math.sin((xx - X0) / (X1 - X0) * math.pi)) for xx in np.linspace(X0, x1, 16)]
+        bot = [S(xx, yb + 3.2 + 1.6 * math.sin((xx - X0) / (X1 - X0) * math.pi)) for xx in np.linspace(x1, X0, 16)]
         poly = np.int32(np.round(np.float32(top + bot) * 4))
         cv2.fillPoly(lay, [poly], (0.97, 0.97, 0.95), cv2.LINE_AA, 2); cv2.fillPoly(al, [poly], 1.0, cv2.LINE_AA, 2)
-        cv2.polylines(lay, [poly], True, ink, max(2, int(3 * RS)), cv2.LINE_AA, 2)
+        cv2.polylines(lay, [poly], True, ink, max(2, int(0.9 * k)), cv2.LINE_AA, 2)
     a = al[..., None]
     fr = fr * (1 - a) + lay * a
-    k = sheet_px(cam, boot.scale)
-    fx, fy = S(639.5 + 51 * wrap + 10, 1166)
-    acts = [(screen_actor("tape", fx, fy, k * 0.42, "c"), None, None, 1.0),
-            (screen_actor("fist_R", fx + 14 * k, fy - 4 * k, k * 0.5, "c"), None, None, 1.0)]
-    return paint_actors(fr, acts, CID)
+    fx, fy = S(X0 + (X1 - X0) * wrap + 6, 712)
+    acts = [(screen_actor("tape", fx, fy, k * 0.2, "c"), None, None, 1.0),
+            (screen_actor("arm_hand", fx + 7 * k, fy - 3 * k, k * 0.62, "c"), None, None, 1.0)]
+    return paint_actors(fr, acts, CID, rim=(0.0, -1.0, 0.3, (1.0, 0.8, 0.55)))
 
 
 def render_ins_gloves(s, t, cam):
@@ -219,13 +227,13 @@ def render_ins_gloves(s, t, cam):
     u = t - s["t0"]
     rise = ease_out(u / 0.22)
     clap = math.exp(-((u - 0.42) / 0.07) ** 2)
-    sep = 0.215 * OW - 0.075 * OW * smooth((u - 0.25) / 0.17) + 0.03 * OW * smooth((u - 0.5) / 0.2)
+    sep = 0.2 * OW - 0.07 * OW * smooth((u - 0.25) / 0.17) + 0.03 * OW * smooth((u - 0.5) / 0.2)
     fr = R.st("locker_wide").render(cam, [], dof=7.0)
-    k = 0.62 * OH / 152.0                                   # a glove ~62 % of the frame high
+    k = 0.66 * OH / 170.0                                   # a glove ~66 % of the frame high
     acts = []
     for nm, sg, rot in (("glove_L", -1, 8), ("glove_R", 1, -8)):
         cx = OW / 2 + sg * (sep - 0.02 * OW * clap)
-        cy = OH * (1.30 - 0.36 * rise) - 0.01 * OH * clap
+        cy = OH * (1.32 - 0.36 * rise) - 0.01 * OH * clap
         a = screen_actor(nm, cx, cy, k, "wrist")
         rr = np.vstack([cv2.getRotationMatrix2D((float(a.anchor[0]), float(a.anchor[1])), rot * (1 - clap * 0.4), 1.0), [0, 0, 1]])
         acts.append((a, None, rr, 1.0))
@@ -233,29 +241,28 @@ def render_ins_gloves(s, t, cam):
 
 
 def render_ins_laces(s, t, cam):
-    """Maguire ties his boots: fists pull the laces tight, twice"""
+    """Maguire ties his boots: his hands pull the laces tight, twice (his white boots on the house-style leg)"""
     u = t - s["t0"]
-    boot = Actor("boot_R", 800, 760, 1.55, anchor="sole", z=1)
-    C = screen_C(cam)
-    fr = R.st("locker_board").render(cam, [(boot, None, None, 1.0)], dof=5.5)
-    M = C @ boot.matrix()
-    def S(x, y):
-        q = M @ np.float64([(x - boot.d.ox) * 4, (y - boot.d.oy) * 4, 1]); return q[0], q[1]
-    k = sheet_px(cam, boot.scale)
+    leg = Actor("leg_mg", 800, 780, 2.6, anchor="sole", z=1)
+    fr = R.st("locker_board").render(cam, [(leg, None, None, 1.0)], dof=5.5)
+    S = to_screen(leg, cam)
+    k = sheet_px(cam, leg.scale)
     pull = 0.5 - 0.5 * math.cos(min(1.0, u / 0.75) * 2 * math.pi * 1.5)
-    ex, ey = S(826, 1203)                                   # the top eyelets
+    ex, ey = S(1203, 744)                                   # the top eyelets
     acts, lines = [], []
-    for nm, sg in (("fist_L", -1), ("fist_R", 1)):
-        fx = ex + sg * (16 + 20 * pull) * k
-        fy = ey - (34 + 26 * pull) * k
-        acts.append((screen_actor(nm, fx, fy, k * 0.5, "c"), None, None, 1.0))
-        lines.append(((ex + sg * 3 * k, ey), (fx - sg * 5 * k, fy + 8 * k)))
+    for sg in (-1, 1):
+        hx = ex + sg * (13 + 9 * pull) * k
+        hy = ey - (16 + 12 * pull) * k
+        a = screen_actor("arm_hand", hx, hy, k * 0.62, "c")
+        a.flip = sg < 0
+        acts.append((a, None, None, 1.0))
+        lines.append(((ex + sg * 1.5 * k, ey), (hx - sg * 2 * k, hy + 4 * k)))
     lay = np.zeros((OH, OW, 3), np.float32); al = np.zeros((OH, OW), np.float32)
     for (a_, b_) in lines:
         p0 = tuple(int(v * 4) for v in a_); p1 = tuple(int(v * 4) for v in b_)
-        w = max(2, int(1.6 * k))
-        cv2.line(lay, p0, p1, (0.07, 0.06, 0.06), w + max(2, int(0.8 * k)), cv2.LINE_AA, 2)
-        cv2.line(al, p0, p1, 1.0, w + max(2, int(0.8 * k)), cv2.LINE_AA, 2)
+        w = max(2, int(0.9 * k))
+        cv2.line(lay, p0, p1, (0.07, 0.06, 0.06), w + max(2, int(0.5 * k)), cv2.LINE_AA, 2)
+        cv2.line(al, p0, p1, 1.0, w + max(2, int(0.5 * k)), cv2.LINE_AA, 2)
         cv2.line(lay, p0, p1, (0.96, 0.95, 0.93), w, cv2.LINE_AA, 2)
     a = al[..., None]
     fr = fr * (1 - a) + lay * a
@@ -297,7 +304,7 @@ def render_ins_board(s, t, cam):
 # ================================================================ SCENE 3: the dressing room
 # seated on the benches (lap on the bench edge, feet on the floor). The painting's horizon is at y ~394 (the camera at
 # seated eye level), so the scales follow the floor line: near-left, near-right, and two on the back bench.
-SEATS = dict(maguire=("seat_mg", 252, 458, 0.74), bruno=("seat_br", 1442, 453, 0.475),
+SEATS = dict(maguire=("seat_mg", 252, 458, 1.27), bruno=("seat_br", 1442, 453, 0.475),
              mainoo=("seat_km", 700, 434, 0.274), cunha=("seat_cu", 1020, 434, 0.278))
 
 
@@ -340,18 +347,13 @@ def render_dress_bruno(s, t, cam):
 
 
 def render_dress_maguire(s, t, cam):
-    """Maguire's close-up: the drawn visemes (neutral bust + mouth), procedural blinks / gaze / nod on top"""
-    s_, b = R.face("maguire", t)
-    v = cast.MG_VIS.get(s_["vis"], "rest")
-    s_ = dict(s_, vis="REST")
-    a = Actor("mg_v_" + v, 256, 262, 0.41, anchor="neck", z=1)
-    return R.st("locker_wide").render(cam, [(a, s_, R.body_for(a, b), 1.0)], dof=s["dof"])
+    """Maguire's close-up at his seat: lip sync, blinks, gaze and the nod are procedural on his own drawn head"""
+    return R.st("locker_wide").render(cam, dressing_actors(t, ("maguire",)), dof=s["dof"])
 
 
 # ================================================================ SCENE 4: the match (3D pitch)
-KIT = {"br": "br_b_match", "cu": "cu_b_match", "km": "km_b_match", "mg": "mg_t_front"}
-UTD_PARTS = ["br_b_match", "cu_b_match", "km_b_match", "mg_t_front"]
-HULL_PARTS = ["mg_t_front", "mg_t_q34"]                 # generic Hull players: Maguire's flat drawings, own hair and skin
+UTD_PARTS = ["br_b_match", "cu_b_match", "km_b_match", "mg2_b_match", "lm2_b_match"]
+HULL_PARTS = ["rs2_b_match", "lm2_b_match", "cu_b_match"]  # recoloured into the Hull kit (house-style drawings only)
 
 
 def formation(side, rng):
@@ -370,10 +372,9 @@ def kickoff_players():
     rng = np.random.default_rng(5)
     pl = []
     for i, (x, y, gk) in enumerate(formation(-1, rng)):
-        pl.append(dict(x=x, y=y, part="mg_t_front" if gk else UTD_PARTS[i % 4], kit="gk_utd" if gk else "home",
-                       flip=False, look=4 if gk else -1))
+        pl.append(dict(x=x, y=y, part="km_b_match" if gk else UTD_PARTS[i % 5], kit="gk_utd" if gk else "home", flip=False))
     for i, (x, y, gk) in enumerate(formation(1, rng)):
-        pl.append(dict(x=x, y=y, part=HULL_PARTS[i % 2], kit="gk_hull" if gk else "hull", flip=True, look=i))
+        pl.append(dict(x=x, y=y, part=HULL_PARTS[i % 3], kit="gk_hull" if gk else "hull", flip=True))
     return pl
 
 
@@ -436,11 +437,12 @@ def corner_setup():
     utd = [(100.2, 36.2), (98.4, 32.0), (97.2, 39.5), (99.6, 42.0), (102.0, 30.5), (94.0, 33.5), (91.0, 38.0)]
     pl = []
     for i, (x, y) in enumerate(hull):
-        pl.append(dict(x=x, y=y, part=HULL_PARTS[i % 2], kit="hull", flip=i % 2 == 0, role="hull%d" % i, look=i + 1))
-    for i, (x, y) in enumerate(utd):
-        pl.append(dict(x=x, y=y, part=UTD_PARTS[i % 4] if i else "mg_t_front", kit="home", flip=False, role="utd%d" % i))
-    pl.append(dict(x=104.4, y=34.2, part="mg_t_front", kit="gk_utd", flip=True, role="gk", look=4))
-    pl.append(dict(x=105.8, y=69.0, part="mg_t_q34", kit="hull", flip=False, role="taker", look=0))
+        pl.append(dict(x=x, y=y, part="rs2_b_match" if i == 1 else HULL_PARTS[i % 3], kit="hull", flip=i % 2 == 0,
+                       role="hull%d" % i))
+    for i, (x, y) in enumerate(utd):                       # utd0, the weak header, is Maguire
+        pl.append(dict(x=x, y=y, part="mg2_b_match" if i == 0 else UTD_PARTS[i % 5], kit="home", flip=False, role="utd%d" % i))
+    pl.append(dict(x=104.4, y=34.2, part="km_b_match", kit="gk_utd", flip=True, role="gk"))
+    pl.append(dict(x=105.8, y=69.0, part="rs2_b_match", kit="hull", flip=False, role="taker"))
     return pl
 
 
@@ -540,10 +542,10 @@ def chaos_setup():
              (100.0, 29.0), (96.0, 35.0), (102.0, 41.5), (95.0, 31.5), (98.5, 42.5)]
     for i, (x, y) in enumerate(spots):
         hull = i % 2 == 1
-        pl.append(dict(x=x, y=y, part=HULL_PARTS[i // 2 % 2] if hull else UTD_PARTS[i // 2 % 4],
-                       kit="hull" if hull else "home", flip=hull, role="p%d" % i, look=i if hull else -1))
-    pl.append(dict(x=104.5, y=34.5, part="mg_t_front", kit="gk_utd", flip=True, role="gk", look=4))
-    pl.append(dict(x=77.0, y=21.2, part="mg_t_q34", kit="hull", flip=True, role="taker", look=2))
+        pl.append(dict(x=x, y=y, part=HULL_PARTS[i // 2 % 3] if hull else UTD_PARTS[i // 2 % 5],
+                       kit="hull" if hull else "home", flip=hull, role="p%d" % i))
+    pl.append(dict(x=104.5, y=34.5, part="km_b_match", kit="gk_utd", flip=True, role="gk"))
+    pl.append(dict(x=77.0, y=21.2, part="rs2_b_match", kit="hull", flip=True, role="taker"))
     return pl
 
 
@@ -628,19 +630,23 @@ def render_match_bruno(s, t, cam):
 
 
 def render_match_maguire(s, t, cam):
-    """Maguire slowly turns away: front, three-quarter, side, back"""
+    """Maguire slowly turns away: he holds Bruno's look, his eyes slide off, the head goes, then the body turns
+    (front view -> back view through a narrow squash, as a cut-out turn) and he stays with his back to camera"""
     bg, off = low_plate(t, 0.0, 14.0)
-    u = (t - s["t0"]) / 2.1
-    seq = [("mg_front", False), ("mg_q34", True), ("mg_side", False), ("mg_back", False)]
-    i = 0 if u < 0.30 else min(3, 1 + int((u - 0.30) / 0.2))
-    nm, fl = seq[i]
-    a = Actor(nm, 480, 405, 1.72, anchor="neck", z=1, flip=fl)
-    if i == 0:
+    tau = t - s["t0"]
+    t0, t1 = 1.25, 1.85                                      # the body turn
+    w = abs(1 - 2 * smooth((tau - t0) / (t1 - t0)))          # 1 -> 0 (edge on) -> 1
+    w = 0.08 + 0.92 * w
+    front = tau < (t0 + t1) / 2
+    if front:
+        a = Actor("mg2_match", 480, 340, 2.08, anchor="collar", z=1)
         s_, b = R.face("maguire", t)
-        acts = [(a, s_, R.body_for(a, b), 1.0)]
+        Bm = R.body_for(a, b) @ body_matrix(a.anchor, sx=w, lean=-4 * (1 - w))
     else:
-        acts = [(a, None, body_matrix(a.anchor, breath=0.004 * math.sin(t * 1.9)), 1.0)]
-    fr = paint_actors(bg, acts, shaken_C(cam, off), rim=RIM_FLOOD)
+        a = Actor("mg2_back", 480, 340, 2.08 * cast.MG_BACK_SCALE, anchor="collar", z=1)
+        s_ = None
+        Bm = body_matrix(a.anchor, sx=w, breath=0.004 * math.sin(t * 1.9), lean=3 * (1 - w))
+    fr = paint_actors(bg, [(a, s_, Bm, 1.0)], shaken_C(cam, off), rim=RIM_FLOOD)
     return bug(fr, t, 2, 0, "90+4")
 
 

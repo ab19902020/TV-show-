@@ -60,6 +60,7 @@ class Drawing:
         self.name, self.part = name, part
         m = META[part]
         self.ox, self.oy = m["off"]
+        self.k = m.get("scale", 4)            # part px per sheet px (4, or 8 for drawings upscaled twice)
         full = np.asarray(Image.open(f"build/parts/{part}.png").convert("RGBA"))
         self.anchors = {k: self.P(*v) for k, v in (anchors or {}).items()}
         self.u8 = {1.0: full}
@@ -74,7 +75,7 @@ class Drawing:
 
     def P(self, x, y):
         """sheet coords -> full-res part px"""
-        return ((x - self.ox) * 4, (y - self.oy) * 4)
+        return ((x - self.ox) * self.k, (y - self.oy) * self.k)
 
     def size(self, L):
         h, w = self.u8[L].shape[:2]; return w, h
@@ -84,7 +85,7 @@ class Drawing:
         if k not in self._base:
             a = self.u8[L].astype(np.float32) / 255.0
             if clip is not None:
-                yc = (clip - self.oy) * 4 * L
+                yc = (clip - self.oy) * self.k * L
                 yy = np.arange(a.shape[0], dtype=np.float32)[:, None]
                 a[..., 3] *= np.clip(1 - (yy - yc) / max(2.0, 24 * L), 0, 1)
             a[..., :3] *= a[..., 3:4]
@@ -96,7 +97,7 @@ class Drawing:
         """Face object working on the head patch of level L; patch rect in level px"""
         if L in self._face: return self._face[L]
         sp = self.spec
-        s = 4 * L
+        s = self.k * L
         def Q(x, y): return ((x - self.ox) * s, (y - self.oy) * s)
         W, H = self.size(L)
         pts = []
@@ -152,7 +153,7 @@ class Drawing:
         x0, y0, x1, y1 = fa["rect"]
         img = img.copy() if img is f.img else img
         if clip is not None:
-            yc = (clip - self.oy) * 4 * L - y0
+            yc = (clip - self.oy) * self.k * L - y0
             yy = np.arange(img.shape[0], dtype=np.float32)[:, None]
             img[..., 3] *= np.clip(1 - (yy - yc) / max(2.0, 24 * L), 0, 1)
         pm = img.copy(); pm[..., :3] *= pm[..., 3:4]

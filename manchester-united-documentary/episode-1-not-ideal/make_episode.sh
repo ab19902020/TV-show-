@@ -20,10 +20,7 @@ python3 timeline.py                                       # the dialogue edit (p
 # 2. art: cut every part out of the sheets and upscale 4x; upscale the backgrounds 4x
 python3 parts.py
 python3 bg_upscale.py
-# scenes 3-4: clean the paper fringe off Maguire's cream-paper parts, build his close-up visemes (neutral bust +
-# drawn mouths + body), the props and the seated players
-python3 defringe.py mg_t_ mg_l_ mg_hand_ mg_fist_ mg_boot_
-python3 mgvis.py
+# scenes 3-4: the props (coach, gloves, tape, Maguire's white boots) and the seated players
 python3 props.py
 
 # 3. sound: room tone, foley, crowd, whistles, score, mix -> build/episode_audio.wav
