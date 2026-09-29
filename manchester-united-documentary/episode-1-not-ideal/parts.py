@@ -186,10 +186,16 @@ def ink_matte(c):
     num = cv2.GaussianBlur(rgb * bgm[..., None], (0, 0), 6); den = cv2.GaussianBlur(bgm, (0, 0), 6)
     B = num / np.maximum(den, 1e-4)[..., None]
     figlike = np.linalg.norm(rgb - B, axis=2) > 0.14
+    ink = rgb.mean(2) < 0.30
+    # grow through drawn colour (skin, shirt) up to the ink line; ink pixels join the matte but never grow further,
+    # so nothing beyond the outline (the glow) comes in
     m = core.copy()
+    prop = core & ~ink
     k = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], np.uint8)
     for _ in range(4):
-        m = m | ((cv2.dilate(m.astype(np.uint8), k) > 0) & figlike)
+        new = (cv2.dilate(prop.astype(np.uint8), k) > 0) & figlike & ~m
+        m = m | new
+        prop = prop | (new & ~ink)
     return m.astype(np.float32), ~figlike
 
 
@@ -283,6 +289,7 @@ def main(names=None):
         sp = SPEC[n]
         out = f"build/parts/{n}.png"
         key = json.dumps([sp["src"], sp["box"], sp["mode"], sp["model"], sp["markers"]] + (["ink-edge"] if sp["mode"] == "alpha" else [])
+                         + (["ink-stop"] if sp["mode"] == "ink" else [])
                          + ([sp["erase"]] if sp.get("erase") else []) + ([sp["x"]] if sp.get("x", 4) != 4 else [])
                          + ([sp["reink"]] if sp.get("reink") else []))
         if os.path.exists(out) and meta.get(n, {}).get("key") == key:
