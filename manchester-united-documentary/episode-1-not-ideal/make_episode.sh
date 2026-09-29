@@ -20,6 +20,11 @@ python3 timeline.py                                       # the dialogue edit (p
 # 2. art: cut every part out of the sheets and upscale 4x; upscale the backgrounds 4x
 python3 parts.py
 python3 bg_upscale.py
+# scenes 3-4: clean the paper fringe off Maguire's cream-paper parts, build his close-up visemes (neutral bust +
+# drawn mouths + body), the props and the seated players
+python3 defringe.py mg_t_ mg_l_ mg_hand_ mg_fist_ mg_boot_
+python3 mgvis.py
+python3 props.py
 
 # 3. sound: room tone, foley, crowd, whistles, score, mix -> build/episode_audio.wav
 python3 audio.py
@@ -37,3 +42,4 @@ ffmpeg -y -loglevel error -f concat -safe 0 -i build/parts.txt -i build/episode_
   -map 0:v -map 1:a -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -c:a aac -b:a 256k -shortest \
   -movflags +faststart episode1_scenes1-4.mp4
 echo "done -> episode1_scenes1-4.mp4"
+# scenes 3-4 on their own: ./render34.sh episode1_scenes3-4.mp4

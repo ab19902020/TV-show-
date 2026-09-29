@@ -84,6 +84,42 @@ add("mg_front", "mg_t_front", mouth=(145, 100, 176, 100, 160, 102), chin=130, ey
     neck=(160, 150), head=(112, 18, 208, 140), anchors=dict(neck=(160, 150), feet=(162, 655)), ink=(0.08, 0.06, 0.06),
     lid=(0.96, 0.79, 0.64))
 add("js_body", "js_b_suit")
+# Maguire's close-up: the neutral lip-sync bust with each viseme's mouth swapped in (mgvis.py). Every mg_v_* part
+# shares the neutral bust's offset, so the landmarks are the neutral bust's (sheet px). No procedural jaw: the
+# drawn mouths do the lip sync; blinks, gaze, brows and head motion are procedural on top.
+for _v in ["rest", "A", "E", "I", "O", "U", "MBP", "FV", "L", "smile", "frown"]:
+    add("mg_v_" + _v, "mg_v_" + _v, eyes=[(146.5, 146.5, 14.5, 9.0), (207.5, 146.0, 14.5, 9.0)], chin=262,
+        neck=(177, 292), head=(96, 40, 262, 268), anchors=dict(neck=(177, 292)), ink=(0.06, 0.05, 0.05), brow_gain=0.8)
+MG_VIS = {"REST": "rest", "AI": "A", "E": "E", "I": "I", "O": "O", "U": "U", "MBP": "MBP", "FV": "FV", "L": "L",
+          "CDG": "I", "R": "U", "BREATH": "rest"}
+
+# ---- scene 3: seated players (props.py builds them from the standing drawings; the face keeps its coordinates)
+_FEET = {}
+def _seat(name, part, like):
+    import json as _j
+    global _FEET
+    if not _FEET: _FEET = _j.load(open("build/parts/meta.json"))
+    spec = {k: v for k, v in D[like].items() if k != "part"}
+    anc = dict(spec.get("anchors", {}))
+    fx = anc.get("feet", anc.get("neck", (0, 0)))[0]
+    anc["feet"] = (fx, _FEET[part]["feet"])
+    anc["lap"] = (fx, _FEET[part]["lap"])
+    spec["anchors"] = anc
+    add(name, part, **spec)
+try:
+    for _n, _l in (("seat_br", "br_match"), ("seat_cu", "cu_match"), ("seat_km", "km_match"), ("seat_mg", "mg_front")):
+        _seat(_n, _n, _l)
+except (KeyError, FileNotFoundError):
+    pass
+# ---- scene 3 props and hands (sheet px; props.py parts have their origin at 0, 0)
+add("bus", "prop_bus", anchors=dict(base=(260, 158)))
+add("glove_L", "prop_glove_L", anchors=dict(wrist=(58, 150)))
+add("glove_R", "prop_glove_R", anchors=dict(wrist=(58, 150)))
+add("tape", "prop_tape", anchors=dict(c=(65, 52)))
+add("fist_L", "mg_fist_L", anchors=dict(c=(929, 843)))
+add("fist_R", "mg_fist_R", anchors=dict(c=(1043, 843)))
+add("boot_L", "mg_boot_L", anchors=dict(sole=(645, 1255)))
+add("boot_R", "mg_boot_R", anchors=dict(sole=(838, 1255)))
 
 # bust rigs: head drawing, body drawing, body cut line (sheet y; the body is kept below it)
 BUSTS = {

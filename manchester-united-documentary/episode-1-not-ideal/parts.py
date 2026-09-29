@@ -101,6 +101,10 @@ for i, n in enumerate(MGL):
     part("mg_l_" + n, MG_L, (x0, y0, x1, y1), mode="flood", model=ANI)
 for n, b in dict(front=(28, 8, 296, 668), side=(348, 8, 508, 668), back=(552, 8, 812, 668), q34=(838, 8, 1098, 668)).items():
     part("mg_t_" + n, MG_T, b, mode="flood", model=ANI)
+# scene 3 inserts: open hands (-> goalkeeper gloves), fists (tying the laces), boots with socks
+for n, b in dict(hand_L=(608, 778, 721, 927), hand_R=(728, 778, 840, 927), fist_L=(885, 798, 973, 888),
+                 fist_R=(998, 798, 1087, 888), boot_L=(572, 1082, 718, 1262), boot_R=(765, 1082, 912, 1262)).items():
+    part("mg_" + n, MG_T, b, mode="flood", model=ANI)
 
 
 # executives' action poses (group sheet, bottom row), Mainoo's match kit, Carrick's tracksuit pointing arm
@@ -125,7 +129,9 @@ USED = ["ck_h_neutral", "ck_h_smile", "ck_h_frown", "ck_h_surprised", "ck_h_q34"
         "jr_b_grey", "jr_h_front", "jr_h_prof", "jr_h_e2", "jr_m", "js_p_point", "js_p_crossed", "js_p_chin", "js_b_suit",
         "jg_b_jumper", "jg_h_front", "jg_h_e1", "jg_m", "av_b_jumper", "av_h_front", "av_h_e1", "av_h_prof", "av_m",
         "ck_b_track", "ck_arm_reach_t", "br_b_match", "br_h_smile", "br_h_angry", "br_h_q34", "br_h_front2",
-        "cu_b_match", "cu_h_neutral", "cu_h_q34", "cu_h_profR", "mg_l_", "mg_t_front", "mg_t_q34", "mg_t_side", "om_h_e2"]
+        "cu_b_match", "cu_h_neutral", "cu_h_q34", "cu_h_profR", "mg_l_", "mg_t_front", "mg_t_q34", "mg_t_side", "om_h_e2",
+        # scenes 3-4
+        "mg_t_back", "km_b_match", "cu_h_profL", "ck_arm_point_t", "ck_arm_palm_s", "mg_hand_", "mg_fist_", "mg_boot_"]
 
 PAD = 6
 

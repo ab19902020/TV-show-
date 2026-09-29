@@ -558,6 +558,11 @@ GRADE = {"board": (1.02, 0.99, 0.95), "ext_carrington": (1.0, 1.0, 1.0), "corrid
          "pitch_maguire": (0.97, 1.0, 1.03), "tunnel_walk": (0.97, 0.99, 1.02), "ext_stadium": (1.02, 0.98, 0.96)}
 NO_GRADE = {"black", "title", "card", "tele_corner", "tele_chaos", "tablet"}
 
+# scenes 3-4 (Hull away) live in hull.py
+import hull
+hull.bind(globals())
+SETUPS.update(hull.SETUPS); GRADE.update(hull.GRADE); NO_GRADE |= hull.NO_GRADE
+
 YY, XX = np.mgrid[0:OH, 0:OW].astype(np.float32)
 RR = np.sqrt(((XX - OW / 2) / (OW / 2)) ** 2 + ((YY - OH / 2) / (OH / 2)) ** 2)
 VIGN = (1 - 0.26 * np.clip(RR / 1.35, 0, 1) ** 2.2)[..., None]

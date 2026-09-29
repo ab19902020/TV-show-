@@ -181,29 +181,7 @@ def room_tones(bus):
     bus.add((hv + murmur) * fade(n, 0.4, 0.2), t0)
     for tc in np.arange(t0 + 7, t1 - 5, 11.3):
         bus.add(at_level(chair_creak(), -42), tc + RNG.uniform(-2, 2), 1.0, pan=RNG.uniform(-0.6, 0.6))
-    # stadium exterior: crowd building, distant chants
-    t0, t1 = m("s3"), m("inserts") + 0.2
-    n = int((t1 - t0) * SR)
-    bus.add(at_level(crowd_bed(n, 0.35, far=True), -34) * fade(n, 0.5, 0.2), t0, 1.0)
-    # montage: tunnel rumble
-    t0, t1 = m("inserts"), m("dressing") + 0.1
-    n = int((t1 - t0) * SR)
-    bus.add(at_level(lp(crowd_bed(n, 0.5, far=True), 900, 2), -36) * fade(n, 0.1, 0.1), t0, 1.0)
-    # dressing room: tiled room tone, distant showers, muffled crowd through the walls
-    t0, t1 = m("dressing") - 0.05, m("s4") + 0.05
-    n = int((t1 - t0) * SR)
-    room = at_level(lp(noise(n, "brown"), 250, 2), -50) + at_level(hp(noise(n, "white"), 4000, 2), -64)
-    thru = at_level(lp(crowd_bed(n, 0.5, far=True), 350, 2), -42)
-    bus.add((room + thru) * fade(n, 0.05, 0.05), t0)
-    # pitch: the stadium
-    t0, t1 = m("s4"), m("whistle") + 0.45
-    n = int((t1 - t0) * SR)
-    swell = np.ones(n, np.float32)
-    tt = np.arange(n) / SR + t0
-    for tc, tg in ((m("corner1"), m("goal1_card")), (m("corner2"), m("goal2_card"))):
-        swell += 0.8 * np.clip((tt - tc) / (tg - tc - 0.35), 0, 1) ** 2 * (tt < tg)
-    bus.add(at_level(crowd_bed(n, 1.0), -26) * swell * fade(n, 0.02, 0.05), t0, 1.0)
-
+    # scenes 3-4 (Hull): hull_audio.py
 
 def bird_chirp():
     n = int(RNG.uniform(0.25, 0.6) * SR)
@@ -384,23 +362,7 @@ def foley(bus):
     bus.add(at_level(call_end(), -28), m("call_ends") - 0.05, 1.0, pan=0.25)
     # Jim closes his folder
     bus.add(at_level(lp(noise(int(0.2 * SR)), 1500, 2) * env_ad(int(0.2 * SR), 30, 0.03 * SR), -30), m("folder") + 0.2, 1.0, pan=0.2)
-    # the pre-match inserts: boots on a bench, tape, gloves; studs on the floor in the tunnel
-    ins = m("inserts")
-    bus.add(at_level(stud_step(), -28), ins + 0.1, 1.0); bus.add(at_level(stud_step(), -30), ins + 0.42, 1.0)
-    bus.add(at_level(tape_rip(), -28), ins + 0.95, 1.0)
-    for k in range(6):
-        bus.add(at_level(stud_step(), -31), ins + 1.75 + k * 0.21, 1.0, pan=-0.2 + 0.08 * k)
-    # the tactics board: marker tap / magnet click on the two words
-    for w in ("set", "pieces"):
-        bus.add(at_level(click(False), -26), W_("ck_set_pieces", w) + 0.01, 1.0, pan=-0.3)
-    # the match: whistles, corners (ball strike), goals
-    bus.add(at_level(whistle(0.35, 1), -24), m("s4") + 0.25, 1.0, pan=0.2)
-    for tc, tg in ((m("corner1"), m("goal1_card")), (m("corner2"), m("goal2_card"))):
-        bus.add(at_level(ball_strike(), -24), tc + 0.35, 1.0)
-        bus.add(at_level(ball_strike(), -26), tg - 0.62, 1.0)
-        bus.add(at_level(goal_roar(), -15), tg - 0.45, 1.0)
-    bus.add(at_level(whistle(0.32, 3, 0.16), -21), m("whistle") - 0.25, 1.0, pan=0.15)
-
+    # scenes 3-4 (Hull): hull_audio.py
 
 # ---------------------------------------------------------------- music
 def piano_note(f, dur, vel=1.0):
@@ -517,10 +479,7 @@ def music(bus):
     st, rs = title_sting()
     bus.add(at_level(rs, -26), m("title") - 0.85, 1.0)
     bus.add(at_level(st, -17), m("title"), 1.0)
-    # pre-match montage pulse (stadium exterior -> inserts), out as the dressing room starts
-    d0, d1 = m("s3") + 0.3, m("dressing") + 0.3
-    bus.add(at_level(montage_pulse(d1 - d0), -27), d0, 1.0)
-
+    # scenes 3-4 (Hull): hull_audio.py
 
 def main():
     dry, wet, fx, mus = Bus(), Bus(), Bus(), Bus()
@@ -528,6 +487,8 @@ def main():
     room_tones(fx)
     foley(fx)
     music(mus)
+    import hull_audio
+    hull_audio.add(fx, mus)
     # dialogue reverb by location: boardroom small, dressing room tiled, pitch open
     w = wet.st()
     out_w = np.zeros_like(w)

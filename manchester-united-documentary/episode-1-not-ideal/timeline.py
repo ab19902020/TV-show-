@@ -163,23 +163,29 @@ beat(0.8); mark("title")
 beat(4.4); mark("title_end")
 # ================================================================ SCENE 3: HULL AWAY, PRE-MATCH
 mark("s3")
-beat(2.8); mark("inserts")                             # stadium exterior, crowd building
-beat(5.2); mark("dressing")                            # fast inserts, then the dressing room wide
-beat(1.6)
-say("ck_newly_promoted")
-say("ck_set_pieces", 0.5)                              # points to the tactics board
+beat(3.75); mark("inserts")                            # stadium exterior: crowd building, the away coach pulls in
+# fast documentary inserts, cut on the pre-match pulse (80 bpm: one beat = 0.75 s)
+BEAT = 0.75
+for name, n in (("ins_boots", 1), ("ins_shirts", 1), ("ins_tape", 1), ("ins_gloves", 1), ("ins_walk", 2),
+                ("ins_captain", 2), ("ins_laces", 1), ("ins_board", 2)):
+    mark(name); beat(BEAT * n)
+mark("dressing")                                       # the dressing room wide: Carrick centre, players seated
+beat(1.5)
+say("ck_newly_promoted")                               # "Newly promoted team. Crowd'll be up for it. Do the basics."
+say("ck_set_pieces", 0.55)                             # turns to the tactics board: "And most importantly... SET PIECES"
 say("mg_set_pieces", 0.45)                             # quick close-up Maguire
-say("ck_right3", 0.45)
-beat(0.35); mark("s4")
+say("ck_right3", 0.5)
+beat(0.45); mark("s4")                                 # smash cut to the pitch
 # ================================================================ SCENE 4: HULL MATCH
-beat(2.2); mark("corner1")
-beat(3.0); mark("goal1_card")
-beat(1.4); mark("ck_still")
-beat(2.4); mark("corner2")
-beat(3.2); mark("goal2_card")
-beat(1.4); mark("bruno_looks")
-beat(1.9); mark("maguire_turns")
-beat(2.6); mark("whistle")
+beat(2.3); mark("crowd")                               # broadcast wide: kick-off; then the home end
+beat(1.2); mark("corner1")                             # the corner: in, not cleared, in
+beat(3.6); mark("goal1_card")
+beat(1.3); mark("ck_still")                            # Carrick: no reaction. Stillness.
+beat(2.7); mark("corner2")                             # later: another dead ball. Chaos.
+beat(4.0); mark("goal2_card")
+beat(1.4); mark("bruno_looks")                         # Bruno looks toward Maguire...
+beat(2.1); mark("maguire_turns")                       # ...Maguire slowly turns away
+beat(2.9); mark("whistle")                             # full time
 beat(0.9); mark("end")
 TOTAL = T[0]
 
