@@ -1,0 +1,6 @@
+# regenerable build products (make_episode.sh rebuilds them)
+build/
+models/
+audio_raw/
+__pycache__/
+*.pyc
