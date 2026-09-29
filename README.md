@@ -7,6 +7,7 @@ Animated TV-studio scenes with lip-synced characters.
 | [Roy Keane rant: The Overlap studio](roy-keane-overlap-rant/) | [`roy_keane_overlap_rant.mp4`](roy-keane-overlap-rant/roy_keane_overlap_rant.mp4) |
 | [Jim Ratcliffe: INEOS office, Monaco](jim-ratcliffe-ineos-office/) | [`jim_ratcliffe_ineos_office.mp4`](jim-ratcliffe-ineos-office/jim_ratcliffe_ineos_office.mp4) |
 | [The Clear Plan, Ep. 1 "Not Ideal", Scenes 1–2 (4K master delivered separately)](manchester-united-documentary/episode-1-not-ideal/) | [`episode1_scenes1-2_1080p.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes1-2_1080p.mp4) |
+| [The Clear Plan, Ep. 1 "Not Ideal", Scenes 3–4: Hull away (4K)](manchester-united-documentary/episode-1-not-ideal/#scenes-34-hull-away-pre-match-and-the-match) | [`episode1_scenes3-4_4k.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes3-4_4k.mp4) |
 
 ## Make a new video
 

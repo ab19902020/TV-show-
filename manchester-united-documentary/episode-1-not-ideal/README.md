@@ -76,7 +76,9 @@ multi-location edit with a shot list.
 Rendered on their own in 4K (3840×2160, 30 fps) with the recorded voices and the full sound mix: 47 s, from the
 end of the title card to the hard cut after the final whistle. `./render34.sh` renders just this stretch.
 
-- **4K master:** not rendered yet. A full-resolution check of every cut-out comes first, then the 4K render.
+- **In the repo:** [`episode1_scenes3-4_4k.mp4`](episode1_scenes3-4_4k.mp4), 3840×2160, 30 fps, 47 s, 68 MB (x264 CRF 21).
+- **Full-quality master:** `episode1_scenes3-4_4k_master.mp4` (CRF 18, 140 MB) is over GitHub's 100 MB limit, so
+  it's delivered separately; `./render34.sh` rebuilds it.
 
 ## What's in it
 
@@ -87,8 +89,8 @@ end of the title card to the hard cut after the final whistle. `./render34.sh` r
 | 0:12 | The dressing room wide | Carrick stands in the middle of the room. The players sit round him on the benches: Maguire and Bruno on the side benches, Mainoo and Cunha on the back bench. Bruno is intensely focused. Maguire nods along. |
 | 0:13.5 | "Newly promoted team. Crowd'll be up for it. Do the basics." | The wide, then Carrick (the two on the back bench out of focus behind him), then Bruno's close-up on "Do the basics". |
 | 0:18 | "And most importantly..." | Carrick turns to the tactics board. On "SET PIECES" his finger taps the writing twice (a punch-in). |
-| 0:21.4 | "Set pieces. Got it." | A quick close-up of Maguire, dead serious, with drawn lip sync and a nod on "Got it". |
-| 0:23.5 | "Right." | Carrick, a small nod. Smash cut to the pitch. |
+| 0:21.7 | "Set pieces. Got it." | A quick close-up of Maguire, dead serious, with drawn lip sync and a nod on "Got it". |
+| 0:23.7 | "Right." | Carrick, a small nod. Smash cut to the pitch. |
 | 0:24.7 | The broadcast wide | The full stadium noise, the kick-off whistle, the score bug (HUL 0–0 MUN), 22 players in shape, the ball rolled back. |
 | 0:27 | The home end | A telephoto on the stand behind the goal, the crowd bouncing. |
 | 0:28.2 | The corner | Hull's corner from the far flag. The United defender gets a weak head to it, it drops on the penalty spot and goes in. The net bulges, the keeper is late and the home end goes up. |
