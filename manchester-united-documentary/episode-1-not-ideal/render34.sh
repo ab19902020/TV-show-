@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Render scenes 3-4 (Hull away) on their own: the frames from the "s3" mark to "end", in parallel chunks, muxed
 # with that stretch of the episode mix (build/episode_audio.wav, from audio.py).
-#   ./render34.sh [out.mp4]         EP_RES=3840x2160 (default)  JOBS=4  CHUNKS=8  CRF=18
-# Needs the build products of make_episode.sh (lines, timeline, parts, backgrounds) plus mgvis.py, props.py,
-# defringe.py and pitchplate.py's plates (make_episode.sh runs them).
+#   ./render34.sh [out.mp4]         EP_RES=3840x2160 (default)  JOBS=3  CHUNKS=16  CRF=18
+# A 4K match frame needs about 2.7 GB: four of them at once overran this 15 GB container, so JOBS defaults to 3.
+# Needs the build products of make_episode.sh: lines, timeline, parts, backgrounds, props.py's props and seated
+# players, and audio.py's mix.
 set -euo pipefail
 cd "$(dirname "$0")"
-OUT="${1:-episode1_scenes3-4.mp4}"; J="${JOBS:-4}"; K="${CHUNKS:-8}"; CRF="${CRF:-18}"
+OUT="${1:-episode1_scenes3-4_4k_master.mp4}"; J="${JOBS:-3}"; K="${CHUNKS:-16}"; CRF="${CRF:-18}"
 read A B T0 DUR < <(python3 -c "
 import json; M = json.load(open('build/timeline.json'))['marks']
 a, b = round(M['s3'] * 30), round(M['end'] * 30); print(a, b, a / 30, (b - a) / 30)")
