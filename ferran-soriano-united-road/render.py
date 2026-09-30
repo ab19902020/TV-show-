@@ -24,7 +24,7 @@ def _shot(w, eyes_at, aspect, cx=0.0):
     return (cx, top + h / 2, w)
 SHOTS = {"portrait": {"A": _shot(296, 0.28, 16 / 9), "B": _shot(219, 0.30, 16 / 9), "C": _shot(179, 0.33, 16 / 9),
                       "C2": _shot(160, 0.35, 16 / 9)},
-         "landscape": {"A": _shot(782, 0.32, 9 / 16, -47.0), "B": _shot(587, 0.33, 9 / 16, -35.0),
+         "landscape": {"A": _shot(720, 0.32, 9 / 16, -44.0), "B": _shot(587, 0.33, 9 / 16, -35.0),
                        "C": _shot(444, 0.35, 9 / 16, -20.0), "C2": _shot(400, 0.36, 9 / 16, -15.0)}}
 BLUR = {"A": 2.2, "B": 3.2, "C": 4.5, "C2": 5.0}      # lens blur of the room, px per 1080 px of frame width/height
 # portrait is composed on its own: a raised hand drawn far out to the side is brought in from its elbow so the

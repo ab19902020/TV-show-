@@ -1,0 +1,1163 @@
+[
+ {
+  "sprite": "master_head",
+  "file": "build/rig/head.png",
+  "source": "src/main.png",
+  "source_rect": [
+   287.8,
+   6.8,
+   606.8,
+   480.2
+  ],
+  "scale": {
+   "px_per_source_px": 4,
+   "source_to_world": [
+    [
+     0.4824993040232929,
+     0.0,
+     -217.69202258820823
+    ],
+    [
+     0.0,
+     0.4824993040232929,
+     -217.80251530797793
+    ]
+   ]
+  },
+  "pivot": {
+   "neck_source": [
+    440,
+    392
+   ]
+  },
+  "z": 1,
+  "identity": "the one head on every pose and camera; own mouth painted out, neck plug under the collar"
+ },
+ {
+  "sprite": "mouth_A",
+  "file": "build/rig/mouth_A.png",
+  "source": "src/main.png",
+  "source_rect": [
+   916,
+   476,
+   1076,
+   630
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth A"
+ },
+ {
+  "sprite": "mouth_E",
+  "file": "build/rig/mouth_E.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1146,
+   492,
+   1343,
+   629
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth E"
+ },
+ {
+  "sprite": "mouth_I",
+  "file": "build/rig/mouth_I.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1409,
+   505,
+   1614,
+   609
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth I"
+ },
+ {
+  "sprite": "mouth_O",
+  "file": "build/rig/mouth_O.png",
+  "source": "src/main.png",
+  "source_rect": [
+   924,
+   696,
+   1080,
+   861
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth O"
+ },
+ {
+  "sprite": "mouth_U",
+  "file": "build/rig/mouth_U.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1177,
+   727,
+   1327,
+   852
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth U"
+ },
+ {
+  "sprite": "mouth_REST",
+  "file": "build/rig/mouth_REST.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1405,
+   727,
+   1621,
+   831
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth REST - also M/B/P"
+ },
+ {
+  "sprite": "mouth_FV",
+  "file": "build/rig/mouth_FV.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1409,
+   505,
+   1614,
+   609
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth FV (made from I)"
+ },
+ {
+  "sprite": "mouth_TH",
+  "file": "build/rig/mouth_TH.png",
+  "source": "src/main.png",
+  "source_rect": [
+   1146,
+   492,
+   1343,
+   629
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth TH (made from E)"
+ },
+ {
+  "sprite": "mouth_L",
+  "file": "build/rig/mouth_L.png",
+  "source": "src/main.png",
+  "source_rect": [
+   916,
+   476,
+   1076,
+   630
+  ],
+  "anchor_head_px": [
+   297,
+   1015
+  ],
+  "z": 1.1,
+  "identity": "mouth L (made from A)"
+ },
+ {
+  "sprite": "eyes",
+  "file": "build/rig/eyes.npz",
+  "source": "src/main.png (master head)",
+  "z": 1.2,
+  "identity": "irises move inside the drawn lids (gaze); lids drawn down for half blinks and blinks"
+ },
+ {
+  "sprite": "brows",
+  "file": "(cut from build/rig/head_nomouth.png at run time)",
+  "z": 1.3,
+  "identity": "each brow a layer that lifts / arches / frowns over painted-in lid skin"
+ },
+ {
+  "sprite": "body_g01",
+  "file": "build/rig/g01_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   31,
+   9,
+   420,
+   423
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     0.9956336408029448,
+     0.025463451147091896,
+     828.1671454287241
+    ],
+    [
+     -0.025463451147091896,
+     0.9956336408029448,
+     462.0189162308086
+    ]
+   ],
+   "world_origin_of_png": [
+    -212.0,
+    -221.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G01 palms up explaining",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g01_R",
+  "file": "build/rig/g01_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    38,
+    352
+   ],
+   [
+    96,
+    340
+   ],
+   [
+    152,
+    370
+   ],
+   [
+    152,
+    402
+   ],
+   [
+    104,
+    420
+   ],
+   [
+    40,
+    424
+   ]
+  ],
+  "hand_seed": [
+   118,
+   336
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    60,
+    396
+   ],
+   "wrist_sheet": [
+    121,
+    381
+   ],
+   "elbow_world": [
+    -170.01,
+    176.76
+   ],
+   "wrist_world": [
+    -109.66,
+    160.27
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G01 palms up explaining",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "g01_L",
+  "file": "build/rig/g01_L.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    328,
+    366
+   ],
+   [
+    380,
+    345
+   ],
+   [
+    422,
+    356
+   ],
+   [
+    426,
+    424
+   ],
+   [
+    372,
+    426
+   ],
+   [
+    330,
+    402
+   ]
+  ],
+  "hand_seed": [
+   348,
+   340
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    398,
+    398
+   ],
+   "wrist_sheet": [
+    355,
+    384
+   ],
+   "elbow_world": [
+    166.56,
+    170.15
+   ],
+   "wrist_world": [
+    123.4,
+    157.3
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G01 palms up explaining",
+  "identity": "his left forearm and hand"
+ },
+ {
+  "sprite": "body_g02",
+  "file": "build/rig/g02_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   429,
+   8,
+   868,
+   421
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1.0169216337918534,
+     0.00262664134482879,
+     416.73168168475877
+    ],
+    [
+     -0.00262664134482879,
+     1.0169216337918534,
+     458.21499896374365
+    ]
+   ],
+   "world_origin_of_png": [
+    -218.0,
+    -217.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G02 shrug",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g02_R",
+  "file": "build/rig/g02_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    452,
+    344
+   ],
+   [
+    526,
+    330
+   ],
+   [
+    532,
+    362
+   ],
+   [
+    506,
+    420
+   ],
+   [
+    448,
+    424
+   ],
+   [
+    438,
+    382
+   ]
+  ],
+  "hand_seed": [
+   470,
+   318
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    468,
+    404
+   ],
+   "wrist_sheet": [
+    506,
+    338
+   ],
+   "elbow_world": [
+    -174.29,
+    189.82
+   ],
+   "wrist_world": [
+    -135.82,
+    122.61
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G02 shrug",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "g02_L",
+  "file": "build/rig/g02_L.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    762,
+    330
+   ],
+   [
+    842,
+    344
+   ],
+   [
+    862,
+    382
+   ],
+   [
+    856,
+    424
+   ],
+   [
+    796,
+    420
+   ],
+   [
+    768,
+    360
+   ]
+  ],
+  "hand_seed": [
+   818,
+   306
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    832,
+    404
+   ],
+   "wrist_sheet": [
+    778,
+    330
+   ],
+   "elbow_world": [
+    195.87,
+    188.87
+   ],
+   "wrist_world": [
+    140.76,
+    113.76
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G02 shrug",
+  "identity": "his left forearm and hand"
+ },
+ {
+  "sprite": "body_g03",
+  "file": "build/rig/g03_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   878,
+   8,
+   1254,
+   429
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1.0058987440006613,
+     0.007553425607968809,
+     -15.176430414958872
+    ],
+    [
+     -0.007553425607968809,
+     1.0058987440006613,
+     461.41416089503366
+    ]
+   ],
+   "world_origin_of_png": [
+    -203.0,
+    -221.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G03 one point (index finger)",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g03_R",
+  "file": "build/rig/g03_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    898,
+    270
+   ],
+   [
+    970,
+    278
+   ],
+   [
+    976,
+    330
+   ],
+   [
+    930,
+    420
+   ],
+   [
+    878,
+    426
+   ],
+   [
+    875,
+    380
+   ]
+  ],
+  "hand_seed": [
+   957,
+   244
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    888,
+    404
+   ],
+   "wrist_sheet": [
+    940,
+    283
+   ],
+   "elbow_world": [
+    -186.89,
+    183.09
+   ],
+   "wrist_world": [
+    -135.49,
+    60.98
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G03 one point (index finger)",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "g03_L",
+  "file": "build/rig/g03_L.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    1148,
+    360
+   ],
+   [
+    1202,
+    354
+   ],
+   [
+    1252,
+    386
+   ],
+   [
+    1256,
+    426
+   ],
+   [
+    1200,
+    428
+   ],
+   [
+    1148,
+    420
+   ]
+  ],
+  "hand_seed": [
+   1092,
+   386
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    1230,
+    404
+   ],
+   "wrist_sheet": [
+    1150,
+    390
+   ],
+   "elbow_world": [
+    157.13,
+    180.51
+   ],
+   "wrist_world": [
+    76.55,
+    167.03
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G03 one point (index finger)",
+  "identity": "his left forearm and hand"
+ },
+ {
+  "sprite": "body_g04",
+  "file": "build/rig/g04_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   1270,
+   9,
+   1653,
+   421
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1.043369088422489,
+     0.021048738841324265,
+     -464.06682681781933
+    ],
+    [
+     -0.021048738841324265,
+     1.043369088422489,
+     476.31338737138924
+    ]
+   ],
+   "world_origin_of_png": [
+    -210.0,
+    -230.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G04 hold on (both palms forward)",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g04_R",
+  "file": "build/rig/g04_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    1328,
+    330
+   ],
+   [
+    1392,
+    340
+   ],
+   [
+    1386,
+    382
+   ],
+   [
+    1340,
+    424
+   ],
+   [
+    1280,
+    424
+   ],
+   [
+    1284,
+    380
+   ]
+  ],
+  "hand_seed": [
+   1378,
+   292
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    1300,
+    404
+   ],
+   "wrist_sheet": [
+    1360,
+    345
+   ],
+   "elbow_world": [
+    -167.18,
+    192.47
+   ],
+   "wrist_world": [
+    -105.82,
+    129.65
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G04 hold on (both palms forward)",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "g04_L",
+  "file": "build/rig/g04_L.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    1538,
+    340
+   ],
+   [
+    1602,
+    330
+   ],
+   [
+    1642,
+    380
+   ],
+   [
+    1646,
+    424
+   ],
+   [
+    1586,
+    424
+   ],
+   [
+    1546,
+    382
+   ]
+  ],
+  "hand_seed": [
+   1556,
+   292
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    1626,
+    404
+   ],
+   "wrist_sheet": [
+    1576,
+    345
+   ],
+   "elbow_world": [
+    172.95,
+    185.61
+   ],
+   "wrist_world": [
+    119.54,
+    125.1
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G04 hold on (both palms forward)",
+  "identity": "his left forearm and hand"
+ },
+ {
+  "sprite": "body_g05",
+  "file": "build/rig/g05_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   25,
+   462,
+   404,
+   891
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     0.9939123604343648,
+     -0.006186329189257202,
+     853.234914623672
+    ],
+    [
+     0.006186329189257202,
+     0.9939123604343648,
+     2.844828733167901
+    ]
+   ],
+   "world_origin_of_png": [
+    -199.0,
+    -219.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G05 counting",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g05_R",
+  "file": "build/rig/g05_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    138,
+    758
+   ],
+   [
+    178,
+    786
+   ],
+   [
+    172,
+    834
+   ],
+   [
+    110,
+    874
+   ],
+   [
+    36,
+    880
+   ],
+   [
+    22,
+    830
+   ],
+   [
+    58,
+    798
+   ]
+  ],
+  "hand_seed": [
+   205,
+   778
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    48,
+    848
+   ],
+   "wrist_sheet": [
+    156,
+    796
+   ],
+   "elbow_world": [
+    -172.3,
+    167.98
+   ],
+   "wrist_world": [
+    -64.64,
+    116.96
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G05 counting",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "body_g06",
+  "file": "build/rig/body_g06.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   487,
+   462,
+   808,
+   890
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1.022938568563855,
+     -0.01371697699065513,
+     412.8740179123552
+    ],
+    [
+     0.01371697699065513,
+     1.022938568563855,
+     -21.619369440007404
+    ]
+   ],
+   "world_origin_of_png": [
+    -172.0,
+    -224.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G06 arms folded (compound)",
+  "identity": "complete drawing (compound pose); own head removed above the collar"
+ },
+ {
+  "sprite": "body_g07",
+  "file": "build/rig/body_g07.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   878,
+   462,
+   1249,
+   891
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0
+    ]
+   ],
+   "world_origin_of_png": [
+    -194.0,
+    -219.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G07 clasped hands (compound, default)",
+  "identity": "complete drawing (compound pose); own head removed above the collar"
+ },
+ {
+  "sprite": "body_g08",
+  "file": "build/rig/g08_base.png",
+  "source": "src/gestures.png",
+  "source_rect": [
+   1284,
+   462,
+   1663,
+   891
+  ],
+  "scale": {
+   "px_per_world_unit": 8,
+   "sheet_to_world": [
+    [
+     1.0363533098052424,
+     0.024827673766832984,
+     -498.84943564971024
+    ],
+    [
+     -0.024827673766832984,
+     1.0363533098052424,
+     14.313983972700271
+    ]
+   ],
+   "world_origin_of_png": [
+    -228.0,
+    -229.0
+   ]
+  },
+  "z": 2,
+  "gesture": "G08 dismissive",
+  "identity": "own head removed above the collar; forearms cut free and refilled"
+ },
+ {
+  "sprite": "g08_R",
+  "file": "build/rig/g08_R.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    1318,
+    690
+   ],
+   [
+    1388,
+    694
+   ],
+   [
+    1382,
+    740
+   ],
+   [
+    1330,
+    840
+   ],
+   [
+    1282,
+    848
+   ],
+   [
+    1284,
+    780
+   ]
+  ],
+  "hand_seed": [
+   1340,
+   630
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    1292,
+    822
+   ],
+   "wrist_sheet": [
+    1360,
+    692
+   ],
+   "elbow_world": [
+    -207.47,
+    156.12
+   ],
+   "wrist_world": [
+    -140.23,
+    19.7
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G08 dismissive",
+  "identity": "his right forearm and hand"
+ },
+ {
+  "sprite": "g08_L",
+  "file": "build/rig/g08_L.png",
+  "source": "src/gestures.png",
+  "source_polygon": [
+   [
+    1590,
+    815
+   ],
+   [
+    1640,
+    805
+   ],
+   [
+    1668,
+    845
+   ],
+   [
+    1664,
+    892
+   ],
+   [
+    1610,
+    892
+   ],
+   [
+    1592,
+    870
+   ]
+  ],
+  "hand_seed": [
+   1545,
+   850
+  ],
+  "pivot": {
+   "elbow_sheet": [
+    1648,
+    862
+   ],
+   "wrist_sheet": [
+    1597,
+    850
+   ],
+   "elbow_world": [
+    162.46,
+    188.73
+   ],
+   "wrist_world": [
+    109.31,
+    177.56
+   ]
+  },
+  "scale": {
+   "px_per_world_unit": 8
+  },
+  "z": 3,
+  "gesture": "G08 dismissive",
+  "identity": "his left forearm and hand"
+ },
+ {
+  "sprite": "combo_r1",
+  "z": 2,
+  "gesture": "G01 one palm up (his right), left hand resting",
+  "identity": "body_g01 + g01_R + g03_L attached at g01's left elbow"
+ },
+ {
+  "sprite": "combo_l1",
+  "z": 2,
+  "gesture": "G01 one palm up (his left), right hand resting",
+  "identity": "body_g01 + g01_L + g03_L mirrored, attached at g01's right elbow"
+ },
+ {
+  "sprite": "room_portrait",
+  "file": "build/set_portrait.png",
+  "source": "src/room_portrait.png (from src/rooms.png)",
+  "world_rect": [
+   -155.0,
+   -290.0,
+   155.0,
+   268.2375478927203
+  ],
+  "scale": {
+   "px_per_world_unit": 6.735
+  },
+  "z": 0,
+  "identity": "the supplied media-room background, lens-blurred by shot"
+ },
+ {
+  "sprite": "room_landscape",
+  "file": "build/set_landscape.png",
+  "source": "src/room_landscape.png (from src/rooms.png)",
+  "world_rect": [
+   -456.0,
+   -272.0,
+   364.0,
+   180.26039783001806
+  ],
+  "scale": {
+   "px_per_world_unit": 5.395
+  },
+  "z": 0,
+  "identity": "the supplied media-room background, lens-blurred by shot"
+ }
+]

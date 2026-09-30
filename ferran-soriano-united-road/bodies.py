@@ -128,6 +128,17 @@ def extend_down(res, wmin):
     src_row = np.clip(last - 2 * WS, 0, H - 1)
     for x in np.nonzero(reach)[0]:
         out[last[x] - 2 * WS:, x] = res[src_row[x], x]
+    # between the outermost columns that reach the cut, the jumper is one solid band below it (no background
+    # showing between an elbow and the hip, no boxy gaps at the bottom corners of the frame)
+    xs = np.nonzero(reach)[0]
+    xl, xr = xs.min(), xs.max()
+    body = res[max(0, cut - 40 * WS):cut, xl:xr + 1]
+    navy = np.median(body[(body[..., 3] > 250) & (body[..., :3].max(-1) < 60)][:, :3], axis=0)
+    y0 = cut - 2 * WS
+    band = out[y0:, xl:xr + 1]
+    a = band[..., 3:] / 255
+    band[..., :3] = band[..., :3] * a + navy * (1 - a)
+    band[..., 3] = 255
     # the columns just outside the silhouette keep their soft edge
     return out
 

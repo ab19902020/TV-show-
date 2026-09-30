@@ -207,7 +207,7 @@ def gag_layer(W, H, name, age, left, shot, build_times=()):
     items = GAGS[name]
     tags = [tag(W, H, t, c) for t, c, _ in items]
     gap = 12 * u
-    y = H * (0.715 if L.portrait else 0.70)
+    y = H * ((0.60 if shot == "A" else 0.715) if L.portrait else 0.70)   # portrait A: on the chest, above his hands
     if name == "journalist":                  # stacks under the SUPPORTER tag
         y += tags[0].height + gap
     for i, ((t, c, delay), im) in enumerate(zip(items, tags)):

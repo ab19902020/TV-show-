@@ -50,10 +50,10 @@ def raw_sticker(shape):
 #   FV: the "I" mouth with the lower lip raised onto the upper teeth (rows from the lower lip's top line down move
 #       up by the lower teeth's height)
 #   TH: the "E" mouth with the tongue tip between the teeth, in front of the lower teeth
-#   L:  the "A" mouth with the tongue tip raised behind the upper teeth
-DERIVED = {"FV": "I", "TH": "E", "L": "A"}
+#   L:  the "E" mouth with the tongue tip raised behind the upper teeth
+DERIVED = {"FV": "I", "TH": "E", "L": "E"}
 TONGUE = {"TH": dict(cx=1245, top=539.5, bot=586, half=26, front=True),
-          "L": dict(cx=1000, top=505.0, bot=568, half=17, front=False)}
+          "L": dict(cx=1245, top=540.0, bot=590, half=17, front=False)}
 
 def tongue_layer(shape, im, off, k):
     """a drawn tongue tip in the sticker's style: pink, lighter on top, a thin dark outline and a centre groove"""

@@ -11,7 +11,7 @@ import json, numpy as np, librosa
 LEAD = 0.035
 # ARPAbet -> shape (diphthongs are two shapes); AH depends on its length: schwa / 'uh' / open 'ah'
 PH = {"AA": "A", "AE": "A", "AO": "O", "AW": ("A", "U"), "AY": ("A", "I"), "EH": "E", "ER": "E",
-      "EY": ("E", "I"), "IH": "I", "IY": "I", "OW": ("O", "U"), "OY": ("O", "I"), "UH": "U", "UW": "U",
+      "EY": ("E", "I"), "IH": "E", "IY": "I", "OW": ("O", "U"), "OY": ("O", "I"), "UH": "U", "UW": "U",
       "B": "REST", "P": "REST", "M": "REST", "F": "FV", "V": "FV", "TH": "TH", "DH": "TH", "L": "L",
       "W": "U", "R": "U", "Y": "I", "S": "I", "Z": "I", "T": "I", "D": "I", "N": "I",
       "SH": "U", "ZH": "U", "CH": "U", "JH": "U"}
