@@ -233,7 +233,7 @@ CAM(W(19, "according") - 0.25, "C2"); STILLW(W(19, "according") - 0.25, TOTAL)
 EX(W(19, "according") - 0.2, 0.4, brow_in=0.3)
 EX(WE(19, "happens") + 0.05, 0.45, smirk=0.45, smile=0.25, squint=0.25, brow_in=0.0)
 
-# ---------------------------------------------------------------- blinks: every 2-6 s, never on the key words
+# ---------------------------------------------------------------- blinks: none (he never blinks in the original)
 KEY = [(1, "did"), (4, "yes"), (5, "trousers"), (7, "all"), (10, "happened", 2), (13, "cleared"), (14, "keep"),
        (15, "finding"), (15, "out"), (16, "gift"), (18, "positives")]
 KEYWIN = [(W(b, w, *(n[:1] or [1])) - 0.3, WE(b, w, *(n[:1] or [1])) + 0.2) for b, w, *n in KEY]
@@ -248,7 +248,7 @@ def _blinks():
         else:
             t += 0.25
     return out
-BLINKS = _blinks()
+BLINKS = []          # like the real interview: he never blinks once (the schedule above is kept for reference)
 
 # ---------------------------------------------------------------- evaluation
 def _smooth(u): u = min(1.0, max(0.0, u)); return u * u * (3 - 2 * u)

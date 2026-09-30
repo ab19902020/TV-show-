@@ -75,6 +75,7 @@ function setFmt(f) {
 }
 document.getElementById('fmt-p').onclick = () => setFmt('portrait');
 document.getElementById('fmt-l').onclick = () => setFmt('landscape');
+v.addEventListener('error', () => { if (document.getElementById('src').src.includes('landscape')) { alert('The landscape version is not rendered yet.'); setFmt('portrait'); } }, true);
 let cc = false; const ccBtn = document.getElementById('cc');
 ccBtn.onclick = () => { cc = !cc; v.textTracks[0].mode = cc ? 'showing' : 'hidden'; ccBtn.textContent = cc ? 'Subtitles on' : 'Subtitles off'; ccBtn.classList.toggle('on', cc); };
 document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); playBtn.click(); } });

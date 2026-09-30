@@ -7,7 +7,7 @@ The film carries no broadcaster graphics, club crests or sponsor logos.
 | File | What it is |
 |---|---|
 | `soriano_parody_portrait.mp4` | the master: 1080×1920, 30 fps, H.264 + AAC 48 kHz, −16 LUFS / −1 dBTP |
-| `soriano_parody_landscape.mp4` | 1920×1080, framed separately (never a stretched portrait) |
+| `soriano_parody_landscape.mp4` | not rendered yet: the 1920×1080 version is set up with its own framing and room (`./render_all.sh landscape`) |
 | `preview.html` | browser preview: play/pause, seek, restart, portrait/landscape switch, optional subtitles, click-to-jump cue list |
 | `soriano_cues.csv` / `.json` | timeline / cue track: sequence, beat, start, end, spoken phrase, camera, gesture, expression, overlay |
 | `soriano_parody.srt` / `.vtt` | subtitles (not burned into the picture) |
@@ -37,8 +37,8 @@ on screen throughout.
   counting taps and the small circle. The compound poses (arms folded, hands clasped) stay complete drawings.
 - **One head everywhere:** the big head from the main sheet sits on every pose, so the nose, hairline, head size,
   outline and eye line never change. The expressions are small movements of the brows (one raised, both raised,
-  sad inner corners, a frown), a smile or smirk, a squint and the gaze, over the same fixed face. Blinks come every
-  2–6 s and never on the key words.
+  sad inner corners, a frown), a smile or smirk, a squint and the gaze, over the same fixed face. **He never blinks**,
+  just like the real interview (the rig can blink; `perf.py` keeps the schedule it would use, switched off).
 - **Graphics** are kept few and small, as asked: ACCURATE / UNHELPFUL, CASE ONGOING / METER RUNNING, 115, two CAS
   stamps, and SUPPORTER → INNOCENT / JOURNALIST → APPEALING. They are tags in the lower third that fade in and
   out. Each goes before the next beat.
