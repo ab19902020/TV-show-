@@ -1,0 +1,8 @@
+# regenerable build products
+models
+build/
+src/*_x4.png
+__pycache__/
+*.log
+part*.mp4
+*_master.mp4
