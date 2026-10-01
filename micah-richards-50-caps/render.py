@@ -19,36 +19,77 @@ EXT = 160
 DESK = [(422, 525), (485, 504), (601, 483), (675, 469), (748, 462), (901, 452), (1012, 450), (1170, 447), (1275, 449), (1322, 460),
         (1334, 480), (1312, 506), (1275, 646), (1248, 650), (900, 700), (560, 700), (485, 684), (459, 561)]
 DESK = [(x, y + EXT) for x, y in DESK]
-SEAT, SCALE = STUDIO_SEAT, STUDIO_SCALE
+_EDGE = np.array([(485, 664), (601, 643), (675, 629), (748, 622), (901, 612), (1012, 610), (1170, 607), (1275, 609), (1322, 620)], float)
 
-STUDIO_DEFAULT = dict(gary="gy_b_q34L", rooney="wr_b_front", micah="mr_b_front|f")
+
+def desk_edge(x):
+    return float(np.interp(x, _EDGE[:, 0], _EDGE[:, 1]))
+
+
+# the panel, left to right: Shearer, Gary (host), Rooney, Micah. Every pose is placed by its HEAD (centre at SEAT, height HEAD_PX),
+# so a pose change never moves the head; the body hangs below and its flat cut stays behind the desk.
+SEAT = dict(shearer=(640, 445), gary=(820, 482), rooney=(1000, 455), micah=(1180, 482))
+HEAD_PX = dict(shearer=108, gary=100, rooney=106, micah=112)
+Z = dict(shearer=1.0, gary=1.2, rooney=2.0, micah=1.5)
+STUDIO_DEFAULT = dict(shearer="as_p_listening", gary="gy_p_talking1", rooney="wr_p_seated", micah="m2_p_seated|f")
+STUDIO_RIM = (-0.8, -0.5, 0.30, (1.0, 0.42, 0.30))           # warm red key from the set's screens, camera-right
+
+
+def seat_actor(ch, t):
+    name, flip = pose_of(ch, t, STUDIO_DEFAULT[ch])
+    x, y = SEAT[ch]
+    hx, hy = cast.head_c(name)
+    sc = HEAD_PX[ch] / cast.head_h(name)
+    a = Actor(name, x, y, sc, flip=flip, anchor=(hx, hy), z=Z[ch])
+    st, b = face_state(ch, t, flip=flip, talks=cast.can_talk(name))
+    # breathing and lean pivot at the waist (the drawing's bottom), not at the head
+    bx, by = a.d.P(hx, cast.bottom_y(name))
+    Bm = body_matrix((bx, by), breath=b["breath"], lean=b["lean"], dy=-b.get("shrug", 0.0) * 9 * a.d.k)
+    return (a, st, Bm, 1.0)
 
 
 def studio_actors(t):
-    acts = []
-    for ch in ("gary", "rooney", "micah"):
+    out, cam = [], None
+    for ch in ("shearer", "gary", "rooney", "micah"):
         name, flip = pose_of(ch, t, STUDIO_DEFAULT[ch])
-        x, y = SEAT[ch]
-        talks = ch in perf.SPEAKERS
-        acts.append(bust(ch, name, x, y, SCALE[ch], t, flip=flip, z={"gary": 1, "rooney": 2, "micah": 1}[ch], talks=talks))
-    return acts
+        if name.split("_")[1] in ("e", "b"):              # a bust (the match-cut face): sunk behind the desk so its cut never shows
+            import party
+            a, cam = party.cu_on_edge(ch, name, flip, t, SEAT[ch][0], desk_edge(SEAT[ch][0]))
+            out.append(a)
+        else:
+            out.append(seat_actor(ch, t))
+    return out, cam
+
+
+def check_seats():
+    """every pose a character takes must hide its flat cut behind the desk"""
+    for ch in SEAT:
+        names = {STUDIO_DEFAULT[ch].split("|")[0]} | {nm.split("|")[0] for _, nm in perf.POSE.get(ch, [])}
+        for n in sorted(names):
+            sc = HEAD_PX[ch] / cast.head_h(n)
+            bot = SEAT[ch][1] + (cast.bottom_y(n) - cast.head_c(n)[1]) * sc
+            e = desk_edge(SEAT[ch][0])
+            print(f"{ch:8s} {n:20s} bottom {bot:6.1f} desk {e:6.1f} {'OK' if bot > e + 4 else '!! CUT SHOWS'}")
 
 
 def studio_props(t):
     """the last gag: a tiny 50 balloon drifts up behind Micah for a fraction of a second"""
     out = []
     t0 = perf.BALLOON_T0
-    if t0 <= t < t0 + 0.8:
-        k = (t - t0) / 0.8
+    if t0 <= t < t0 + 0.9:
+        k = (t - t0) / 0.9
         x, y = SEAT["micah"]
-        a = Actor("fr_balloons", x + 92 - 14 * k + 8 * math.sin(k * 5), y - 240 - 230 * k, 0.55, anchor="base", z=0.5)
+        a = Actor("fr_balloons", x + 95 - 10 * k + 6 * math.sin(k * 5), y + 60 - 220 * k, 0.6, anchor="base", z=0.5)
         out.append((a, None, body_matrix(a.anchor, lean=6 * math.sin(k * 7)), 1.0))
     return out
 
 
 def render_studio(s, t, cam):
     st = plate("studio", occluders=[DESK])
-    return st.render(cam, studio_props(t) + studio_actors(t), dof=s.get("dof", 0.0), occ_dof=s.get("dof", 0.0) * 0.6)
+    st.rim = STUDIO_RIM
+    acts, cu_cam = studio_actors(t)
+    if cam is None: cam = cu_cam
+    return st.render(cam, studio_props(t) + acts, dof=s.get("dof", 0.0), occ_dof=s.get("dof", 0.0) * 0.6)
 
 
 # ================================================================ shots -> frames
@@ -88,7 +129,7 @@ def render_frame(t):
     cam = camera(s, t)
     fr = SETUPS[s["setup"]](s, t, cam)
     fr = grade(fr, s, t)
-    if os.environ.get("GRID"): fr = grid_overlay(fr, cam)
+    if os.environ.get("GRID") and cam is not None: fr = grid_overlay(fr, cam)
     return fr
 
 
@@ -129,4 +170,5 @@ def chunk(a, b, out):
 if __name__ == "__main__":
     mode = sys.argv[1]
     if mode == "still": stills([float(x) for x in sys.argv[2:]])
+    elif mode == "seats": check_seats()
     elif mode == "chunk": chunk(int(sys.argv[2]), int(sys.argv[3]), sys.argv[4])

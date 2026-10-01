@@ -25,7 +25,7 @@ class Actor:
     def matrix(self, body=None):
         """full-res part px -> world px (3x3)"""
         ax, ay = self.anchor
-        s = self.scale
+        s = self.scale * 4.0 / self.d.k          # world px per part px (parts are 4x or 8x the sheet)
         sx = -s if self.flip else s
         M = np.array([[sx, 0, self.x - sx * ax], [0, s, self.y - s * ay], [0, 0, 1]], np.float64)
         if body is not None:

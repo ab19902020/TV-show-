@@ -14,7 +14,7 @@ FPS = 30
 PH = json.load(open("phones.json"))
 DUR = PH["dur"]
 N = int(math.ceil(DUR * FPS)) + 1
-SPEAKERS = ("gary", "rooney", "micah")
+SPEAKERS = ("gary", "rooney", "micah", "shearer")
 
 # ---------------------------------------------------------------- the spoken words
 WL = [dict(w=w["w"], s=w["s"], e=w["e"], who=t["who"]) for t in PH["turns"] for w in t["words"]]

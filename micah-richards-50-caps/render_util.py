@@ -33,7 +33,9 @@ def plate(name, occluders=()):
 
 # ---------------------------------------------------------------- camera
 def camera(s, t):
-    """(cx, cy, w) in 1x plate px: eased move between c0 and c1 plus a little hand-held drift (restaurant) / none (studio)"""
+    """(cx, cy, w) in 1x plate px: eased move between c0 and c1 plus a little hand-held drift (restaurant) / none (studio).
+    None when the setup frames the shot itself (the match cut)."""
+    if s.get("c0") is None: return None
     u = ease((t - s["t0"]) / max(1e-3, s["t1"] - s["t0"]), s.get("ease", "smooth"))
     cx, cy, w = [a + (b - a) * u for a, b in zip(s["c0"], s["c1"])]
     if s.get("punch"):                                   # a quick push-in that settles
@@ -71,9 +73,7 @@ def body_for(actor, b, extra=None):
 
 
 def bust(ch, drawing, x, y, scale, t, flip=False, z=1.0, talks=True, **over):
-    """one head-and-shoulders bust drawn at (x, y) = bottom centre of its torso extension; returns an actor tuple for Stage.render.
-    The `_x` version (extend.py) is used when it exists, so the desk / table hides a torso, not a cut."""
-    if not drawing.endswith("_x") and (drawing + "_x") in E.META: drawing += "_x"
+    """one drawing placed with its bottom centre at (x, y) (1x plate px); returns an actor tuple for Stage.render"""
     a = Actor(drawing, x, y, scale, flip=flip, anchor="base", z=z)
     s, b = face_state(ch, t, flip=flip, talks=talks and cast.can_talk(drawing), **over)
     return (a, s, body_for(a, b), 1.0)
@@ -89,10 +89,10 @@ STUDIO_SCALE = dict(gary=1.30, rooney=1.30, micah=1.38)
 
 def collar_world(drawing, x, y, scale, flip=False):
     """plate position of a bust's neck pivot when its bottom centre is at (x, y)"""
-    if not drawing.endswith("_x") and (drawing + "_x") in E.META: drawing += "_x"
     d = cast.get(drawing)
     bx, by = d.anchors["base"]; cx, cy = d.anchors["collar"]
-    return x + (cx - bx) * scale / 4 * (-1 if flip else 1), y + (cy - by) * scale / 4      # part px are 4x px; x, y are 1x plate px
+    q = d.k                                                   # part px per sheet px; x, y are 1x plate px
+    return x + (cx - bx) * scale / q * (-1 if flip else 1), y + (cy - by) * scale / q
 
 
 def cam_for_collar(drawing, x, y, scale, u, v, app, flip=False):

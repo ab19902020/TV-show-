@@ -13,13 +13,13 @@ AUDIO = "src/audio/rooney_micah_50_caps.mp3"
 # (speaker, window start, window end, text)
 # Who says what, read off the original BBC picture: the caption colours (Gary white, Micah yellow) and whose mouth moves in the
 # wide two-shot (Micah, in profile, on "We did, didn't we? A couple of times"; Micah again on "Everything!"). In Micah's close-up
-# his mouth stays shut through "pubs, clubs, what was it", so that line is Rooney's. Micah's voice sits higher (~170 Hz) than
+# his mouth stays shut through "pubs, clubs, what was it": that line is Alan Shearer's (the fourth pundit on the panel). Micah's voice sits higher (~170 Hz) than
 # Gary's and Rooney's (~118 Hz). To change a speaker, edit the first field.
 TURNS = [
     ("gary",   0.00,  4.85, "did you two ever bump into each other in manchester in those derby days and stuff"),
     ("micah",  4.85,  6.70, "we did didn't we a couple of times"),
     ("micah",  6.70,  9.30, "you were giving it the biggun in manchester back in those days"),
-    ("rooney", 9.30, 11.90, "what was it pubs clubs what was it"),
+    ("shearer", 9.30, 11.90, "what was it pubs clubs what was it"),
     ("micah",  11.90, 12.45, "everything"),
     ("rooney", 13.10, 14.75, "i've actually seen micah"),
     ("rooney", 14.75, 16.85, "in wings chinese restaurant"),

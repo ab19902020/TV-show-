@@ -137,6 +137,34 @@ def main_up(prefixes):
         print("up", n, out.shape, flush=True)
 
 
+def main_up8(prefixes):
+    """8x for the parts shown big (waist-up poses in close shots): 1x -> bicubic 2x -> Real-ESRGAN 4x"""
+    import upscale
+    os.makedirs(OUT4, exist_ok=True)
+    m1 = json.load(open(OUT1 + "meta.json"))
+    m4 = json.load(open(OUT4 + "meta.json")) if os.path.exists(OUT4 + "meta.json") else {}
+    for n, info in m1.items():
+        if not any(n.startswith(p) for p in prefixes): continue
+        src = OUT1 + n + ".png"
+        key = f"8x:{os.path.getmtime(src):.0f}"
+        if os.path.exists(OUT4 + n + ".png") and m4.get(n, {}).get("key") == key: continue
+        im = np.asarray(Image.open(src))
+        rgb, a = np.ascontiguousarray(im[..., :3]), im[..., 3]
+        rgb2 = cv2.resize(rgb, (rgb.shape[1] * 2, rgb.shape[0] * 2), interpolation=cv2.INTER_CUBIC)
+        big = upscale.upscale(np.ascontiguousarray(rgb2), "RealESRGAN_x4plus_anime_6B")
+        A = cv2.resize(a.astype(np.float32) / 255, (a.shape[1] * 8, a.shape[0] * 8), interpolation=cv2.INTER_CUBIC)
+        A = cv2.GaussianBlur(np.clip(A, 0, 1), (0, 0), 2.4)
+        A = smooth(A * 255, 70, 185)
+        out = np.dstack([big, (A * 255 + 0.5).astype(np.uint8)])
+        ys, xs = np.nonzero(out[..., 3] > 0)
+        t, b, l, r = max(0, ys.min() - 8), ys.max() + 9, max(0, xs.min() - 8), xs.max() + 9
+        out = out[t:b, l:r]
+        Image.fromarray(out).save(OUT4 + n + ".png")
+        m4[n] = dict(off=[info["off"][0] + l / 8, info["off"][1] + t / 8], scale=8, size=[out.shape[1], out.shape[0]], key=key)
+        json.dump(m4, open(OUT4 + "meta.json", "w"), indent=1)
+        print("up8", n, out.shape, flush=True)
+
+
 if __name__ == "__main__":
     mode, pre = sys.argv[1], sys.argv[2:]
-    {"cut": main_cut, "up": main_up}[mode](pre)
+    {"cut": main_cut, "up": main_up, "up8": main_up8}[mode](pre)

@@ -45,11 +45,11 @@ class Face:
     """landmarks (part px): mouth=(xl, yl, xr, yr, xc, yc), chin=y, eyes=[(cx, cy, rx, ry)...], facing='front'|'left'|'right'
     (for a profile: xl..xr runs from the mouth corner to the lips' front)."""
 
-    def __init__(self, img, mouth=None, chin=None, eyes=(), facing="front", jaw=1.0, ink=None, lid=None, brow_gain=1.0):
+    def __init__(self, img, mouth=None, chin=None, eyes=(), facing="front", jaw=1.0, ink=None, lid=None, brow_gain=1.0, grin=False):
         self.img = img.astype(np.float32) / 255 if img.dtype == np.uint8 else img.astype(np.float32)
         self.H, self.W = self.img.shape[:2]
         self.mouth, self.chin, self.eyes = mouth, chin, [tuple(e) for e in eyes]
-        self.facing, self.jaw, self.brow_gain = facing, jaw, brow_gain
+        self.facing, self.jaw, self.brow_gain, self.grin = facing, jaw, brow_gain, grin
         self.ink = INK if ink is None else np.float32(ink)
         # the face box that any effect can touch
         pts = []
@@ -99,6 +99,8 @@ class Face:
         if self.box is None:
             return self.img
         o, ws, tt, tb, tg, pk, st = VIS.get(vis, VIS["REST"])
+        if self.grin:                              # an open grin: the drawn teeth part, no painted teeth, a smaller drop
+            tt = tb = 0.0; tg *= 0.6; o *= 0.62
         o = o * amp * self.jaw
         if o < 0.004 and blink <= 0.01 and abs(look[0]) + abs(look[1]) < 0.01 and abs(brow) < 0.01 and abs(smile) < 0.01 and pk == 0:
             return self.img

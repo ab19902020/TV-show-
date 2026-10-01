@@ -1,77 +1,81 @@
-"""The flashback: Wing's, Wilmslow. Setups registered into direction.EXTRA_SETUPS.
+"""The flashback: Wing's, Wilmslow - the walk-in and the Rooney family's table. Registered into direction.EXTRA_SETUPS.
 
-  exterior   the Rooneys walk in (walk cycles from the sheets, bob + stride matched to the ground speed)
-  table      the Rooney family at their round table: Wayne, Coleen and the four boys (busts at the table)
-  party      Micah's 50 CAPS party (see party.py)
-All coordinates are 1x plate px of the 941 x 1672 portrait plates (the engine scales them x4 to the upscaled plate)."""
+  exterior   the Rooneys walk in along the pavement: rigged walks (walkrig.py), feet planted, the children smaller and quicker
+  table      the family seated behind their round table in their SEATED poses (arms on the table); kids clearly smaller
+All coordinates are 1x plate px of the 941 x 1672 portrait plates."""
 import math, numpy as np, cv2
 import perf, cast
 from perf import W
 from render_util import *
+import walkrig as WR
 
-# ---------------------------------------------------------------- walking family
 FAMILY = ["wr", "cr", "b1", "b2", "b3", "b4"]
-WALK_ORDER = {"wr": [0, 1, 2, 1], "cr": [0, 1, 2, 3], "b1": [0, 1, 2, 3], "b2": [0, 1, 2, 3], "b3": [0, 1, 2, 3], "b4": [0, 1, 2, 3]}
-WALK_SCALE = {"wr": 3.45, "cr": 3.3, "b1": 2.75, "b2": 2.7, "b3": 2.65, "b4": 2.6}
 
-
-def walker(ch, t, t0, x0, vx, y, flip=True, scale=None, cycle=0.92, stop_x=None):
-    """one walk-cycle actor moving vx px/s on average from x0. The ground is covered in steps: each drawing's hold starts with a
-    quick push forward (the new foot lands) and then the body stays put while the foot is planted, so the feet do not glide."""
-    order = WALK_ORDER[ch]
-    hold = cycle / len(order)
-    k, frac = divmod(max(0.0, t - t0), hold)
-    u = min(1.0, frac / (0.45 * hold)); u = u * u * (3 - 2 * u)
-    x = x0 + vx * hold * (k + u)
-    moving = True
-    if stop_x is not None and ((vx < 0 and x <= stop_x) or (vx > 0 and x >= stop_x)):
-        x, moving = stop_x, False
-    fr = order[int(k) % len(order)] if moving else order[0]
-    name = f"{ch}_w{fr}"
-    sc = scale or WALK_SCALE[ch]
-    a = Actor(name, x, y, sc, flip=flip, anchor="upper", z=y)
-    bob = -math.sin(u * math.pi) * 3.0 * (1 if moving else 0)          # a small lift during the push, down when the foot plants
-    Bm = body_matrix(a.anchor, dy=bob * 4)
-    return (a, None, Bm, 1.0)
-
-
-END_X = {"wr": 215, "cr": 350, "b1": 478, "b2": 580, "b3": 680, "b4": 775}      # where each stands when the shot ends
-T_EXT_END = 16.65
-VX = -330.0
+# ---------------------------------------------------------------- the walk-in
+# (turnaround drawing facing screen-left, mirror?, scale plate px per sheet px, start x at T_WALK0, floor y, step fraction of the leg)
+WALKERS = {
+    "wr": ("wr_t_q34R", False, 1.62, 730, 1330, 0.52),
+    "cr": ("cr_t_q34R", False, 1.62, 850, 1318, 0.50),
+    "b1": ("b1_t_q34L", True, 1.20, 965, 1336, 0.50),
+    "b2": ("b2_t_q34L", True, 1.16, 1062, 1322, 0.50),
+    "b3": ("b3_t_q34L", True, 1.12, 1158, 1340, 0.50),
+    "b4": ("b4_t_q34L", True, 1.04, 1250, 1326, 0.50),
+}
+WALK_SPEED = 150.0                       # plate px / s for the whole group
+MENU = [(0, 860), (30, 830), (205, 860), (225, 1000), (200, 1040), (110, 1060), (110, 1330), (185, 1340), (185, 1395), (0, 1395)]
 
 
 def render_exterior(s, t, cam):
-    st = plate("w_exterior")
-    acts = []
+    st = plate("w_exterior", occluders=[MENU])
+    t0 = s["t0"] - 0.6
+    fg = []
     for ch in FAMILY:
-        x0 = END_X[ch] - VX * (T_EXT_END - (s["t0"] - 0.4)) * (-1)       # start right of the door, walk left
-        y = 1300 + (10 if ch.startswith("b") else 0)
-        acts.append(walker(ch, t, s["t0"] - 0.4, END_X[ch] + 330.0 * (T_EXT_END - (s["t0"] - 0.4)), VX, y))
-    return st.render(cam, acts, dof=0.0)
+        d, mir, sc, x0, fy, stepf = WALKERS[ch]
+        fg += [(a, None, None, 1.0) for a in WR.walker(d, mir, x0, fy, sc, t, t0, WALK_SPEED, step_frac=stepf, z=fy)]
+    fg.sort(key=lambda a: a[0].z)
+    return st.render(cam, fg, dof=0.0)
 
 
 # ---------------------------------------------------------------- the family at the round table
-TABLE = [(0, 906), (0, 1672), (941, 1672), (941, 884), (900, 868), (700, 850), (520, 846), (300, 843), (100, 851)]
-LAMP = [(384, 928), (392, 776), (420, 764), (456, 776), (466, 928)]
-VASE = [(452, 928), (468, 832), (480, 742), (520, 726), (552, 752), (560, 832), (548, 928)]
-SIT = {            # x, scale (right-facing views are native; flip=True looks left)
-    "wr": (140, 1.18), "cr": (292, 1.06), "b1": (432, 0.94), "b2": (550, 0.92), "b3": (668, 0.94), "b4": (786, 0.90),
-}
-BASE_Y = 958
-FAM_DEFAULT = {c: f"{c}_b_front" for c in FAMILY}
+TABLE = [(0, 905), (60, 893), (150, 886), (300, 881), (450, 879), (600, 880), (750, 883), (900, 890), (941, 896), (941, 1672), (0, 1672)]
+GLASS_L = [(166, 1000), (170, 900), (175, 850), (190, 830), (215, 840), (222, 880), (210, 925), (200, 1000)]
+GLASS_M = [(305, 880), (300, 835), (310, 800), (345, 800), (355, 840), (350, 880)]
+LAMP = [(402, 990), (420, 860), (405, 857), (420, 805), (480, 805), (493, 857), (478, 860), (470, 990)]
+FLOWERS = [(480, 990), (492, 900), (488, 830), (512, 780), (560, 770), (600, 800), (612, 860), (606, 990)]
+GLASS_R = [(668, 1000), (672, 880), (680, 830), (700, 822), (720, 840), (722, 900), (712, 1000)]
+EDGE_Y = 883
+# head centre (plate px), head height (plate px); the children are clearly smaller than Wayne and Coleen
+SEATS = {"wr": (110, 80), "cr": (245, 76), "b1": (360, 60), "b2": (650, 58), "b3": (765, 60), "b4": (870, 56)}
+# sheet y of the top of the table drawn under each seated pose (so our tablecloth's edge takes its place)
+TABLE_TOP = {"wr_p_seated": 1077, "cr_p_seated": 1149, "cr_p_reaction": 1149, "cr_p_laughing": 1150, "b1_p_seated": 1181, "b2_p_seated": 1172,
+             "b3_p_seated": 1178, "b4_p_seated": 1157, "wr_e_laughing": 850}
 
 
-def table_actors(t):
+def seated(ch, name, flip, t, x, hpx, edge_y, talks=False, z=1.0):
+    hx, hy = cast.head_c(name)
+    sc = hpx / cast.head_h(name)
+    top = TABLE_TOP.get(name, cast.bottom_y(name) - 6)
+    y = edge_y + 3 - (top - hy) * sc                   # the drawing's table (or its flat cut) goes just under our tablecloth
+    a = Actor(name, x, y, sc, flip=flip, anchor=(hx, hy), z=z)
+    st, b = face_state(ch, t, flip=flip, talks=talks)
+    bx, by = a.d.P(hx, cast.bottom_y(name))
+    fwd = b.get("fwd", 0.0)
+    Bm = body_matrix((bx, by), breath=b["breath"], lean=b["lean"] + 4 * fwd, sx=1 + 0.03 * fwd, sy=1 + 0.03 * fwd)
+    return (a, st, Bm, 1.0)
+
+
+def table_actors(t, seats=SEATS, edge_y=EDGE_Y):
     acts = []
     for ch in FAMILY:
-        x, sc = SIT[ch]
-        name, flip = pose_of(ch, t, FAM_DEFAULT[ch])
-        acts.append(bust(ch, name, x, BASE_Y, sc, t, flip=flip, z=1.0, talks=False))
+        x, hpx = seats[ch]
+        name, flip = pose_of(ch, t, f"{ch}_p_seated")
+        acts.append(seated(ch, name, flip, t, x, hpx, edge_y))
     return acts
 
 
 def render_table(s, t, cam):
-    st = plate("w_round", occluders=[TABLE, LAMP, VASE])
+    st = plate("w_round", occluders=[TABLE, GLASS_L, GLASS_M, LAMP, FLOWERS, GLASS_R])
+    st.rim = (-0.9, -0.4, 0.22, (1.0, 0.78, 0.45))       # warm lamp light from camera-right
     return st.render(cam, table_actors(t), dof=s.get("dof", 0.0))
 
 

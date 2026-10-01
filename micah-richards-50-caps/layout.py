@@ -10,7 +10,7 @@ not leak into the paper, and the dam row is removed again.
 SHEETS = {
     "wr": "wayne-rooney-sheet", "mr": "micah-richards-sheet-1-suit", "cr": "coleen-rooney-sheet",
     "b1": "rooney-boy-1-sheet", "b2": "rooney-boy-2-sheet", "b3": "rooney-boy-3-sheet", "b4": "rooney-boy-4-sheet",
-    "fr": "micahs-friends-sheet", "gy": "gary-lineker-sheet",
+    "fr": "micahs-friends-sheet", "gy": "gary-lineker-sheet", "m2": "micah-richards-sheet-2-suit", "as": "alan-shearer-sheet",
 }
 
 STRIPS = []
@@ -92,3 +92,29 @@ strip("gy", 762, 900, [("gy_e_neutral", 345, 840), ("gy_e_happy", 452, 840), ("g
                        ("gy_e_confused", 793, 840), ("gy_e_laughing", 920, 840), ("gy_e_smiling", 1040, 840)], flat=True)
 strip("gy", 1058, 1182, [("gy_p_talking1", 595, 1120), ("gy_p_talking2", 700, 1120), ("gy_p_pointing", 805, 1120),
                          ("gy_p_amused", 915, 1120), ("gy_p_sofa", 1035, 1120)], flat=True)
+
+# ------------------------------------------------------------------ Wayne: upper-body gesture poses (waist-up, real torso + hands)
+strip("wr", 936, 1108, [("wr_p_talking", 680, 1045), ("wr_p_shrug", 830, 1045), ("wr_p_handsup", 950, 1050),
+                        ("wr_p_seated", 1060, 1040)], flat=True)
+
+# ------------------------------------------------------------------ Micah, sheet 2 (m2): bigger drawings
+strip("m2", 100, 770, [("m2_hero", 150, 450)], tag="hero")
+strip("m2", 138, 452, [("m2_t_front", 372, 300), ("m2_t_q34L", 534, 300), ("m2_t_side", 689, 300), ("m2_t_q34R", 851, 300),
+                       ("m2_t_back", 1016, 300)])
+strip("m2", 500, 690, [("m2_b_front", 372, 600), ("m2_b_q34L", 533, 600), ("m2_b_side", 690, 600), ("m2_b_q34R", 855, 600),
+                       ("m2_b_back", 1018, 600)], flat=True)
+strip("m2", 738, 868, [("m2_e_neutral", 350, 800), ("m2_e_happy", 456, 800), ("m2_e_smug", 572, 800), ("m2_e_laughing", 688, 800),
+                       ("m2_e_confused", 803, 800), ("m2_e_shocked", 925, 800), ("m2_e_proud", 1040, 800)], flat=True)
+strip("m2", 1048, 1202, [("m2_p_talking", 100, 1140), ("m2_p_shrug", 275, 1140), ("m2_p_pointing", 445, 1140),
+                         ("m2_p_handsup", 620, 1130), ("m2_p_seated", 810, 1140), ("m2_p_placard", 1005, 1140)], flat=True)
+strip("m2", 1252, 1388, [("m2_w_neutral", 80, 1320), ("m2_w0", 200, 1320), ("m2_w1", 287, 1320), ("m2_w2", 375, 1320),
+                         ("m2_w3", 469, 1320), ("m2_run0", 625, 1320), ("m2_run1", 762, 1320), ("m2_run2", 900, 1320),
+                         ("m2_run3", 1025, 1320)])
+
+# ------------------------------------------------------------------ Alan Shearer (as)
+strip("as", 106, 690, [("as_t_front", 110, 400), ("as_t_q34", 300, 400), ("as_t_side", 462, 400), ("as_t_back", 640, 400)])
+strip("as", 128, 308, [("as_e_neutral", 820, 225), ("as_e_smile", 975, 225), ("as_e_laugh", 1135, 225)], flat=True)
+strip("as", 335, 508, [("as_e_surprised", 820, 425), ("as_e_serious", 975, 425), ("as_e_confused", 1135, 425)], flat=True)
+strip("as", 530, 708, [("as_e_disapproving", 820, 625), ("as_e_amused", 975, 625), ("as_e_thinking", 1135, 625)], flat=True)
+strip("as", 955, 1243, [("as_p_pointing", 100, 1110), ("as_p_talking", 290, 1110), ("as_p_listening", 470, 1110),
+                        ("as_p_thinking", 640, 1110)], flat=True)

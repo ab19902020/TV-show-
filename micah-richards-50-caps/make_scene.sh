@@ -13,13 +13,14 @@ R=https://github.com/xinntao/Real-ESRGAN/releases/download
 [ -f transcript.json ] || python3 transcribe.py
 [ -f phones.json ] || python3 align.py
 
-# 2. art: cut every drawing out of the sheets (1x), upscale 4x, find the eyes, give the busts torsos, cache anchors
+# 2. art: cut every drawing out of the sheets (1x); upscale 4x (8x for the waist-up poses that are shown big); re-ink the
+#    outlines; eyes; head boxes and anchors; the filming phone
 python3 cut_parts.py cut
 python3 cut_parts.py up
+python3 cut_parts.py up8 wr_p_ m2_p_ as_p_ gy_p_talking1 gy_p_amused gy_p_pointing gy_p_talking2 cr_p_ b1_p_ b2_p_ b3_p_ b4_p_
+python3 realpha.py
 python3 eyes.py
-python3 -c "import cast; cast.build_cache('heads')"
-python3 extend.py
-python3 -c "import cast; cast.build_cache('anchors')"
+python3 -c "import cast; cast.build_cache()"
 python3 props.py
 
 # 3. backgrounds: the studio (repo's red-and-black set, extended for portrait) and Wing's, 4x
