@@ -1,5 +1,5 @@
 """Find every separate drawing on a character sheet (connected components of "not paper"), label them on a contact image.
-  python3 seg.py SHEETNAME            -> prints the components, writes scratchpad/g/<sheet>_seg.jpg
+  python3 seg.py SHEETNAME            -> prints the components, writes build/review/<sheet>_seg.jpg
 Components: (id, x0, y0, x1, y1, area). Header bars, text labels and thin panel borders are dropped."""
 import os as _os
 _os.makedirs('build/review', exist_ok=True)
