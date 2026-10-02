@@ -63,6 +63,25 @@ Check a walk with:
 | 32.47 | "UNIT": a camera jolt and spark fountains. |
 | 33.5 | Full disco: every head a different colour, a mirror ball and a party strobe. |
 
+**A pumping crowd (`crowd.py`).** The painted crowds move. Every person-sized slice of the crowd bounces in its own
+way: a jump on every beat, a jump on every other beat, or a sway with a phone up. Each is off-step from its
+neighbours, and the slices blend, so there are no seams. The stage crowd is one perspective grid, with people wider and
+bouncier towards the camera, so no row join cuts through anyone.
+
+How hard the crowd goes follows the story (`energy()`):
+- Full while 50 performs.
+- It falters when he walks off, then waits in the reverse shot.
+- Near-still for the tumbleweed.
+- It builds on the strut and goes wild after UNIT.
+
+**Nobody stands still.** All of this moves the drawings as solid pieces, with no stretching:
+- Everyone breathes, shifts their weight, drifts their head and darts their eyes (`performance.life()`).
+- The `groove` channel: Rooney bobs to the music side-stage and at the end. Rio nods along, catches himself and
+  looks away innocently. 50 keeps grooving in the wing.
+- 50 bounces and rocks on the beat while he performs and beckons.
+- The back views rock on their feet, and Rio's shoulders shake as he laughs.
+- The camera bumps on every beat while the show is on.
+
 **Gags.** All of them are silent, under the original audio:
 - Rooney and Rio go rosy-cheeked on "a few drinks" and stay that way. Rooney hiccups during the wobble.
 - The front rows jump on the beat, freeze during the awkward silence, then go wild after UNIT.
