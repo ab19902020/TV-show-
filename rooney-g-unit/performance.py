@@ -11,7 +11,7 @@ import numpy as np
 from collections import defaultdict
 
 KEYS=defaultdict(lambda:defaultdict(list))
-DEFAULT=dict(look=0.,looky=0.,brow=0.,smile=0.,tilt=0.,nod=0.,lid=0.)
+DEFAULT=dict(look=0.,looky=0.,brow=0.,smile=0.,tilt=0.,nod=0.,lid=0.,blush=0.)
 
 def key(who,channel,t,value,ramp=.18):
     KEYS[who][channel].append((float(t),float(value),max(.01,ramp)))
@@ -55,6 +55,16 @@ for who,channel,items in [
  ('fifty','smile',[(0,.05),(10.8,.55),(18.,.45),(34.4,.65)]),
 ]:
     for t,v in items:key(who,channel,t,v,.16 if channel=='look' else .28)
+
+# A few drinks: both go rosy on "we both had a few drinks" and stay that way all night (Rooney more).
+for t,v in [(0,0.),(7.6,.25),(8.6,1.),(10.6,.75),(31.6,.95)]:key('rooney','blush',t,v,.5)
+for t,v in [(0,0.),(7.8,.2),(8.8,.6),(10.6,.45)]:key('rio','blush',t,v,.5)
+# The hiccup in the wobble: eyes pop, then settle back.
+for t,v in [(9.2,.85),(9.42,-.04)]:key('rooney','brow',t,v,.05)
+# The idea: an eyebrow waggle (up-down, up-down) behind the grin.
+for t,v in [(26.4,.85),(26.57,-.15),(26.74,.85),(26.91,-.15),(27.15,-.1)]:key('rooney','brow',t,v,.07)
+# 50, from the wing: a slow amused head shake (in engine.py) with the brows up.
+for t,v in [(34.45,.7)]:key('fifty','brow',t,v,.15)
 
 for who in KEYS:
     for channel in KEYS[who]:KEYS[who][channel].sort()

@@ -10,6 +10,7 @@ from PIL import Image
 from scipy import ndimage as ndi
 from reference_face import Face
 import performance as perf
+import lights as LX
 
 ROOT=Path(__file__).resolve().parent
 W,H=941,1672;LEVELS=(1.,.5,.25)
@@ -183,7 +184,7 @@ class Actor:
         # mouth drawings composited onto that jaw for this caricature style.
         a=self.face.render(vis=('AI' if vis=='A' else vis) if active else 'REST',amp=amp,
                            blink=max(blink(self.kind,t),st['lid']),look=(st['look'],st['looky']),
-                           brow=st['brow'],smile=0 if active else st['smile'],paint_mouth=False).copy()
+                           brow=st['brow'],smile=0 if active else st['smile'],paint_mouth=False,blush=st['blush']).copy()
         if vis!='REST' and self.kind=='rooney':
             mx,my=self.mouth;hx,hy=self.hoff;mx-=hx;my-=hy
             if not hasattr(self,'mouth_erase'):
@@ -211,9 +212,9 @@ class Actor:
             a[...,:3]=pp[...,:3]+a[...,:3]*(1-pp[...,3:4])
         return a
 
-    def draw(self,dst,cam,x,floor,height,t,expr=None,look=0,tilt=0,lean=0,nod=0,vis='REST'):
+    def draw(self,dst,cam,x,floor,height,t,expr=None,look=0,tilt=0,lean=0,nod=0,vis='REST',hop=0):
         st=perf.state(self.kind,t);tilt+=st['tilt'];nod+=st['nod']
-        M=self.placement(x,floor,height);B=pivot(self.ww/2,self.cut,lean)
+        M=T(0,-hop)@self.placement(x,floor,height);B=pivot(self.ww/2,self.cut,lean)
         self.lower.draw(dst,cam@M);self.upper.draw(dst,cam@M@B)
         HM=B@T(0,nod*META[self.n]['scale'])@pivot(*self.neck,tilt)
         over(dst,pm(self.head_image(t,expr,look,vis)),cam@M@HM@T(*self.hoff))
@@ -243,9 +244,19 @@ class Scene:
         self.bg={n:np.asarray(Image.open(ROOT/'src/art'/f'{n}.png').convert('RGB').resize((W,H),Image.Resampling.LANCZOS)).astype(np.float32)/255 for n in ['exterior','stage','wings','crowd','mic-plate']}
         active=['rooney_right','rio_left','fifty_exit','rooney_mic_right','rooney_mic_up','rio_mic_right','rio_mic_left']
         self.actors={n:Actor(n) for n in active};self.sprites={};self.rigs={};self.walkfaces={};self.special={}
+        self.lights=LX.Lights(self.ow,self.oh);self.t=0.;self.lit=None
 
     def camera(self,zoom,cx,cy):return T(self.ow/2,self.oh/2)@S(zoom*self.ow/W)@T(-cx,-cy)
-    def plate(self,n,cam):return cv2.warpAffine(self.bg[n],cam[:2],(self.ow,self.oh),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
+    def plate(self,n,cam):
+        d=cv2.warpAffine(self.bg[n],cam[:2],(self.ow,self.oh),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
+        # the show's lighting goes on the set, under the characters (lights.py)
+        t=self.t;self.lights.plate(d,cam,n,t)
+        if n=='stage':self.crowd_jump(d,cam,t)
+        if n=='stage':
+            self.lights.mirror_ball(d,cam,t,LX.party(t)*(1 if t<35 else 1.15),ball=(300,250,34) if t>=33.5 else None)
+            self.lights.sparks(d,cam,t)
+        elif n=='crowd':self.lights.mirror_ball(d,cam,t,LX.party(t))
+        self.lit=d.copy();return d
     def shadow(self,dst,cam,x,floor,height):
         a=np.zeros((36,220,4),np.float32);cv2.ellipse(a,(110,18),(101,10),0,0,360,(0,0,0,.3),-1,cv2.LINE_AA)
         a=cv2.GaussianBlur(a,(0,0),3);over(dst,a,cam@T(x-height*.2,floor-height*.025)@S(height*.4/220))
@@ -255,7 +266,10 @@ class Scene:
         if n not in self.sprites:self.sprites[n]=Sprite(part(n))
         a=self.sprites[n];s=height/a.h;self.shadow(dst,cam,x,floor,height);a.draw(dst,cam@T(x-a.w*s/2,floor-height)@S(s))
     def occlude(self,dst,cam,n,poly):
-        mask=np.zeros((H,W),np.uint8);cv2.fillPoly(mask,[np.int32(poly)],255);over(dst,pm(np.dstack((self.bg[n],mask.astype(np.float32)/255))),cam)
+        # foreground pieces of the set come from the same lit plate, so they match the lighting behind the characters
+        mask=np.zeros((H,W),np.uint8);cv2.fillPoly(mask,[np.int32(poly)],255)
+        m=cv2.warpAffine(mask.astype(np.float32)/255,cam[:2],(self.ow,self.oh),flags=cv2.INTER_LINEAR)[...,None]
+        dst[:]=dst*(1-m)+self.lit*m
     def walk(self,dst,cam,n,x,floor,height,distance,phase=0,lean=1.4,moving=1,stop_distance=None,time=0,look=0):
         from walkrig import WalkRig
         mirror=n.endswith('right')
@@ -274,7 +288,7 @@ class Scene:
                     eyes=eyes_in(a,y0,y1)
                     self.walkfaces[n]=Face(a,eyes=eyes,ink=[.025,.02,.025])
                 st=perf.state(n.split('_')[0],time)
-                a=self.walkfaces[n].render(blink=max(blink(n.split('_')[0],time),st['lid']),look=(-st['look'] if mirror else st['look'],st['looky']),brow=st['brow'])
+                a=self.walkfaces[n].render(blink=max(blink(n.split('_')[0],time),st['lid']),look=(-st['look'] if mirror else st['look'],st['looky']),brow=st['brow'],blush=st['blush'])
                 over(dst,pm(a),cam@p.M)
             else:over(dst,p.d.base(1),cam@p.M)
 
@@ -313,6 +327,68 @@ class Scene:
         theta=1.6*math.sin(max(0,t-33.5)*8.5)*math.exp(-max(0,t-33.5)*.22)
         up.draw(dst,M@pivot(w*.55,h*.72,theta))
 
+    def crowd_jump(self,d,cam,t):
+        """the front rows bounce on the beat while the show is on, freeze in the awkward silence, go wild after UNIT"""
+        e=LX.show(t)*(1.6 if t>LX.UNIT else 1.)*(0 if 20.3<t<29.6 else 1)
+        if e<.02:return
+        k=float(cam[0,0])
+        for y0,y1,ph,amp in [(1052,1245,0.,7),(1245,1672,.5,10)]:
+            b=(t/LX.BEAT+ph)%1;h=amp*e*4*b*(1-b)                         # one jump per beat
+            sh=int(round(h*k))
+            if sh<1:continue
+            a=int(max(0,(cam@[0,y0,1])[1]));z=int(min(self.oh,(cam@[0,y1,1])[1]))
+            if z-a<4 or a-sh<0:continue
+            band=d[a:z].copy()
+            d[a-sh:z-sh]=band
+    def sweat(self,dst,cam,n,x,floor,height,at,t0,t,size=1.):
+        """a cartoon sweat drop at a point of the drawing (its own px), sliding down the temple"""
+        a=t-t0
+        if a<0:return
+        act=self.actors[n];p=(act.placement(x,floor,height)@[*pxy(n,*at),1])[:2]
+        k=float(cam[0,0])*height/act.hh*META[n]['scale']*size     # output px per sheet px
+        grow=smooth(a/.18);slide=40*smooth((a-.25)/1.3)
+        q=cam@np.array([p[0],p[1],1.]);cx,cy=q[0],q[1]+slide*k
+        r=18*k*grow
+        if r<1:return
+        ta=-1.95                                                      # a teardrop leaning out, its point up
+        tip=(cx+2.1*r*math.cos(ta),cy+2.1*r*math.sin(ta))
+        pts=[tip]+[(cx+r*math.cos(th),cy+r*math.sin(th)) for th in np.linspace(ta+1.05,ta+2*math.pi-1.05,28)]
+        poly=np.int32(np.round(np.array(pts)*4))
+        cv2.fillPoly(dst,[poly],(.62,.84,1.),cv2.LINE_AA,2)
+        cv2.polylines(dst,[poly],True,(.02,.02,.04),max(1,int(round(1.3*k))),cv2.LINE_AA,2)
+        cv2.ellipse(dst,(int(cx+.3*r),int(cy+.15*r)),(max(1,int(.28*r)),max(1,int(.45*r))),-30,0,360,(1,1,1),-1,cv2.LINE_AA)
+
+    def tumbleweed(self,dst,cam,t,t0,t1):
+        """the awkward silence: a tumbleweed rolls across the front of the stage, bouncing"""
+        if not t0<=t<t1:return
+        u=(t-t0)/(t1-t0);x=900-800*u;r=34
+        y=990-r-30*abs(math.sin(u*math.pi*3.2))                       # three little bounces, at the front of the stage
+        if not hasattr(self,'_weed'):
+            rng=np.random.default_rng(7);self._weed=[(rng.uniform(0,6.3),rng.uniform(.45,1.),rng.uniform(.4,1.1),rng.uniform(0,6.3)) for _ in range(26)]
+        k=float(cam[0,0]);q=cam@np.array([x,y,1.]);R=r*k;rot=-u*12
+        self.shadow(dst,cam,x,990,r*2.4)
+        strokes=[]
+        for i,(a0,rr,span,ph) in enumerate(self._weed):           # loose open loops of dry twig, rolling
+            ang=a0+rot;cxy=(q[0]+.3*R*math.cos(ang+ph),q[1]+.3*R*math.sin(ang+ph))
+            pts=[(cxy[0]+rr*R*math.cos(ang+v),cxy[1]+rr*R*.92*math.sin(ang+v)) for v in np.linspace(0,span*math.pi,9)]
+            strokes.append(np.int32(np.round(np.array(pts)*4)))
+        for p in strokes:cv2.polylines(dst,[p],False,(.16,.11,.06),max(1,int(round(2.2*k))),cv2.LINE_AA,2)
+        for i,p in enumerate(strokes):cv2.polylines(dst,[p],False,(.86,.72,.47) if i%2 else (.74,.58,.35),max(1,int(round(1.1*k))),cv2.LINE_AA,2)
+
+    def glint(self,dst,cam,x,y,t0,t):
+        """a four-point star that pops and turns: the 'ting' of a bad idea"""
+        a=t-t0
+        if a<0 or a>.42:return
+        q=cam@np.array([x,y,1.]);s=math.sin(math.pi*a/.42)**.8*float(cam[0,0])*14
+        layer=np.zeros_like(dst);th=a*3
+        for j in range(4):
+            ang=th+j*math.pi/2;w=.16
+            pts=[(q[0]+s*math.cos(ang),q[1]+s*math.sin(ang)),(q[0]+s*w*math.cos(ang+math.pi/2),q[1]+s*w*math.sin(ang+math.pi/2)),
+                 (q[0],q[1]),(q[0]+s*w*math.cos(ang-math.pi/2),q[1]+s*w*math.sin(ang-math.pi/2))]
+            cv2.fillPoly(layer,[np.int32(np.round(np.array(pts)*4))],(1,1,1),cv2.LINE_AA,2)
+        layer=np.maximum(layer,cv2.GaussianBlur(layer,(0,0),max(1,s*.12))*1.4)
+        dst[:]=1-(1-dst)*(1-np.clip(layer,0,1))
+
     def phone_glints(self,dst,cam,t,reverse=False):
         if t<32.85 and not reverse:return
         points=[(72,1114),(336,1255),(845,1213),(623,1115),(177,1090)] if not reverse else [(212,610),(697,702),(417,875),(788,905),(91,748)]
@@ -323,7 +399,7 @@ class Scene:
             cv2.circle(dst,(int(q[0]),int(q[1])),r,(.65*v,.85*v,1*v),-1,cv2.LINE_AA)
 
     def render(self,t):
-        n,u=shot(t);ss=smooth(u)
+        n,u=shot(t);ss=smooth(u);self.t=t;spots=[]
         if n=='black':return np.zeros((self.oh,self.ow,3),np.uint8)
         if n=='exterior':
             c=self.camera(1+.055*smooth(min(u*2,1)),471,850);d=self.plate('exterior',c)
@@ -337,8 +413,9 @@ class Scene:
             else:c=self.camera(1.01+.025*ss,461,1065)
             d=self.plate('wings',c);self.performer(d,c,723,811,290,t)
             lean=(2.0*math.exp(-((t-8.9)/.43)**2)-1.0*math.exp(-((t-9.5)/.26)**2)) if n=='balance' else 0
+            hic=16*math.exp(-((t-9.25)/.045)**2) if n=='balance' else 0         # "a few drinks": one hiccup
             if n not in ['rio_warning','rio_looks']:
-                self.actor(d,c,'rooney_mic_right' if t>=12.7 else 'rooney_right',286,1530,700,t,look=.6,lean=lean)
+                self.actor(d,c,'rooney_mic_right' if t>=12.7 else 'rooney_right',286,1530,700,t,look=.6,lean=lean,hop=hic)
             if n!='rooney_looks':
                 self.actor(d,c,'rio_mic_left' if t>=12.7 else 'rio_left',551,1504,762,t,look=-.85)
             self.occlude(d,c,'wings',[(0,711),(126,711),(137,1024),(36,1070),(0,1070)])
@@ -353,39 +430,60 @@ class Scene:
             self.walk(d,c,'rio_mic_right',-128+106*dt,960,540,106*dt,moving=moving,stop_distance=318,time=t,look=-.8 if t>20.3 else .4)
             self.walk(d,c,'rooney_mic_right',128+91*dt,975,475,91*dt,moving=moving,stop_distance=273,time=t,look=.5)
             for p in [[(0,907),(60,907),(100,983),(0,988)],[(859,907),(941,907),(941,988),(834,979)]]:self.occlude(d,c,'stage',p)
+            # the follow-spot leaves with 50 Cent; a beat later the operator remembers the two blokes he left behind
+            back=0. if t<20.98 else (.55 if t<21.05 else (.15 if t<21.1 else smooth((t-21.1)/.06)))
+            spots=[(fx,934,510,1.),(-128+106*dt,960,540,back),(128+91*dt,975,475,back)]
         elif n=='reverse':
             c=self.camera(1.01+.035*ss,470,855);d=self.plate('crowd',c)
             self.full(d,c,'rio_back',279,1453,640);self.full(d,c,'rooney_back',625,1465,584);self.phone_glints(d,c,t,True)
+            spots=[(279,1453,640),(625,1465,584)]
         elif n=='awkward':
             c=self.camera(1.8+.025*ss,330,767);d=self.plate('stage',c)
             self.actor(d,c,'rio_mic_right',190,960,540,t,look=.85 if u<.45 or u>.82 else 0)
             self.actor(d,c,'rooney_mic_right',405,975,475,t,look=-.85 if u<.5 else 0)
+            spots=[(190,960,540),(405,975,475)]
+            self.sweat(d,c,'rooney_mic_right',405,975,475,(668,170),23.35,t,2.2)
+            self.tumbleweed(d,c,t,23.0,24.25)
         elif n in ['rio_deadpan','rio_no','blank']:
             c=self.camera(4.35+.035*ss,207,615);d=self.plate('stage',c)
             self.actor(d,c,'rio_mic_right',190,960,540,t,look=0 if n=='blank' else .8,tilt=2.0*math.sin((t-28.4)*11)*math.sin(math.pi*u) if n=='rio_no' else 0)
+            spots=[(190,960,540)]
+            if n=='rio_deadpan':self.sweat(d,c,'rio_mic_right',190,960,540,(632,150),24.5,t,1.1)
         elif n=='idea':
             c=self.camera(4.55+.05*ss,422,665);d=self.plate('stage',c)
             self.actor(d,c,'rooney_mic_right',405,975,475,t,look=.9)
+            spots=[(405,975,475)]
         elif n=='microphone':
             a=self.actors['rooney_mic_right'];grille=(a.placement(516,975,490)@[*pxy('rooney_mic_right',632,556),1])[:2]
             c=self.camera(7+.05*ss,grille[0]-4,grille[1]+97);d=self.plate('stage',c)
             self.actor(d,c,'rooney_mic_right',516,975,490,t)
+            spots=[(516,975,490)]
+            self.glint(d,c,grille[0]-10,grille[1]-14,27.82,t)
         elif n=='strut':
             c=self.camera(2.35+.025*ss,468,765);d=self.plate('stage',c)
             self.actor(d,c,'rio_mic_right',190,960,540,t,look=.9)
             tt=t-29.25;dist=55.5*tt
-            self.walk(d,c,'rooney_mic_right',405+dist,975,490,dist,.25,lean=1.5,time=t,look=-.95 if 30.05<t<30.33 else .35)
+            sway=2.6*math.sin(math.pi*(dist/(490/part('rooney_mic_right').shape[0]))/(self.rigs['rooney_mic_right'].leglen*.37)+.8) if 'rooney_mic_right' in self.rigs else 0
+            self.walk(d,c,'rooney_mic_right',405+dist,975,490,dist,.25,lean=1.5+sway,time=t,look=-.95 if 30.05<t<30.33 else .35)
+            spots=[(190,960,540),(405+dist,975,490)]
         elif n=='punchline':
-            c=self.camera(4.9+.035*ss,522,650);d=self.plate('stage',c)
             pulse=sum(math.exp(-((t-g)/.052)**2) for g in [31.707,31.817,31.947,32.067])
+            # the camera punches in on every G and jolts on UNIT
+            kick=sum(math.exp(-max(0,t-g)/.06)*(t>=g) for g in LX.G_HITS)
+            jolt=math.exp(-max(0,t-LX.UNIT)/.12)*(t>=LX.UNIT)
+            shake=6*jolt*math.sin(t*95),5*jolt*math.cos(t*80)
+            c=self.camera(4.9+.035*ss+.16*min(kick,1.3)+.35*jolt,522+shake[0],650+shake[1]);d=self.plate('stage',c)
             self.actor(d,c,'rooney_mic_up',516,975,490,t,look=.25,tilt=-.5*pulse,nod=.35*pulse,vis=viseme(t))
         elif n=='laugh':
             c=self.camera(2.8+.02*ss,251,758);d=self.plate('stage',c);self.folded_laugh(d,c,t)
         elif n=='fifty_amused':
             c=self.camera(2.5+.025*ss,680,1002);d=self.plate('wings',c)
-            self.actor(d,c,'fifty_exit',665,1450,700,t,look=-.85,tilt=1.0)
+            shake=2.4*math.sin((t-34.45)*13)*smooth((t-34.45)/.12)*(1-smooth((t-34.85)/.15))
+            self.actor(d,c,'fifty_exit',665,1450,700,t,look=-.85,tilt=1.0+shake)
         elif n=='finish':
             c=self.camera(1.48+.035*min(ss,.8),395,763);d=self.plate('stage',c)
             self.folded_laugh(d,c,min(t,36.15));self.actor(d,c,'rooney_mic_up',516,975,490,min(t,36.15),look=.1)
             self.phone_glints(d,c,t)
+        self.lights.spots(d,c,t,spots)
+        self.lights.flash(d,t)
         return np.uint8(np.clip(d*255,0,255))

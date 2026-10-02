@@ -94,10 +94,12 @@ class Face:
         a, b, c = np.linalg.solve(A, np.array([yl, yc, yr], np.float64))
         return (a * X * X + b * X + c).astype(np.float32)
 
-    def render(self, vis="REST", amp=1.0, blink=0.0, look=(0.0, 0.0), brow=0.0, smile=0.0, paint_mouth=True):
-        """-> float32 RGBA image (straight colour) with all effects applied."""
+    def render(self, vis="REST", amp=1.0, blink=0.0, look=(0.0, 0.0), brow=0.0, smile=0.0, paint_mouth=True, blush=0.0):
+        """-> float32 RGBA image (straight colour) with all effects applied. blush: rosy cheeks (a few drinks)"""
         if self.box is None:
             return self.img
+        if blush > 0.01:
+            return self._blush(self.render(vis, amp, blink, look, brow, smile, paint_mouth, 0.0), blush)
         o, ws, tt, tb, tg, pk, st = VIS.get(vis, VIS["REST"])
         o = o * amp * self.jaw
         if o < 0.004 and blink <= 0.01 and abs(look[0]) + abs(look[1]) < 0.01 and abs(brow) < 0.01 and abs(smile) < 0.01 and pk == 0:
@@ -218,6 +220,25 @@ class Face:
         rgb = out[..., :3] * (1 - mm) + col * mm
         rgb = rgb * (1 - edge * 0.85) + self.ink * edge * 0.85
         res = out.copy(); res[..., :3] = rgb
+        return res
+
+    def _blush(self, img, amount):
+        """soft pink on both cheeks, under each eye, only on skin"""
+        if len(self.eyes) < 2: return img
+        res = img.copy()
+        if not hasattr(self, "_cheeks"):
+            mid = sum(e[0] for e in self.eyes) / len(self.eyes)
+            m = np.zeros((self.H, self.W), np.float32)
+            Y, X = np.mgrid[0:self.H, 0:self.W].astype(np.float32)
+            for cx, cy, rx, ry in self.eyes:
+                r = max(rx, ry)
+                ccx, ccy = cx + (cx - mid) * 0.22, cy + 2.15 * r
+                m = np.maximum(m, np.exp(-(((X - ccx) / (1.15 * r)) ** 2 + ((Y - ccy) / (0.62 * r)) ** 2) * 1.4))
+            rgb = self.img[..., :3]
+            skin = (rgb[..., 0] > rgb[..., 2] + 0.12) & (rgb[..., 0] > 0.45) & (self.img[..., 3] > 0.9)
+            self._cheeks = (m * cv2.GaussianBlur(skin.astype(np.float32), (0, 0), 1.5))[..., None]
+        a = self._cheeks * min(amount, 1.0) * 0.5
+        res[..., :3] = res[..., :3] * (1 - a) + np.float32([0.93, 0.33, 0.36]) * a
         return res
 
     def _blink(self, out, X, Y, amount):
