@@ -13,13 +13,15 @@ Ratcliffe scene, each walker is rigged:
 Everything is computed in part px of the 4x drawing, facing screen-LEFT (drawings that face right are mirrored)."""
 import math, numpy as np, cv2
 from PIL import Image
+from scipy import ndimage as ndi
 import engine as E
 
 STANCE = 0.60           # fraction of the cycle a foot is on the ground
 LIFT = 0.10             # swing-foot lift, x leg length
-PSI_STRIKE = 14.0       # deg toe up at heel strike
-PSI_OFF = 26.0          # deg heel up at toe off
-FAR_SHADE = 0.80
+PSI_STRIKE = 9.0        # deg toe up at heel strike (a chunky cartoon trainer reads better with a small roll)
+PSI_OFF = 15.0          # deg heel up at toe off
+FAR_SHADE = 0.80        # the far leg's trousers
+FAR_SHADE_SHOE = 0.92   # the far leg's white trainer (0.80 turned it grey: it read as a different shoe)
 
 
 def smooth(u):
@@ -137,15 +139,50 @@ class WalkRig:
         axis = lambda y: ka * y + ba
         ocx = np.array([(np.nonzero(other[y])[0].min() + np.nonzero(other[y])[0].max()) / 2 for y in cy if other[y].any()])
         self.leg_gap = float(np.mean(ocx) - np.mean(cx)) if len(ocx) else 0.25 * L
-        # joints
+        # the far leg is a copy of this one moved across to the other hip: no further out than the drawn far leg's outer
+        # edge at the top, or the copy pokes out of the hip
+        r0 = int(crotch + 0.05 * L)
+        if leg[r0].any() and other[r0].any():
+            nl, nr = np.nonzero(leg[r0])[0][[0, -1]]; ol, orr = np.nonzero(other[r0])[0][[0, -1]]
+            self.leg_gap = min(self.leg_gap, float(orr - nr)) if self.leg_gap > 0 else max(self.leg_gap, float(ol - nl))
+        # The whole trainer is one rigid piece. (Cutting the foot at a fixed height split these tall cartoon trainers in
+        # two: the upper half rode on the shin and only the sole on the foot, so the shoe broke apart and the toe went
+        # through the floor whenever the foot rolled.) The trainer's white panels are merged, the inked outline added.
+        rgb = img[..., :3].astype(np.int16); mn, mxc = rgb.min(2), rgb.max(2)
+        ink = max(3, int(round(0.016 * L)))
+        bright = (mn > 150) & ((mxc - mn) < 60) & (img[..., 3] > 200) & (yy > sole - 0.42 * L)
+        bright = cv2.morphologyEx(bright.astype(np.uint8), cv2.MORPH_CLOSE,
+                                  cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * ink + 1, 2 * ink + 1))) > 0
+        count, labels, stats, _ = cv2.connectedComponentsWithStats(bright.astype(np.uint8))
+        zone = leg & (yy > sole - 0.15 * L)
+        best = max(range(1, count), key=lambda i: int((zone & (labels == i)).sum()))
+        shoe_fill = ndi.binary_fill_holes(labels == best)
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * ink + 1, 2 * ink + 1))
+        shoe = (cv2.dilate(shoe_fill.astype(np.uint8), k) > 0) & (img[..., 3] > 40)
+        shoe = (cv2.dilate(shoe.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0) & (img[..., 3] > 8)   # + the soft edge
+        cols = np.nonzero(shoe_fill.any(0))[0]
+        ytop = np.full(W, H, np.int32)
+        for x in cols: ytop[x] = int(np.nonzero(shoe_fill[:, x])[0].min())
+        shoe_top = int(ytop[cols].min())
+        # the trouser hem sits on the shoe: the leg's run just above the trainer
+        row = leg[max(0, shoe_top - 2 * ink)]
+        hx = np.nonzero(row)[0]
+        hx0, hx1 = (int(hx.min()), int(hx.max())) if len(hx) else (int(cols.min()), int(cols.max()))
+        hemcols = (xx >= hx0) & (xx <= hx1)
+        above_shoe = yy < ytop[None, :]
+        # joints: the ankle sits inside the trainer, right under the middle of the hem, so a rolling foot stays tucked
+        # into the trouser leg
         hip_y = crotch - 0.12 * L
-        foot_top = sole - 0.21 * L
-        ank_y = foot_top + 0.40 * (sole - foot_top)
-        self.hip = np.array([axis(hip_y), hip_y]); self.ank = np.array([axis(ank_y), ank_y])
+        acx = int(round((hx0 + hx1) / 2)); acx = min(max(acx, int(cols.min())), int(cols.max()))
+        ank_y = ytop[acx] + 0.30 * (sole - ytop[acx])
+        self.hip = np.array([axis(hip_y), hip_y]); self.ank = np.array([float(acx), float(ank_y)])
         self.knee = (self.hip + self.ank) / 2 + np.array([0.0, -0.02 * L])
-        fx = xx[leg & (yy > foot_top)]
-        self.toe_x, self.heel_x = float(fx.min()), float(fx.max())                 # facing left: toe = min x
-        self.sole = float(sole)
+        foot_top = float(shoe_top)
+        self.toe_x, self.heel_x = float(xx[shoe].min()), float(xx[shoe].max())     # facing left: toe = min x
+        self.sole = float(yy[shoe].max())
+        # where the sole meets the floor, front and back: the foot rolls about these, so no part of it goes under
+        band = shoe & (yy >= self.sole - 0.035 * L)
+        self.toe_c, self.heel_c = float(xx[band].min()), float(xx[band].max())
         # the leg image: the thigh carried up under the jacket (a clean row repeated with the leg's slope)
         rgba = img.copy()
         clean = crotch + 5
@@ -154,38 +191,63 @@ class WalkRig:
             dx = int(round(ka * (y - clean)))
             rgba[y] = np.roll(img[clean], dx, axis=0); legm[y] = np.roll(leg[clean], dx)
         legm[:int(hip_y) - int(0.18 * L)] = False
-        # pieces: thigh / shin with a disk at the knee, foot below the cuff
+        # pieces: thigh / shin with a disk at the knee and at the hip (so neither sweeps a corner out of the silhouette
+        # when it turns), the shin down to the hem, the foot = the trainer + a strip of trouser hidden under the hem
+        kxs = np.nonzero(legm[int(self.knee[1])])[0]
+        self.knee[0] = 0.5 * (kxs.min() + kxs.max())                 # the knee in the middle of the trouser leg
         u = (self.ank - self.hip) / np.linalg.norm(self.ank - self.hip)
         s = (xx - self.hip[0]) * u[0] + (yy - self.hip[1]) * u[1]
         sk = float((self.knee - self.hip) @ u)
-        kr = 0.5 * legm[int(self.knee[1])].sum() * 1.03
+        kr = 0.5 * (kxs.max() - kxs.min()) * 0.97
         disk = (xx - self.knee[0]) ** 2 + (yy - self.knee[1]) ** 2 <= kr * kr
-        thigh = legm & ((s <= sk) | disk)
-        shin = legm & ((s >= sk) | disk) & (yy < foot_top + 0.5 * (sole - foot_top))
-        foot = legm & (yy >= foot_top)
-        # A fitted leg split can catch a disconnected corner of the other
-        # shoe. Retain only the actual foot in this cutout.
-        count,labels,stats,_=cv2.connectedComponentsWithStats(foot.astype(np.uint8))
-        if count>1:foot=labels==(1+int(np.argmax(stats[1:,cv2.CC_STAT_AREA])))
+        # round the knee: near it neither piece is wider than the knee disk (a trouser crease sticking out there
+        # turned into a flap behind the bent knee)
+        t = (xx - self.knee[0]) * -u[1] + (yy - self.knee[1]) * u[0]
+        legm = legm & ~((np.abs(s - sk) < 1.1 * kr) & (np.abs(t) > kr))
+        hr = 0.5 * legm[int(crotch + 0.05 * L)].sum() * 0.96
+        hipdisk = (yy >= crotch) | ((xx - self.hip[0]) ** 2 + (yy - self.hip[1]) ** 2 <= hr * hr)
+        thigh = legm & ((s <= sk) | disk) & hipdisk
+        trouser_end = shoe & ~(hemcols & above_shoe)
+        trouser_end = cv2.dilate(trouser_end.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0     # no ghost of the shoe's edge
+        shin = legm & ((s >= sk) | disk) & ~trouser_end & (yy < self.sole)
+        foot = shoe | (legm & hemcols & above_shoe & (yy >= ytop[None, :] - 0.09 * L) & (s >= sk))
+        def largest(m):          # a sliver of the other leg caught by the split line would turn into a flying speck
+            n, lab, st, _ = cv2.connectedComponentsWithStats(m.astype(np.uint8))
+            return lab == (1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))) if n > 2 else m
+        thigh, shin, foot = largest(thigh), largest(shin), largest(foot)
         feather = lambda m: cv2.GaussianBlur(m.astype(np.float32), (0, 0), 1.0)
+        whiteish = ((mn > 150) & ((mxc - mn) < 60))[..., None]
+        shade = np.where(whiteish, FAR_SHADE_SHOE, FAR_SHADE)
+        # above the crotch a thigh is only ever seen through the hip's soft lower edge: keep it inside the drawn hip
+        # outline there (the far copy at the far hip's), or its top shows as a smudge outside the hip
+        fdx = int(round(self.far_dx if hasattr(self, 'far_dx') else self.leg_gap))
+        drawn = np.zeros_like(a); drawn[:, max(0, -fdx):W - max(0, fdx)] = a[:, max(0, fdx):W - max(0, -fdx)]
+        hips_in = {"": a | (yy > crotch + 0.03 * L), ":far": drawn | (yy > crotch + 0.03 * L)}
         self.pieces = {}
         for nm, m in (("thigh", thigh), ("shin", shin), ("foot", foot)):
-            weight=feather(m)
-            if nm=='thigh':weight*=np.clip((yy-(crotch-.08*L))/(.13*L),0,1)
-            p = rgba.copy(); p[..., 3] = (rgba[..., 3] * weight).astype(np.uint8)
-            far = p.copy(); far[..., :3] = (far[..., :3] * FAR_SHADE).astype(np.uint8)
-            self.pieces[nm] = (Sprite(f"{drawing}:{nm}", p), Sprite(f"{drawing}:{nm}:far", far))
+            sp = []
+            for which, mm in (("", m & hips_in[""] if nm == "thigh" else m), (":far", m & hips_in[":far"] if nm == "thigh" else m)):
+                weight = feather(mm)
+                if nm == 'thigh': weight *= np.clip((yy - (hip_y - .10 * L)) / (.06 * L), 0, 1)   # opaque above the hip joint
+                q = rgba.copy(); q[..., 3] = (rgba[..., 3] * weight).astype(np.uint8)
+                if which: q[..., :3] = (q[..., :3] * shade).astype(np.uint8)
+                sp.append(Sprite(f"{drawing}:{nm}{which}", q))
+            self.pieces[nm] = tuple(sp)
+        # outline of the foot piece (for keeping the rolled foot above the floor)
+        cs, _ = cv2.findContours(shoe.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        self.foot_pts = np.vstack([c[:, 0, :] for c in cs]).astype(np.float64)
         # upper body: everything above the crotch (+ a soft edge), hands kept
         up = img.copy()
         # A soft hip overlap covers the articulated thighs without rectangular
         # patches projecting beyond the original trouser silhouette.
-        keep = np.clip((crotch+.18*L-yy)/(.10*L),0,1)
+        # (a long fade left see-through ghosts of the drawn legs between the swinging ones)
+        keep = np.clip((crotch+.02*L-yy)/(.035*L),0,1)
         up[..., 3] = (up[..., 3] * keep).astype(np.uint8)
         self.upper = Sprite(f"{drawing}:upper", up)
         self.L1 = float(np.linalg.norm(self.knee - self.hip)); self.L2 = float(np.linalg.norm(self.ank - self.knee))
         self.ank_h = self.sole - self.ank[1]
-        self.heel_b = self.heel_x - self.ank[0]                        # heel behind the ankle (+x, facing left)
-        self.ball_f = self.ank[0] - (0.72 * self.toe_x + 0.28 * self.heel_x)
+        self.heel_b = self.heel_c - self.ank[0]                        # heel contact behind the ankle (+x, facing left)
+        self.ball_f = self.ank[0] - self.toe_c                         # toe contact in front of it
         self.leglen = self.L1 + self.L2
         self.hip_rest = self.sole - self.ank_h - self.leglen * 0.985
         self.src_dir = math.atan2(*(self.knee - self.hip)[::-1])
@@ -238,6 +300,12 @@ class WalkRig:
                 A = A0 + (A1 - A0) * w - np.array([0.0, LIFT * self.leglen * math.sin(math.pi * v) ** 1.2])
                 psi = -PSI_OFF + (PSI_STRIKE + PSI_OFF) * smooth(v)
                 tg[leg] = (A, psi)
+        # no part of a trainer ever goes through the floor: lift the ankle by whatever the rolled outline dips under
+        for leg, (A, psi) in list(tg.items()):
+            floor = self.sole + (far_lift if leg == "far" else 0.0)
+            P = (self.foot_pts - self.ank) @ rot(math.radians(psi)).T + A
+            dip = float(P[:, 1].max()) - floor
+            if dip > 0: tg[leg] = (A - np.array([0.0, dip]), psi)
         # hips: rest height unless a leg can't reach -> drop just enough
         Lmax = (self.L1 + self.L2) * 0.995
         hip_y = self.hip_rest
