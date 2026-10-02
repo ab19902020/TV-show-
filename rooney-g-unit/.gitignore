@@ -1,0 +1,4 @@
+build/
+qa/
+output/
+__pycache__/
