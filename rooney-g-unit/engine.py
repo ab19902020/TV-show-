@@ -11,6 +11,7 @@ from scipy import ndimage as ndi
 from reference_face import Face
 import performance as perf
 import lights as LX
+import crowd as CR
 
 ROOT=Path(__file__).resolve().parent
 W,H=941,1672;LEVELS=(1.,.5,.25)
@@ -169,7 +170,11 @@ class Actor:
             landmarks['mouth']=tuple(float(v) for q in pts for v in (q[0]-hx,q[1]-hy))
             landmarks['chin']=pxy(name,line[2][0],chin)[1]-hy
         self.face=Face(head,eyes=self.eyes,ink=[.025,.02,.025],**landmarks)
-        body=self.a.copy();body[...,3]=(body[...,3]*(mask<.999)).astype(np.uint8)
+        # the body keeps its own collar and shoulders for a band above the head layer's soft lower edge: when the head
+        # tilts or nods that edge moves, and a hole cut right up to it showed as a see-through line across the shirt
+        pad=.03*self.hh
+        hole=(mask>=.999)&(Y<y1-18-pad)
+        body=self.a.copy();body[...,3]=(body[...,3]*(~hole)).astype(np.uint8)
         self.cut=self.hh*.59;m=np.clip((self.cut+24-Y)/34,0,1)
         upper=body.copy();upper[...,3]=(upper[...,3]*m).astype(np.uint8)
         lower=body.copy();lower[...,3]=(lower[...,3]*(m<.999)).astype(np.uint8)
@@ -212,11 +217,15 @@ class Actor:
             a[...,:3]=pp[...,:3]+a[...,:3]*(1-pp[...,3:4])
         return a
 
-    def draw(self,dst,cam,x,floor,height,t,expr=None,look=0,tilt=0,lean=0,nod=0,vis='REST',hop=0):
+    def draw(self,dst,cam,x,floor,height,t,expr=None,look=0,tilt=0,lean=0,nod=0,vis='REST',hop=0,life=1.):
         st=perf.state(self.kind,t);tilt+=st['tilt'];nod+=st['nod']
-        M=T(0,-hop)@self.placement(x,floor,height);B=pivot(self.ww/2,self.cut,lean)
+        L=perf.life(self.kind,t);lean+=L['lean']*life;tilt+=L['tilt']*life
+        # nod: keyed nods in 1/160 of the figure's height (they were sheet px, invisible on the 1x microphone drawings)
+        nodpx=nod*self.hh/160+L['nod']*life*self.hh
+        M=T(0,-hop)@self.placement(x,floor,height)
+        B=T(0,(L['dip']-L['breath'])*life*self.hh)@pivot(self.ww/2,self.cut,lean)
         self.lower.draw(dst,cam@M);self.upper.draw(dst,cam@M@B)
-        HM=B@T(0,nod*META[self.n]['scale'])@pivot(*self.neck,tilt)
+        HM=B@T(0,nodpx)@pivot(*self.neck,tilt)
         over(dst,pm(self.head_image(t,expr,look,vis)),cam@M@HM@T(*self.hoff))
         if self.held_prop:self.held_prop.draw(dst,cam@M@B)
 
@@ -244,14 +253,25 @@ class Scene:
         self.bg={n:np.asarray(Image.open(ROOT/'src/art'/f'{n}.png').convert('RGB').resize((W,H),Image.Resampling.LANCZOS)).astype(np.float32)/255 for n in ['exterior','stage','wings','crowd','mic-plate']}
         active=['rooney_right','rio_left','fifty_exit','rooney_mic_right','rooney_mic_up','rio_mic_right','rio_mic_left']
         self.actors={n:Actor(n) for n in active};self.sprites={};self.rigs={};self.walkfaces={};self.special={}
-        self.lights=LX.Lights(self.ow,self.oh);self.t=0.;self.lit=None
+        self.lights=LX.Lights(self.ow,self.oh);self.crowd=CR.Crowd();self.t=0.;self.lit=None
 
-    def camera(self,zoom,cx,cy):return T(self.ow/2,self.oh/2)@S(zoom*self.ow/W)@T(-cx,-cy)
+    def camera(self,zoom,cx,cy):
+        # while the show's on the camera bumps on every beat, like a concert edit (harder in the party)
+        t=self.t;ph=(t/LX.BEAT)%1
+        zoom*=1+.009*LX.show(t)*(1+.7*LX.party(t))*math.exp(-ph/.11)
+        return T(self.ow/2,self.oh/2)@S(zoom*self.ow/W)@T(-cx,-cy)
     def plate(self,n,cam):
-        d=cv2.warpAffine(self.bg[n],cam[:2],(self.ow,self.oh),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
+        # the camera is a scale and a shift, so plate coords of the output grid are two 1D ramps
+        k=float(cam[0,0]);t=self.t
+        px=((np.arange(self.ow,dtype=np.float32)+.0-cam[0,2])/k)[None,:].repeat(self.oh,0)
+        py=((np.arange(self.oh,dtype=np.float32)+.0-cam[1,2])/k)[:,None].repeat(self.ow,1)
+        mv=self.crowd.displace(n,px,py,t)                       # the crowd bounces (crowd.py)
+        if mv is None:
+            d=cv2.warpAffine(self.bg[n],cam[:2],(self.ow,self.oh),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
+        else:
+            d=cv2.remap(self.bg[n],(px-mv[0]).astype(np.float32),(py+mv[1]).astype(np.float32),cv2.INTER_LINEAR,borderMode=cv2.BORDER_REFLECT_101)
         # the show's lighting goes on the set, under the characters (lights.py)
-        t=self.t;self.lights.plate(d,cam,n,t)
-        if n=='stage':self.crowd_jump(d,cam,t)
+        self.lights.plate(d,cam,n,t)
         if n=='stage':
             self.lights.mirror_ball(d,cam,t,LX.party(t)*(1 if t<35 else 1.15),ball=(300,250,34) if t>=33.5 else None)
             self.lights.sparks(d,cam,t)
@@ -262,9 +282,10 @@ class Scene:
         a=cv2.GaussianBlur(a,(0,0),3);over(dst,a,cam@T(x-height*.2,floor-height*.025)@S(height*.4/220))
     def actor(self,dst,cam,n,x,floor,height,t,**kw):
         self.shadow(dst,cam,x,floor,height);self.actors[n].draw(dst,cam,x,floor,height,t,**kw)
-    def full(self,dst,cam,n,x,floor,height):
+    def full(self,dst,cam,n,x,floor,height,sway=0.):
         if n not in self.sprites:self.sprites[n]=Sprite(part(n))
-        a=self.sprites[n];s=height/a.h;self.shadow(dst,cam,x,floor,height);a.draw(dst,cam@T(x-a.w*s/2,floor-height)@S(s))
+        a=self.sprites[n];s=height/a.h;self.shadow(dst,cam,x,floor,height)
+        a.draw(dst,cam@T(x-a.w*s/2,floor-height)@S(s)@pivot(a.w/2,a.h,sway))   # sway: rock on the feet (deg)
     def occlude(self,dst,cam,n,poly):
         # foreground pieces of the set come from the same lit plate, so they match the lighting behind the characters
         mask=np.zeros((H,W),np.uint8);cv2.fillPoly(mask,[np.int32(poly)],255)
@@ -297,11 +318,14 @@ class Scene:
         if n not in self.special:
             eyes=eyes_in(a,h*.16,h*.29);self.special[n]=Face(a,eyes=eyes,ink=[.025,.02,.025])
         a=self.special[n].render(blink=blink('fifty',t),look=(-.6 if t>9.8 else .1,0))
-        Y=np.mgrid[:h,:w][0];mask=np.clip((h*.66+10-Y)/20,0,1)
+        # cut through the jeans, below both fists, so the hands always stay whole when the top half moves
+        Y=np.mgrid[:h,:w][0];mask=np.clip((h*.76+10-Y)/20,0,1)
         upper=a.copy();upper[...,3]*=mask;lower=a.copy();lower[...,3]*=(mask<.999)
         M=cam@T(x-w*s/2,floor-height)@S(s)
         self.shadow(dst,cam,x,floor,height);over(dst,pm(lower),M)
-        over(dst,pm(upper),M@pivot(w*.48,h*.66,.9*math.sin(t*2.7)))
+        # performing: knees bounce on every beat (the torso dips), shoulders rock side to side on the bar
+        b=t/LX.BEAT;ph=b%1;hit=math.exp(-(ph/.22)**2)+math.exp(-((ph-1)/.22)**2)
+        over(dst,pm(upper),M@T(0,h*.011*hit)@pivot(w*.48,h*.76,1.3*math.sin(math.pi*b)+.8*hit))
 
     def beckon(self,dst,cam,t):
         n='fifty_pose_beckon';a=part(n);h,w=a.shape[:2];s=540/h
@@ -311,10 +335,16 @@ class Scene:
         disk=((X-elbow[0])**2+(Y-elbow[1])**2<(w*.035)**2)
         arm=a.copy();arm[...,3]=(arm[...,3]*mask).astype(np.uint8)
         body=a.copy();body[...,3]=(body[...,3]*(~(mask.astype(bool)&~disk))).astype(np.uint8)
+        hip=h*.76;m=np.clip((hip+12-Y)/24,0,1)                # below the hands and the mic
+        up=body.copy();up[...,3]=(up[...,3]*m).astype(np.uint8);low=body.copy();low[...,3]=(low[...,3]*(m<.999)).astype(np.uint8)
         M=cam@T(530-w*s/2,975-540)@S(s)
-        self.shadow(dst,cam,530,975,540);over(dst,pm(body),M)
-        theta=6*math.sin(math.pi*smooth((t-10.8)/.6))-4*math.sin(math.pi*smooth((t-11.7)/.6))
-        over(dst,pm(arm),M@pivot(*elbow,theta))
+        self.shadow(dst,cam,530,975,540);over(dst,pm(low),M)
+        # still in the groove while he invites them on: a dip on the beat, a lean into each 'come on'
+        b=t/LX.BEAT;ph=b%1;hit=math.exp(-(ph/.22)**2)+math.exp(-((ph-1)/.22)**2)
+        U=M@T(0,h*.01*hit)@pivot(w*.5,hip,1.1*math.sin(math.pi*b)-1.*hit)
+        over(dst,pm(up),U)
+        theta=6*math.sin(math.pi*smooth((t-10.8)/.6))-4*math.sin(math.pi*smooth((t-11.7)/.6))+5*math.sin(2*math.pi*b)*.4
+        over(dst,pm(arm),U@pivot(*elbow,theta))
 
     def folded_laugh(self,dst,cam,t):
         n='rio_pose_laugh_mic';a=part(n);h,w=a.shape[:2];s=425/h
@@ -325,21 +355,9 @@ class Scene:
         up,low=self.special[n];M=cam@T(225-w*s/2,960-425)@S(s)
         self.shadow(dst,cam,225,960,425);low.draw(dst,M)
         theta=1.6*math.sin(max(0,t-33.5)*8.5)*math.exp(-max(0,t-33.5)*.22)
-        up.draw(dst,M@pivot(w*.55,h*.72,theta))
+        shake=h*.007*abs(math.sin(max(0,t-33.5)*19))        # shoulders going with every laugh
+        up.draw(dst,M@T(0,-shake)@pivot(w*.55,h*.72,theta))
 
-    def crowd_jump(self,d,cam,t):
-        """the front rows bounce on the beat while the show is on, freeze in the awkward silence, go wild after UNIT"""
-        e=LX.show(t)*(1.6 if t>LX.UNIT else 1.)*(0 if 20.3<t<29.6 else 1)
-        if e<.02:return
-        k=float(cam[0,0])
-        for y0,y1,ph,amp in [(1052,1245,0.,7),(1245,1672,.5,10)]:
-            b=(t/LX.BEAT+ph)%1;h=amp*e*4*b*(1-b)                         # one jump per beat
-            sh=int(round(h*k))
-            if sh<1:continue
-            a=int(max(0,(cam@[0,y0,1])[1]));z=int(min(self.oh,(cam@[0,y1,1])[1]))
-            if z-a<4 or a-sh<0:continue
-            band=d[a:z].copy()
-            d[a-sh:z-sh]=band
     def sweat(self,dst,cam,n,x,floor,height,at,t0,t,size=1.):
         """a cartoon sweat drop at a point of the drawing (its own px), sliding down the temple"""
         a=t-t0
@@ -435,7 +453,10 @@ class Scene:
             spots=[(fx,934,510,1.),(-128+106*dt,960,540,back),(128+91*dt,975,475,back)]
         elif n=='reverse':
             c=self.camera(1.01+.035*ss,470,855);d=self.plate('crowd',c)
-            self.full(d,c,'rio_back',279,1453,640);self.full(d,c,'rooney_back',625,1465,584);self.phone_glints(d,c,t,True)
+            # the backs aren't frozen: Rio stands stiff and rocks a little, Rooney shifts from foot to foot
+            self.full(d,c,'rio_back',279,1453,640,sway=.5*math.sin(2*math.pi*t/2.3))
+            self.full(d,c,'rooney_back',625,1465,584,sway=1.1*math.sin(2*math.pi*t/1.4+1.)+.4*math.sin(2*math.pi*t/.7))
+            self.phone_glints(d,c,t,True)
             spots=[(279,1453,640),(625,1465,584)]
         elif n=='awkward':
             c=self.camera(1.8+.025*ss,330,767);d=self.plate('stage',c)

@@ -11,7 +11,7 @@ import numpy as np
 from collections import defaultdict
 
 KEYS=defaultdict(lambda:defaultdict(list))
-DEFAULT=dict(look=0.,looky=0.,brow=0.,smile=0.,tilt=0.,nod=0.,lid=0.,blush=0.)
+DEFAULT=dict(look=0.,looky=0.,brow=0.,smile=0.,tilt=0.,nod=0.,lid=0.,blush=0.,groove=0.)
 
 def key(who,channel,t,value,ramp=.18):
     KEYS[who][channel].append((float(t),float(value),max(.01,ramp)))
@@ -23,7 +23,41 @@ def value(who,channel,t):
         u=min(1.,(t-tk)/ramp);u=u*u*(3-2*u);v+=(vk-v)*u
     return v
 
-def state(who,t):return {c:value(who,c,t) for c in DEFAULT}
+BEAT=60/92.0      # the show's pulse (lights.py and crowd.py use the same one)
+_RNG=np.random.default_rng(12)
+_SACC={w:(np.cumsum(_RNG.uniform(.55,1.5,80)),_RNG.uniform(-1,1,(80,2))) for w in ('rooney','rio','fifty')}
+_PH={w:_RNG.uniform(0,2*math.pi,8) for w in ('rooney','rio','fifty')}
+
+def saccade(who,t):
+    """little eye darts between the keyed looks: a cartoon's eyes never lock still"""
+    ts,v=_SACC[who];i=int(np.searchsorted(ts,t));a=v[i%80];b=v[(i-1)%80]
+    u=min(1.,max(0.,(t-(ts[i-1] if i else 0.))/.06))     # a dart takes two frames
+    return (b+(a-b)*u)*np.array([.13,.06])
+
+def state(who,t):
+    st={c:value(who,c,t) for c in DEFAULT}
+    if who in _SACC:
+        s=saccade(who,t);st['look']+=float(s[0]);st['looky']+=float(s[1])
+    return st
+
+def life(who,t):
+    """always-on movement, as small rigid moves of the cut-outs (no warping):
+    breath (upper body rises, fraction of height), sway (lean deg), head drift (tilt deg), and the groove: on every beat
+    the head dips forward and the shoulders sink, alternating sides (amount = the 'groove' channel)"""
+    p=_PH.get(who,np.zeros(8));tau=2*math.pi
+    per={'rooney':3.1,'rio':3.7,'fifty':2.8}.get(who,3.3)
+    breath=.0016*(.5+.5*math.sin(tau*t/per+p[0]))
+    lean=.45*math.sin(tau*t/4.9+p[1])+.2*math.sin(tau*t/2.6+p[2])
+    tilt=.9*math.sin(tau*t/4.1+p[3])+.45*math.sin(tau*t/2.2+p[4])
+    nod=0.;dip=0.
+    g=value(who,'groove',t)
+    if g>.005:
+        b=t/BEAT;ph=b%1
+        hit=math.exp(-(ph/.2)**2)+math.exp(-((ph-1)/.2)**2)   # down on the beat, back up between
+        nod+=g*.0072*hit;dip+=g*.0042*hit
+        tilt+=g*(2.9*hit+2.0*math.sin(math.pi*b))             # forward on the beat, side to side every other
+        lean+=g*1.1*math.sin(math.pi*b+.4)
+    return dict(breath=breath,lean=lean,tilt=tilt,nod=nod,dip=dip)
 
 @lru_cache(None)
 def speech_envelope():
@@ -56,6 +90,13 @@ for who,channel,items in [
 ]:
     for t,v in items:key(who,channel,t,v,.16 if channel=='look' else .28)
 
+# Grooving: Rooney's loving the show (he's had a few), Rio starts to nod along, catches himself and stops.
+for t,v in [(0,0.),(3.65,.9),(8.3,.65),(12.75,.35),(15.95,.5),(16.25,0.),(16.75,.55),(17.85,0.),(34.9,0.),(35.05,.8)]:
+    key('rooney','groove',t,v,.3)
+for t,v in [(0,0.),(4.75,.4),(5.7,.4),(5.82,0.)]:key('rio','groove',t,v,.12 if t>5.7 else .4)
+for t,v in [(5.82,.55),(6.22,-.8)]:key('rio','look',t,v,.08)          # caught: looks away, all innocent
+for t,v in [(5.82,.4),(6.22,-.2)]:key('rio','brow',t,v,.1)
+for t,v in [(0,.6)]:key('fifty','groove',t,v,.2)
 # A few drinks: both go rosy on "we both had a few drinks" and stay that way all night (Rooney more).
 for t,v in [(0,0.),(7.6,.25),(8.6,1.),(10.6,.75),(31.6,.95)]:key('rooney','blush',t,v,.5)
 for t,v in [(0,0.),(7.8,.2),(8.8,.6),(10.6,.45)]:key('rio','blush',t,v,.5)
