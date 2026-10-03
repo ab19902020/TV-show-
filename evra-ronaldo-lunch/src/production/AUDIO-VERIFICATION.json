@@ -1,0 +1,11 @@
+{
+  "source": "source/19663.webm",
+  "stream_copy": "audio/Evra-Ronaldo-original.opus",
+  "audio_packet_sha256": "3927eb166d48994f74e4cf8ec93046a1ad955680f90033c979b21482ab7266fd",
+  "stream_copy_matches_source": true,
+  "pcm_duration_seconds": 80.329438,
+  "pcm_sample_rate": 48000,
+  "pcm_channels": 2,
+  "lossless_working_audio": "audio/Evra-Ronaldo-original.flac",
+  "flac_pcm_matches_original_wav": true
+}

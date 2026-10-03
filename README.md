@@ -8,6 +8,8 @@ Animated TV-studio scenes with lip-synced characters.
 | [Jim Ratcliffe: INEOS office, Monaco](jim-ratcliffe-ineos-office/) | [`jim_ratcliffe_ineos_office.mp4`](jim-ratcliffe-ineos-office/jim_ratcliffe_ineos_office.mp4) |
 | [The Clear Plan, Ep. 1 "Not Ideal", Scenes 1–2 (4K master in `4k/`)](manchester-united-documentary/episode-1-not-ideal/) | [`episode1_scenes1-2_1080p.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes1-2_1080p.mp4) |
 | [Micah Richards: 50 Caps, BBC panel → Wing's (portrait)](micah-richards-50-caps/) | [`micah_richards_50_caps.mp4`](micah-richards-50-caps/micah_richards_50_caps.mp4) |
+| [Rooney & Rio at the 50 Cent concert, MEN Arena (portrait)](rooney-g-unit/) | [`Rooney-G-Unit-Cartoon-1080x1920.mp4`](rooney-g-unit/Rooney-G-Unit-Cartoon-1080x1920.mp4) |
+| [Evra and Ronaldo: "The Lunch" (portrait)](evra-ronaldo-lunch/) | [`evra_ronaldo_lunch.mp4`](evra-ronaldo-lunch/evra_ronaldo_lunch.mp4) |
 
 ## Make a new video
 
