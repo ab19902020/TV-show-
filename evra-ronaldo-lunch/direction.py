@@ -810,7 +810,8 @@ class Film:
             else: continue
             fx.tt_ball(d, c, pos[0], pos[1], 11)
         fx.tint(d, (.35, .45, .85), .7); d *= .82                          # night, over everything
-        q = fx.cpt(c, 760, 230); fx.ellipse(d, q, (60, 60), 0, (1, 1, .85), None, 0)
+        # the moon, up in the clear sky in the top-right corner (clear of the caption and the counter)
+        mr = self.ow * .042; fx.ellipse(d, (self.ow * .87, self.oh * .048), (mr, mr), 0, (1, 1, .85), None, 0)
         if n >= 1:
             qh = fx.cpt(c, *head); fx.text_out(d, 'TOK', qh[0] + 40, qh[1] - 60, self.ow * .045, fill=(1, 1, 1),
                                                alpha=max(0., 1 - (t - ret[-1]) / .2) if t >= ret[-1] else 0.)
