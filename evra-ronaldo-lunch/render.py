@@ -8,8 +8,12 @@ FPS = 30
 
 def chunk(job):
     i, f0, f1, width = job
-    import cv2; cv2.setNumThreads(1)
+    import cv2, gc; cv2.setNumThreads(1)
+    import cast, engine
     from direction import Film
+    # a chunk is 2 s (one to three shots): keep only the rigged drawings it uses, or a worker that has drawn the whole
+    # film holds every drawing at 4x with its mip levels (several GB) and the machine runs out of memory
+    cast.actor.cache_clear(); engine.part.cache_clear(); gc.collect()
     film = Film(width); oh = width * 16 // 9
     out = os.path.join(ROOT, 'build/render', f'part{width}_{i:03d}.mp4')
     p = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{width}x{oh}', '-r', str(FPS),
@@ -21,7 +25,7 @@ def chunk(job):
 
 
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser(); ap.add_argument('--width', type=int, default=1080); ap.add_argument('--jobs', type=int, default=4)
+    ap = argparse.ArgumentParser(); ap.add_argument('--width', type=int, default=1080); ap.add_argument('--jobs', type=int, default=3)
     ap.add_argument('--out', default='evra_ronaldo_lunch.mp4'); ap.add_argument('--from', dest='t0', type=float, default=0.)
     ap.add_argument('--to', dest='t1', type=float, default=None); a = ap.parse_args()
     from direction import DUR
