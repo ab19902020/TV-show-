@@ -614,7 +614,7 @@ class Film:
     # meets a bat; the table is 0.4 of a man's height high and a little short of real length so all of it fits.
     TT_H = 550.; TT_FLOOR = 1330.
     PLAYERS = {0: ('rio_bat', False, 1.), 1: ('r_bat', True, 1.87 / 1.89)}
-    SW = {'rio_bat': (0., 24., -40.), 'r_bat': (-38., -14., -88.)}        # (ready, wind-up, follow-through) degrees
+    SW = {'rio_bat': (0., 24., -40.), 'r_bat': (-50., -24., -105.)}       # (ready, wind-up, follow-through) degrees
 
     def tt_layout(self):
         if hasattr(self, '_tt'): return self._tt

@@ -135,7 +135,7 @@ class Actor:
 
     def __init__(self, name, who, band=None, head=None, neck=None, waist=None, mouth=None, chin=None, limbs=None,
                  facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1., erase=None, nohead=None,
-                 inpaint=None, height1=None):
+                 inpaint=None, height1=None, fill='rows'):
         self.n, self.who = name, who; a = part(name).copy()
         for poly in inpaint or ():
             # a drawn prop the film replaces (Rio's microphone becomes a table-tennis bat): painted over from around it
@@ -168,9 +168,31 @@ class Actor:
             # in front of the chest leaves shirt), so moving it never opens a see-through hole
             hole = (limbmask > .02).astype(np.uint8)
             rest = body[..., 3].astype(np.float32) / 255
-            fill_a = cv2.GaussianBlur(rest * (1 - limbmask), (0, 0), 7 * k) / np.maximum(cv2.GaussianBlur(1 - limbmask, (0, 0), 7 * k), 1e-3)
-            fill_a = np.clip((fill_a - .45) / .2, 0, 1) * limbmask
-            rgb = cv2.inpaint(np.ascontiguousarray(body[..., :3]), hole * 255, 6 * k, cv2.INPAINT_TELEA)
+            if fill == 'rows':
+                # solid wherever the hole lies between the body's own edges on that row (the torso behind an arm),
+                # empty where the arm stuck out into the air
+                inside = np.zeros((self.hh, self.ww), np.float32); solid = rest > .5
+                for yy in np.nonzero(hole.any(1))[0]:
+                    xs = np.nonzero(solid[yy])[0]
+                    if len(xs): inside[yy, xs[0]:xs[-1] + 1] = 1.
+                fill_a = cv2.GaussianBlur(inside, (0, 0), 1.) * limbmask
+            else:
+                # a leg in the air: only what the body around it closes over (smooth fill), nothing between the legs
+                fill_a = cv2.GaussianBlur(rest * (1 - limbmask), (0, 0), 7 * k) / np.maximum(cv2.GaussianBlur(1 - limbmask, (0, 0), 7 * k), 1e-3)
+                fill_a = np.clip((fill_a - .45) / .2, 0, 1) * limbmask
+            # painted flat, cel-style: each horizontal band of the hole takes the median colour of the body around it
+            ring = (cv2.dilate(hole, np.ones((int(8 * k) | 1, int(8 * k) | 1), np.uint8)) > 0) & (hole == 0) & (rest > .9)
+            rgb = body[..., :3].copy(); bnd = int(5 * k)
+            for y0_ in range(0, self.hh, bnd):
+                hb = hole[y0_:y0_ + bnd] > 0
+                if not hb.any(): continue
+                rb = ring[max(0, y0_ - bnd):y0_ + 2 * bnd]
+                px_ = body[max(0, y0_ - bnd):y0_ + 2 * bnd, :, :3][rb]
+                if len(px_):                                                # the most common real colour around it
+                    q = (px_ // 24).astype(np.int32); key_ = q[:, 0] * 4096 + q[:, 1] * 64 + q[:, 2]
+                    vals, cnt = np.unique(key_, return_counts=True); top = vals[np.argmax(cnt)]
+                    rgb[y0_:y0_ + bnd][hb] = px_[key_ == top].mean(0)
+            rgb = np.where(hole[..., None] > 0, cv2.GaussianBlur(rgb, (0, 0), 1.5 * k), rgb)
             body[..., :3] = np.where(hole[..., None] > 0, rgb, body[..., :3])
             body[..., 3] = np.uint8(np.clip(np.maximum(rest, fill_a) * 255, 0, 255))
         # eyes, and from them the head layer's box: the whole head with both ears, down to just under the chin
