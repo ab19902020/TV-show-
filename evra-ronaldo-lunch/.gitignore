@@ -1,0 +1,5 @@
+build/
+qa/
+models/
+__pycache__/
+*.pyc
