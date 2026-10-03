@@ -1,0 +1,131 @@
+[
+  {
+    "id": "evra_master",
+    "file": "characters/Evra-2008-model-sheet.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "e7117f9ec98a45f6e43713d28f17f6ef61569167f733bba40f594a30871cf98b"
+  },
+  {
+    "id": "ronaldo_master",
+    "file": "characters/Ronaldo-2008-model-sheet.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "ac9713121f289286221bd34ca30f8492ca1ac18cba98f5f6eab304aec863c771"
+  },
+  {
+    "id": "evra_face",
+    "file": "characters/Evra-expressions-lip-sync.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "3fafcc67ac9f7c27de54e688539f48669955d68d3f6dd3c8a14fd84155e44b0d"
+  },
+  {
+    "id": "ronaldo_face",
+    "file": "characters/Ronaldo-expressions-lip-sync.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "4761b85639ea037cfefaf228978fdd13b8f9682f862237484408c5e0441ee1f6"
+  },
+  {
+    "id": "evra_actions",
+    "file": "characters/Evra-comedy-action-poses.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "fd30d0636a76e72f21d143900c1f249e3fdabf04f16cf4332d3c35a89918ad6c"
+  },
+  {
+    "id": "ronaldo_actions",
+    "file": "characters/Ronaldo-comedy-action-poses.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "e8ec2ad0060a149aba31691eec3bedcbc1edb327b7ff56b11a1095b830c8c70e"
+  },
+  {
+    "id": "bg_training",
+    "file": "backgrounds/01-Carrington-training-ground.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "05b4e4710b43415a2dd16da668f6dd56973ac571cd02fed5881c1c6109883186"
+  },
+  {
+    "id": "bg_house",
+    "file": "backgrounds/02-Ronaldo-house-exterior.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "b7aa04af1e29d7386662de69fdcef9e28e5b49736b30a35ffd190cbec25d6730"
+  },
+  {
+    "id": "bg_dining",
+    "file": "backgrounds/03-Dining-room.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "36da23883e410dcd80693ddfe0df0327bfa79405714c5d77b5d19fae38f47802"
+  },
+  {
+    "id": "bg_garden",
+    "file": "backgrounds/04-Garden-two-touch.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "7e6c464c19ecae7ec12940529ba1855eb2f011f112819945c91b7473c3c21509"
+  },
+  {
+    "id": "bg_pool",
+    "file": "backgrounds/05-Indoor-pool.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "fb7641232222c34ab456978bcba292736d27f3b7b83ff67be4304a917b7fdd86"
+  },
+  {
+    "id": "bg_jacuzzi",
+    "file": "backgrounds/06-Jacuzzi.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "7c9b1bbc29a05a4a332bae21cd0b288b04079fe912976926c8abc94247284829"
+  },
+  {
+    "id": "bg_sauna",
+    "file": "backgrounds/07-Sauna.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGB",
+    "alpha_range": null,
+    "sha256": "e816835a73fb3ae7391e2749a978098092f65bb54f5eb6ff5cf7332927d00108"
+  },
+  {
+    "id": "props",
+    "file": "props/Food-football-hands-and-recovery-props.png",
+    "width": 941,
+    "height": 1672,
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ],
+    "sha256": "c261fd9a6ee32b9b58fc981edd5919a8c296b77b83fcfba0d79a1ad5e7c2574c"
+  }
+]

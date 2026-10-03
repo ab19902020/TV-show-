@@ -144,7 +144,7 @@ def tv_content(t):
     return None
 
 
-@functools.lru_cache(maxsize=48)
+@functools.lru_cache(maxsize=4)
 def _slide(name, k):
     return G.to_np(G.tv_slide(name, k))
 
@@ -602,6 +602,7 @@ if __name__ == "__main__":
         a, b, out = int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
         p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{OW}x{OH}",
                               "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "16",
+                              "-x264-params", "rc-lookahead=12:threads=4",
                               "-pix_fmt", "yuv420p", out], stdin=subprocess.PIPE)
         t0 = time.time()
         for i in range(a, b):

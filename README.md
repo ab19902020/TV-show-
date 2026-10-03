@@ -6,9 +6,12 @@ Animated TV-studio scenes with lip-synced characters.
 |---|---|
 | [Roy Keane rant: The Overlap studio](roy-keane-overlap-rant/) | [`roy_keane_overlap_rant.mp4`](roy-keane-overlap-rant/roy_keane_overlap_rant.mp4) |
 | [Jim Ratcliffe: INEOS office, Monaco](jim-ratcliffe-ineos-office/) | [`jim_ratcliffe_ineos_office.mp4`](jim-ratcliffe-ineos-office/jim_ratcliffe_ineos_office.mp4) |
-| [The Clear Plan, Ep. 1 "Not Ideal", Scenes 1–2 (4K master delivered separately)](manchester-united-documentary/episode-1-not-ideal/) | [`episode1_scenes1-2_1080p.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes1-2_1080p.mp4) |
+| [The Clear Plan, Ep. 1 "Not Ideal", Scenes 1–2 (4K master in `4k/`)](manchester-united-documentary/episode-1-not-ideal/) | [`episode1_scenes1-2_1080p.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes1-2_1080p.mp4) |
 | [The Clear Plan, Ep. 1 "Not Ideal", Scenes 3–4: Hull away (4K)](manchester-united-documentary/episode-1-not-ideal/#scenes-34-hull-away-pre-match-and-the-match) | [`episode1_scenes3-4_4k.mp4`](manchester-united-documentary/episode-1-not-ideal/episode1_scenes3-4_4k.mp4) |
 | [Ferran Soriano: "Essentially, We Did It" (United Road parody, portrait + landscape)](ferran-soriano-united-road/) | [`soriano_parody_portrait.mp4`](ferran-soriano-united-road/soriano_parody_portrait.mp4) |
+| [Micah Richards: 50 Caps, BBC panel → Wing's (portrait)](micah-richards-50-caps/) | [`micah_richards_50_caps.mp4`](micah-richards-50-caps/micah_richards_50_caps.mp4) |
+| [Rooney & Rio at the 50 Cent concert, MEN Arena (portrait)](rooney-g-unit/) | [`Rooney-G-Unit-Cartoon-1080x1920.mp4`](rooney-g-unit/Rooney-G-Unit-Cartoon-1080x1920.mp4) |
+| [Evra and Ronaldo: "The Lunch" (portrait)](evra-ronaldo-lunch/) | [`evra_ronaldo_lunch.mp4`](evra-ronaldo-lunch/evra_ronaldo_lunch.mp4) |
 
 ## Make a new video
 
