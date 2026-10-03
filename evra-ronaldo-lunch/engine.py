@@ -134,8 +134,14 @@ class Actor:
     limbs: {name: (polygon sheet px, pivot sheet px)} pieces that rotate on their own (a beckoning hand, a fork arm)."""
 
     def __init__(self, name, who, band=None, head=None, neck=None, waist=None, mouth=None, chin=None, limbs=None,
-                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1., erase=None, nohead=None):
+                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1., erase=None, nohead=None,
+                 inpaint=None, height1=None):
         self.n, self.who = name, who; a = part(name).copy()
+        for poly in inpaint or ():
+            # a drawn prop the film replaces (Rio's microphone becomes a table-tennis bat): painted over from around it
+            k_ = META[name]['scale']
+            m = np.zeros(a.shape[:2], np.uint8); cv2.fillPoly(m, [np.int32([P(name, *q) for q in poly])], 255)
+            a[..., :3] = cv2.inpaint(np.ascontiguousarray(a[..., :3]), m, 5 * k_, cv2.INPAINT_TELEA)
         for poly in erase or ():
             # drawn details that the film animates itself (the food on a fork is eaten): taken out of the drawing
             m = np.zeros(a.shape[:2], np.uint8); cv2.fillPoly(m, [np.int32([P(name, *q) for q in poly])], 255)
@@ -180,6 +186,7 @@ class Actor:
             # a talking face: the layer reaches well under the chin, so the dropped jaw is never cut off
             head = (head[0], head[1], head[2], max(head[3], chin + 30)); neck = (neck[0], chin + 14) if neck else neck
         self.ref = ((ref_span / self.span) if (ref_span and self.span) else 1.) * size
+        if height1: self.ref = height1 * k / self.hh                     # drawings with no eyes to measure (a laugh)
         self.head = None
         if head:
             x0, y0 = P(name, head[0], head[1]); x1, y1 = P(name, head[2], head[3])
@@ -234,12 +241,13 @@ class Actor:
     def head_image(self, t, vis='REST', amp=1., look=None, brow=0., smile=0., blink=None, blush=0.):
         st = perf.state(self.who, t)
         if blink is not None and not isinstance(blink, (list, tuple)): blink = max(blink, st['blink'])
-        lk = (st['look'] + (look[0] if look else 0), st['looky'] + (look[1] if look else 0))
+        lk = (float(st['look'] + (look[0] if look else 0)), float(st['looky'] + (look[1] if look else 0)))
         return self.face.render(vis=vis, amp=amp, blink=st['blink'] if blink is None else blink, look=lk,
                                 brow=st['brow'] + brow, smile=0 if vis != 'REST' else st['smile'] + smile, blush=st['blush'] + blush)
 
     def draw(self, dst, cam, x, y, height, t, mirror=False, lean=0., tilt=0., nod=0., hop=0., life=1., limbs=None,
-             look=None, brow=0., smile=0., speak=True, opacity=1., blush=0., squash=0., blink=None, vis=None, amp=None):
+             look=None, brow=0., smile=0., speak=True, opacity=1., blush=0., squash=0., blink=None, vis=None, amp=None,
+             holds=None):
         st = perf.state(self.who, t); L = perf.life(self.who, t)
         tilt += st['tilt'] + L['tilt'] * life; lean += L['lean'] * life
         nodpx = (nod + st['nod']) * self.hh / 160 + L['nod'] * life * self.hh
@@ -251,9 +259,12 @@ class Actor:
         else:
             B = pivot(self.ww / 2, self.hh, lean * .5)
         self.upper.draw(dst, M @ B, opacity)
+        self.limbM = {}
         for ln, (spr, pv) in self.limbs.items():
             ang = (limbs or {}).get(ln, 0.)
-            spr.draw(dst, M @ B @ pivot(pv[0], pv[1], ang), opacity)
+            LM = M @ B @ pivot(pv[0], pv[1], ang); self.limbM[ln] = LM
+            if holds and ln in holds: holds[ln](dst, LM)               # a held thing goes under the hand that grips it
+            spr.draw(dst, LM, opacity)
         if self.head is not None:
             if vis is None:
                 vis = viseme(self.who, t) if speak else 'REST'

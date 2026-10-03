@@ -10,6 +10,9 @@ from engine import Actor
 # eye spacing on the model-sheet front views; Ronaldo's is 3% smaller so that, standing side by side at the same scale,
 # he is ~7% taller than Evra (1.87 m against 1.75 m)
 REF = {'evra': 48.0, 'ronaldo': 40.2, 'rio': 24.0}
+# Rio's sheet draws his poses at different scales, so his drawings are sized by height instead: standing, as tall as
+# Ronaldo (1.89 m against 1.87 m)
+RIO_H = 675.
 
 CAST = {
     # ---- Evra
@@ -50,14 +53,35 @@ CAST = {
     'rb_neutral': dict(who='ronaldo'), 'rb_smug': dict(who='ronaldo', mouth=(177.1, 825.7, 255.7, 824.3, 220, 836.6), chin=881.4),
     'rb_intense': dict(who='ronaldo'), 'rb_confused': dict(who='ronaldo'), 'rb_eager': dict(who='ronaldo'), 'rb_invite': dict(who='ronaldo'),
     # ---- Rio
-    'rio_hero': dict(who='rio', waist=540), 'rio_front': dict(who='rio', waist=330), 'rio_back': dict(who='rio', face=False),
+    'rio_hero': dict(who='rio', waist=540, height1=RIO_H),
+    # table tennis: Rio's microphone pose with the mic painted out and a bat in his fist (the forearm swings at the elbow);
+    # Ronaldo's ready stance with a bat in his reaching hand (the arm swings at the shoulder). bat = (grip x, y, direction
+    # x, y, blade radius, handle length) in sheet px of the drawing
+    'rio_bat': dict(who='rio', waist=205, height1=RIO_H,
+                    inpaint=[[(138, 127), (158, 129), (159, 152), (151, 156), (140, 152)], [(119, 176), (133, 176), (133, 190), (119, 190)]],
+                    limbs={'bat': ([(80, 150), (98, 156), (110, 153), (124, 149), (140, 148), (153, 149), (156, 158), (152, 174),
+                                    (136, 181), (120, 184), (100, 192), (80, 194)], (86, 172))},
+                    nohead=[[(100, 120), (170, 120), (170, 200), (100, 200)]], bat=(131, 164, .58, -.81, 21, 26)),
+    'rio_laughbig': dict(who='rio', face=False, height1=RIO_H * .787),        # bent double
+    # Ronaldo at the table: his 3/4 view drawn mirrored (facing left), the near arm raised with a bat
+    'r_bat': dict(who='ronaldo', part='r_34', waist=540, numbers=[(378, 431, 396, 457), (417, 603, 436, 629)],
+                  limbs={'arm': ([(430, 392), (452, 383), (464, 398), (467, 455), (473, 500), (479, 560), (481, 600), (466, 608),
+                                  (440, 606), (435, 585), (431, 555), (429, 500), (428, 470), (426, 430)], (447, 412))},
+                  bat=(458, 578, .3, .95, 36, 26)),
+    'r_tt': dict(who='ronaldo', part='r_stance', waist=430,
+                 limbs={'arm': ([(160, 262), (146, 272), (128, 292), (110, 318), (95, 340), (64, 355), (44, 372), (44, 408),
+                                 (62, 412), (78, 398), (90, 398), (104, 410), (106, 380), (104, 362), (120, 348), (140, 334),
+                                 (166, 326)], (156, 294))},
+                 bat=(78, 380, -.86, .5, 25, 18)), 'rio_front': dict(who='rio', waist=330), 'rio_back': dict(who='rio', face=False),
     'rio_warning': dict(who='rio'), 'rio_shrug': dict(who='rio'), 'rio_laugh': dict(who='rio', face=False), 'rio_folded': dict(who='rio'),
 }
 
 
 @lru_cache(None)
 def actor(name, mirror=False):
-    """the rigged drawing; mirror=True gives the copy whose shirt numbers are pre-flipped for drawing mirrored"""
-    c = dict(CAST[name]); who = c.pop('who')
+    """the rigged drawing; mirror=True gives the copy whose shirt numbers are pre-flipped for drawing mirrored.
+    An entry may rig a drawing a second way under its own name ('part' names the drawing)."""
+    c = dict(CAST[name]); who = c.pop('who'); pname = c.pop('part', name)
+    c.pop('bat', None)
     if not mirror: c.pop('numbers', None)
-    return Actor(name, who, ref_span=REF[who], mirrored=mirror and 'numbers' in CAST[name], **c)
+    return Actor(pname, who, ref_span=REF[who], mirrored=mirror and 'numbers' in CAST[name], **c)

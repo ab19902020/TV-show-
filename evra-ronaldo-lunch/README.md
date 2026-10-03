@@ -48,16 +48,16 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 | 50.3 | "Christian the warrior" | He is in the ready stance in red light, with dust and speed lines. |
 | 52.3 | "really happy for him" | Evra in a robe, beaming. |
 | 53.9 | "He's a machine" | Ronaldo does jump squats while Evra watches. Ronaldo's battery reads 100%, then "∞" on "machine". Evra's is at 2% and blinking. A rep counter runs past 997. |
-| 57.0 | Table tennis | A rally with Rio, who smashes the winner past Ronaldo's ear. RIO 11 - 9 CR7. |
+| 57.0 | Table tennis | Side-on, real-size bats: a proper rally (PING! PONG!) with both swinging, then Rio smashes the winner past Ronaldo's ear. RIO 11 - 9 CR7. |
 | 60.7 | "so close" | Ronaldo is confused. |
 | 61.7 | "determined" | Ronaldo, intense, on a sunburst. |
-| 63.4 | "Rio has to tell the truth" | Rio shrugs and sweats. |
+| 63.4 | "Rio has to tell the truth" | Rio, smug, holding his bat up. |
 | 65.5 | "Rio beat him" | The smash goes past again. Rio folds over laughing: RIO WINS. |
 | 67.4 | "we scream" | Evra and Rio crying with laughter: HAHA. |
 | 68.6 | "so angry" | Ronaldo turns red, with steam coming out of his ears. |
 | 70.3 | The cousin | A box marked TABLE TENNIS / FRAGILE drops on the path. Ronaldo is delighted. |
-| 72.5 | "Two weeks later" | At night, Ronaldo practises alone, very fast. |
-| 73.8 | The rematch | From behind Rio: Ronaldo smashes it into the back of Rio's head. BONK! CR7 WINS. |
+| 72.5 | "Two weeks later" | At night in his garden, Ronaldo against a ball machine, hammering every return into a cardboard Rio with a target on his chest. |
+| 73.8 | The rematch | On "he beat Rio", Ronaldo's smash hits Rio on the forehead: BONK!, stars, CR7 WINS. |
 | 76.0 | Rio | Arms folded, with a rain cloud of his own. |
 | 76.9 | "That's Cristiano Ronaldo" | Ronaldo winks on a red-and-gold sunburst: CR7. |
 | 78.1 | "He don't want to lose any game" | Back at Carrington, Ronaldo is still doing keepy-ups and beckoning. Evra keels over flat: K.O. |
@@ -86,6 +86,10 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 - Eating (`direction.py` `eating()`): the fork arm stays in the drawing. A bite is a lean in, a wide mouth, the
   forkful going in and a chomp, then chewing with the jaw. The drawn food is taken off the fork and the film draws
   the bites.
+- Table tennis: Rio is the approved Rio from the G-Unit film holding a bat (his microphone painted out), and Ronaldo is
+  his 3/4 view with the near arm rigged. Each bat is drawn under the hand that grips it, and each arm swings through
+  the ball. The table's ends are placed from where the bats meet the ball, so every hit lands on a bat. Rio's
+  close-ups use his large hero drawing and the high-res laughing pose.
 - Footballs are real size (`BALL`, about a head across). Cuts to a new place get a whip pan, and every shot has a soft
   vignette.
 - `render.py`: renders in parallel chunks, then adds the original recording, encoded once to AAC 320k, with no edits.

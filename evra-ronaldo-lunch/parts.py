@@ -78,6 +78,22 @@ def cut(sheet, box, name=''):
     return np.dstack((c, np.uint8(np.clip(alpha * 255, 0, 255)))), (x0 + a0 / K, y0 + b0 / K)
 
 
+# high-resolution poses that already have their own transparency (the approved Rio from the G-Unit film): taken at their
+# native size. Their "sheet" coordinates are native px / 4, so they measure and rig like every other part.
+NATIVE = {"rio_bat": "rio-mic", "rio_laughbig": "rio-laugh"}
+
+
+def cut_native(src):
+    a = np.asarray(Image.open(os.path.join(ROOT, "src/art", src + ".png")).convert("RGBA")).copy()
+    core = a[..., 3] > 230                                              # the figure is opaque; drop the faint backdrop
+    lab, n = ndi.label(core); sizes = np.bincount(lab.ravel()); sizes[0] = 0
+    core = lab == np.argmax(sizes)
+    a[..., 3] = np.uint8(np.clip(cv2.GaussianBlur(core.astype(np.float32), (0, 0), .7), 0, 1) * 255)
+    ys, xs = np.nonzero(a[..., 3] > 10)
+    x0, y0, x1, y1 = max(0, xs.min() - 4), max(0, ys.min() - 4), min(a.shape[1], xs.max() + 5), min(a.shape[0], ys.max() + 5)
+    return a[y0:y1, x0:x1], (x0 / K, y0 / K)
+
+
 def cut_prop(box):
     src = np.asarray(Image.open(os.path.join(ROOT, "src/art/props.png")).convert("RGBA"))
     up = np.asarray(Image.open(os.path.join(UP, "props.png")).convert("RGB"))
@@ -104,6 +120,10 @@ if __name__ == "__main__":
         rgba, off = cut(sheet, box, name)
         Image.fromarray(rgba).save(os.path.join(OUT, name + ".png"))
         meta[name] = {"sheet": sheet, "off": [float(off[0]), float(off[1])], "scale": K, "size": [rgba.shape[1], rgba.shape[0]]}
+    for name, src in NATIVE.items():
+        rgba, off = cut_native(src)
+        Image.fromarray(rgba).save(os.path.join(OUT, name + ".png"))
+        meta[name] = {"sheet": src, "off": [float(off[0]), float(off[1])], "scale": K, "size": [rgba.shape[1], rgba.shape[0]]}
     for name, box in PROPS.items():
         if not have("props"): break
         rgba, off = cut_prop(box)

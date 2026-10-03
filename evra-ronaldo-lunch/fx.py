@@ -396,3 +396,166 @@ def whip(d, strength, direction):
     out = cv2.filter2D(d, -1, k, borderType=cv2.BORDER_REFLECT)
     sh = direction * W_ * .12 * strength
     return cv2.warpAffine(out, np.float32([[1, 0, sh], [0, 1, 0]]), (W_, d.shape[0]), borderMode=cv2.BORDER_REFLECT)
+
+
+# ---------------------------------------------------------------------------------------------------- table tennis
+def bat(d, M, G, u, br, hl):
+    """a table-tennis bat held in a hand. G: the grip, u: the direction of the blade from it, br: blade radius, hl: handle
+    length, all in the drawing's part px; M maps part px to output px. Drawn before the hand, so the fist covers the
+    handle. Returns the blade centre (output px)."""
+    G = np.asarray(G, float); u = np.asarray(u, float); u = u / np.linalg.norm(u); v = np.array([-u[1], u[0]])
+    P = lambda p: tuple((M @ [p[0], p[1], 1.])[:2])
+    s = float(np.linalg.norm(M[:2, 0]))
+    a0 = G - u * hl * .7; a1 = G + u * hl * .6; hw = br * .17           # the handle's end shows below the fist
+    handle = [P(a0 + v * hw * 1.25), P(a1 + v * hw), P(a1 - v * hw), P(a0 - v * hw * 1.25)]
+    C = G + u * (hl * .6 + br * .92)
+    ring = lambda r1, r2, c=C: [P(c + u * r1 * math.cos(th) + v * r2 * math.sin(th)) for th in np.linspace(0, 2 * math.pi, 44)]
+    lw = max(1.5, s * br * .09)
+    poly(d, ring(br * 1.05, br * .96), (.12, .1, .1), INK, lw)               # the dark edge band
+    poly(d, ring(br * .88, br * .8), (.84, .1, .12), None, 0)               # red rubber
+    poly(d, ring(br * .26, br * .15, C - u * br * .35 + v * br * .3), (.98, .48, .48), None, 0)
+    poly(d, handle, (.82, .6, .35), INK, lw)
+    cv2.line(d, tuple(int(c * F) for c in P(G + v * hw * .3)), tuple(int(c * F) for c in P(a1 + v * hw * .3)),
+             (.95, .78, .52), max(1, int(lw * .7)), cv2.LINE_AA, SH)
+    return P(C)
+
+
+def tt_side(d, cam, x0, x1, y_near, depth=30, thick=16, floor=None, half_up=False, net=True):
+    """a table-tennis table seen side-on and a little from above: green top from x0 to x1 (plate px), its near edge at
+    y_near, the far edge `depth` px higher; legs to the floor. half_up: the right half folded up for practising alone"""
+    k = ck(cam); P = lambda x, y: cpt(cam, x, y); floor = floor or y_near + 170
+    lw = max(1.5, 3. * k); sk = depth * .35                               # the far edge is offset a little (perspective)
+    xm = (x0 + x1) / 2; X0 = x0
+    shadow_pts = [P(x0 + 30, floor), P(x1 - 30, floor), P(x1 - 50, floor + 18), P(x0 + 50, floor + 18)]
+    layer = d.copy(); poly(layer, shadow_pts, (0, 0, 0), None, 0); cv2.GaussianBlur(layer, (0, 0), 6 * k, dst=layer)
+    d[:] = d * .75 + layer * .25
+    # legs: far pair darker, then the near pair
+    for lx, dark in [(X0 + 45 + sk, True), (x1 - 45 + sk, True), (X0 + 45, False), (x1 - 45, False)]:
+        yy = y_near - (depth if dark else 0)
+        poly(d, [P(lx - 7, yy), P(lx + 7, yy), P(lx + 7, floor - (depth * .6 if dark else 0)), P(lx - 7, floor - (depth * .6 if dark else 0))],
+             (.12, .12, .14) if dark else (.22, .22, .25), INK, lw * .8)
+    poly(d, [P(x0 + 45, (y_near + floor) / 2), P(x1 - 45, (y_near + floor) / 2), P(x1 - 45, (y_near + floor) / 2 + 9),
+             P(x0 + 45, (y_near + floor) / 2 + 9)], (.2, .2, .23), INK, lw * .7)
+    xr = x1
+    if half_up: x0 = xm
+    top = [P(x0, y_near), P(xr, y_near), P(xr + sk, y_near - depth), P(x0 + sk, y_near - depth)]
+    poly(d, top, (.1, .45, .3), INK, lw)
+    poly(d, [P(x0, y_near), P(xr, y_near), P(xr, y_near + thick), P(x0, y_near + thick)], (.06, .3, .2), INK, lw)
+    for a_, b_ in [((x0 + 3, y_near - 2), (xr - 3, y_near - 2)), ((x0 + sk + 3, y_near - depth + 2), (xr + sk - 3, y_near - depth + 2)),
+                   ((x0 + 4, y_near - 2), (x0 + sk + 4, y_near - depth + 2))]:
+        cv2.line(d, tuple(int(c * F) for c in P(*a_)), tuple(int(c * F) for c in P(*b_)), (1, 1, 1), max(1, int(2.6 * k)), cv2.LINE_AA, SH)
+    cv2.line(d, tuple(int(c * F) for c in P(x0 + 4, y_near - depth / 2)), tuple(int(c * F) for c in P(xr, y_near - depth / 2)),
+             (1, 1, 1), max(1, int(1.6 * k)), cv2.LINE_AA, SH)
+    if half_up:                                                             # the left half stands up like a wall
+        hh = xm - X0
+        poly(d, [P(xm, y_near), P(xm + sk, y_near - depth), P(xm + sk, y_near - depth - hh), P(xm, y_near - hh)], (.08, .38, .26), INK, lw)
+        poly(d, [P(xm - 10, y_near), P(xm, y_near), P(xm, y_near - hh), P(xm - 10, y_near - hh)], (.05, .25, .17), INK, lw * .8)
+        cv2.line(d, tuple(int(c * F) for c in P(xm + 3, y_near - 4)), tuple(int(c * F) for c in P(xm + 3, y_near - hh + 4)), (1, 1, 1),
+                 max(1, int(2.4 * k)), cv2.LINE_AA, SH)
+    elif net:
+        nh = 30
+        poly(d, [P(xm, y_near), P(xm + sk, y_near - depth), P(xm + sk, y_near - depth - nh), P(xm, y_near - nh)], (.93, .93, .96), INK, lw * .8)
+        for i in range(1, 6):
+            yy = y_near - nh * i / 6
+            cv2.line(d, tuple(int(c * F) for c in P(xm, yy)), tuple(int(c * F) for c in P(xm + sk, yy - depth)), (.6, .6, .66), 1, cv2.LINE_AA, SH)
+        cv2.line(d, tuple(int(c * F) for c in P(xm, y_near - nh)), tuple(int(c * F) for c in P(xm + sk, y_near - depth - nh)), (1, 1, 1),
+                 max(2, int(4 * k)), cv2.LINE_AA, SH)
+
+
+def tt_ball(d, cam, x, y, r, trail=()):
+    """the ball, with a fading trail of where it has just been (plate px)"""
+    k = ck(cam)
+    for i, (tx, ty) in enumerate(trail):
+        f = (i + 1) / (len(trail) + 1)
+        layer = d.copy(); q = cpt(cam, tx, ty); ellipse(layer, q, (r * k * (.5 + .4 * f),) * 2, 0, (1, 1, 1), None, 0)
+        d[:] = d * (1 - .45 * f) + layer * .45 * f
+    q = cpt(cam, x, y)
+    ellipse(d, q, (r * k, r * k), 0, (1, .99, .95), INK, max(1.2, r * k * .2))
+    ellipse(d, (q[0] - r * k * .3, q[1] - r * k * .3), (r * k * .3, r * k * .25), 0, (1, 1, 1), None, 0)
+
+
+# ---------------------------------------------------------------------------------------------------- perspective table
+class Persp:
+    """a pinhole camera over the pitch: metres (X right, Y up, Z away) -> plate px. f: focal length in plate px, yh: the
+    horizon's plate y, h: camera height (m)"""
+    def __init__(self, f=2200., yh=280., h=3.6, cx=470.):
+        self.f, self.yh, self.h, self.cx = f, yh, h, cx
+
+    def p(self, X, Y, Z): return (self.cx + self.f * X / Z, self.yh + self.f * (self.h - Y) / Z)
+
+    def k(self, Z): return self.f / Z                                   # plate px per metre at depth Z
+
+
+def tt_table3(d, cam, pc, C, ax, half_up=False, L=2.74, Wd=1.525, Ht=.76):
+    """a regulation table centred at C = (X, Z) with its long axis ax (unit, in the X-Z plane), seen through pc"""
+    k = ck(cam); C = np.array(C, float); ax = np.array(ax, float); ax /= np.linalg.norm(ax); pr = np.array([ax[1], -ax[0]])
+    def P(v, Y): return cpt(cam, *pc.p(v[0], Y, v[1]))
+    n0 = C - ax * L / 2; n1 = C + ax * L / 2; mid = C
+    corners = lambda e: (e - pr * Wd / 2, e + pr * Wd / 2)              # (left, right) looking from the near end
+    nl, nr = corners(n0); fl, fr = corners(n1); ml, mr = corners(mid)
+    lw = max(1.5, 3 * k); th = .04
+    # shadow
+    sh = d.copy(); poly(sh, [P(nl, 0), P(nr, 0), P(fr, 0), P(fl, 0)], (0, 0, 0), None, 0); sh = cv2.GaussianBlur(sh, (0, 0), 8 * k)
+    d[:] = d * .72 + sh * .28
+    # legs (inset from the corners), the far ones first
+    ins = lambda a, b, c_: a + (b - a) * .12 + (c_ - a) * .1
+    legs = [ins(fl, fr, nl), ins(fr, fl, nr), ins(nl, nr, fl), ins(nr, nl, fr)]
+    for i, lg in enumerate(legs):
+        a_, b_ = P(lg, Ht - th), P(lg, 0)
+        w_ = .035 * pc.k(lg[1]) * k
+        poly(d, [(a_[0] - w_, a_[1]), (a_[0] + w_, a_[1]), (b_[0] + w_, b_[1]), (b_[0] - w_, b_[1])], (.14, .14, .16) if i < 2 else (.24, .24, .27), INK, lw * .7)
+    green, dark = (.1, .45, .3), (.05, .28, .19)
+    far_top = (fl, fr) if not half_up else (ml, mr)
+    # the visible sides: the near end and the right-hand side
+    poly(d, [P(nl, Ht), P(nr, Ht), P(nr, Ht - th), P(nl, Ht - th)], dark, INK, lw)
+    poly(d, [P(nr, Ht), P(far_top[1], Ht), P(far_top[1], Ht - th), P(nr, Ht - th)], dark, INK, lw)
+    poly(d, [P(nl, Ht), P(nr, Ht), P(far_top[1], Ht), P(far_top[0], Ht)], green, INK, lw)
+    def line(a, b, Y=Ht, w=2.6):
+        cv2.line(d, tuple(int(c * F) for c in P(a, Y)), tuple(int(c * F) for c in P(b, Y)), (1, 1, 1), max(1, int(w * k)), cv2.LINE_AA, SH)
+    e = .025
+    for a, b in [(nl, nr), (nl, far_top[0]), (nr, far_top[1])] + ([] if half_up else [(fl, fr)]):
+        line(a + (C - a) * .0 + (mid - a) * 0, b)
+    line(n0, mid if half_up else n1, w=1.6)
+    if half_up:                                                         # the far half folded up into a wall
+        hh = L / 2
+        wl = [P(ml, Ht), P(mr, Ht), P(mr, Ht + hh), P(ml, Ht + hh)]
+        poly(d, wl, (.08, .38, .26), INK, lw)
+        line(ml, mr, Ht + hh - .02); line(ml, ml, Ht)
+    else:                                                               # the net across the middle
+        nh = .1525
+        poly(d, [P(ml, Ht), P(mr, Ht), P(mr, Ht + nh), P(ml, Ht + nh)], (.92, .92, .96), INK, lw * .7)
+        for i in range(1, 9):
+            v = ml + (mr - ml) * i / 9
+            cv2.line(d, tuple(int(c * F) for c in P(v, Ht)), tuple(int(c * F) for c in P(v, Ht + nh)), (.6, .6, .66), 1, cv2.LINE_AA, SH)
+        cv2.line(d, tuple(int(c * F) for c in P(ml, Ht + nh)), tuple(int(c * F) for c in P(mr, Ht + nh)), (1, 1, 1), max(2, int(4 * k)), cv2.LINE_AA, SH)
+
+
+def ball_machine(d, cam, x, y, s, t, fired=0.):
+    """a cartoon table-tennis robot standing on the table at plate (x, y) (bottom centre), s plate px per unit (~ its width);
+    `fired` (0..1) kicks the nozzle back after each shot"""
+    k = ck(cam); P = lambda a, b: cpt(cam, x + a * s, y - b * s); lw = max(1.5, 2.6 * k)
+    poly(d, [P(-.5, 0), P(.5, 0), P(.42, .9), P(-.42, .9)], (.9, .32, .12), INK, lw)          # body
+    poly(d, [P(-.38, .78), P(.38, .78), P(.3, .9), P(-.3, .9)], (1, .55, .3), None, 0)
+    for i in range(3):                                                                      # vents
+        poly(d, [P(-.3, .2 + .14 * i), P(.1, .2 + .14 * i), P(.1, .26 + .14 * i), P(-.3, .26 + .14 * i)], (.45, .12, .05), None, 0)
+    kick = .12 * fired
+    poly(d, [P(.35 - kick, .55), P(.9 - kick, .62), P(.9 - kick, .78), P(.35 - kick, .78)], (.25, .25, .28), INK, lw)  # nozzle
+    poly(d, [P(-.42, .9), P(.42, .9), P(.6, 1.45), P(-.6, 1.45)], (.75, .85, .95), INK, lw)  # the hopper
+    for i, (bx, by) in enumerate([(-.38, 1.05), (-.13, 1.08), (.12, 1.06), (.37, 1.07), (-.25, 1.28), (0, 1.3), (.25, 1.28)]):
+        q = P(bx, by); ellipse(d, q, (.13 * s * k,) * 2, 0, (1, 1, 1), INK, max(1, lw * .6))
+    q = P(-.2, .55); ellipse(d, q, (.09 * s * k,) * 2, 0, (.3, 1, .4) if math.sin(t * 20) > 0 else (.1, .4, .15), INK, max(1, lw * .5))
+
+
+def cardboard(a, pad=10):
+    """a drawing (RGBA uint8) turned into a cardboard cut-out: the figure on a cardboard backing with a cut edge"""
+    al = a[..., 3]
+    k_ = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * pad + 1, 2 * pad + 1))
+    m = np.pad(al, pad + 4); big = cv2.dilate((m > 40).astype(np.uint8), k_)
+    edge = cv2.dilate(big, np.ones((5, 5), np.uint8)) - big
+    out = np.zeros(m.shape + (4,), np.uint8)
+    out[big > 0] = (205, 168, 112, 255)                                    # cardboard
+    out[edge > 0] = (40, 28, 20, 255)                                      # its cut, inked edge
+    fig = np.pad(a, ((pad + 4, pad + 4), (pad + 4, pad + 4), (0, 0)))
+    fa = fig[..., 3:4].astype(np.float32) / 255
+    out[..., :3] = np.uint8(fig[..., :3] * fa + out[..., :3] * (1 - fa))
+    return out

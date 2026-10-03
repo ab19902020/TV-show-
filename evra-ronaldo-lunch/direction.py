@@ -11,6 +11,7 @@ import numpy as np, cv2
 import engine as E
 from engine import T, S, R, smooth, ease, bump, camera, Plates, Prop, shadow
 import performance as perf
+import cast
 from cast import actor
 import fx
 
@@ -607,53 +608,248 @@ class Film:
             fx.text_out(d, 'MACHINE', self.ow / 2, self.oh * .1, self.ow * .1, fill=(.6, .9, 1), scale=ease(t, mach, mach + .12))
         return d
 
-    # ================================================================== 6. Table tennis with Rio
-    def tt_scene(self, t, c, d, rally, rio='rio_warning', far_kw=None, ron_kw=None):
-        """from behind Ronaldo at the near-right corner; Rio behind the far end (the table top hides his waist).
-        rally: (t_hit, from_end, to_end), end 0 = Ronaldo, 1 = Rio; a smash past Ronaldo is (t, 1, 'past')"""
-        tb = fx.TABLE
-        hits = {0: [h for h, a, b in rally if a == 0], 1: [h for h, a, b in rally if a == 1]}
-        swing = lambda end: sum(bump(t, h, .07) for h in hits[end])
-        rio_x, rio_y = 455, 1232
-        ra_ = actor(rio, True); rh = actor('rio_warning', True).height(1.25) * ra_.hh / actor('rio_warning', True).hh
-        ra_.draw(d, c, rio_x, rio_y, rh, t, mirror=True, tilt=4 * swing(1), **(far_kw or {}))
-        if rio == 'rio_warning':
-            rp = ra_.to_plate(rio_x, rio_y, rh, 716, 1108, mirror=True)
-            fx.paddle(d, c, rp[0], rp[1] + 8, 34, rot=10 - 40 * swing(1))
-        fx.tt_table(d, c, tb)
-        ball = None
-        for t_hit, a, b in rally:
-            dur = .45 if b != 'past' else .3
-            if t_hit <= t < t_hit + dur:
-                v = (t - t_hit) / dur
-                if b == 'past':                      # a smash: one bounce on Ronaldo's side, then past his ear
-                    uu = 1 - 1.6 * v; vv = .4 + .45 * v
-                    hgt = 60 * abs(math.sin(math.pi * v / .55)) if v < .55 else 160 * (v - .55) / .45
+    # ================================================================== 6. Table tennis with Rio (side-on)
+    # Rio at the left end (his microphone pose, the mic now a bat), Ronaldo at the right (his 3/4 view, mirrored, the
+    # near arm raised with a bat). The table's ends are placed from where the bats meet the ball, so the ball always
+    # meets a bat; the table is 0.4 of a man's height high and a little short of real length so all of it fits.
+    TT_H = 550.; TT_FLOOR = 1330.
+    PLAYERS = {0: ('rio_bat', False, 1.), 1: ('r_bat', True, 1.87 / 1.89)}
+    SW = {'rio_bat': (0., 24., -40.), 'r_bat': (-38., -14., -88.)}        # (ready, wind-up, follow-through) degrees
+
+    def tt_layout(self):
+        if hasattr(self, '_tt'): return self._tt
+        def contact_off(who):
+            key, mir, hs = self.PLAYERS[who]; r, b, th = self.SW[key]
+            return self._blade(key, 0., self.TT_FLOOR, self.TT_H * hs, mir, (b + th) / 2)
+        cR = contact_off(0); cC = contact_off(1)
+        xR = 128.; x0 = xR + cR[0] + 34; x1 = x0 + .74 * self.TT_H; xC = x1 + 34 - cC[0]
+        self._tt = dict(x={0: xR, 1: xC}, x0=x0, x1=x1, top=self.TT_FLOOR - .4 * self.TT_H, depth=24)
+        return self._tt
+
+    @staticmethod
+    def blade_part(key):
+        a = actor(key, key == 'r_bat'); gx, gy, ux, uy, br, hl = cast.CAST[key]['bat']
+        G = np.array(E.P(a.n, gx, gy)); u = np.array([ux, uy]) / math.hypot(ux, uy)
+        return a, G, u, br * a.k, hl * a.k
+
+    def _blade(self, key, x, y, h, mirror, ang):
+        a, G, u, br, hl = self.blade_part(key)
+        pv = next(iter(a.limbs.values()))[1]; Cb = G + u * (hl * .6 + br * .92)
+        M = a.place(x, y, h, mirror) @ E.pivot(pv[0], pv[1], ang)
+        return (M @ [Cb[0], Cb[1], 1])[:2]
+
+    def holder(self, key):
+        a, G, u, br, hl = self.blade_part(key)
+        return {next(iter(a.limbs)): lambda dst, LM: fx.bat(dst, LM, G, u, br, hl)}
+
+    @staticmethod
+    def swing(t, hits, back, through, wind=.18, ret=.32):
+        """degrees from the ready position: a wind-up, a quick swing through the ball centred on the hit, then back"""
+        v = 0.
+        for h in hits:
+            if h - .035 - wind <= t < h - .035: v = back * smooth((t - (h - .035 - wind)) / wind)
+            elif h - .035 <= t < h + .035: v = back + (through - back) * smooth((t - (h - .035)) / .07)
+            elif h + .035 <= t < h + .035 + ret: v = through * (1 - smooth((t - h - .035) / ret))
+        return v
+
+    def player(self, who):
+        key, mir, hs = self.PLAYERS[who]; L = self.tt_layout()
+        return key, L['x'][who], self.TT_FLOOR, self.TT_H * hs, mir
+
+    def contact(self, who):
+        key, x, y, h, mir = self.player(who); r, b, th = self.SW[key]
+        return self._blade(key, x, y, h, mir, (b + th) / 2)
+
+    def bounce_pt(self, receiver):
+        L = self.tt_layout(); xm = (L['x0'] + L['x1']) / 2
+        x = xm - (xm - L['x0']) * .55 if receiver == 0 else xm + (L['x1'] - xm) * .55
+        return np.array([x, L['top'] - L['depth'] * .5])
+
+    def ball_at(self, t, hits, end=None):
+        """hits: [(t, who)] (0 Rio, 1 Ronaldo); end = (t_end, (x, y), receiver) for a winner that does not come back.
+        The ball flies from bat to bat over the net, bouncing once on the receiver's half. -> (x, y) or None"""
+        segs = [(ta, tb, self.contact(wa), self.contact(wb), wb, 1.) for (ta, wa), (tb, wb) in zip(hits, hits[1:])]
+        if end:
+            ta, wa = hits[-1]; te, pe, rcv = end
+            segs.append((ta, te, self.contact(wa), np.array(pe, float), rcv, .45))
+        for ta, tb, pa, pb, rcv, lift in segs:
+            if ta <= t <= tb:
+                B = self.bounce_pt(rcv); fb = abs(B[0] - pa[0]) / max(1., abs(pb[0] - pa[0]))
+                f = (t - ta) / (tb - ta)
+                if f < fb:
+                    s_ = f / fb; x = pa[0] + (B[0] - pa[0]) * s_; y = pa[1] + (B[1] - pa[1]) * s_ - lift * 120 * 4 * s_ * (1 - s_)
                 else:
-                    u0, u1 = (.03, .97) if a == 0 else (.97, .03); uu = u0 + (u1 - u0) * v
-                    vv = (.86 + (.4 - .86) * v) if a == 0 else (.4 + (.86 - .4) * v)
-                    bounce = .7 if a == 0 else .3
-                    hgt = 120 * abs(math.sin(math.pi * (v / bounce))) if v < bounce else 80 * math.sin(math.pi * (v - bounce) / (1 - bounce))
-                bx, by = fx.tt_point(tb, min(1, max(0, uu)), vv)
-                sc = fx.tt_scale(tb, min(1, max(0, uu))) * (1 + max(0., -uu) * 2.2)
-                ball = (bx + (0 if uu >= 0 else 200 * -uu), by - hgt * sc, 13 * sc)
-        rx, ry = 790, 1840
-        rb = actor('r_back'); rbh = 860
-        rb.draw(d, c, rx, ry, rbh, t, **(ron_kw or {}))
-        hp = rb.to_plate(rx, ry, rbh, 912, 562)
-        fx.paddle(d, c, hp[0] - 4, hp[1] - 8, 58, rot=30 - 50 * swing(0))
-        if ball:
-            fx.pp_ball(d, c, *ball)
-            if ball[2] > 20: fx.motion_lines(d, c, ball[0] - 80, ball[1] + 40, ball[0] - 25, ball[1] + 12, 3, ball[2])
-        return d
+                    s_ = (f - fb) / (1 - fb); x = B[0] + (pb[0] - B[0]) * s_; y = B[1] + (pb[1] - B[1]) * s_ - lift * 75 * 4 * s_ * (1 - s_)
+                return float(x), float(y)
+        return None
+
+    def tt_match(self, t, c, d, hits, end=None, rio='rio_bat', rio_kw=None, ron_kw=None, rio_ang=None, ron_ang=None, half_up=False,
+                 ball=True, rio_here=True):
+        L = self.tt_layout()
+        b = self.ball_at(t, hits, end) if ball else None
+        def look(x0, y0, mir=False):
+            if b is None: return (0., 0.)
+            lx = max(-1, min(1, (b[0] - x0) / 300)) * .85
+            return (float(-lx if mir else lx), float(max(-1, min(1, (b[1] - y0) / 300)) * .55))
+        if rio_here:
+            key, x, y, h, mir = self.player(0)
+            shadow(d, c, x, y, h * .45)
+            rkw = dict(rio_kw or {})
+            if rio == 'rio_bat':
+                rkw.setdefault('look', look(x, y - h * .85))
+                r0, bk, th = self.SW['rio_bat']
+                ang = r0 + (self.swing(t, [hh for hh, w in hits if w == 0], bk - r0, th - r0) if rio_ang is None else rio_ang)
+                actor('rio_bat').draw(d, c, x, y, h, t, limbs={'bat': ang}, holds=self.holder('rio_bat'), **rkw)
+            else:
+                actor(rio).draw(d, c, x + h * .06, y, actor(rio).height(1) / actor('rio_bat').height(1) * h, t, **rkw)
+        fx.tt_side(d, c, L['x0'], L['x1'], L['top'], L['depth'], 14, self.TT_FLOOR, half_up=half_up)
+        key, x, y, h, mir = self.player(1)
+        shadow(d, c, x, y, h * .45)
+        ckw = dict(ron_kw or {}); ckw.setdefault('look', look(x, y - h * .85, True))
+        r0, bk, th = self.SW['r_bat']
+        ang = r0 + (self.swing(t, [hh for hh, w in hits if w == 1], bk - r0, th - r0) if ron_ang is None else ron_ang)
+        actor('r_bat', True).draw(d, c, x, y, h, t, mirror=True, limbs={'arm': ang}, holds=self.holder('r_bat'), **ckw)
+        if b is not None:
+            trail = [p for p in (self.ball_at(t - .018 * i, hits, end) for i in range(1, 5)) if p is not None]
+            fx.tt_ball(d, c, b[0], b[1], 11, trail[::-1])
+        return b
+
+    def tt_cam(self, t, push=0.):
+        return self.cam(1.0 + push, 470, 850)
 
     def tt_rally(self, t, u, t0, t1):
-        c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
-        rally = [(57.05 + .45 * i, i % 2, (i + 1) % 2) for i in range(7)] + [(60.2, 1, 'past')]
-        lunge = 8 * ease(t, 60.25, 60.4)
-        self.tt_scene(t, c, d, rally, far_kw=dict(look=(.4, .2), brow=-.3), ron_kw=dict(lean=lunge, tilt=0))
-        if t > 60.25:
-            fx.text_out(d, 'RIO 11 - 9 CR7', self.ow / 2, self.oh * .1, self.ow * .07, fill=(1, 1, 1), scale=ease(t, 60.25, 60.4))
+        c = self.tt_cam(t, .03 * u); d = self.plate('carrington', c)
+        hits = [(57.2, 0), (57.6, 1), (58.0, 0), (58.4, 1), (58.8, 0), (59.2, 1), (59.62, 0)]
+        past = (60.0, (1080, self.TT_FLOOR - .82 * self.TT_H), 1)              # Rio's winner flies past Ronaldo's ear
+        whiff = self.swing(t, [60.02], 24, -60)
+        late = t > 59.95
+        b = self.tt_match(t, c, d, hits, past,
+                          rio_kw=dict(brow=.5 * (t > 59.7), smile=.6 * (t > 59.8)),
+                          ron_kw=dict(look=(1., -.2), brow=.6) if t > 60.05 else None,
+                          ron_ang=whiff if late else None)
+        for h, w in hits:                                                   # each hit: a little 'tok'
+            if h <= t < h + .18:
+                q = fx.cpt(c, *self.contact(w)); fx.text_out(d, 'PING!' if w == 0 else 'PONG!', q[0] + (120 if w == 0 else -120), q[1] - 30,
+                                                             self.ow * .045, fill=(1, 1, 1), alpha=1 - (t - h) / .18)
+        if t > 59.62 and t < 60.0 and b: fx.motion_lines(d, c, b[0] - 110, b[1] - 60, b[0] - 25, b[1] - 12, n=3, spread=26)
+        if t > 60.1:
+            fx.text_out(d, 'RIO 11 - 9 CR7', self.ow / 2, self.oh * .12, self.ow * .085, fill=(1, 1, 1), scale=ease(t, 60.1, 60.25))
+        return d
+
+    def truth(self, t, u, t0, t1):
+        c = self.cam(1.35, 470, 840); d = self.plate('carrington', c, blur=6)
+        nod = 3 * bump(t, W('truth') + .1, .12) + 3 * bump(t, W('exactly', 1) + .1, .1)
+        a, G, u_, br, hl = self.blade_part('rio_bat')
+        self.put(d, c, 'rio_bat', 470, 2120, 1.95, t, limbs={'bat': -14 * ease(t, t0, t0 + .3)}, holds=self.holder('rio_bat'),
+                 brow=.55, smile=.7, nod=nod, look=(-.25, 0))
+        for i in range(4):
+            fx.sparkle(d, self.ow * (.2 + .2 * i), self.oh * (.16 + .05 * (i % 2)), 26, t, i)
+        return d
+
+    def rio_wins(self, t, u, t0, t1):
+        c = self.tt_cam(t, .03 * u); d = self.plate('carrington', c)
+        smash = 66.05; won = smash + .45
+        hits = [(65.65, 1), (smash, 0)]
+        past = (smash + .38, (1080, self.TT_FLOOR - .82 * self.TT_H), 1)
+        self.tt_match(t, c, d, hits, past, rio='rio_bat' if t < won else 'rio_laughbig',
+                      rio_kw=dict(smile=.5, brow=.3) if t < won else dict(hop=10 * abs(math.sin(t * 16))),
+                      ron_kw=dict(look=(1., -.2), brow=.6) if t > smash + .3 else None,
+                      ron_ang=self.swing(t, [smash + .3], 24, -60) if t > smash + .2 else None)
+        if t > won:
+            fx.confetti(d, t, won, n=60)
+            fx.text_out(d, 'RIO WINS', self.ow / 2, self.oh * .12, self.ow * .11, fill=(1, .85, .1), scale=ease(t, won, won + .15))
+        return d
+
+    def scream(self, t, u, t0, t1):
+        c = self.cam(1.25, 470, 860); d = self.plate('carrington', c, blur=6)
+        self.put(d, c, 'rio_laughbig', 690, 1750, 1.55, t, hop=14 * abs(math.sin(t * 17)))
+        self.bust(d, c, 'eb_laugh', 300, 1620, 720, t, hop=18 * abs(math.sin(t * 20)), tilt=4 * math.sin(t * 20))
+        for i, (x, y) in enumerate([(.2, .14), (.7, .2), (.45, .08)]):
+            fx.text_out(d, 'HAHA', self.ow * x, self.oh * y + 10 * math.sin(t * 20 + i), self.ow * .08, fill=(1, 1, 1), rot=10 - 10 * i)
+        return d
+
+    def two_weeks(self, t, u, t0, t1):
+        """night, the garden: Ronaldo practising against a ball machine, and a cardboard Rio to aim at"""
+        c = self.tt_cam(t); d = self.plate('garden', c)
+        L = self.tt_layout(); per = .32
+        n = int((t - t0) / per)
+        # the cut-out: Rio's hero drawing on a cardboard backing, at Rio's end; it wobbles when a return hits it
+        if not hasattr(self, '_cut'): self._cut = E.Sprite(fx.cardboard(E.part('rio_hero'), 70))
+        key, x, y, h, mir = self.player(0)
+        ret = [t0 + per * i + .09 + .26 for i in range(n + 1)]                 # when each return reaches the cut-out
+        wob = sum(7 * math.sin((t - r) * 26) * math.exp(-(t - r) * 7) for r in ret if t >= r)
+        sp = self._cut; sc = h * 1.1 / sp.h
+        shadow(d, c, x, y, h * .4)
+        q0, q1, q2 = fx.cpt(c, x + 10, y - h * .55), fx.cpt(c, x + 70, y), fx.cpt(c, x + 40, y)       # its wooden stand
+        fx.poly(d, [q0, (q1[0], q1[1]), (q2[0], q2[1])], (.55, .38, .2), fx.INK, 3)
+        CM = c @ T(x, y) @ R(wob) @ S(sc) @ T(-sp.w / 2, -sp.h)
+        sp.draw(d, CM)
+        bx, by = (CM @ [sp.w * .5, sp.h * .47, 1])[:2]                                            # a target on his chest
+        for i, col in enumerate([(.85, .1, .1), (1, 1, 1), (.85, .1, .1), (1, 1, 1)]):
+            fx.ellipse(d, (bx, by), (sp.w * sc * c[0, 0] * (.13 - .03 * i),) * 2, 0, col, fx.INK if i == 0 else None, 2)
+        fx.tt_side(d, c, L['x0'], L['x1'], L['top'], L['depth'], 14, self.TT_FLOOR)
+        mx, my = L['x0'] + 40, L['top'] - L['depth'] * .5
+        noz = np.array(fx.cpt(np.eye(3), mx + .9 * 80, my - .7 * 80))
+        hits = [(t0 + per * i + .09, 1) for i in range(n + 2)]
+        fired = max([bump(t, t0 + per * i, .05) for i in range(n + 2)] + [0])
+        fx.ball_machine(d, c, mx, my, 80, t, fired)
+        r0, bk, th = self.SW['r_bat']
+        key, x, y, h, mir = self.player(1); shadow(d, c, x, y, h * .45)
+        actor('r_bat', True).draw(d, c, x, y, h, t, mirror=True, limbs={'arm': r0 + self.swing(t, [hh for hh, w in hits], (bk - r0) * .7, (th - r0) * .7, wind=.07, ret=.14)},
+                                  holds=self.holder('r_bat'), brow=-.75, look=(.7, .25))
+        p = self.contact(1); B = self.bounce_pt(1); head = np.array(actor('rio_bat').to_plate(*self.player(0)[1:4], 128, 40))
+        for i in range(max(0, n - 1), n + 1):                               # every ball in the air
+            f0 = t0 + per * i; a = t - f0
+            if a < 0: continue
+            if a < .09:                                                     # machine -> table -> bat
+                s_ = a / .09; pos = noz + (p - noz) * s_; pos[1] -= 30 * math.sin(math.pi * s_)
+            elif a < .35:                                                   # bat -> the cut-out's head
+                s_ = (a - .09) / .26; pos = p + (head - p) * s_; pos[1] -= 70 * math.sin(math.pi * s_)
+            elif a < .7:                                                    # and it drops off
+                s_ = a - .35; pos = head + np.array([-90 * s_, 400 * s_ * s_ - 60 * s_])
+            else: continue
+            fx.tt_ball(d, c, pos[0], pos[1], 11)
+        fx.tint(d, (.35, .45, .85), .7); d *= .82                          # night, over everything
+        q = fx.cpt(c, 760, 230); fx.ellipse(d, q, (60, 60), 0, (1, 1, .85), None, 0)
+        if n >= 1:
+            qh = fx.cpt(c, *head); fx.text_out(d, 'TOK', qh[0] + 40, qh[1] - 60, self.ow * .045, fill=(1, 1, 1),
+                                               alpha=max(0., 1 - (t - ret[-1]) / .2) if t >= ret[-1] else 0.)
+        fx.text_out(d, 'TWO WEEKS LATER...', self.ow / 2, self.oh * .12, self.ow * .075, fill=(1, .85, .1), scale=ease(t, t0, t0 + .15))
+        fx.text_out(d, f'x{1000 + n * 37}', self.ow * .8, self.oh * .2, self.ow * .05, fill=(1, 1, 1))
+        return d
+
+    def revenge(self, t, u, t0, t1):
+        c = self.tt_cam(t, .03 * u); d = self.plate('carrington', c)
+        # "and he beat Cris... he beat RIO": Ronaldo's smash hits Rio on his name, then he celebrates
+        smash = W('rio', 3) - .38; bonk = smash + .3; celebrate = bonk + .45
+        key, x, y, h, mir = self.player(0)
+        face = actor('rio_bat').to_plate(x, y, h, 128, 40)
+        hits = [(73.95, 1), (74.33, 0), (smash, 1)]
+        dazed = ease(t, bonk, bonk + .1)
+        self.tt_match(t, c, d, hits, (bonk, tuple(face), 0),
+                      rio_kw=dict(lean=-9 * bump(t, bonk + .08, .12) - 4 * dazed, blink=.6 * dazed, brow=-.4 * dazed, look=(.6, -.4) if t > bonk else None),
+                      ron_kw=dict(hop=self.hop(t, celebrate, .45, 110), brow=-.6, smile=.6 * (t > bonk)),
+                      ron_ang=-90 * ease(t, celebrate - .05, celebrate + .1) if t > celebrate - .05 else None)
+        if t > bonk:                                                        # the ball pops off his forehead
+            a = t - bonk
+            if a < .6: fx.tt_ball(d, c, face[0] + 120 * a, face[1] - 260 * a + 700 * a * a, 11)
+            q = fx.cpt(c, *face)
+            fx.text_out(d, 'BONK!', q[0] + 90, q[1] - 110 - 30 * min(a, .6), self.ow * .09, fill=(1, .9, .2),
+                        scale=ease(t, bonk, bonk + .06), alpha=1 - ease(t, bonk + .9, bonk + 1.1))
+            for i in range(5):
+                an = t * 6 + i * 1.256; fx.sparkle(d, q[0] + 55 * math.cos(an), q[1] - 30 + 18 * math.sin(an), 20, t, i)
+        if t > celebrate:
+            fx.confetti(d, t, celebrate, n=60)
+            fx.text_out(d, 'CR7 WINS', self.ow / 2, self.oh * .12, self.ow * .11, fill=(1, .85, .1), scale=ease(t, celebrate, celebrate + .15))
+        return d
+
+    def rio_sulks(self, t, u, t0, t1):
+        c = self.cam(1.35, 470, 840); d = self.plate('carrington', c, blur=6)
+        self.put(d, c, 'rio_hero', 470, 2100, 1.9, t, look=(-.7, .3), brow=-.7, smile=-.3)
+        q = fx.cpt(c, 470, 610); fx.puff(d, q[0], q[1], 190, (.5, .53, .6), 1., True, 2)
+        for i in range(9):
+            ph = (t * 2.4 + i * .37) % 1; x = q[0] - 150 + 38 * i; y = q[1] + 90 + 300 * ph
+            cv2.line(d, (int(x * 4), int(y * 4)), (int((x - 6) * 4), int((y + 30) * 4)), (.55, .7, 1.), 4, cv2.LINE_AA, 2)
         return d
 
     def so_close(self, t, u, t0, t1):
@@ -673,33 +869,6 @@ class Film:
     def exactly(self, t, u, t0, t1):
         c = self.cam(1.35, 470, 820); d = self.plate('carrington', c, blur=6)
         self.bust(d, c, 'eb_suspicious', 470, 1560, 720, t, nod=5 * bump(t, W('exactly', 1) + .12, .1), look=(-.5, 0))
-        return d
-
-    def truth(self, t, u, t0, t1):
-        c = self.cam(1.4, 470, 820); d = self.plate('carrington', c, blur=6)
-        sh = 40 * bump(t, W('truth') + .05, .18) + 30 * bump(t, W('rio', 1) + .1, .15)
-        self.bust(d, c, 'rio_shrug', 470, 1580, 820, t, hop=sh, look=(.6 * math.sin(t * 2), 0), brow=.5)
-        q = fx.cpt(c, 600, 720); fx.sweat(d, c, 560, 840, 10, 63.6, t, 50)
-        return d
-
-    def rio_wins(self, t, u, t0, t1):
-        c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
-        smash = 66.1
-        rally = [(65.6, 0, 1), (smash, 1, 'past')]
-        win = t > smash + .3
-        self.tt_scene(t, c, d, rally, rio='rio_laugh' if win else 'rio_warning',
-                      ron_kw=dict(lean=8 * ease(t, smash + .1, smash + .25), tilt=0), far_kw=dict(look=(.4, .2)))
-        if win:
-            fx.confetti(d, t, smash + .3, n=50)
-            fx.text_out(d, 'RIO WINS', self.ow / 2, self.oh * .1, self.ow * .1, fill=(1, .85, .1), scale=ease(t, smash + .3, smash + .45))
-        return d
-
-    def scream(self, t, u, t0, t1):
-        c = self.cam(1.25, 470, 860); d = self.plate('carrington', c, blur=6)
-        self.bust(d, c, 'rio_laugh', 700, 1500, 560, t, hop=15 * abs(math.sin(t * 18)))
-        self.bust(d, c, 'eb_laugh', 300, 1620, 720, t, hop=18 * abs(math.sin(t * 20)), tilt=4 * math.sin(t * 20))
-        for i, (x, y) in enumerate([(.2, .14), (.7, .2), (.45, .08)]):
-            fx.text_out(d, 'HAHA', self.ow * x, self.oh * y + 10 * math.sin(t * 20 + i), self.ow * .08, fill=(1, 1, 1), rot=10 - 10 * i)
         return d
 
     def angry(self, t, u, t0, t1):
@@ -724,58 +893,6 @@ class Film:
         if t > land - .35:
             fx.box(d, c, 640, y, 260 * (1 + sq), 190 * (1 - sq), rot=0)
         fx.dust(d, c, 640, 1200, land, t, 1.3, seed=7)
-        return d
-
-    def two_weeks(self, t, u, t0, t1):
-        c = self.cam(1.15, 470, 1080); d = self.plate('garden', c)
-        fx.tint(d, (.35, .45, .85), .78); d *= .8
-        q = fx.cpt(c, 760, 230); fx.ellipse(d, q, (60, 60), 0, (1, 1, .85), None, 0)
-        tb = dict(near=((230, 1430), (710, 1430)), far=((360, 1180), (580, 1180)), top=20, leg=130)
-        fx.tt_table(d, c, tb)
-        per = .22; v = ((t - t0) % per) / per; go = int((t - t0) / per) % 2
-        uu = v if go == 0 else 1 - v
-        bx, by = fx.tt_point(tb, uu * .95, .55); sc = fx.tt_scale(tb, uu * .95)
-        fx.pp_ball(d, c, bx, by - 50 * sc * math.sin(math.pi * v), 8 * sc)
-        ra = actor('r_back'); ra.draw(d, c, 600, 1720, 720, t, lean=4 * math.sin(t * 28))
-        hp = ra.to_plate(600, 1720, 720, 912, 562); fx.paddle(d, c, hp[0], hp[1], 44, rot=25 + 20 * math.sin(t * 28))
-        fx.text_out(d, 'TWO WEEKS LATER...', self.ow / 2, self.oh * .12, self.ow * .075, fill=(1, .85, .1), scale=ease(t, t0, t0 + .15))
-        return d
-
-    def revenge(self, t, u, t0, t1):
-        """from behind Rio now: Ronaldo at the far end smashes it straight past him"""
-        c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
-        tb = fx.TABLE; smash = W('beat', 2) + .02; celebrate = W('rio', 3)
-        # Evra watching from the side, applauding
-        rh = 640; ry = 1180 + .52 * rh
-        j = self.hop(t, celebrate, .45, 120)
-        actor('r_stance', True).draw(d, c, 560, ry, rh, t, hop=j, brow=-.6, look=(-.2, .1), mirror=True)
-        hp = actor('r_stance', True).to_plate(560, ry, rh, 65, 398, mirror=True)
-        fx.paddle(d, c, hp[0], hp[1] - j, 30, rot=40 * ease(t, smash - .1, smash) - 30 * ease(t, smash, smash + .1))
-        fx.tt_table(d, c, tb)
-        if smash <= t < smash + .28:
-            v = (t - smash) / .28; uu = 1 - 1.25 * v
-            bx, by = fx.tt_point(tb, min(1, max(0, uu)), .45 - .2 * v); sc = fx.tt_scale(tb, max(0, uu)) * (1 + max(0, -uu) * 4)
-            fx.pp_ball(d, c, bx, by - 80 * sc - 260 * max(0, -uu), 12 * sc)
-            fx.motion_lines(d, c, bx, by - 80 * sc - 70, bx, by - 80 * sc - 15, 3, 24 * sc)
-        bonk = smash + .28
-        ba = actor('rio_back'); ba.draw(d, c, 270, 1810, 1010, t, lean=-9 * bump(t, bonk + .08, .12) - 4 * ease(t, bonk + .2, bonk + .5))
-        if bonk <= t < bonk + .6:
-            q = fx.cpt(c, 300, 900); fx.text_out(d, 'BONK!', q[0], q[1] - 30 * (t - bonk), self.ow * .09, fill=(1, .9, .2), scale=ease(t, bonk, bonk + .06))
-            for i in range(5):
-                a_ = t * 6 + i * 1.256; fx.sparkle(d, q[0] + 70 * math.cos(a_), q[1] + 60 + 25 * math.sin(a_), 22, t, i)
-        if t > celebrate:
-            fx.confetti(d, t, celebrate, n=60)
-            fx.text_out(d, 'CR7 WINS', self.ow / 2, self.oh * .1, self.ow * .1, fill=(1, .85, .1), scale=ease(t, celebrate, celebrate + .15))
-        return d
-
-    def rio_sulks(self, t, u, t0, t1):
-        c = self.cam(1.4, 470, 820); d = self.plate('carrington', c, blur=6)
-        self.bust(d, c, 'rio_folded', 470, 1590, 800, t, look=(-.7, .3), brow=-.6)
-        # a little rain cloud of his own
-        q = fx.cpt(c, 470, 640); fx.puff(d, q[0], q[1], 190, (.5, .53, .6), 1., True, 2)
-        for i in range(9):
-            ph = (t * 2.4 + i * .37) % 1; x = q[0] - 150 + 38 * i; y = q[1] + 90 + 300 * ph
-            cv2.line(d, (int(x * 4), int(y * 4)), (int((x - 6) * 4), int((y + 30) * 4)), (.55, .7, 1.), 4, cv2.LINE_AA, 2)
         return d
 
     def thats_cristiano(self, t, u, t0, t1):
