@@ -32,17 +32,17 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 | 8.3 | Evra to camera | "I think we should stay at the training ground." |
 | 10.6 | The invite | Ronaldo thumbs over his shoulder. Evra is dead on his feet until he hears "lunch", then pops up rubbing his hands. |
 | 14.1 | The house | Evra skips up the path. |
-| 15.3 | The table | A few plates. Evra looks at his food, then at Ronaldo, who is happily eating. |
+| 15.3 | The table | A few plates. Evra looks at his food, then at Ronaldo, who eats with relish: he leans in, takes a bite, chomps and chews. |
 | 19.3 | "Plain white chicken." | Close-up on the plate. |
 | 20.4 | Waiting | Evra looks hopefully at the kitchen door. A tumbleweed rolls past the doorway. |
 | 21.7 | "No juice, just water." | A glass of water slides in. Evra stares at it and sweats. |
 | 23.8 | "Quickly a lunch" | Fast-forward ×8: Ronaldo clears his plate and vanishes in a cloud of dust. |
 | 26.6 | The garden | "Let's play two-touch." Ronaldo flicks the ball up. |
 | 29.1 | "We just finished." | Evra pleads. |
-| 31.1 | Two-touch | Crisp passes from Ronaldo, a weak one back from Evra. The last ball BONKs off Evra's shin. |
+| 31.1 | Two-touch | A proper passing distance apart, with a full-size ball. Crisp passes from Ronaldo, a weak one back from Evra. The last ball BONKs off Evra's shin. |
 | 34.4 | The pool | Ronaldo swims laps past Evra, who clings to the edge. Then Ronaldo pops up: "sauna, jacuzzi". |
 | 37.0 | The sauna | Ronaldo does jump squats with a thumbs up. Evra sweats on the bench: "why didn't we stay at training?" |
-| 40.3 | The jacuzzi | Evra finally relaxes, eyes closed, while Ronaldo swims laps of the jacuzzi. He splashes Evra in the face every time he passes. |
+| 40.3 | The jacuzzi | Evra finally relaxes, eyes closed, while Ronaldo swims laps of the jacuzzi. Every time he passes, a wave crashes over Evra's face: SPLOSH!, then water runs down it. |
 | 44.6 | "I saw the goal today" | Ronaldo scores at Carrington: GOAL, confetti, and a "SIUUU!" jump. |
 | 47.4 | "Christian Dior" | Ronaldo in a bathrobe, on pink with sparkles. He winks on "playboy". |
 | 50.3 | "Christian the warrior" | He is in the ready stance in red light, with dust and speed lines. |
@@ -83,6 +83,11 @@ The characters act silently under Evra's narration. They only lip-sync the lines
   the delivery box.
   - Occlusion: the dining table and the pool deck are cut from their own plates and laid over the characters.
   - Swimmers are drawn only above a moving waterline.
+- Eating (`direction.py` `eating()`): the fork arm stays in the drawing. A bite is a lean in, a wide mouth, the
+  forkful going in and a chomp, then chewing with the jaw. The drawn food is taken off the fork and the film draws
+  the bites.
+- Footballs are real size (`BALL`, about a head across). Cuts to a new place get a whip pan, and every shot has a soft
+  vignette.
 - `render.py`: renders in parallel chunks, then adds the original recording, encoded once to AAC 320k, with no edits.
 
 To rebuild from scratch:
