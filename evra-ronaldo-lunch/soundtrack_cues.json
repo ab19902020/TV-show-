@@ -1,0 +1,1776 @@
+[
+ {
+  "t": 0,
+  "sound": "[bed] air until 15.3",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 0,
+  "sound": "[bed] birds until 15.3",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 0.46,
+  "sound": "keepy-up",
+  "level": -23.1,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 0.7,
+  "sound": "sweat drop",
+  "level": -31.0,
+  "asked": -31,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 0.7,
+  "sound": "Evra pants",
+  "level": -32.0,
+  "asked": -32,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 0.92,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 1.38,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 1.6,
+  "sound": "sweat drop",
+  "level": -31.0,
+  "asked": -31,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 1.6,
+  "sound": "Evra pants",
+  "level": -32.0,
+  "asked": -32,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 1.84,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 2.3,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 2.5,
+  "sound": "sweat drop",
+  "level": -31.0,
+  "asked": -31,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 2.5,
+  "sound": "Evra pants",
+  "level": -32.0,
+  "asked": -32,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 2.76,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 3.3,
+  "sound": "sweat drop",
+  "level": -31.0,
+  "asked": -31,
+  "pan": -0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 3.3,
+  "sound": "thought bubble pop",
+  "level": -17.0,
+  "asked": -17,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 3.52,
+  "sound": "daydream sparkle",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 5.25,
+  "sound": "riser",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0,
+  "kind": "sustain"
+ },
+ {
+  "t": 5.6,
+  "sound": "sunburst shing",
+  "level": -20.0,
+  "asked": -20,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 5.65,
+  "sound": "twinkle in his eye",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 12.51,
+  "sound": "Evra pops up",
+  "level": -20.3,
+  "asked": -14,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 12.56,
+  "sound": "sparkles",
+  "level": -24.2,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 12.66,
+  "sound": "rubbing hands",
+  "level": -28.0,
+  "asked": -28,
+  "pan": 0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 13.95,
+  "sound": "whip pan",
+  "level": -22.7,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 14.52,
+  "sound": "skipping up the path",
+  "level": -23.0,
+  "asked": -23,
+  "pan": -0.2,
+  "kind": "hit"
+ },
+ {
+  "t": 14.86,
+  "sound": "skipping up the path",
+  "level": -23.0,
+  "asked": -23,
+  "pan": -0.030000000000000082,
+  "kind": "hit"
+ },
+ {
+  "t": 15.15,
+  "sound": "whip pan",
+  "level": -22.9,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 15.2,
+  "sound": "skipping up the path",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.13999999999999985,
+  "kind": "hit"
+ },
+ {
+  "t": 15.3,
+  "sound": "[bed] kitchen room tone until 26.6",
+  "level": -45,
+  "pan": 0
+ },
+ {
+  "t": 15.38,
+  "sound": "plates down",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 15.92,
+  "sound": "Ronaldo's bite",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 16.01,
+  "sound": "chewing",
+  "level": -29.0,
+  "asked": -29,
+  "pan": 0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 17.22,
+  "sound": "Ronaldo's bite",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 17.31,
+  "sound": "chewing",
+  "level": -29.0,
+  "asked": -29,
+  "pan": 0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 18.52,
+  "sound": "Ronaldo's bite",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 18.61,
+  "sound": "chewing",
+  "level": -29.0,
+  "asked": -29,
+  "pan": 0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 19.72,
+  "sound": "fork on the plate",
+  "level": -21.0,
+  "asked": -21,
+  "pan": -0.1,
+  "kind": "soft"
+ },
+ {
+  "t": 20.03,
+  "sound": "fork on the plate",
+  "level": -23.1,
+  "asked": -21,
+  "pan": -0.1,
+  "kind": "soft"
+ },
+ {
+  "t": 20.4,
+  "sound": "[bed] wind through the doorway until 22.6",
+  "level": -41,
+  "pan": 0
+ },
+ {
+  "t": 20.7,
+  "sound": "lonely twang",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 20.95,
+  "sound": "tumbleweed",
+  "level": -25.0,
+  "asked": -25,
+  "pan": 0.25,
+  "kind": "soft"
+ },
+ {
+  "t": 21.0,
+  "sound": "cricket",
+  "level": -31.0,
+  "asked": -31,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 22.21,
+  "sound": "glass of water slides in",
+  "level": -19.0,
+  "asked": -19,
+  "pan": 0.2,
+  "kind": "hit"
+ },
+ {
+  "t": 23.27,
+  "sound": "Evra sweats",
+  "level": -27.0,
+  "asked": -27,
+  "pan": -0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 23.8,
+  "sound": "fast-forward",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0,
+  "kind": "sustain"
+ },
+ {
+  "t": 23.96,
+  "sound": "Ronaldo, fast",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.01,
+  "sound": "Evra, fast",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.26,
+  "sound": "Ronaldo, fast",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.43,
+  "sound": "Evra, fast",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.56,
+  "sound": "Ronaldo, fast",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.85,
+  "sound": "Evra, fast",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 24.86,
+  "sound": "Ronaldo, fast",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 25.16,
+  "sound": "Ronaldo, fast",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 25.27,
+  "sound": "Evra, fast",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 25.69,
+  "sound": "Evra, fast",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 26.23,
+  "sound": "Ronaldo vanishes",
+  "level": -18.4,
+  "asked": -13,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 26.29,
+  "sound": "dust cloud",
+  "level": -17.0,
+  "asked": -17,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 26.45,
+  "sound": "whip pan",
+  "level": -20.8,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 26.6,
+  "sound": "[bed] air until 34.4",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 26.6,
+  "sound": "[bed] birds until 34.4",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 28.41,
+  "sound": "ball flick",
+  "level": -16.3,
+  "asked": -16,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 28.93,
+  "sound": "ball lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 30.6,
+  "sound": "Evra's sad wah",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 31.15,
+  "sound": "kick (Ronaldo)",
+  "level": -15.2,
+  "asked": -11,
+  "pan": -0.5,
+  "kind": "hit"
+ },
+ {
+  "t": 31.8,
+  "sound": "ball arrives",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 31.95,
+  "sound": "kick (Evra, weak)",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 32.55,
+  "sound": "kick (Ronaldo)",
+  "level": -15.8,
+  "asked": -11,
+  "pan": -0.5,
+  "kind": "hit"
+ },
+ {
+  "t": 32.55,
+  "sound": "ball arrives",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 32.95,
+  "sound": "ball hits his shin",
+  "level": -13.9,
+  "asked": -13,
+  "pan": 0.4,
+  "kind": "hero"
+ },
+ {
+  "t": 32.95,
+  "sound": "BONK",
+  "level": -10.0,
+  "asked": -9,
+  "pan": 0.4,
+  "kind": "hero"
+ },
+ {
+  "t": 33.1,
+  "sound": "wobble",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 33.2,
+  "sound": "a splash somewhere",
+  "level": -26.0,
+  "asked": -26,
+  "pan": 0.1,
+  "kind": "soft"
+ },
+ {
+  "t": 34.2,
+  "sound": "whip pan",
+  "level": -28.5,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 34.35,
+  "sound": "[bed] pool hall until 37.0",
+  "level": -43,
+  "pan": 0
+ },
+ {
+  "t": 34.35,
+  "sound": "Ronaldo's laps",
+  "level": -20.2,
+  "asked": -18,
+  "pan": -0.7,
+  "kind": "soft"
+ },
+ {
+  "t": 34.4,
+  "sound": "swimming past",
+  "level": -22.0,
+  "asked": -22,
+  "pan": -0.5,
+  "kind": "soft"
+ },
+ {
+  "t": 34.5,
+  "sound": "Ronaldo's laps",
+  "level": -21.2,
+  "asked": -18,
+  "pan": -0.19999999999999996,
+  "kind": "soft"
+ },
+ {
+  "t": 34.65,
+  "sound": "Ronaldo's laps",
+  "level": -19.9,
+  "asked": -18,
+  "pan": 0.30000000000000004,
+  "kind": "soft"
+ },
+ {
+  "t": 34.8,
+  "sound": "Ronaldo's laps",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.8,
+  "kind": "soft"
+ },
+ {
+  "t": 34.85,
+  "sound": "swimming past",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.5,
+  "kind": "soft"
+ },
+ {
+  "t": 35.05,
+  "sound": "Ronaldo pops up",
+  "level": -11.0,
+  "asked": -11,
+  "pan": 0.2,
+  "kind": "hero"
+ },
+ {
+  "t": 36.8,
+  "sound": "whip pan",
+  "level": -22.4,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 36.95,
+  "sound": "[bed] steam until 40.2",
+  "level": -42,
+  "pan": 0
+ },
+ {
+  "t": 37.5,
+  "sound": "jump squat lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 37.75,
+  "sound": "sweat drop",
+  "level": -28.0,
+  "asked": -28,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 38.05,
+  "sound": "jump squat lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 38.55,
+  "sound": "sweat drop",
+  "level": -28.0,
+  "asked": -28,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 38.6,
+  "sound": "jump squat lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 39.15,
+  "sound": "jump squat lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 39.35,
+  "sound": "sweat drop",
+  "level": -28.0,
+  "asked": -28,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 39.62,
+  "sound": "thumbs-up sparkle",
+  "level": -24.0,
+  "asked": -24,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 39.7,
+  "sound": "jump squat lands",
+  "level": -21.0,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 40.1,
+  "sound": "whip pan",
+  "level": -21.3,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 40.15,
+  "sound": "sweat drop",
+  "level": -28.0,
+  "asked": -28,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 40.25,
+  "sound": "[bed] jacuzzi bubbles until 44.6",
+  "level": -40,
+  "pan": 0
+ },
+ {
+  "t": 41.97,
+  "sound": "SPLOSH",
+  "level": -10.9,
+  "asked": -8,
+  "pan": -0.3,
+  "kind": "hero"
+ },
+ {
+  "t": 42.3,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 42.38,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 42.46,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 43.57,
+  "sound": "SPLOSH",
+  "level": -10.2,
+  "asked": -8,
+  "pan": -0.3,
+  "kind": "hero"
+ },
+ {
+  "t": 43.9,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 43.98,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 44.06,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 44.17,
+  "sound": "SPLOSH",
+  "level": -9.0,
+  "asked": -8,
+  "pan": -0.3,
+  "kind": "hero"
+ },
+ {
+  "t": 44.45,
+  "sound": "whip pan",
+  "level": -22.8,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 44.5,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 44.58,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 44.6,
+  "sound": "[bed] air until 47.4",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 44.6,
+  "sound": "[bed] birds until 47.4",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 44.66,
+  "sound": "water runs down his face",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "soft"
+ },
+ {
+  "t": 45.35,
+  "sound": "the shot",
+  "level": -17.2,
+  "asked": -9,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 45.38,
+  "sound": "ball flies",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 45.56,
+  "sound": "crowd erupts",
+  "level": -19.2,
+  "asked": -15,
+  "pan": 0,
+  "kind": "roar"
+ },
+ {
+  "t": 45.61,
+  "sound": "net",
+  "level": -14.9,
+  "asked": -13,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 45.61,
+  "sound": "confetti",
+  "level": -20.2,
+  "asked": -14,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 46.1,
+  "sound": "jump",
+  "level": -24.0,
+  "asked": -24,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 46.2,
+  "sound": "SIUUU crowd",
+  "level": -19.4,
+  "asked": -12,
+  "pan": 0,
+  "kind": "roar"
+ },
+ {
+  "t": 46.71,
+  "sound": "lands",
+  "level": -19.9,
+  "asked": -14,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 46.71,
+  "sound": "dust",
+  "level": -25.0,
+  "asked": -25,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 47.2,
+  "sound": "whip pan",
+  "level": -23.3,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 47.45,
+  "sound": "glam sparkles",
+  "level": -24.9,
+  "asked": -23,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 47.5,
+  "sound": "camera flash",
+  "level": -19.0,
+  "asked": -19,
+  "pan": -0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 47.72,
+  "sound": "camera flash",
+  "level": -19.0,
+  "asked": -19,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 48.64,
+  "sound": "camera flash",
+  "level": -19.0,
+  "asked": -19,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 48.84,
+  "sound": "wink",
+  "level": -17.0,
+  "asked": -17,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 48.84,
+  "sound": "wink ting",
+  "level": -25.0,
+  "asked": -25,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 50.15,
+  "sound": "whip pan",
+  "level": -26.7,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 50.3,
+  "sound": "[bed] air until 52.3",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 50.3,
+  "sound": "[bed] birds until 52.3",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 50.64,
+  "sound": "riser",
+  "level": -26.0,
+  "asked": -26,
+  "pan": 0,
+  "kind": "sustain"
+ },
+ {
+  "t": 51.39,
+  "sound": "taiko",
+  "level": -13.8,
+  "asked": -8,
+  "pan": 0,
+  "kind": "hero"
+ },
+ {
+  "t": 51.41,
+  "sound": "shing",
+  "level": -15.5,
+  "asked": -15,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 51.59,
+  "sound": "sparkle",
+  "level": -23.0,
+  "asked": -23,
+  "pan": 0.1,
+  "kind": "hit"
+ },
+ {
+  "t": 52.15,
+  "sound": "whip pan",
+  "level": -22.4,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 52.3,
+  "sound": "[bed] jacuzzi bubbles (far) until 53.9",
+  "level": -46,
+  "pan": 0
+ },
+ {
+  "t": 52.96,
+  "sound": "happy sparkle",
+  "level": -25.0,
+  "asked": -25,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 53.75,
+  "sound": "whip pan",
+  "level": -24.4,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 53.9,
+  "sound": "[bed] air until 72.5",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 53.9,
+  "sound": "[bed] birds until 72.5",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 54.32,
+  "sound": "rep lands",
+  "level": -21.0,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 54.5,
+  "sound": "low-battery beep",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 54.74,
+  "sound": "rep lands",
+  "level": -21.9,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 55.16,
+  "sound": "rep lands",
+  "level": -20.4,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 55.5,
+  "sound": "low-battery beep",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 55.58,
+  "sound": "rep lands",
+  "level": -20.0,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 56.0,
+  "sound": "rep lands",
+  "level": -20.0,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 56.34,
+  "sound": "battery: infinity",
+  "level": -17.7,
+  "asked": -13,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 56.42,
+  "sound": "rep lands",
+  "level": -22.5,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 56.5,
+  "sound": "low-battery beep",
+  "level": -27.0,
+  "asked": -27,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 56.8,
+  "sound": "whip pan",
+  "level": -22.0,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 56.84,
+  "sound": "rep lands",
+  "level": -20.0,
+  "asked": -20,
+  "pan": -0.35,
+  "kind": "hit"
+ },
+ {
+  "t": 56.95,
+  "sound": "[bed] air until 60.5",
+  "level": -46,
+  "pan": 0
+ },
+ {
+  "t": 57.2,
+  "sound": "PING",
+  "level": -19.0,
+  "asked": -13,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 57.4,
+  "sound": "table bounce",
+  "level": -25.9,
+  "asked": -20,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 57.6,
+  "sound": "PONG",
+  "level": -19.5,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 57.8,
+  "sound": "table bounce",
+  "level": -26.9,
+  "asked": -20,
+  "pan": -0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 58.0,
+  "sound": "PING",
+  "level": -20.5,
+  "asked": -13,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 58.2,
+  "sound": "table bounce",
+  "level": -27.9,
+  "asked": -20,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 58.4,
+  "sound": "PONG",
+  "level": -20.9,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 58.6,
+  "sound": "table bounce",
+  "level": -27.2,
+  "asked": -20,
+  "pan": -0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 58.8,
+  "sound": "PING",
+  "level": -21.1,
+  "asked": -13,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 59.0,
+  "sound": "table bounce",
+  "level": -28.1,
+  "asked": -20,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 59.2,
+  "sound": "PONG",
+  "level": -20.5,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 59.4,
+  "sound": "table bounce",
+  "level": -27.9,
+  "asked": -20,
+  "pan": -0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 59.62,
+  "sound": "Rio's winner",
+  "level": -9.0,
+  "asked": -9,
+  "pan": -0.45,
+  "kind": "hero"
+ },
+ {
+  "t": 59.9,
+  "sound": "ball flies past",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 60.02,
+  "sound": "Ronaldo swings and misses",
+  "level": -17.0,
+  "asked": -17,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 60.1,
+  "sound": "score",
+  "level": -18.4,
+  "asked": -18,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 60.75,
+  "sound": "so close...",
+  "level": -20.0,
+  "asked": -19,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 61.7,
+  "sound": "determined",
+  "level": -24.0,
+  "asked": -24,
+  "pan": 0,
+  "kind": "sustain"
+ },
+ {
+  "t": 63.45,
+  "sound": "Rio sparkles",
+  "level": -24.0,
+  "asked": -24,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 65.65,
+  "sound": "PONG",
+  "level": -18.2,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 65.85,
+  "sound": "table bounce",
+  "level": -24.9,
+  "asked": -20,
+  "pan": -0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 66.0,
+  "sound": "Rio's swing",
+  "level": -19.0,
+  "asked": -19,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 66.05,
+  "sound": "Rio's smash",
+  "level": -9.0,
+  "asked": -9,
+  "pan": -0.45,
+  "kind": "hero"
+ },
+ {
+  "t": 66.43,
+  "sound": "ball flies past",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 66.5,
+  "sound": "RIO WINS confetti",
+  "level": -19.0,
+  "asked": -15,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 66.55,
+  "sound": "cheer",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0,
+  "kind": "roar"
+ },
+ {
+  "t": 68.8,
+  "sound": "steam from his ears",
+  "level": -26.0,
+  "asked": -19,
+  "pan": 0,
+  "kind": "sustain"
+ },
+ {
+  "t": 70.15,
+  "sound": "whip pan",
+  "level": -23.2,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 70.29,
+  "sound": "box falling",
+  "level": -22.3,
+  "asked": -21,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 70.64,
+  "sound": "box lands",
+  "level": -10.5,
+  "asked": -8,
+  "pan": 0.3,
+  "kind": "hero"
+ },
+ {
+  "t": 70.64,
+  "sound": "dust",
+  "level": -18.0,
+  "asked": -18,
+  "pan": 0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 70.94,
+  "sound": "Ronaldo's delighted",
+  "level": -20.0,
+  "asked": -19,
+  "pan": -0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 71.02,
+  "sound": "sparkle",
+  "level": -23.0,
+  "asked": -23,
+  "pan": -0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 72.3,
+  "sound": "whip pan",
+  "level": -23.5,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 72.45,
+  "sound": "[bed] night crickets until 73.8",
+  "level": -41,
+  "pan": 0
+ },
+ {
+  "t": 72.45,
+  "sound": "ball machine",
+  "level": -15.0,
+  "asked": -15,
+  "pan": -0.65,
+  "kind": "hit"
+ },
+ {
+  "t": 72.54,
+  "sound": "Ronaldo returns it",
+  "level": -20.0,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 72.77,
+  "sound": "ball machine",
+  "level": -15.0,
+  "asked": -15,
+  "pan": -0.65,
+  "kind": "hit"
+ },
+ {
+  "t": 72.8,
+  "sound": "hits the cardboard Rio",
+  "level": -12.9,
+  "asked": -12,
+  "pan": -0.7,
+  "kind": "hit"
+ },
+ {
+  "t": 72.86,
+  "sound": "Ronaldo returns it",
+  "level": -20.0,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 73.09,
+  "sound": "ball machine",
+  "level": -15.0,
+  "asked": -15,
+  "pan": -0.65,
+  "kind": "hit"
+ },
+ {
+  "t": 73.12,
+  "sound": "hits the cardboard Rio",
+  "level": -13.9,
+  "asked": -12,
+  "pan": -0.7,
+  "kind": "hit"
+ },
+ {
+  "t": 73.18,
+  "sound": "Ronaldo returns it",
+  "level": -19.9,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 73.41,
+  "sound": "ball machine",
+  "level": -15.0,
+  "asked": -15,
+  "pan": -0.65,
+  "kind": "hit"
+ },
+ {
+  "t": 73.44,
+  "sound": "hits the cardboard Rio",
+  "level": -14.4,
+  "asked": -12,
+  "pan": -0.7,
+  "kind": "hit"
+ },
+ {
+  "t": 73.5,
+  "sound": "Ronaldo returns it",
+  "level": -20.1,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 73.65,
+  "sound": "whip pan",
+  "level": -23.7,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 73.76,
+  "sound": "hits the cardboard Rio",
+  "level": -16.2,
+  "asked": -12,
+  "pan": -0.7,
+  "kind": "hit"
+ },
+ {
+  "t": 73.8,
+  "sound": "[bed] air until 80.3",
+  "level": -44,
+  "pan": 0
+ },
+ {
+  "t": 73.8,
+  "sound": "[bed] birds until 80.3",
+  "level": -52,
+  "pan": 0
+ },
+ {
+  "t": 73.95,
+  "sound": "PONG",
+  "level": -23.4,
+  "asked": -13,
+  "pan": 0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 74.13,
+  "sound": "table bounce",
+  "level": -30.9,
+  "asked": -20,
+  "pan": -0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 74.33,
+  "sound": "PING",
+  "level": -24.5,
+  "asked": -13,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 74.51,
+  "sound": "table bounce",
+  "level": -32.0,
+  "asked": -20,
+  "pan": 0.2,
+  "kind": "soft"
+ },
+ {
+  "t": 74.72,
+  "sound": "Ronaldo's smash",
+  "level": -9.0,
+  "asked": -9,
+  "pan": 0.45,
+  "kind": "hero"
+ },
+ {
+  "t": 75.02,
+  "sound": "BONK (Rio's forehead)",
+  "level": -10.7,
+  "asked": -6,
+  "pan": -0.45,
+  "kind": "hero"
+ },
+ {
+  "t": 75.1,
+  "sound": "stars",
+  "level": -21.0,
+  "asked": -21,
+  "pan": -0.45,
+  "kind": "hit"
+ },
+ {
+  "t": 75.14,
+  "sound": "ball pops off",
+  "level": -22.0,
+  "asked": -22,
+  "pan": -0.3,
+  "kind": "hit"
+ },
+ {
+  "t": 75.47,
+  "sound": "CR7 WINS confetti",
+  "level": -20.6,
+  "asked": -13,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 75.47,
+  "sound": "crowd",
+  "level": -18.7,
+  "asked": -15,
+  "pan": 0,
+  "kind": "roar"
+ },
+ {
+  "t": 76.0,
+  "sound": "[bed] rain until 76.8",
+  "level": -41,
+  "pan": 0
+ },
+ {
+  "t": 76.0,
+  "sound": "sad trombone",
+  "level": -16.6,
+  "asked": -14,
+  "pan": 0,
+  "kind": "hero"
+ },
+ {
+  "t": 76.7,
+  "sound": "whip pan",
+  "level": -23.4,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 76.9,
+  "sound": "CR7",
+  "level": -20.0,
+  "asked": -15,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 77.83,
+  "sound": "wink",
+  "level": -22.0,
+  "asked": -22,
+  "pan": 0,
+  "kind": "hit"
+ },
+ {
+  "t": 77.95,
+  "sound": "whip pan",
+  "level": -23.2,
+  "asked": -18,
+  "pan": 0,
+  "kind": "soft"
+ },
+ {
+  "t": 78.3,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": -0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 78.55,
+  "sound": "Evra pants",
+  "level": -32.0,
+  "asked": -32,
+  "pan": 0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 78.75,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": -0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 79.1,
+  "sound": "Evra pants",
+  "level": -32.0,
+  "asked": -32,
+  "pan": 0.4,
+  "kind": "soft"
+ },
+ {
+  "t": 79.2,
+  "sound": "keepy-up",
+  "level": -22.0,
+  "asked": -22,
+  "pan": -0.35,
+  "kind": "soft"
+ },
+ {
+  "t": 79.5,
+  "sound": "Evra falls",
+  "level": -22.0,
+  "asked": -17,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 79.92,
+  "sound": "thud",
+  "level": -14.9,
+  "asked": -7,
+  "pan": 0.4,
+  "kind": "hero"
+ },
+ {
+  "t": 79.92,
+  "sound": "dust",
+  "level": -17.0,
+  "asked": -17,
+  "pan": 0.4,
+  "kind": "hit"
+ },
+ {
+  "t": 80.0,
+  "sound": "K.O. bell",
+  "level": -15.6,
+  "asked": -14,
+  "pan": 0,
+  "kind": "hero"
+ }
+]

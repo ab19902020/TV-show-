@@ -1,12 +1,13 @@
 # Evra and Ronaldo: "The Lunch"
 
 **Final video:** [`evra_ronaldo_lunch.mp4`](evra_ronaldo_lunch.mp4) (1080×1920 portrait, 30 fps, 80.3 s, the original
-recording)
+recording with music and sound effects)
 
 Patrice Evra tells the story of going to Cristiano Ronaldo's house for "a gentle lunch" after training (they were team-mates at United from 2006 to 2009), which
 turned into a garden two-touch session, a swim, a sauna and a jacuzzi. Then he tells how Rio Ferdinand beat Ronaldo at
-table tennis and Ronaldo practised for two weeks to beat him back. The sound is the original recording, whole and
-untouched. The picture is the flashback in the house cartoon style.
+table tennis and Ronaldo practised for two weeks to beat him back. The sound is Evra's original recording, whole (his
+voice is never cut or edited), with a comedy score and sound effects under and around it. The picture is the flashback in
+the house cartoon style.
 
 ## Who speaks on screen
 
@@ -62,6 +63,33 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 | 76.9 | "That's Cristiano Ronaldo" | Ronaldo winks on a red-and-gold sunburst: CR7. |
 | 78.1 | "He don't want to lose any game" | Back at Carrington, Ronaldo is still doing keepy-ups and beckoning. Evra keels over flat: K.O. |
 
+## Sound
+
+Everything is synthesised from numpy/scipy (no samples, no libraries), deterministically, and every cue is keyed to the same
+times `direction.py` draws it at, so a change to a shot's timing moves its sound with it.
+
+- **Music** (`score.py`): a playful comedy score in A minor / C major, a different groove for each part of the story, and
+  every section starts on the picture cut. Morning-training marimba and pizzicato; a tiptoe for the house; a lonely nothing for
+  the empty doorway and glass of water; a speeded-up chase for the fast-forward; funk for the garden; steel-drum-ish marimba for
+  the pool; slow and hot for the sauna; lounge vibes for the jacuzzi; brass and a roar for the goal; disco shimmer for "Christian
+  Dior"; taiko for the warrior; a pulsing machine for "He's a machine"; a 150 bpm tick for the table-tennis rally (then it
+  cuts dead on the winner); a heartbeat for "determined"; a rising boil for "so angry"; a night-time pulse locked to the ball
+  machine (one ball every 0.32 s); a triumph on the rematch; and back to the morning theme with a last chord on the K.O.
+  It sits about 16 dB under his voice and lifts in his pauses.
+- **Effects** (`sfx.py`, cued in `audio.py`): a whoosh on every whip pan, the keepy-ups, panting and sweat drops, the thought
+  bubble pop, "lunch" boing and hand-rubbing, the skip up the path, plates, every bite and chew, the glass of water sliding
+  in, the tumbleweed and a cricket, the fast-forward whirr with rapid chomps, the vanish and dust cloud, the ball flick, each
+  kick, the BONK on his shin, splashes, laps and the sauna thumps, the SPLOSH waves (and the water running off his face), the
+  goal (kick, net, crowd, confetti, SIUUU and the landing), camera flashes on "Christian Dior", the warrior's taiko and shing, the
+  battery beeps and the power-up on "machine", every table-tennis PING / PONG / bounce / smash / miss, the kettle whistling
+  from his ears, the box falling and landing, the ball machine and the cardboard Rio, the BONK on Rio's forehead, the sad
+  trombone, the keepy-ups again, the fall and the K.O. bell. The full list with times is in `soundtrack_cues.json`.
+- **Ambience** under each place: air and birds outdoors, room tone in the kitchen, the pool hall, steam in the sauna, jacuzzi
+  bubbles, night crickets, rain on Rio.
+- **Mix**: each effect is set against how loud his voice is at that moment (it can never swamp a word; the big comedy hits
+  may reach slightly above it), then the whole mix is normalised to -16 LUFS integrated / -1.5 dBTP, 48 kHz, AAC 256k.
+  Stems are written to `build/audio/` (voice, music, effects, ambience).
+
 ## How it's made
 
 - `align.py`: the hand-corrected transcript, force-aligned to word and phone timings (`words.json`, pocketsphinx).
@@ -93,6 +121,8 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 - Footballs are real size (`BALL`, about a head across). Cuts to a new place get a whip pan, and every shot has a soft
   vignette.
 - `render.py`: renders in parallel chunks, then adds the original recording, encoded once to AAC 320k, with no edits.
+- `audio.py` (with `sfx.py` and `score.py`): the music and sound effects, mixed with the recording and muxed onto the picture
+  (see "Sound" below). Run it after `render.py`.
 
 To rebuild from scratch:
 
