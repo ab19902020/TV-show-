@@ -15,6 +15,7 @@ from cast import actor
 import fx
 
 OW, OH = 1080, 1920
+BALL = 92.          # a football is about the size of a head: plate px per unit of character scale
 DUR = 80.33
 WORDS = [w for turn in json.load(open(os.path.join(E.ROOT, 'words.json')))['turns'] for w in turn['words']]
 
@@ -125,8 +126,8 @@ class Film:
         rx, ry = 700, 1260
         self.put(d, c, 'r_stance', rx, ry, .82, t, shadow_w=270, hop=bob * .4)
         fx_, fy_ = self.pt('r_stance', rx, ry, .82, 395, 630)
-        by = fy_ - 30 - 170 * math.sin(math.pi * ph) ** .9
-        self.prop('ball').draw(d, c, fx_, by, 40, rot=t * 400)
+        bw = BALL * .82; by = fy_ - bw * .55 - 170 * math.sin(math.pi * ph) ** .9
+        self.prop('ball').draw(d, c, fx_, by, bw, rot=t * 400)
         # Evra, done: hands on knees, panting, sweating
         ex, ey = 300, 1570
         self.put(d, c, 'e_tired', ex, ey, 1.32, t, shadow_w=520, look=(.2 * math.sin(t * 2), 0))
@@ -134,7 +135,8 @@ class Film:
         for i, ts in enumerate((.3, 1.2, 2.1, 2.9)):
             fx.sweat(d, c, hx + (-60 if i % 2 else 70), hy + 40, 9, ts, t, slide=60)
         a = ease(t, .2, .7) * (1 - ease(t, 2.9, 3.25))
-        fx.text_out(d, 'CARRINGTON, 2008', self.ow / 2, self.oh * .085, self.ow * .062, fill=(1, 1, 1), alpha=a)
+        # Evra joined United in January 2006 and Ronaldo left in the summer of 2009: they overlapped 2006-2009
+        fx.text_out(d, 'CARRINGTON, 2006-2009', self.ow / 2, self.oh * .085, self.ow * .058, fill=(1, 1, 1), alpha=a)
         fx.text_out(d, 'after training...', self.ow / 2, self.oh * .135, self.ow * .04, fill=(1, .85, .1), alpha=a)
         return d
 
@@ -218,24 +220,89 @@ class Film:
     # pairs of feet on the same floor (Ronaldo's longer legs put his head a little higher)
     E_SEAT = (300, 1088, 1.05); R_SEAT = (640, 1100, 1.02)
 
+    # what each eater has on his fork, and where his mouth is (sheet px of his eating drawing)
+    FOOD = {'r_lunch': dict(fork=(336, 812), mouth=(298, 806), kind='chicken'),
+            'e_tinylunch': dict(fork=(368, 808), mouth=(253, 795), kind='floret')}
+
+    @staticmethod
+    def eating(t, bites, chew=.9, speed=1.):
+        """a bite at each time in `bites`: lean in, mouth wide, chomp, then chew. -> dict of acting values and the food:
+        food = 1 on the fork, (0..1) flying into the mouth, None eaten"""
+        e = dict(vis=None, amp=None, tilt=0., lean=0., blink=None, food=1., looky=0.)
+        last = max([b for b in bites if b <= t + .25 / speed], default=None)
+        if last is None: return e
+        a = (t - last) * speed
+        if a < 0:                                                      # anticipation: lean towards the fork
+            v = smooth((a + .25) / .25); e.update(lean=4. * v)
+        elif a < .14:                                                  # mouth wide, the food goes in
+            e.update(vis='AI', amp=.95, lean=4., food=a / .14)
+        elif a < .24:                                                  # chomp
+            e.update(vis='MBP', lean=4., food=None)
+        elif a < .24 + chew:                                           # chewing, eyes half shut
+            c = (a - .24) / chew; ph = (a - .24) * 9.5
+            e.update(vis='E', amp=.42 * max(0., math.sin(math.pi * ph)) * (1 - .4 * c),
+                     lean=4. * (1 - c), food=None, blink=.55 * (1 - c))
+        else:                                                          # looks down at the plate: the next forkful
+            e.update(food=None if a < .24 + chew + .3 else 1., looky=.6 * bump(a, .24 + chew + .25, .2))
+        nxt = [b for b in bites if b > t + .25 / speed]
+        if e['food'] is None and nxt and a > .24 + chew + .3: e['food'] = 1.
+        if not nxt and a >= .14: e['food'] = None
+        return e
+
+    def draw_food(self, d, M, n, f, mouthM=None):
+        """the forkful (plate output via the eater's body matrix M); f = 1 on the fork, < 1 on its way into the mouth"""
+        if f is None: return
+        sp = self.FOOD[n]; k = E.META[n]['scale']
+        fx_, fy_ = (M @ [*E.P(n, *sp['fork']), 1])[:2]; mx, my = (M @ [*E.P(n, *sp['mouth']), 1])[:2]
+        v = 1 - f if f < 1 else 0.; x = fx_ + (mx - fx_) * v; y = fy_ + (my - fy_) * v
+        r = float(np.linalg.norm(M[:2, 0])) * k * 10 * (1 - .55 * v)
+        if r < 1: return
+        if sp['kind'] == 'chicken':
+            # a slice of plain white chicken (the same pale tan as on the plates) with a leaf of salad stuck to it
+            pts = [(x + r * 1.35 * math.cos(a) * (1 + .12 * math.sin(3 * a)), y + r * .85 * math.sin(a)) for a in np.linspace(0, 2 * math.pi, 24)]
+            R_ = np.array([[math.cos(-.45), -math.sin(-.45)], [math.sin(-.45), math.cos(-.45)]])
+            pts = [tuple(R_ @ (np.array(q) - (x, y)) + (x, y)) for q in pts]
+            fx.poly(d, pts, (.93, .80, .64), fx.INK, max(1.5, r * .16))
+            fx.ellipse(d, (x - r * .25, y - r * .3), (r * .7, r * .22), -25, (.99, .91, .78), None, 0)
+            for o in (-.35, .15):
+                cv2.line(d, (int((x - r * .7 + o * r) * 4), int((y + r * (.35 + o)) * 4)), (int((x + r * .5 + o * r) * 4), int((y + r * (-.05 + o)) * 4)),
+                         (.8, .64, .47), max(1, int(r * .1)), cv2.LINE_AA, 2)
+            fx.ellipse(d, (x + r * .75, y - r * .45), (r * .42, r * .26), 30, (.35, .68, .25), fx.INK, max(1., r * .1))
+        else:
+            for i, (ox, oy) in enumerate([(-.5, .1), (.45, .15), (0, -.35), (-.2, .3), (.25, -.05)]):
+                fx.ellipse(d, (x + ox * r, y + oy * r), (r * .55, r * .5), 0, (.96, .95, .86), fx.INK, max(1.2, r * .12))
+            for i, (ox, oy) in enumerate([(-.5, .1), (.45, .15), (0, -.35), (-.2, .3), (.25, -.05)]):
+                fx.ellipse(d, (x + ox * r, y + oy * r), (r * .42, r * .37), 0, (.98, .97, .9), None, 0)
+            cv2.line(d, (int(x * 4), int((y + r * .4) * 4)), (int(x * 4), int((y + r * 1.0) * 4)), (.45, .65, .3),
+                     max(1, int(r * .25)), cv2.LINE_AA, 2)
+
+    def eater(self, d, c, n, seat, t, bites, kw, speed=1., chew=.9):
+        e = self.eating(t, bites, chew, speed) if bites else dict(vis=None, amp=None, tilt=0., lean=0., blink=None, food=1., looky=0.)
+        kw = dict(kw or {})
+        lk = kw.pop('look', (0., 0.)); kw.setdefault('blink', e['blink'])
+        kw['tilt'] = kw.get('tilt', 0.) + e['tilt']; kw['lean'] = kw.get('lean', 0.) + e['lean']
+        M = self.put(d, c, n, *seat, t, vis=e['vis'], amp=e['amp'], look=(lk[0], lk[1] + e['looky']), **kw)
+        return M, e['food']
+
     def dining(self, t, zoom=1.3, cx=472, cy=700, evra='e_tinylunch', ron='r_lunch', e_kw=None, r_kw=None,
-               e_plate='plate_full', r_plate='plate_full', glass=0., ron_here=True, shake=0.):
+               e_plate='plate_full', r_plate='plate_full', glass=0., ron_here=True, shake=0., e_bites=(), r_bites=(),
+               e_food=True, r_food=True, speed=1., chew=.9):
         c = self.cam(zoom, cx, cy, shake, t); d = self.plate('dining', c)
-        self.put(d, c, evra, *self.E_SEAT, t, **(e_kw or {}))
-        if ron_here: self.put(d, c, ron, *self.R_SEAT, t, **(r_kw or {}))
+        Me, fe = self.eater(d, c, evra, self.E_SEAT, t, e_bites, e_kw, speed, chew)
+        if ron_here: Mr, fr = self.eater(d, c, ron, self.R_SEAT, t, r_bites, r_kw, speed, chew)
         self.front(d, 'dining', c, self.TABLE_POLY)
         self.prop(e_plate).draw(d, c, self.E_SEAT[0], 895, 200)
         self.prop(r_plate).draw(d, c, self.R_SEAT[0], 895, 200)
         if glass > 0: self.prop('glass').draw(d, c, self.E_SEAT[0] + 200 * (1 - glass) + 150, 855, 60)
+        if e_food: self.draw_food(d, Me, evra, fe)
+        if ron_here and r_food: self.draw_food(d, Mr, ron, fr)
         return c, d
 
     def table(self, t, u, t0, t1):
         look_plate = ease(t, W('look', 0) + .05, W('look', 0) + .2) * (1 - ease(t, 17.95, 18.1))
         at_ron = ease(t, 17.95, 18.1)
-        chew = max(0, math.sin(t * 6.5))
-        c, d = self.dining(t, 1.3 + .07 * u, e_kw=dict(look=(.6 * at_ron, .7 * look_plate), brow=-.5 * ease(t, W('salad'), W('salad') + .3),
-                                                      limbs={'fork': -6 * look_plate}),
-                           r_kw=dict(limbs={'fork': -22 * chew}, smile=.7, look=(-.3, .2), blink=.85 * chew if chew > .6 else None))
+        c, d = self.dining(t, 1.3 + .07 * u, e_kw=dict(look=(.6 * at_ron, .7 * look_plate), brow=-.5 * ease(t, W('salad'), W('salad') + .3)),
+                           r_kw=dict(smile=.7, look=(-.3, .2)), r_bites=(15.75, 17.05, 18.35))
         return d
 
     def chicken(self, t, u, t0, t1):
@@ -265,8 +332,8 @@ class Film:
         g = ease(t, W('just', 1) - .1, W('just', 1) + .25)
         stare = ease(t, W('water') - .05, W('water') + .1)
         c, d = self.dining(t, 1.3 + .3 * stare, cy=700 + 25 * stare, cx=472 - 70 * stare, glass=g,
-                           e_kw=dict(look=(.5 * stare, .7 * stare), brow=-.6 * stare, limbs={'fork': 0}),
-                           r_kw=dict(limbs={'fork': -22 * max(0, math.sin(t * 6.5))}, smile=.7, look=(-.4, 0)))
+                           e_kw=dict(look=(.5 * stare, .7 * stare), brow=-.6 * stare),
+                           r_kw=dict(smile=.7, look=(-.4, 0)), r_bites=(21.9, 23.1))
         if t > W('water') + .5:
             hx, hy = self.pt('e_tinylunch', *self.E_SEAT, 210, 720)
             fx.sweat(d, c, hx, hy, 6, W('water') + .5, t, 20)
@@ -277,10 +344,11 @@ class Film:
         r_empty = t > quick + .25; e_empty = t > quick + .9
         ron_here = t < gone
         c, d = self.dining(t, 1.3, e_plate='plate_empty' if e_empty else 'plate_full', r_plate='plate_empty' if r_empty else 'plate_full',
-                           glass=1., ron_here=ron_here,
-                           e_kw=dict(limbs={'fork': -20 * max(0, math.sin(t * 22))} if t < quick + .9 else {'fork': -14},
-                                     look=(.6 * (t > gone), 0)),
-                           r_kw=dict(limbs={'fork': -24 * max(0, math.sin(t * 30))}, smile=.8, blink=.9))
+                           glass=1., ron_here=ron_here, speed=3.2, chew=.35,
+                           e_bites=tuple(23.95 + .42 * i for i in range(int((quick + .9 - 23.95) / .42) + 1)),
+                           r_bites=tuple(23.9 + .3 * i for i in range(int((quick + .25 - 23.9) / .3) + 1)),
+                           e_food=t < quick + .9, r_food=t < quick + .25,
+                           e_kw=dict(look=(.6 * (t > gone), 0)), r_kw=dict(smile=.8))
         if not ron_here:
             fx.dust(d, c, 640, 640, gone, t, 1.9, n=8, seed=4)
             fx.motion_lines(d, c, 640, 600, 1000, 540, n=5, spread=170)
@@ -298,8 +366,9 @@ class Film:
         beck = 14 * max(0, math.sin((t - 26.75) * 7)) * (26.75 < t < 28.9)
         self.put(d, c, 'r_invite', 320, 1540, 1.22, t, shadow_w=320, limbs={'hand': beck}, look=(.3, 0))
         fxp, fyp = self.pt('r_invite', 320, 1540, 1.22, 800, 640)
-        flick = self.hop(t, W('two', 0) - .1, .5, 160)
-        self.prop('ball').draw(d, c, fxp + 50, fyp - 18 - flick, 52, rot=t * 200 * (flick > 0))
+        flick = self.hop(t, W('two', 0) - .1, .5, 220); bw = BALL * 1.22
+        if not flick: shadow(d, c, fxp + 70, 1540, bw * 1.1)
+        self.prop('ball').draw(d, c, fxp + 70, 1540 - bw / 2 - flick, bw, rot=t * 200 * (flick > 0))
         self.put(d, c, 'e_casual', 700, 1540, 1.22, t, shadow_w=330, mirror=True, look=(.3, .4), brow=-.4,
                  tilt=-2 * ease(t, W('garden'), W('garden') + .3))
         return d
@@ -312,7 +381,7 @@ class Film:
 
     def two_touch(self, t, u, t0, t1):
         c = self.cam(1.05, 470, 1080); d = self.plate('garden', c)
-        rx, ry, ex, ey = 235, 1500, 712, 1500
+        S2 = .8; rx, ry, ex, ey = 200, 1420, 755, 1420                  # a proper passing distance apart
         # kicks: Ronaldo crisp, Evra slow; the ball rolls between their kicking feet
         rk = [31.15, 32.55]; ek = [31.95]
         def swing(t, kicks, back=-16, fwd=8, wind=.18):
@@ -323,23 +392,26 @@ class Film:
             return v
         rs = swing(t, rk); es = swing(t, ek, -10, 4, .35)
         droop = 6 * ease(t, 32.0, 32.6) + 6 * ease(t, 33.0, 33.2)
-        self.put(d, c, 'r_kick', rx, ry, .98, t, shadow_w=300, limbs={'leg': rs})
-        self.put(d, c, 'e_kick', ex, ey + droop, .98, t, shadow_w=330, mirror=True, limbs={'leg': -es}, look=(.3, .5),
+        self.put(d, c, 'r_kick', rx, ry, S2, t, shadow_w=250, limbs={'leg': rs})
+        self.put(d, c, 'e_kick', ex, ey + droop, S2, t, shadow_w=330, mirror=True, limbs={'leg': -es}, look=(.3, .5),
                  brow=-.5, tilt=-droop * .6)
-        rf = self.pt('r_kick', rx, ry, .98, 880, 1070); ef = self.pt('e_kick', ex, ey, .98, 900, 950, mirror=True)
-        legs = [(31.15, 31.75, rf, ef, 1.), (31.95, 32.5, ef, rf, .6), (32.55, 32.95, rf, ef, 1.)]
-        bx, by = rf[0] + 30, rf[1]
+        rf = self.pt('r_kick', rx, ry, S2, 880, 1070); ef = self.pt('e_kick', ex, ey, S2, 900, 950, mirror=True)
+        bw = BALL * S2; ground = ry - bw / 2
+        rx_ = rf[0] + bw * .35; ex_ = ef[0] - bw * .45                 # where each kicking foot meets the ball
+        legs = [(31.15, 31.75, rx_, ex_, 1.), (31.95, 32.5, ex_, rx_, .6), (32.55, 32.95, rx_, ex_, 1.)]
+        bx, hop_ = rx_, 0.
         for a0, a1, p0, p1, power in legs:
             if t >= a0:
                 v = min(1, (t - a0) / (a1 - a0)); v2 = v if power > .8 else 1 - (1 - v) ** 1.8
-                bx = p0[0] + (p1[0] - p0[0]) * v2; by = p0[1] + (p1[1] - p0[1]) * v2 - (30 if power > .8 else 70) * math.sin(math.pi * v)
-                if power < .8: by -= 0
-        if t > 32.95: bx, by = ef[0] - 20, ef[1] - 10 + 6 * abs(math.sin(t * 15))   # it hits Evra's shin and dies there
-        self.prop('ball').draw(d, c, bx, by - 22, 48, rot=-t * 600)
+                bx = p0 + (p1 - p0) * v2
+                hop_ = (18 if power > .8 else 60) * abs(math.sin(math.pi * v * (1 if power > .8 else 2))) * (1 - v * .6)
+        if t > 32.95: bx, hop_ = ex_ - 10 * smooth((t - 32.95) / .3), 30 * abs(math.sin((t - 32.95) * 12)) * math.exp(-(t - 32.95) * 5)
+        shadow(d, c, bx, ry, bw * 1.05)
+        self.prop('ball').draw(d, c, bx, ground - hop_, bw, rot=(bx - rx_) * 1.6)
         if t > 32.95:
-            q = fx.cpt(c, ef[0] - 20, ef[1] - 80); fx.text_out(d, 'BONK', q[0], q[1], self.ow * .05, fill=(1, .9, .2), alpha=1 - ease(t, 33.05, 33.2))
+            q = fx.cpt(c, ex_, ground - 120); fx.text_out(d, 'BONK!', q[0], q[1], self.ow * .07, fill=(1, .9, .2), alpha=1 - ease(t, 33.05, 33.2))
         if 31.15 < t < 31.6 or 32.55 < t < 32.9:
-            fx.motion_lines(d, c, bx - 120, by - 22, bx - 40, by - 22, n=3, spread=26)
+            fx.motion_lines(d, c, bx - 150, ground, bx - 60, ground, n=3, spread=bw * .6)
         return d
 
     def swim_invite(self, t, u, t0, t1):
@@ -446,13 +518,13 @@ class Film:
                                                       fill=(1, .85, .1), scale=ease(t, siu + .05, siu + .2))
             fp = None
         if fp is not None and t < kick:
-            self.prop('ball').draw(d, c, fp[0] + 25, fp[1] - 20, 44)
+            self.prop('ball').draw(d, c, fp[0] + 30, 1320 - BALL * .95 / 2, BALL * .95)
         elif t < arrive + .5:
             v = min(1, (t - kick) / (arrive - kick)); tx, ty = 800, 590
-            k0 = self.pt('r_kick', 300, 1320, .95, 880, 1070); sx, sy = k0[0] + 25, k0[1] - 20
+            k0 = self.pt('r_kick', 300, 1320, .95, 880, 1070); sx, sy = k0[0] + 30, 1320 - BALL * .95 / 2
             bx = sx + (tx - sx) * v; by = sy + (ty - sy) * v - 160 * math.sin(math.pi * v)
-            if t < arrive: self.prop('ball').draw(d, c, bx, by, 44 - 26 * v, rot=t * 900); fx.motion_lines(d, c, bx - 80, by + 30, bx - 20, by + 8, 3, 18)
-            else: self.prop('ball').draw(d, c, tx + 6 * math.sin(t * 40), ty + 10, 18)
+            if t < arrive: self.prop('ball').draw(d, c, bx, by, BALL * .95 * (1 - .7 * v), rot=t * 900); fx.motion_lines(d, c, bx - 90, by + 34, bx - 25, by + 10, 3, 30)
+            else: self.prop('ball').draw(d, c, tx + 6 * math.sin(t * 40), ty + 10, BALL * .95 * .3)
         if t >= arrive:
             fx.confetti(d, t, arrive, n=80)
             q = fx.cpt(c, 800, 520); fx.text_out(d, 'GOAL!', q[0] - 80, q[1] - 60, self.ow * .1, fill=(1, 1, 1), scale=ease(t, arrive, arrive + .15) * (1 - ease(t, siu, siu + .1)))
@@ -702,7 +774,8 @@ class Film:
                  brow=.4 * bump(t, W('lose') + .1, .2))
         fp = self.pt('r_invite', 300, 1560, 1.2, 800, 640)
         per = .45; ph = (t % per) / per
-        self.prop('ball').draw(d, c, fp[0] + 60, fp[1] - 25 - 120 * math.sin(math.pi * ph), 52, rot=t * 300)
+        bw = BALL * 1.2
+        self.prop('ball').draw(d, c, fp[0] - 40, 1560 - bw * .6 - 130 * math.sin(math.pi * ph), bw, rot=t * 300)
         fall = 79.5; ang = 84 * ease(t, fall, fall + .42) ** 2
         ex, ey = 720, 1600
         cf = c @ T(ex - 60, ey) @ R(-ang) @ T(-(ex - 60), -ey)

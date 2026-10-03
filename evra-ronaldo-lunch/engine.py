@@ -134,8 +134,12 @@ class Actor:
     limbs: {name: (polygon sheet px, pivot sheet px)} pieces that rotate on their own (a beckoning hand, a fork arm)."""
 
     def __init__(self, name, who, band=None, head=None, neck=None, waist=None, mouth=None, chin=None, limbs=None,
-                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1.):
+                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1., erase=None, nohead=None):
         self.n, self.who = name, who; a = part(name).copy()
+        for poly in erase or ():
+            # drawn details that the film animates itself (the food on a fork is eaten): taken out of the drawing
+            m = np.zeros(a.shape[:2], np.uint8); cv2.fillPoly(m, [np.int32([P(name, *q) for q in poly])], 255)
+            a[..., 3] = np.uint8(a[..., 3] * (1 - cv2.GaussianBlur(m.astype(np.float32) / 255, (0, 0), 1.)))
         if mirrored:
             # this copy is drawn mirrored: flip the shirt numbers in place first, so they still read the right way
             for bx in numbers or ():
@@ -183,6 +187,9 @@ class Actor:
             fade = 10 * k
             mask = np.clip((y1 - Y) / fade, 0, 1) * (Y >= y0) * (X >= x0) * (X < x1)
             mask = mask * (1 - limbmask)                                  # a hand near the face moves with its arm
+            for poly in nohead or ():                                       # ...or stays with the body (a fork by the mouth)
+                m = np.zeros((self.hh, self.ww), np.uint8); cv2.fillPoly(m, [np.int32([P(name, *q) for q in poly])], 255)
+                mask = mask * (1 - cv2.GaussianBlur(m.astype(np.float32) / 255, (0, 0), 1.2))
             hd = a[y0:y1, x0:x1].copy(); hd[..., 3] = np.uint8(hd[..., 3] * mask[y0:y1, x0:x1])
             # the body keeps its own pixels in a band above the head layer's soft bottom edge, so a tilt never opens a gap
             hole = (mask >= .999) & (Y < y1 - fade - 6 * k)
@@ -232,7 +239,7 @@ class Actor:
                                 brow=st['brow'] + brow, smile=0 if vis != 'REST' else st['smile'] + smile, blush=st['blush'] + blush)
 
     def draw(self, dst, cam, x, y, height, t, mirror=False, lean=0., tilt=0., nod=0., hop=0., life=1., limbs=None,
-             look=None, brow=0., smile=0., speak=True, opacity=1., blush=0., squash=0., blink=None):
+             look=None, brow=0., smile=0., speak=True, opacity=1., blush=0., squash=0., blink=None, vis=None, amp=None):
         st = perf.state(self.who, t); L = perf.life(self.who, t)
         tilt += st['tilt'] + L['tilt'] * life; lean += L['lean'] * life
         nodpx = (nod + st['nod']) * self.hh / 160 + L['nod'] * life * self.hh
@@ -248,8 +255,10 @@ class Actor:
             ang = (limbs or {}).get(ln, 0.)
             spr.draw(dst, M @ B @ pivot(pv[0], pv[1], ang), opacity)
         if self.head is not None:
-            vis = viseme(self.who, t) if speak else 'REST'
-            amp = .55 + .45 * speech_amp(t) if vis != 'REST' else 1.
+            if vis is None:
+                vis = viseme(self.who, t) if speak else 'REST'
+                amp = .55 + .45 * speech_amp(t) if vis != 'REST' else 1.
+            elif amp is None: amp = 1.
             hd = self.head_image(t, vis, amp, look, brow, smile, blink=blink, blush=blush)
             HM = B @ T(0, nodpx) @ pivot(self.neck[0], self.neck[1], tilt * (-1 if mirror else 1)) @ T(*self.hoff)
             over(dst, pm(hd), M @ HM, opacity)

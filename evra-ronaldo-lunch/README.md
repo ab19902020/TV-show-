@@ -3,7 +3,7 @@
 **Final video:** [`evra_ronaldo_lunch.mp4`](evra_ronaldo_lunch.mp4) (1080×1920 portrait, 30 fps, 80.3 s, the original
 recording)
 
-Patrice Evra tells the story of going to Cristiano Ronaldo's house for "a gentle lunch" after training in 2008, which
+Patrice Evra tells the story of going to Cristiano Ronaldo's house for "a gentle lunch" after training (they were team-mates at United from 2006 to 2009), which
 turned into a garden two-touch session, a swim, a sauna and a jacuzzi. Then he tells how Rio Ferdinand beat Ronaldo at
 table tennis and Ronaldo practised for two weeks to beat him back. The sound is the original recording, whole and
 untouched. The picture is the flashback in the house cartoon style.
@@ -26,7 +26,7 @@ The characters act silently under Evra's narration. They only lip-sync the lines
 
 | Time | Shot | What you see |
 |---|---|---|
-| 0.0 | Carrington, 2008 | Evra is bent double, tongue out and sweating, while Ronaldo does keepy-ups behind him. |
+| 0.0 | Carrington, 2006–2009 | Evra is bent double, tongue out and sweating, while Ronaldo does keepy-ups behind him. |
 | 3.3 | "a gentle lunch" | Evra daydreams: a thought bubble full of plates of food and a jug, sparkling. |
 | 5.6 | "very competitive" | Ronaldo in close-up on a red sunburst, with speed lines and a twinkle in his eye. |
 | 8.3 | Evra to camera | "I think we should stay at the training ground." |
