@@ -44,6 +44,10 @@ SHOTS = [
 ]
 
 
+# cuts where the story changes place (from -> to): these get a whip pan
+WHIPS = [14.1, 15.3, 26.6, 34.35, 36.95, 40.25, 44.6, 47.35, 50.3, 52.3, 53.9, 56.95, 70.3, 72.45, 73.8, 76.85, 78.1]
+
+
 def shot_at(t):
     for i in range(len(SHOTS) - 1):
         if SHOTS[i][0] <= t < SHOTS[i + 1][0]: return SHOTS[i][1], SHOTS[i][0], SHOTS[i + 1][0]
@@ -115,6 +119,16 @@ class Film:
         name, t0, t1 = shot_at(t)
         if name == 'black': return np.zeros((self.oh, self.ow, 3), np.uint8)
         d = getattr(self, name)(t, (t - t0) / (t1 - t0), t0, t1)
+        # a whip pan where the story moves to a new place: the old shot smears off to the left, the new one in
+        for c_ in WHIPS:
+            if -.1 <= t - c_ < .13:
+                st = 1 - (c_ - t) / .1 if t < c_ else 1 - (t - c_) / .13
+                d = fx.whip(d, st ** 1.5, -1 if t < c_ else 1)
+        if not hasattr(self, '_vig'):
+            Y, X = np.ogrid[:self.oh, :self.ow]
+            q = np.sqrt(((X - self.ow / 2) / (self.ow * .5)) ** 2 + ((Y - self.oh * .47) / (self.oh * .5)) ** 2)
+            self._vig = (1 - .2 * np.clip((q - .6) / .6, 0, 1) ** 1.6).astype(np.float32)[..., None]
+        d = d * self._vig                                               # a soft vignette holds the eye on the middle
         return np.uint8(np.clip(d * 255, 0, 255))
 
     # ================================================================== 1. Carrington
@@ -324,7 +338,7 @@ class Film:
     def doorway(self, t, u, t0, t1):
         c = self.cam(2.3, 660, 560); d = self.plate('dining', c)
         a = (t - t0) / (t1 - t0)
-        fx.tumbleweed(d, c, 760 - 190 * a, 778 - 14 * abs(math.sin(a * 8)), 24, -a * 9)
+        fx.tumbleweed(d, c, 790 - 240 * a, 790 - 22 * abs(math.sin(a * 8)), 42, -a * 9)
         fx.text_out(d, '...', self.ow * .5, self.oh * .15, self.ow * .1, fill=(1, 1, 1))
         return d
 
@@ -489,16 +503,21 @@ class Film:
         fx.splash(d, c, x + (-60 if moving_right else 60), wy, t - (t - t0) % .3, t, .5, n=5, seed=int(t * 3))
         # Evra, finally relaxing... until the wave
         splash_t = [41.85, 43.45, W('right', 0) + .1]
-        hit = max([bump(t, s + .1, .25) for s in splash_t] + [0])
+        hit = max([bump(t, s + .15, .25) for s in splash_t] + [0])
+        shut = max([bump(t, s + .2, .14) for s in splash_t] + [0])
         relax = ease(t, t0 + .2, t0 + .9) * (1 - hit)
         ey = self.at_line('e_pool', 300, 1132, 1530, .95)
-        self.put(d, c, 'e_pool', 300, ey, .95, t, blink=.95 * relax, smile=.5 * relax, blush=.4 * relax, brow=-.6 * hit,
-                 tilt=-3 * relax)
+        self.put(d, c, 'e_pool', 300, ey, .95, t, blink=max(.95 * relax, .98 * shut), smile=.5 * relax, blush=.4 * relax,
+                 brow=-.7 * hit, tilt=-3 * relax)
         self.front(d, 'jacuzzi', c, self.jacuzzi_front())
         hx, hy = self.pt('e_pool', 300, ey, .95, 260, 1260)
-        for s in splash_t:
-            fx.splash(d, c, hx, hy + 90, s, t, 1.4, n=16, seed=int(s * 10))
-            if s <= t < s + .5: fx.text_out(d, 'SPLOSH', *fx.cpt(c, hx + 60, hy - 120), self.ow * .06, fill=(.5, .85, 1), alpha=1 - (t - s) / .5)
+        for i, s in enumerate(splash_t):
+            fx.wave(d, c, hx + 95, 1128, s, t, 330, curl=-1, seed=i)
+            if s + .1 <= t < s + .65:
+                fx.text_out(d, 'SPLOSH!', *fx.cpt(c, hx + 150, hy - 210), self.ow * .075, fill=(.55, .87, 1),
+                            scale=ease(t, s + .1, s + .2), alpha=1 - ease(t, s + .45, s + .65))
+            for j, (ox, oy) in enumerate([(-40, -70), (35, -85), (5, -40)]):    # then the water runs down his face
+                fx.sweat(d, c, hx + ox, hy + oy, 8, s + .45 + .08 * j, t, 60) if t < s + 1.5 else None
         return d
 
     # ================================================================== 5. What he became
@@ -580,8 +599,8 @@ class Film:
         # batteries
         rq = fx.cpt(c, 320, 820); eq = fx.cpt(c, 720, 780)
         mach = W('machine')
-        fx.battery(d, rq[0], rq[1] - 40, self.ow * .16, 1., '100%' if t < mach else '∞', t)
-        fx.battery(d, eq[0], eq[1] - 110, self.ow * .16, .04, '2%', t, blink=True)
+        fx.battery(d, rq[0], rq[1] - 120, self.ow * .16, 1., '100%' if t < mach else '∞', t)
+        fx.battery(d, eq[0], eq[1] - 230, self.ow * .16, .04, '2%', t, blink=True)
         fx.text_out(d, f'REPS: {997 + n_rep}', self.ow * .27, self.oh * .9, self.ow * .055, fill=(1, 1, 1))
         if t > mach:
             q = fx.cpt(c, *self.pt('r_exercise', 320, 1490, 1.08, 763, 1281)); fx.sparkle(d, q[0], q[1], 70 * bump(t, mach + .15, .15), 0)
@@ -753,9 +772,9 @@ class Film:
         c = self.cam(1.4, 470, 820); d = self.plate('carrington', c, blur=6)
         self.bust(d, c, 'rio_folded', 470, 1590, 800, t, look=(-.7, .3), brow=-.6)
         # a little rain cloud of his own
-        q = fx.cpt(c, 470, 560); fx.puff(d, q[0], q[1], 110, (.55, .58, .65), 1., True, 2)
-        for i in range(6):
-            ph = (t * 2.2 + i / 6) % 1; x = q[0] - 80 + 32 * i; y = q[1] + 60 + 200 * ph
+        q = fx.cpt(c, 470, 640); fx.puff(d, q[0], q[1], 190, (.5, .53, .6), 1., True, 2)
+        for i in range(9):
+            ph = (t * 2.4 + i * .37) % 1; x = q[0] - 150 + 38 * i; y = q[1] + 90 + 300 * ph
             cv2.line(d, (int(x * 4), int(y * 4)), (int((x - 6) * 4), int((y + 30) * 4)), (.55, .7, 1.), 4, cv2.LINE_AA, 2)
         return d
 

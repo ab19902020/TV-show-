@@ -348,3 +348,51 @@ def tumbleweed(d, cam, x, y, r, rot, seed=7):
         strokes.append(ipts([(c[0] + rr * R_ * math.cos(a + v), c[1] + rr * R_ * .92 * math.sin(a + v)) for v in np.linspace(0, span * math.pi, 9)]))
     for p in strokes: cv2.polylines(d, [p], False, (.16, .11, .06), max(1, int(round(2.2 * k))), cv2.LINE_AA, SH)
     for i, p in enumerate(strokes): cv2.polylines(d, [p], False, (.86, .72, .47) if i % 2 else (.74, .58, .35), max(1, int(round(1.1 * k))), cv2.LINE_AA, SH)
+
+
+def wave(d, cam, x, y, t0, t, height, curl=-1., seed=0):
+    """a cartoon wave crashing up from the water at plate (x, y): tongues of water rising `height` plate px, curling
+    towards `curl` (-1 left, +1 right), throwing drops off their tips; it rises and falls in half a second"""
+    a = t - t0
+    if a < 0 or a > .6: return
+    k = ck(cam); g = math.sin(math.pi * min(1., a / .55)) ** .8
+    bx, by = cpt(cam, x, y); H = height * k * g
+    if H < 2: return
+    rng = np.random.default_rng(seed)
+    lw = max(1.5, 3.2 * k)
+    for ang, frac in [(-58, .5), (-34, .82), (-12, 1.), (8, .92), (30, .74), (52, .48)]:
+        A = math.radians(ang + 22 * curl * g)
+        L = H * frac; w = height * k * .12 * (.7 + .3 * frac)
+        tip = (bx + L * math.sin(A), by - L * math.cos(A))
+        nx, ny = math.cos(A), math.sin(A)
+        pts = [(bx - nx * w, by - ny * w)]
+        for v in np.linspace(.15, .92, 6):                              # the tongue tapers towards its tip...
+            cx_, cy_ = bx + (tip[0] - bx) * v, by + (tip[1] - by) * v; ww = w * (1 - v * .55)
+            pts.append((cx_ - nx * ww, cy_ - ny * ww))
+        for th in np.linspace(math.pi, 0, 9):                           # ...which is a round drop
+            pts.append((tip[0] + w * .45 * (math.cos(th) * nx - math.sin(th) * math.sin(A)),
+                        tip[1] + w * .45 * (math.cos(th) * ny + math.sin(th) * math.cos(A))))
+        for v in np.linspace(.92, .15, 6):
+            cx_, cy_ = bx + (tip[0] - bx) * v, by + (tip[1] - by) * v; ww = w * (1 - v * .55)
+            pts.append((cx_ + nx * ww, cy_ + ny * ww))
+        pts.append((bx + nx * w, by + ny * w))
+        poly(d, pts, (.6, .85, 1.), INK, lw)
+        hl = [(bx + (tip[0] - bx) * v - nx * w * .35 * (1 - v * .5), by + (tip[1] - by) * v - ny * w * .35 * (1 - v * .5)) for v in np.linspace(.25, .85, 5)]
+        cv2.polylines(d, [ipts(hl)], False, (.92, .98, 1.), max(1, int(w * .22)), cv2.LINE_AA, SH)
+    if a > .18:                                                         # drops flung off the top
+        for i in range(10):
+            ang = rng.uniform(-1.2, 1.2) + .4 * curl; sp = rng.uniform(.7, 1.2) * height * k
+            b = a - .18; px = bx + math.sin(ang) * sp * b * 1.6; py = by - H * .9 - math.cos(ang) * sp * b * 1.2 + 900 * k * b * b
+            r = rng.uniform(5, 10) * k
+            ellipse(d, (px, py), (r * .8, r), 0, (.65, .88, 1.), INK, max(1, 1.4 * k))
+    puff(d, bx, by, height * k * .22 * (.6 + .4 * g), (.93, .97, 1.), 1., True, seed)
+
+
+def whip(d, strength, direction):
+    """a whip-pan smear: horizontal motion blur, the picture sliding in `direction` (-1 left, +1 right)"""
+    if strength <= .01: return d
+    W_ = d.shape[1]; L = int(W_ * .3 * strength) | 1
+    k = np.ones((1, L), np.float32) / L
+    out = cv2.filter2D(d, -1, k, borderType=cv2.BORDER_REFLECT)
+    sh = direction * W_ * .12 * strength
+    return cv2.warpAffine(out, np.float32([[1, 0, sh], [0, 1, 0]]), (W_, d.shape[0]), borderMode=cv2.BORDER_REFLECT)
