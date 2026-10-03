@@ -407,9 +407,9 @@ class Film:
         c = self.cam(1.3 + .05 * u, 470, 1010); d = self.plate('jacuzzi', c)
         # Ronaldo swims laps of a jacuzzi
         lap = 1.6; a = 2 * math.pi * ((t - t0) / lap) + math.pi
-        x = 470 + 300 * math.cos(a); wy = 1028 + 50 * math.sin(a)
+        x = 470 + 290 * math.cos(a); wy = 1035 + 45 * math.sin(a)
         moving_right = -math.sin(a) > 0
-        self.swimmer(d, c, 'r_laps', x, wy, 1445, .42 + .04 * math.sin(a), t, mirror=moving_right, look=(.3, 0))
+        self.swimmer(d, c, 'r_laps', x, wy, 1445, .58 + .06 * math.sin(a), t, mirror=moving_right, look=(.3, 0))
         fx.splash(d, c, x + (-60 if moving_right else 60), wy, t - (t - t0) % .3, t, .5, n=5, seed=int(t * 3))
         # Evra, finally relaxing... until the wave
         splash_t = [41.85, 43.45, W('right', 0) + .1]
@@ -514,43 +514,49 @@ class Film:
 
     # ================================================================== 6. Table tennis with Rio
     def tt_scene(self, t, c, d, rally, rio='rio_warning', far_kw=None, ron_kw=None):
-        """from behind Ronaldo at the near end; Rio behind the far end. rally: list of (t_hit, from_end, to_end) with
-        end 0 = Ronaldo (near), 1 = Rio (far); a smash past the player is (t, from, 'past')"""
+        """from behind Ronaldo at the near-right corner; Rio behind the far end (the table top hides his waist).
+        rally: (t_hit, from_end, to_end), end 0 = Ronaldo, 1 = Rio; a smash past Ronaldo is (t, 1, 'past')"""
         tb = fx.TABLE
-        rio_x, rio_y, rio_h = 425, 1205, 225
-        actor(rio).draw(d, c, rio_x, rio_y, rio_h, t, **(far_kw or {}))
-        rp = actor(rio).to_plate(rio_x, rio_y, rio_h, 716, 1110)
-        fx.paddle(d, c, rp[0], rp[1] + 6, 26, rot=-15)
+        hits = {0: [h for h, a, b in rally if a == 0], 1: [h for h, a, b in rally if a == 1]}
+        swing = lambda end: sum(bump(t, h, .07) for h in hits[end])
+        rio_x, rio_y = 455, 1232
+        ra_ = actor(rio, True); rh = actor('rio_warning', True).height(1.25) * ra_.hh / actor('rio_warning', True).hh
+        ra_.draw(d, c, rio_x, rio_y, rh, t, mirror=True, tilt=4 * swing(1), **(far_kw or {}))
+        if rio == 'rio_warning':
+            rp = ra_.to_plate(rio_x, rio_y, rh, 716, 1108, mirror=True)
+            fx.paddle(d, c, rp[0], rp[1] + 8, 34, rot=10 - 40 * swing(1))
         fx.tt_table(d, c, tb)
-        # the ball
         ball = None
         for t_hit, a, b in rally:
-            dur = .48 if b != 'past' else .32
+            dur = .45 if b != 'past' else .3
             if t_hit <= t < t_hit + dur:
                 v = (t - t_hit) / dur
-                if b == 'past':                      # straight past the near player, growing
-                    u0 = 1.; u1 = -.5; uu = u0 + (u1 - u0) * v; vv = .3 + .25 * v; hgt = 40 + 40 * v
+                if b == 'past':                      # a smash: one bounce on Ronaldo's side, then past his ear
+                    uu = 1 - 1.6 * v; vv = .4 + .45 * v
+                    hgt = 60 * abs(math.sin(math.pi * v / .55)) if v < .55 else 160 * (v - .55) / .45
                 else:
-                    u0, u1 = (.05, .97) if a == 0 else (.97, .05); uu = u0 + (u1 - u0) * v
-                    vv = (.78 + (.3 - .78) * v) if a == 0 else (.3 + (.78 - .3) * v)
-                    bounce = .72 if a == 0 else .28
-                    hgt = 110 * abs(math.sin(math.pi * (v / bounce))) if v < bounce else 70 * math.sin(math.pi * (v - bounce) / (1 - bounce))
-                bx, by = fx.tt_point(tb, uu, vv); sc = fx.tt_scale(tb, max(-.5, min(1, uu))) if uu >= 0 else 1 + -uu * 2.5
-                ball = (bx, by - hgt * sc, 9 * sc)
-        # Ronaldo from behind
-        rx, ry, rh = 690, 1790, 900
-        ra = actor('r_back'); ra.draw(d, c, rx, ry, rh, t, **(ron_kw or {}))
-        hp = ra.to_plate(rx, ry, rh, 912, 562)
-        fx.paddle(d, c, hp[0] + 6, hp[1] - 4, 52, rot=25)
+                    u0, u1 = (.03, .97) if a == 0 else (.97, .03); uu = u0 + (u1 - u0) * v
+                    vv = (.86 + (.4 - .86) * v) if a == 0 else (.4 + (.86 - .4) * v)
+                    bounce = .7 if a == 0 else .3
+                    hgt = 120 * abs(math.sin(math.pi * (v / bounce))) if v < bounce else 80 * math.sin(math.pi * (v - bounce) / (1 - bounce))
+                bx, by = fx.tt_point(tb, min(1, max(0, uu)), vv)
+                sc = fx.tt_scale(tb, min(1, max(0, uu))) * (1 + max(0., -uu) * 2.2)
+                ball = (bx + (0 if uu >= 0 else 200 * -uu), by - hgt * sc, 13 * sc)
+        rx, ry = 790, 1840
+        rb = actor('r_back'); rbh = 860
+        rb.draw(d, c, rx, ry, rbh, t, **(ron_kw or {}))
+        hp = rb.to_plate(rx, ry, rbh, 912, 562)
+        fx.paddle(d, c, hp[0] - 4, hp[1] - 8, 58, rot=30 - 50 * swing(0))
         if ball:
             fx.pp_ball(d, c, *ball)
+            if ball[2] > 20: fx.motion_lines(d, c, ball[0] - 80, ball[1] + 40, ball[0] - 25, ball[1] + 12, 3, ball[2])
         return d
 
     def tt_rally(self, t, u, t0, t1):
         c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
-        rally = [(57.05 + .5 * i, i % 2, (i + 1) % 2) for i in range(6)] + [(60.15, 1, 'past')]
-        lunge = 6 * ease(t, 60.2, 60.35)
-        self.tt_scene(t, c, d, rally, far_kw=dict(look=(.3, .2)), ron_kw=dict(lean=-lunge, tilt=0))
+        rally = [(57.05 + .45 * i, i % 2, (i + 1) % 2) for i in range(7)] + [(60.2, 1, 'past')]
+        lunge = 8 * ease(t, 60.25, 60.4)
+        self.tt_scene(t, c, d, rally, far_kw=dict(look=(.4, .2), brow=-.3), ron_kw=dict(lean=lunge, tilt=0))
         if t > 60.25:
             fx.text_out(d, 'RIO 11 - 9 CR7', self.ow / 2, self.oh * .1, self.ow * .07, fill=(1, 1, 1), scale=ease(t, 60.25, 60.4))
         return d
@@ -584,10 +590,10 @@ class Film:
     def rio_wins(self, t, u, t0, t1):
         c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
         smash = 66.1
-        rally = [(65.55, 1, 0), (65.62 + .48, 0, 1)] if False else [(65.6, 0, 1), (smash, 1, 'past')]
+        rally = [(65.6, 0, 1), (smash, 1, 'past')]
         win = t > smash + .3
         self.tt_scene(t, c, d, rally, rio='rio_laugh' if win else 'rio_warning',
-                      ron_kw=dict(lean=-8 * ease(t, smash + .1, smash + .25), tilt=0))
+                      ron_kw=dict(lean=8 * ease(t, smash + .1, smash + .25), tilt=0), far_kw=dict(look=(.4, .2)))
         if win:
             fx.confetti(d, t, smash + .3, n=50)
             fx.text_out(d, 'RIO WINS', self.ow / 2, self.oh * .1, self.ow * .1, fill=(1, .85, .1), scale=ease(t, smash + .3, smash + .45))
@@ -645,18 +651,23 @@ class Film:
         c = self.cam(1.12, 470, 1090); d = self.plate('carrington', c)
         tb = fx.TABLE; smash = W('beat', 2) + .02; celebrate = W('rio', 3)
         # Evra watching from the side, applauding
-        self.put(d, c, 'e_optimism', 860, 1180, .32, t, limbs={'hands': 8 * math.sin(t * 30) * (t > smash)}, mirror=True, smile=.6)
-        rh = 420; ry = 1180 + .48 * rh
+        rh = 640; ry = 1180 + .52 * rh
         j = self.hop(t, celebrate, .45, 120)
-        actor('r_stance', True).draw(d, c, 520, ry, rh, t, hop=j, brow=-.6, look=(-.2, .1), mirror=True)
-        hp = actor('r_stance', True).to_plate(520, ry, rh, 65, 398, mirror=True)
+        actor('r_stance', True).draw(d, c, 560, ry, rh, t, hop=j, brow=-.6, look=(-.2, .1), mirror=True)
+        hp = actor('r_stance', True).to_plate(560, ry, rh, 65, 398, mirror=True)
         fx.paddle(d, c, hp[0], hp[1] - j, 30, rot=40 * ease(t, smash - .1, smash) - 30 * ease(t, smash, smash + .1))
         fx.tt_table(d, c, tb)
-        if smash <= t < smash + .3:
-            v = (t - smash) / .3; uu = 1 - 1.5 * v
-            bx, by = fx.tt_point(tb, min(1, max(0, uu)), .35 - .1 * v); sc = fx.tt_scale(tb, max(0, uu)) * (1 + max(0, -uu) * 3)
-            fx.pp_ball(d, c, bx, by - 60 * sc, 9 * sc); fx.motion_lines(d, c, bx, by - 60 * sc - 60, bx, by - 60 * sc - 10, 3, 20 * sc)
-        ba = actor('rio_back'); ba.draw(d, c, 270, 1810, 1010, t, lean=-6 * ease(t, smash + .05, smash + .2))
+        if smash <= t < smash + .28:
+            v = (t - smash) / .28; uu = 1 - 1.25 * v
+            bx, by = fx.tt_point(tb, min(1, max(0, uu)), .45 - .2 * v); sc = fx.tt_scale(tb, max(0, uu)) * (1 + max(0, -uu) * 4)
+            fx.pp_ball(d, c, bx, by - 80 * sc - 260 * max(0, -uu), 12 * sc)
+            fx.motion_lines(d, c, bx, by - 80 * sc - 70, bx, by - 80 * sc - 15, 3, 24 * sc)
+        bonk = smash + .28
+        ba = actor('rio_back'); ba.draw(d, c, 270, 1810, 1010, t, lean=-9 * bump(t, bonk + .08, .12) - 4 * ease(t, bonk + .2, bonk + .5))
+        if bonk <= t < bonk + .6:
+            q = fx.cpt(c, 300, 900); fx.text_out(d, 'BONK!', q[0], q[1] - 30 * (t - bonk), self.ow * .09, fill=(1, .9, .2), scale=ease(t, bonk, bonk + .06))
+            for i in range(5):
+                a_ = t * 6 + i * 1.256; fx.sparkle(d, q[0] + 70 * math.cos(a_), q[1] + 60 + 25 * math.sin(a_), 22, t, i)
         if t > celebrate:
             fx.confetti(d, t, celebrate, n=60)
             fx.text_out(d, 'CR7 WINS', self.ow / 2, self.oh * .1, self.ow * .1, fill=(1, .85, .1), scale=ease(t, celebrate, celebrate + .15))
