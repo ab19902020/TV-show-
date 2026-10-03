@@ -185,16 +185,16 @@ class Film:
         lunch = W('lunch', 2)
         # Ronaldo: "let's go and having a lunch after training", thumb over his shoulder
         beck = 16 * max(0, math.sin((t - 11.45) * 7)) * (11.45 < t < 13.7)
-        self.put(d, c, 'r_invite', 300, 1520, 1.3, t, shadow_w=330, limbs={'hand': beck}, look=(.3, 0))
+        self.put(d, c, 'r_invite', 300, 1540, 1.25, t, shadow_w=330, limbs={'hand': beck}, look=(.3, 0))
         # Evra: still puffed out... until he hears "lunch"
         if t < lunch:
-            self.put(d, c, 'e_tired', 690, 1560, 1.25, t, shadow_w=480, mirror=True, look=(-.3 + .6 * ease(t, 11.5, 11.7), 0))
+            self.put(d, c, 'e_tired', 690, 1540, 1.25, t, shadow_w=480, mirror=True, look=(-.3 + .6 * ease(t, 11.5, 11.7), 0))
         else:
             sp = ease(t, lunch, lunch + .1)
             rub = 7 * math.sin(t * 26)
-            self.put(d, c, 'e_optimism', 690, 1560, 1.25, t, shadow_w=380, mirror=True, hop=self.hop(t, lunch, .3, 70),
+            self.put(d, c, 'e_optimism', 690, 1540, 1.25, t, shadow_w=380, mirror=True, hop=self.hop(t, lunch, .3, 70),
                      limbs={'hands': rub}, smile=.6, look=(.4, -.3))
-            hx, hy = self.pt('e_optimism', 690, 1560, 1.25, 700, 180, mirror=True)
+            hx, hy = self.pt('e_optimism', 690, 1540, 1.25, 700, 180, mirror=True)
             for i in range(5):
                 q = fx.cpt(c, hx - 150 + i * 75, hy - 150 + 30 * math.sin(i * 2))
                 fx.sparkle(d, q[0], q[1], 30 * sp, t, i)
@@ -214,33 +214,37 @@ class Film:
     # ================================================================== 2. Lunch
     TABLE_POLY = [(203, 826), (754, 826), (941, 1066), (941, 1672), (0, 1672), (0, 1066)]
 
-    def dining(self, t, zoom=1.7, cx=478, cy=700, evra='e_tinylunch', ron='r_lunch', e_kw=None, r_kw=None,
+    # seated grown-ups: heads about halfway up the kitchen door frame, hands resting at the table's far edge, both
+    # pairs of feet on the same floor (Ronaldo's longer legs put his head a little higher)
+    E_SEAT = (300, 1088, 1.05); R_SEAT = (640, 1100, 1.02)
+
+    def dining(self, t, zoom=1.3, cx=472, cy=700, evra='e_tinylunch', ron='r_lunch', e_kw=None, r_kw=None,
                e_plate='plate_full', r_plate='plate_full', glass=0., ron_here=True, shake=0.):
         c = self.cam(zoom, cx, cy, shake, t); d = self.plate('dining', c)
-        self.put(d, c, evra, 330, 990, .78, t, **(e_kw or {}))
-        if ron_here: self.put(d, c, ron, 630, 1030, .78, t, **(r_kw or {}))
+        self.put(d, c, evra, *self.E_SEAT, t, **(e_kw or {}))
+        if ron_here: self.put(d, c, ron, *self.R_SEAT, t, **(r_kw or {}))
         self.front(d, 'dining', c, self.TABLE_POLY)
-        self.prop(e_plate).draw(d, c, 330, 872, 150)
-        self.prop(r_plate).draw(d, c, 630, 872, 150)
-        if glass > 0: self.prop('glass').draw(d, c, 330 + 160 * (1 - glass) + 120, 838, 46)
+        self.prop(e_plate).draw(d, c, self.E_SEAT[0], 895, 200)
+        self.prop(r_plate).draw(d, c, self.R_SEAT[0], 895, 200)
+        if glass > 0: self.prop('glass').draw(d, c, self.E_SEAT[0] + 200 * (1 - glass) + 150, 855, 60)
         return c, d
 
     def table(self, t, u, t0, t1):
         look_plate = ease(t, W('look', 0) + .05, W('look', 0) + .2) * (1 - ease(t, 17.95, 18.1))
         at_ron = ease(t, 17.95, 18.1)
         chew = max(0, math.sin(t * 6.5))
-        c, d = self.dining(t, 1.7 + .1 * u, e_kw=dict(look=(.6 * at_ron, .7 * look_plate), brow=-.5 * ease(t, W('salad'), W('salad') + .3),
+        c, d = self.dining(t, 1.3 + .07 * u, e_kw=dict(look=(.6 * at_ron, .7 * look_plate), brow=-.5 * ease(t, W('salad'), W('salad') + .3),
                                                       limbs={'fork': -6 * look_plate}),
                            r_kw=dict(limbs={'fork': -22 * chew}, smile=.7, look=(-.3, .2), blink=.85 * chew if chew > .6 else None))
         return d
 
     def chicken(self, t, u, t0, t1):
-        c = self.cam(4.0 + .3 * u, 330, 860)
+        c = self.cam(3.4 + .3 * u, 300, 885)
         d = self.plate('dining', c)
         self.front(d, 'dining', c, self.TABLE_POLY)
-        self.prop('plate_full').draw(d, c, 330, 872, 150)
+        self.prop('plate_full').draw(d, c, 300, 895, 200)
         pk = bump(t, W('white') + .1, .12) + bump(t, W('chicken') + .15, .12)
-        self.prop('fork').draw(d, c, 362 + 5 * pk, 812 + 22 * pk, 18, rot=-28)
+        self.prop('fork').draw(d, c, 338 + 6 * pk, 826 + 28 * pk, 24, rot=-28)
         q = fx.cpt(c, 330, 805)
         fx.text_out(d, 'plain white chicken.', self.ow / 2, self.oh * .2, self.ow * .06, fill=(1, 1, 1), alpha=ease(t, 19.45, 19.6))
         return d
@@ -260,11 +264,11 @@ class Film:
     def water(self, t, u, t0, t1):
         g = ease(t, W('just', 1) - .1, W('just', 1) + .25)
         stare = ease(t, W('water') - .05, W('water') + .1)
-        c, d = self.dining(t, 1.7 + .25 * stare, cy=700 + 40 * stare, cx=478 - 60 * stare, glass=g,
+        c, d = self.dining(t, 1.3 + .3 * stare, cy=700 + 25 * stare, cx=472 - 70 * stare, glass=g,
                            e_kw=dict(look=(.5 * stare, .7 * stare), brow=-.6 * stare, limbs={'fork': 0}),
                            r_kw=dict(limbs={'fork': -22 * max(0, math.sin(t * 6.5))}, smile=.7, look=(-.4, 0)))
         if t > W('water') + .5:
-            hx, hy = self.pt('e_tinylunch', 330, 990, .78, 210, 720)
+            hx, hy = self.pt('e_tinylunch', *self.E_SEAT, 210, 720)
             fx.sweat(d, c, hx, hy, 6, W('water') + .5, t, 20)
         return d
 
@@ -272,14 +276,14 @@ class Film:
         quick = W('quickly'); gone = W('that', 0) + .05
         r_empty = t > quick + .25; e_empty = t > quick + .9
         ron_here = t < gone
-        c, d = self.dining(t, 1.7, e_plate='plate_empty' if e_empty else 'plate_full', r_plate='plate_empty' if r_empty else 'plate_full',
+        c, d = self.dining(t, 1.3, e_plate='plate_empty' if e_empty else 'plate_full', r_plate='plate_empty' if r_empty else 'plate_full',
                            glass=1., ron_here=ron_here,
                            e_kw=dict(limbs={'fork': -20 * max(0, math.sin(t * 22))} if t < quick + .9 else {'fork': -14},
                                      look=(.6 * (t > gone), 0)),
                            r_kw=dict(limbs={'fork': -24 * max(0, math.sin(t * 30))}, smile=.8, blink=.9))
         if not ron_here:
-            fx.dust(d, c, 630, 700, gone, t, 1.5, n=8, seed=4)
-            fx.motion_lines(d, c, 630, 640, 1000, 580, n=5, spread=140)
+            fx.dust(d, c, 640, 640, gone, t, 1.9, n=8, seed=4)
+            fx.motion_lines(d, c, 640, 600, 1000, 540, n=5, spread=170)
         # fast-forward badge
         x, y, s = self.ow * .82, self.oh * .08, self.ow * .045
         if t < gone and int(t * 3) % 2 == 0:
@@ -292,8 +296,8 @@ class Film:
     def garden_invite(self, t, u, t0, t1):
         c = self.cam(1.12 + .04 * u, 470, 1030); d = self.plate('garden', c)
         beck = 14 * max(0, math.sin((t - 26.75) * 7)) * (26.75 < t < 28.9)
-        self.put(d, c, 'r_invite', 320, 1500, 1.25, t, shadow_w=320, limbs={'hand': beck}, look=(.3, 0))
-        fxp, fyp = self.pt('r_invite', 320, 1500, 1.25, 800, 640)
+        self.put(d, c, 'r_invite', 320, 1540, 1.22, t, shadow_w=320, limbs={'hand': beck}, look=(.3, 0))
+        fxp, fyp = self.pt('r_invite', 320, 1540, 1.22, 800, 640)
         flick = self.hop(t, W('two', 0) - .1, .5, 160)
         self.prop('ball').draw(d, c, fxp + 50, fyp - 18 - flick, 52, rot=t * 200 * (flick > 0))
         self.put(d, c, 'e_casual', 700, 1540, 1.22, t, shadow_w=330, mirror=True, look=(.3, .4), brow=-.4,
@@ -307,8 +311,8 @@ class Film:
         return d
 
     def two_touch(self, t, u, t0, t1):
-        c = self.cam(1.1, 470, 1100); d = self.plate('garden', c)
-        rx, ry, ex, ey = 230, 1480, 715, 1500
+        c = self.cam(1.05, 470, 1080); d = self.plate('garden', c)
+        rx, ry, ex, ey = 235, 1500, 712, 1500
         # kicks: Ronaldo crisp, Evra slow; the ball rolls between their kicking feet
         rk = [31.15, 32.55]; ek = [31.95]
         def swing(t, kicks, back=-16, fwd=8, wind=.18):
@@ -319,10 +323,10 @@ class Film:
             return v
         rs = swing(t, rk); es = swing(t, ek, -10, 4, .35)
         droop = 6 * ease(t, 32.0, 32.6) + 6 * ease(t, 33.0, 33.2)
-        self.put(d, c, 'r_kick', rx, ry, 1.15, t, shadow_w=330, limbs={'leg': rs})
-        self.put(d, c, 'e_kick', ex, ey + droop, .9, t, shadow_w=330, mirror=True, limbs={'leg': -es}, look=(.3, .5),
+        self.put(d, c, 'r_kick', rx, ry, .98, t, shadow_w=300, limbs={'leg': rs})
+        self.put(d, c, 'e_kick', ex, ey + droop, .98, t, shadow_w=330, mirror=True, limbs={'leg': -es}, look=(.3, .5),
                  brow=-.5, tilt=-droop * .6)
-        rf = self.pt('r_kick', rx, ry, 1.15, 880, 1070); ef = self.pt('e_kick', ex, ey, .9, 900, 950, mirror=True)
+        rf = self.pt('r_kick', rx, ry, .98, 880, 1070); ef = self.pt('e_kick', ex, ey, .98, 900, 950, mirror=True)
         legs = [(31.15, 31.75, rf, ef, 1.), (31.95, 32.5, ef, rf, .6), (32.55, 32.95, rf, ef, 1.)]
         bx, by = rf[0] + 30, rf[1]
         for a0, a1, p0, p1, power in legs:
@@ -498,9 +502,9 @@ class Film:
     def machine(self, t, u, t0, t1):
         c = self.cam(1.1, 470, 1040); d = self.plate('garden', c)
         per = .42; n_rep = int((t - t0) / per); ph = ((t - t0) % per) / per
-        self.put(d, c, 'r_exercise', 320, 1470, 1.12, t, shadow_w=330, hop=80 * math.sin(math.pi * ph) ** 1.2,
+        self.put(d, c, 'r_exercise', 320, 1490, 1.08, t, shadow_w=330, hop=80 * math.sin(math.pi * ph) ** 1.2,
                  squash=.07 * bump(ph, 0, .12), look=(.3, 0), smile=.5)
-        self.put(d, c, 'e_robe', 720, 1520, 1.05, t, shadow_w=300, mirror=True, look=(.4, .1), brow=-.4, nod=0)
+        self.put(d, c, 'e_robe', 720, 1500, 1.08, t, shadow_w=300, mirror=True, look=(.4, .1), brow=-.4, nod=0)
         # batteries
         rq = fx.cpt(c, 320, 820); eq = fx.cpt(c, 720, 780)
         mach = W('machine')
@@ -508,7 +512,7 @@ class Film:
         fx.battery(d, eq[0], eq[1] - 110, self.ow * .16, .04, '2%', t, blink=True)
         fx.text_out(d, f'REPS: {997 + n_rep}', self.ow * .27, self.oh * .9, self.ow * .055, fill=(1, 1, 1))
         if t > mach:
-            q = fx.cpt(c, *self.pt('r_exercise', 320, 1470, 1.12, 763, 1281)); fx.sparkle(d, q[0], q[1], 70 * bump(t, mach + .15, .15), 0)
+            q = fx.cpt(c, *self.pt('r_exercise', 320, 1490, 1.08, 763, 1281)); fx.sparkle(d, q[0], q[1], 70 * bump(t, mach + .15, .15), 0)
             fx.text_out(d, 'MACHINE', self.ow / 2, self.oh * .1, self.ow * .1, fill=(.6, .9, 1), scale=ease(t, mach, mach + .12))
         return d
 
@@ -694,16 +698,16 @@ class Film:
 
     def any_game(self, t, u, t0, t1):
         c = self.cam(1.06, 470, 980); d = self.plate('carrington', c)
-        self.put(d, c, 'r_invite', 300, 1520, 1.3, t, shadow_w=330, limbs={'hand': 16 * max(0, math.sin(t * 8))}, look=(.4, 0),
+        self.put(d, c, 'r_invite', 300, 1560, 1.2, t, shadow_w=330, limbs={'hand': 16 * max(0, math.sin(t * 8))}, look=(.4, 0),
                  brow=.4 * bump(t, W('lose') + .1, .2))
-        fp = self.pt('r_invite', 300, 1520, 1.3, 800, 640)
+        fp = self.pt('r_invite', 300, 1560, 1.2, 800, 640)
         per = .45; ph = (t % per) / per
         self.prop('ball').draw(d, c, fp[0] + 60, fp[1] - 25 - 120 * math.sin(math.pi * ph), 52, rot=t * 300)
         fall = 79.5; ang = 84 * ease(t, fall, fall + .42) ** 2
         ex, ey = 720, 1600
         cf = c @ T(ex - 60, ey) @ R(-ang) @ T(-(ex - 60), -ey)
         if ang < 1: shadow(d, c, ex, ey, 420)
-        self.put(d, cf, 'e_tired', ex, ey, 1.1, t, mirror=True, look=(-.3, 0), blink=.95 * ease(t, fall - .2, fall))
+        self.put(d, cf, 'e_tired', ex, ey, 1.2, t, mirror=True, look=(-.3, 0), blink=.95 * ease(t, fall - .2, fall))
         fx.dust(d, c, ex - 330, ey - 40, fall + .42, t, 1.8, n=9, seed=11)
         if t > fall + .5: fx.text_out(d, 'K.O.', self.ow * .7, self.oh * .55, self.ow * .1, fill=(1, .3, .2), scale=ease(t, fall + .5, fall + .6))
         return d

@@ -74,9 +74,19 @@ def eyes_in(a, y0, y1, x0=0, x1=None):
     band = np.zeros_like(mask); band[max(0, int(y0)):min(h, int(y1)), max(0, int(x0)):min(w, int(x1))] = 1; mask &= band
     n, l, st, c = cv2.connectedComponentsWithStats(mask)
     cand = [i for i in range(1, n) if st[i, 4] > max(30, w * h * .0004) and st[i, 2] < w * .4 and st[i, 3] < h * .25]
-    cand = sorted(cand, key=lambda i: st[i, 4], reverse=True)[:2]
+    cand = sorted(cand, key=lambda i: st[i, 4], reverse=True)[:5]
+    # the two eyes are the pair that sit side by side at about the same height and size (a white sock, a shoe or a robe
+    # further down is never paired with an eye)
+    best, score = cand[:2], None
+    for ii in range(len(cand)):
+        for jj in range(ii + 1, len(cand)):
+            i, j = cand[ii], cand[jj]
+            dx = abs(c[i][0] - c[j][0]); dy = abs(c[i][1] - c[j][1]); hi, hj = st[i, 3], st[j, 3]
+            if dx < 1 or dy > .45 * dx or dx > 6 * max(hi, hj) or max(hi, hj) > 2.2 * min(hi, hj): continue
+            sc = -(st[i, 4] + st[j, 4]) * (1 - dy / dx)
+            if score is None or sc < score: best, score = [i, j], sc
     return [(float(st[i, 0] + st[i, 2] / 2), float(st[i, 1] + st[i, 3] / 2), float(st[i, 2] / 2), float(st[i, 3] / 2))
-            for i in sorted(cand, key=lambda i: c[i][0])]
+            for i in sorted(best, key=lambda i: c[i][0])]
 
 
 # ---------------------------------------------------------------------------------------------------- lip sync
@@ -124,7 +134,7 @@ class Actor:
     limbs: {name: (polygon sheet px, pivot sheet px)} pieces that rotate on their own (a beckoning hand, a fork arm)."""
 
     def __init__(self, name, who, band=None, head=None, neck=None, waist=None, mouth=None, chin=None, limbs=None,
-                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False):
+                 facing='front', face=True, ref_span=None, numbers=None, mirrored=False, size=1.):
         self.n, self.who = name, who; a = part(name).copy()
         if mirrored:
             # this copy is drawn mirrored: flip the shirt numbers in place first, so they still read the right way
@@ -165,7 +175,7 @@ class Actor:
         if head is not None and chin:
             # a talking face: the layer reaches well under the chin, so the dropped jaw is never cut off
             head = (head[0], head[1], head[2], max(head[3], chin + 30)); neck = (neck[0], chin + 14) if neck else neck
-        self.ref = (ref_span / self.span) if (ref_span and self.span) else 1.
+        self.ref = ((ref_span / self.span) if (ref_span and self.span) else 1.) * size
         self.head = None
         if head:
             x0, y0 = P(name, head[0], head[1]); x1, y1 = P(name, head[2], head[3])

@@ -7,7 +7,9 @@ Size: `ref` makes every drawing of a character the same size on screen. A drawin
 from functools import lru_cache
 from engine import Actor
 
-REF = {'evra': 48.0, 'ronaldo': 39.0, 'rio': 24.0}          # eye spacing on the model-sheet front views
+# eye spacing on the model-sheet front views; Ronaldo's is 3% smaller so that, standing side by side at the same scale,
+# he is ~7% taller than Evra (1.87 m against 1.75 m)
+REF = {'evra': 48.0, 'ronaldo': 40.2, 'rio': 24.0}
 
 CAST = {
     # ---- Evra
