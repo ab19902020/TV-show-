@@ -269,8 +269,14 @@ def draw_dancer(img, cx, p, blink, s=1.0, shadow=True):
     shirt = [rot(-62 * s, -6), rot(62 * s, -6), rot(76 * s, torso), rot(-76 * s, torso)]
     d.polygon(shirt, fill=TEAM_RED, outline=(12, 8, 14), width=7)
     d.polygon([rot(-62 * s, -6), rot(62 * s, -6), rot(64 * s, 22 * s), rot(-64 * s, 22 * s)], fill=TEAM_DARK)
-    d.text(rot(0, torso * .55), "8", font=font(int(70 * s)), fill=(255, 255, 255), anchor="mm",
-           stroke_width=3, stroke_fill=(12, 8, 14))
+    # original kit: white diagonal sash and an invented star badge
+    d.polygon([rot(-70 * s, torso * .95), rot(-38 * s, torso), rot(72 * s, 30 * s), rot(66 * s, 4 * s)],
+              fill=(245, 245, 245))
+    bx, by = rot(-36 * s, torso * .62)
+    star = [(bx + (20 if k % 2 == 0 else 8) * s * math.sin(k * math.pi / 5 + lean),
+             by - (20 if k % 2 == 0 else 8) * s * math.cos(k * math.pi / 5 + lean)) for k in range(10)]
+    d.ellipse([bx - 24 * s, by - 24 * s, bx + 24 * s, by + 24 * s], fill=(20, 20, 30), outline=(250, 210, 40), width=4)
+    d.polygon(star, fill=(250, 210, 40))
     # arms (FK, angle 0 = straight down, positive = outwards right)
     for sgn, sh_a, el_a in ((-1, p["lsh"], p["lel"]), (1, p["rsh"], p["rel"])):
         sh = rot(sgn * 74 * s, torso - 14 * s)
@@ -281,6 +287,8 @@ def draw_dancer(img, cx, p, blink, s=1.0, shadow=True):
         limb(d, [sh, el], TEAM_RED, int(40 * s))
         limb(d, [el, hd], SK, int(32 * s))
         d.ellipse([hd[0] - 22 * s, hd[1] - 22 * s, hd[0] + 22 * s, hd[1] + 22 * s], fill=SK, outline=(12, 8, 14), width=5)
+        wb = (lerp(el[0], hd[0], .8), lerp(el[1], hd[1], .8))
+        d.ellipse([wb[0] - 19 * s, wb[1] - 19 * s, wb[0] + 19 * s, wb[1] + 19 * s], fill=(250, 210, 40), outline=(12, 8, 14), width=4)
     # neck + head
     nk = rot(0, torso)
     limb(d, [nk, rot(0, torso + 26 * s)], SK, int(36 * s))
@@ -291,6 +299,8 @@ def draw_dancer(img, cx, p, blink, s=1.0, shadow=True):
     # hair: short dark crop with a little quiff
     d.chord([hc[0] - r - 2, hc[1] - r * 1.12, hc[0] + r + 2, hc[1] + r * .2], 180, 360, fill=HAIR)
     d.ellipse([hc[0] - r * .3, hc[1] - r * 1.35, hc[0] + r * .7, hc[1] - r * .7], fill=HAIR)
+    d.chord([hc[0] - r, hc[1] - r * .62, hc[0] + r, hc[1] + r * .3], 200, 340, fill=(250, 210, 40))
+    d.chord([hc[0] - r * .98, hc[1] - r * .4, hc[0] + r * .98, hc[1] + r * 1.1], 200, 340, fill=SK)
     d.ellipse([hc[0] - r * 1.04, hc[1] - r * .25, hc[0] - r * .76, hc[1] + r * .2], fill=SK, outline=(12, 8, 14), width=4)
     d.ellipse([hc[0] + r * .76, hc[1] - r * .25, hc[0] + r * 1.04, hc[1] + r * .2], fill=SK, outline=(12, 8, 14), width=4)
     # face

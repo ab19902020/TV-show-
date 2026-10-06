@@ -2,7 +2,9 @@
 
 [`bruno_bruno_bruno.mp4`](bruno_bruno_bruno.mp4): 1920×1080, 30 fps, 1:36.
 
-Everything is generated in code from the audio in `src/bruno.mp3`. There is no source art.
+Everything is generated in code from the audio in `src/bruno.mp3`. There is no source art: no images from this
+repo or anywhere else are loaded, and the characters, kit, stadium and effects are all drawn from shapes in
+`render.py`.
 
 - **Audio analysis** (`analyse()` in `render.py`): an FFT gives bass, mid and high band energy, spectral flux
   gives onsets, and autocorrelation gives the tempo (~86 BPM) and the beat grid. A slow bass average, the
@@ -11,7 +13,8 @@ Everything is generated in code from the audio in `src/bruno.mp3`. There is no s
   that pulse and sweep on the kick, coloured stage beams, about 6,000 crowd figures who bounce to the beat
   (phone lights in the quiet parts, arms up in the big parts), and an LED board that alternates between a
   spectrum analyser and a scrolling "BRUNO" banner.
-- **Dancer**: an original cartoon footballer in a red #8 shirt, built from a 2D skeleton with leg IK. He
+- **Dancer**: an original cartoon footballer designed for this video, in an invented kit (red shirt, white
+  diagonal sash, made-up gold star badge, yellow headband and wristbands). Built from a 2D skeleton with leg IK. He
   switches between six moves (bounce, wave, point, hop, cupped ears, fist pump) every 8 beats, picked by
   section energy, and blends smoothly from one to the next. He blinks too.
 - **Big moments**: fireworks on strong onsets, confetti, a "BRUNO!" stamp every 4 beats, camera shake on
