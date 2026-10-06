@@ -10,6 +10,7 @@ Animated TV-studio scenes with lip-synced characters.
 | [Micah Richards: 50 Caps, BBC panel → Wing's (portrait)](micah-richards-50-caps/) | [`micah_richards_50_caps.mp4`](micah-richards-50-caps/micah_richards_50_caps.mp4) |
 | [Rooney & Rio at the 50 Cent concert, MEN Arena (portrait)](rooney-g-unit/) | [`Rooney-G-Unit-Cartoon-1080x1920.mp4`](rooney-g-unit/Rooney-G-Unit-Cartoon-1080x1920.mp4) |
 | [Evra and Ronaldo: "The Lunch" (portrait)](evra-ronaldo-lunch/) | [`evra_ronaldo_lunch.mp4`](evra-ronaldo-lunch/evra_ronaldo_lunch.mp4) |
+| [Bruno Bruno Bruno: procedural music video](bruno-music-video/) | [`bruno_bruno_bruno.mp4`](bruno-music-video/bruno_bruno_bruno.mp4) |
 
 ## Make a new video
 
