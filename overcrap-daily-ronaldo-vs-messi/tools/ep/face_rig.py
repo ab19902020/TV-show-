@@ -383,16 +383,16 @@ def paste(dst, src, x0, y0, clip=None):
     dst[ya:yb, xa:xb] = d.clip(0, 255).astype(np.uint8)
 
 
-def with_mouth(base, info, part, width, dx=0.0, dy=0.0, squash_x=1.0, angle=0.0):
+def with_mouth(base, info, part, width, dx=0.0, dy=0.0, squash_x=1.0, angle=0.0, squash_y=1.0):
     """Paste a mouth part so its width is `width` px, centred on the base
     drawing's mouth (plus an offset)."""
     patch, (pcx, pcy), pw = part[:3]
     s = width / max(pw, 1e-6)
     M = cv2.getRotationMatrix2D((pcx, pcy), angle, 1.0)
     M[0] *= s * squash_x
-    M[1] *= s
+    M[1] *= s * squash_y
     ph, pwid = patch.shape[:2]
-    Wn, Hn = int(pwid * s * squash_x + 2), int(ph * s + 2)
+    Wn, Hn = int(pwid * s * squash_x + 2), int(ph * s * squash_y + 2)
     M[0, 2] = M[0, 2] * 1 + 0
     warped = cv2.warpAffine(patch, M, (Wn, Hn), flags=cv2.INTER_AREA if s < 1 else cv2.INTER_CUBIC,
                             borderMode=cv2.BORDER_CONSTANT, borderValue=0)
@@ -401,7 +401,7 @@ def with_mouth(base, info, part, width, dx=0.0, dy=0.0, squash_x=1.0, angle=0.0)
     clip = face_interior(info, base.shape[:2])
     if info.get('allow') is not None:
         clip = info['allow'] if clip is None else clip * info['allow']
-    paste(out, warped, int(round(cx - pcx * s * squash_x)), int(round(cy - pcy * s)), clip=clip)
+    paste(out, warped, int(round(cx - pcx * s * squash_x)), int(round(cy - pcy * s * squash_y)), clip=clip)
     return out
 
 

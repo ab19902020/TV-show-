@@ -308,101 +308,101 @@
   ]
  },
  "RK_01": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   0.05,
-   3.0
+   0.02,
+   2.73
   ]
  },
  "RK_02": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   3.68,
-   4.8
+   3.02,
+   4.34
   ]
  },
  "RK_03": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   5.255,
-   6.995
+   4.51,
+   5.87
   ]
  },
  "RK_04": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   7.85,
-   9.62
+   6.46,
+   8.13
   ]
  },
  "RK_05": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   10.62,
-   12.53
+   8.52,
+   10.21
   ]
  },
  "RK_06": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   13.17,
-   13.81
+   10.51,
+   11.16
   ]
  },
  "RK_07": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   14.63,
-   15.22
+   11.75,
+   12.39
   ]
  },
  "RK_08": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   15.915,
-   17.475
+   12.89,
+   14.33
   ]
  },
  "RK_09": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   18.41,
-   19.52
+   14.63,
+   15.78
   ]
  },
  "RK_10": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   20.135,
-   20.835
+   16.1,
+   16.68
   ]
  },
  "RK_11": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   21.33,
-   22.4
+   17.16,
+   18.0
   ]
  },
  "RK_12": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   22.995,
-   24.665
+   18.39,
+   19.69
   ]
  },
  "RK_13": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   25.16,
-   26.39
+   20.1,
+   21.27
   ]
  },
  "RK_14": {
-  "source": "roy.mp3",
+  "source": "roy_v2.mp3",
   "cut": [
-   27.13,
-   29.074
+   21.59,
+   23.484
   ]
  },
  "RF_01": {

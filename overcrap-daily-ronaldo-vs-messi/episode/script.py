@@ -59,6 +59,7 @@ LINES = {
     'WR_08': "Why were you outside?",
     'WR_09': "What kind of ham?",
     'WR_10': "What happened to Darren?",
+    'WR_11': "Ha ha ha ha ha ha ha.",                     # the laugh (its own take: raw/rooney_laugh.mp3)
     # ---------------------------------------------------------------- Roy Keane
     'RK_01': "It probably is if he's been arguing for four hours.",
     'RK_02': "Depends on Darren.",
@@ -98,8 +99,8 @@ LINES = {
     'RF_21': "He's not getting Cristiano out.",
 }
 
-# Rooney's '[laughs]' after 'OH, FOR GOD'S SAKE' was not in his take: it is played as a silent
-# laugh on screen ('@rooney_laughs').
+# Rooney's '[laughs]' after 'OH, FOR GOD'S SAKE' is its own take (raw/rooney_laugh.mp3 -> WR_11),
+# played in '@rooney_laughs': the second burst carries on under Mark's 'I AM NOT A FOREST FAN'.
 
 # The production pack's delivery tags (and CAPS where the pack shouts).
 DELIVERY = {
@@ -113,7 +114,7 @@ DELIVERY = {
     'MG_32': '[warning] RIO', 'MG_33': '[frustrated]', 'MG_34': '[shouting] GOODNIGHT',
     'WR_01': '[curious]', 'WR_02': '[thoughtful]', 'WR_03': '[serious]', 'WR_04': '[matter-of-fact]', 'WR_05': '[dry]',
     'WR_06': '[challenging]', 'WR_07': '[agreeing]', 'WR_08': '[curious]', 'WR_09': '[genuinely curious]',
-    'WR_10': '[innocent]',
+    'WR_10': '[innocent]', 'WR_11': '[laughs]',
     'RK_01': '[dry]', 'RK_02': '[serious]', 'RK_03': '[firm]', 'RK_04': '[blunt]', 'RK_05': '[serious]', 'RK_06': '[dry]',
     'RK_07': '[firm]', 'RK_08': '[confused]', 'RK_09': '[matter-of-fact]', 'RK_10': '[flat]', 'RK_11': '[suspicious]',
     'RK_12': '[dry]', 'RK_13': '[amused]', 'RK_14': '[deadpan]',
@@ -147,7 +148,8 @@ TAKES = {
     'mark_3.mp3': ['MG_23', 'MG_24', 'MG_25', 'MG_26', 'MG_27', 'MG_28', 'MG_29', 'MG_30', 'MG_31', 'MG_32', 'MG_33',
                    'MG_34'],
     'rooney.mp3': ['WR_%02d' % i for i in range(1, 11)],
-    'roy.mp3': ['RK_%02d' % i for i in range(1, 15)],
+    'roy.mp3': ['RK_%02d' % i for i in range(1, 15)],          # Roy's first take (replaced by roy_v2)
+    'roy_v2.mp3': ['RK_%02d' % i for i in range(1, 15)],       # Roy's new, faster take: the one used
     'rio.mp3': ['RF_%02d' % i for i in range(1, 22)],
 }
 
@@ -156,6 +158,7 @@ TAKES = {
 CUTS = {
     'mark_2.mp3': [0.98, 6.2, 12.18, 13.82, 18.06, 19.87, 23.25, 25.24, 26.66, 29.02, 31.04, 34.27, 34.72, 35.5, 37.05],
     'rooney.mp3': [1.83, 3.62, 7.03, 8.98, 10.56, 11.59, 12.57, 14.6, 16.16],
+    'roy_v2.mp3': [2.85, 4.38, 6.13, 8.29, 10.34, 11.42, 12.63, 14.44, 15.91, 16.88, 18.17, 19.87, 21.39],
     'rio.mp3': [1.45, 3.25, 4.75, 6.8, 10.28, 11.92, 13.3, 14.64, 15.64, 18.22, 19.62, 22.15, 29.12, 32.47, 33.84, 35.22,
                 36.62, 38.53, 40.62, 41.9],
 }

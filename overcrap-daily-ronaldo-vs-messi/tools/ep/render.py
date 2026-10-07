@@ -51,6 +51,10 @@ def mix(R):
         loud = x[np.abs(x) > 0.02]
         rms = np.sqrt(np.mean(loud ** 2)) if len(loud) else 0.1
         x = x * min(0.12 / max(rms, 1e-4), 4.0)
+        env = getattr(tl, 'gains', {}).get(ln['id'])
+        if env:
+            tt = np.arange(len(x)) / E.SR
+            x = x * np.interp(tt, [p[0] for p in env], [p[1] for p in env]).astype(np.float32)
         i = int(ln['start'] * E.SR)
         v[i:i + len(x)] += x[:n - i]
     fx = np.zeros(n, np.float32)
@@ -75,7 +79,7 @@ def mix(R):
                 x = SFX.step(seed=k, surface='carpet', heavy=1.2)
                 k += 1
                 i = int(t * E.SR)
-                fx[i:i + len(x)] += x[:n - i] * 1.2
+                fx[i:i + len(x)] += x[:n - i] * 0.75
             prev = step
     # the studio's room tone under everything, gone with the picture at the hard cut
     bed = SFX.room_tone(tl.t + 1)[:n] * 1.6

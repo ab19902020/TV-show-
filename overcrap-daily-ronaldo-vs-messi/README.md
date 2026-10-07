@@ -17,7 +17,7 @@ the original voice takes from the production pack.
 | 1:15 | Messi's state funeral | "They'll see him again." then silence on Mark's face (crickets); "No." / "Fair." |
 | 1:32 | **Rio enters** | The door, full wide shot; Rio strides in already shouting "Whoa, whoa, whoa" |
 | 1:38 | "I wasn't booked." | Straps: RIO FERDINAND — NOT BOOKED, then STILL NOT BOOKED; the **Ronaldo alarm** goes off |
-| 1:52 | Forest | Rapid interruptions, "You're a Forest fan anyway", a beat on Mark, crash zoom and shake on "OH, FOR GOD'S SAKE", Rooney in fits (silent: the take has no laugh); a **RIO 1–0 MARK** score bug keeps count from here |
+| 1:52 | Forest | Rapid interruptions, "You're a Forest fan anyway", a beat on Mark, crash zoom and shake on "OH, FOR GOD'S SAKE", Rooney cracks up (his laugh take) and keeps laughing under Mark's "I AM NOT A FOREST FAN"; a **RIO 1–0 MARK** score bug keeps count from here |
 | 2:12 | Ham | THE CASE FOR CRISTIANO ticks up beside Rio as he lists it; "Iberico." — BREAKING / MOON: POSSIBLY IBERICO — Rooney satisfied, "Why are we discussing lunar meat?!" |
 | 2:36 | Ending, faster | Mark pulls one back on "Thank you" (2–1), "Just not about football." → **VAR CHECK… NO GOAL** (2–0); "Forest." 3–0; "GOODNIGHT" and a hard cut to black |
 
@@ -47,7 +47,9 @@ python3 tools/ep/render.py 1080p                # -> out/overcrap_1080p.mp4 (res
 * `episode/script.py` — every line as recorded (`MG_` Mark, `WR_` Rooney, `RK_` Roy, `RF_` Rio), the pack's
   delivery tags, which raw take holds which lines (`TAKES`), hand-measured cut points for takes that run
   lines together (`CUTS`) and the conversation `ORDER` with its stage beats.
-* `episode/raw/` — the six supplied takes (one voice each; Mark's in three parts).
+* `episode/raw/` — the supplied takes (one voice each; Mark's in three parts). Roy's lines come from his second,
+  faster take (`roy_v2.mp3`; the first is kept as `roy.mp3`); Rooney's laugh is its own take
+  (`rooney_laugh.mp3` → `WR_11`).
   `tools/ep/split_voice.py raw/<take> <ids...>` cuts them into `episode/audio/<ID>.mp3`; pocketsphinx forced
   alignment (`tools/ep/align.py`) gives word and phone timings (`audio/alignment.json`).
 * `episode/episode.py` — the staging: cameras, per-line shot / pose / face and word-timed cuts (`STAGE`), held
@@ -62,18 +64,23 @@ python3 tools/ep/render.py 1080p                # -> out/overcrap_1080p.mp4 (res
   against the voice itself (`gate_frames`): mouths shut wherever the voice is quiet and change a frame before
   the sound.
   * Mark: his sheet's mouths, hand-placed on every drawing he talks in, hanging from his upper lip with a gap
-    under his nose so it is never covered; on shouted vowels his shouting drawings show their own drawn shout.
+    under his nose so it is never covered, and kept short (`_open_h`) so his jaw never looks oversized; his
+    drawings with a drawn-open shout close it whenever he isn't talking.
   * Roy and Rio (bearded): the mouth opening is drawn in the drawings' own flat style (`drawn_mouth`: dark
-    inside, teeth, tongue, ink outline) under the drawn moustache, so their beards stay exactly as drawn;
-    closed sounds show the mouth as drawn.
-  * Rooney: his sheet's mouth cells.
+    inside, teeth, tongue, ink outline) under the drawn moustache. Their own drawn lips are taken out first
+    (Roy's take the beard's grey, `flatten_lips`; only Rio's thin lip line goes, `erase_lip_line`, so his beard
+    stays as drawn), and closed sounds and silence get one closed-lip line: one mouth, never two, and no
+    flicker.
+  * Rooney: his sheet's mouth cells, over his drawing with its own mouth painted out first (`erase_marks`),
+    so no closed slit shows beside an open mouth.
 * Roy is always his full-body drawing, close-ups included (so his raised hands are never covered by a
   separate head); one pupil on his arms-crossed drawing was repainted (`_eye_fix`) so his eyes look the same
-  way. Blinks only ever close both eyes.
+  way; his palm-out and pointing drawings (eyes drawn shut-looking) are not used. Blinks cover the whole eye,
+  pupil included, close both eyes together and only half-close (Roy doesn't blink: he stares).
 * Pacing: lines butt straight up against each other (each clip carries its own ~0.25 s lead-in and tail);
   interruptions cut in over the tail; dead-pan beats only where the director's sheet asks for them.
 * Camera: crash zooms (`!` shot codes), slow pushes on dead-pan lines (`PUSH`), shakes on Mark's shouts.
 * `tools/vec/sfx.py` — the basic synthesised sound: door, footsteps, whoosh, klaxon, crickets, the strap chime
-  and room tone under everything. The audio cuts with the picture after "GOODNIGHT".
+  and room tone under everything, all kept well under the voices (the klaxon about a fifth of a voice's level). The audio cuts with the picture after "GOODNIGHT".
 
 The production pack's scripts and director notes are in `episode/pack/`.

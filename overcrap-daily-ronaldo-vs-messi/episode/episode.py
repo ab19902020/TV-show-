@@ -294,6 +294,21 @@ def perform(tl, ln):
             tl.blinks.setdefault(who, []).append(t_line + (w0['t1'] + w1['t0']) / 2 - 0.05)
 
 
+def laugh_peaks(ln):
+    """Times of the 'ha's in a laugh take (peaks of its loudness)."""
+    import numpy as np
+    x = E.load_audio(ln['audio'])
+    hop = E.SR // 100
+    r = np.sqrt(np.convolve(x ** 2, np.ones(hop) / hop, 'same')[::hop])
+    thr = 0.35 * r.max()
+    out, last = [], -1.0
+    for i in range(1, len(r) - 1):
+        if r[i] > thr and r[i] >= r[i - 1] and r[i] >= r[i + 1] and i / 100 - last > 0.14:
+            out.append(ln['start'] + i / 100)
+            last = i / 100
+    return out
+
+
 def face_key(f):
     return f if '/' in f else 'expressions/' + f
 
@@ -338,7 +353,7 @@ def build():
             # strides in already talking
             t = tl.wait(0.3)
             cut(t, 'SWf', push=0.07, focus=(0.18, 0.55))
-            tl.sfx(t + 0.05, 'door_open', 1.2)
+            tl.sfx(t + 0.05, 'door_open', 0.4)
             look(t + 0.12, 'mark', 'shocked')
             key(t + 0.12, 'mark', body='upper/arms_down')
             look(t + 0.2, 'rooney', 'shocked')
@@ -357,21 +372,25 @@ def build():
             cut(t, 'Mc', push=0.06)
             key(t, 'mark', body='upper/arms_down')
             look(t, 'mark', 'shocked')
-            tl.sfx(t, 'whoosh', 1.0)
+            tl.sfx(t, 'whoosh', 0.7)
             tl.wait(0.7)
             last_code = 'Mc'
             continue
         if item == '@rooney_laughs':
+            # Rooney cracks up (his laugh take); Mark comes back in over the second burst
             t = tl.wait(0.05)
             cut(t, 'Nc', push=0.05)
             look(t, 'rooney', 'laughing')
-            for j in range(8):                       # shoulders going
-                key(t + j * 0.16, 'rooney', nod=0.0)
-                key(t + j * 0.16 + 0.08, 'rooney', nod=1.8, e='ease')
-            key(t + 8 * 0.16, 'rooney', nod=0.0, e='ease')
+            key(t, 'rooney', talk=False)
+            ln = tl.say('WR_11', gap=0.0)
+            for p in laugh_peaks(ln):                # his shoulders go on every 'ha'
+                key(p - 0.06, 'rooney', nod=0.0)
+                key(p + 0.04, 'rooney', nod=1.7, e='ease')
+                key(p + 0.16, 'rooney', nod=0.2, e='ease')
             score(t + 0.25, (1, 0))
-            tl.wait(1.1)
-            look(tl.t, 'rooney', 'happy')
+            tl.gains['WR_11'] = [(0.0, 1.0), (2.15, 1.0), (2.45, 0.5)]   # under Mark's shout
+            tl.t = ln['start'] + 2.2                 # Mark comes in in the gap after the first burst
+            key(ln['start'] + ln['dur'], 'rooney', talk=True, face='expressions/happy', nod=0.0)
             last_code = 'Nc'
             continue
         if item == '@rooney_satisfied':
@@ -439,17 +458,17 @@ def build():
             hold = max(1.8, min(3.4, ln['start'] + ln['dur'] + 0.5 - ts))
             key(ts, 'gfx', strap=STRAPS[lid], strap_t=ts, strap_hold=hold)
             key(ts + hold, 'gfx', strap=None)
-            tl.sfx(ts, 'strap', 0.6)
+            tl.sfx(ts, 'strap', 0.5)
         if lid == 'MG_08':                         # DEFCON ONE
             tw = word_time(ln, 'defcon')
             key(tw, 'gfx', alert='DEFCON 1', alert_t=tw)
-            key(tw + 2.0, 'gfx', alert=None)
-            tl.sfx(tw, 'alarm', 0.8)
+            key(min(tw + 2.0, ln['start'] + ln['dur'] + 0.15), 'gfx', alert=None)
+            tl.sfx(tw, 'alarm', 0.2)
         if lid == 'MG_16':                         # the Ronaldo alarm
             tw = word_time(ln, 'alarm')
             key(tw, 'gfx', alert='RONALDO ALARM', alert_t=tw)
-            key(tw + 1.6, 'gfx', alert=None)
-            tl.sfx(tw, 'alarm', 0.6)
+            key(min(tw + 1.6, ln['start'] + ln['dur'] + 0.15), 'gfx', alert=None)
+            tl.sfx(tw, 'alarm', 0.16)
         if lid == 'RF_13':                         # the case for Cristiano, ticked off as he lists it
             for k, w in enumerate(CASE_WORDS):
                 tw = word_time(ln, w)

@@ -172,12 +172,7 @@
   "nose": 0.513,
   "head_frac": 0.72
  },
- "_shout_drawn": [
-  "expressions/shouting",
-  "upper/desk_rant",
-  "expressions/angry_rant",
-  "upper/both_hands_out"
- ],
+ "_shout_drawn": [],
  "_rest_when_silent": [
   "expressions/shouting",
   "upper/desk_rant",
@@ -185,6 +180,7 @@
   "upper/both_hands_out",
   "upper/pointing"
  ],
- "_open_scale": 0.76,
- "_nose_gap": 0.045
+ "_open_scale": 0.72,
+ "_nose_gap": 0.045,
+ "_open_h": 0.7
 }

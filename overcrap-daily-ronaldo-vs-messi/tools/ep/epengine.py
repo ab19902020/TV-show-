@@ -319,7 +319,8 @@ class Rig:
                 if 'lips_box' in info:
                     # every mouth hangs from the drawn upper lip: an open one drops the jaw, never
                     # reaches up into the nose
-                    s = width / max(part[2], 1e-6)
+                    sy = self.over.get('_open_h', 1.0) if mouth != 'rest' else 1.0
+                    s = width / max(part[2], 1e-6) * sy
                     top = info['lips_box'][2] + ov.get('lip_dy', 0.0) * info['size'][1]
                     if mouth != 'rest' and 'nose' in ov:
                         # an open mouth never starts right under the nose: it would read as covering it
@@ -327,7 +328,8 @@ class Rig:
                         ny = (max(p[1] for p in nose) if isinstance(nose, list) else nose) * info['size'][1]
                         top = max(top, ny + self.over.get('_nose_gap', 0.0) * info['width'])
                     dy = top + part[3] * s / 2 - info['mouth'][1]
-                out = F.with_mouth(base, info, part, width, dy=dy, squash_x=sq, angle=ov.get('tilt', 0.0))
+                out = F.with_mouth(base, info, part, width, dy=dy, squash_x=sq, angle=ov.get('tilt', 0.0),
+                                   squash_y=self.over.get('_open_h', 1.0) if mouth != 'rest' else 1.0)
         if blink > 0 and len(info['eyes']) == 2 and not self.over.get('_no_blink'):
             out = F.blink(out, info, blink)             # never one eye only: that reads as a wink / cross-eyed
         if flip:
@@ -377,6 +379,10 @@ def flatten_lips(img, info, box):
     mouth. Flat, not blurred: it keeps the drawing's flat-colour look."""
     H, W = img.shape[:2]
     x0, x1, y0, y1 = [int(round(v)) for v in box]
+    H_, W_ = img.shape[:2]
+    x0, x1, y0, y1 = max(0, x0), min(W_, x1), max(0, y0), min(H_, y1)
+    if x1 - x0 < 4 or y1 - y0 < 4:
+        return img
     crop = np.ascontiguousarray(img[y0:y1, x0:x1, :3])
     L = cv2.cvtColor(crop.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
     chroma = np.hypot(L[..., 1], L[..., 2])
@@ -404,6 +410,10 @@ def erase_lip_line(img, info, box):
     filling it with the lip-band skin around it. The moustache and the goatee are thick, so
     they are left exactly as drawn."""
     x0, x1, y0, y1 = [int(round(v)) for v in box]
+    H_, W_ = img.shape[:2]
+    x0, x1, y0, y1 = max(0, x0), min(W_, x1), max(0, y0), min(H_, y1)
+    if x1 - x0 < 4 or y1 - y0 < 4:
+        return img
     crop = np.ascontiguousarray(img[y0:y1, x0:x1, :3])
     L = cv2.cvtColor(crop.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
     fw = info['width']
@@ -850,6 +860,7 @@ class Timeline:
         self.fx = []               # (t, name, gain, kw)
         self.blinks = {}           # who -> [t]: blinks the staging asks for (the rest are random)
         self.shakes = []           # (t, amplitude in 1/1000 of the frame width, duration)
+        self.gains = {}            # line id -> [(t in line, gain)]: a line's level over time
         self.cues = {}
 
     def key(self, t, who, e='step', **kv):
