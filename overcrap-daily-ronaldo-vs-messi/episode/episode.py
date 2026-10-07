@@ -462,12 +462,12 @@ def build():
         if lid == 'MG_08':                         # DEFCON ONE
             tw = word_time(ln, 'defcon')
             key(tw, 'gfx', alert='DEFCON 1', alert_t=tw)
-            key(min(tw + 2.0, ln['start'] + ln['dur'] + 0.15), 'gfx', alert=None)
+            key(min(tw + 2.0, ln['start'] + ln['dur'] - 0.05), 'gfx', alert=None)
             tl.sfx(tw, 'alarm', 0.2)
         if lid == 'MG_16':                         # the Ronaldo alarm
             tw = word_time(ln, 'alarm')
             key(tw, 'gfx', alert='RONALDO ALARM', alert_t=tw)
-            key(min(tw + 1.6, ln['start'] + ln['dur'] + 0.15), 'gfx', alert=None)
+            key(min(tw + 1.6, ln['start'] + ln['dur'] - 0.05), 'gfx', alert=None)
             tl.sfx(tw, 'alarm', 0.16)
         if lid == 'RF_13':                         # the case for Cristiano, ticked off as he lists it
             for k, w in enumerate(CASE_WORDS):
