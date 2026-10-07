@@ -1,0 +1,96 @@
+{
+ "_doc": "Rooney's lip sync pastes his sheet's mouth cells (lips and beard) over his mouth, like Roy's: 'mouth' is [cx, cy, w] as fractions of the drawing - the centre of his closed lips and their corner-to-corner width. _patch_lips / _patch_cy: the closed lips' width and height in a mouth cell (fractions of the cell).",
+ "_mouth_style": "patch",
+ "_patch_lips": 0.62,
+ "_patch_cy": 0.37,
+ "_patch_oval": 0.53,
+ "_calm": "turnaround/front",
+ "upper/seated": {
+  "mouth": [
+   0.583,
+   0.365,
+   0.3
+  ]
+ },
+ "upper/talking": {
+  "mouth": [
+   0.729,
+   0.351,
+   0.16
+  ]
+ },
+ "upper/explaining": {
+  "mouth": [
+   0.76,
+   0.351,
+   0.19
+  ]
+ },
+ "upper/hands_up": {
+  "mouth": [
+   0.613,
+   0.341,
+   0.17
+  ]
+ },
+ "expressions/neutral": {
+  "mouth": [
+   0.607,
+   0.65,
+   0.34
+  ]
+ },
+ "expressions/happy": {
+  "mouth": [
+   0.59,
+   0.66,
+   0.36
+  ]
+ },
+ "expressions/smug": {
+  "mouth": [
+   0.66,
+   0.652,
+   0.33
+  ]
+ },
+ "expressions/confused": {
+  "mouth": [
+   0.557,
+   0.658,
+   0.35
+  ]
+ },
+ "expressions/embarrassed": {
+  "mouth": [
+   0.643,
+   0.7,
+   0.27
+  ]
+ },
+ "expressions/shocked": {
+  "mouth": [
+   0.625,
+   0.7,
+   0.27
+  ]
+ },
+ "head/front": {
+  "mouth": [
+   0.57,
+   0.66,
+   0.35
+  ]
+ },
+ "expressions/laughing": {
+  "no_mouth": true
+ },
+ "_cu_ramp": 0.2,
+ "turnaround/front": {
+  "mouth": [
+   0.5,
+   0.2,
+   0.1
+  ]
+ }
+}

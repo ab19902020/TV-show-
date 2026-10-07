@@ -1,0 +1,498 @@
+{
+ "turnaround": {
+  "front": {
+   "file": "characters/rooney/turnaround/front.png",
+   "sheet_rect_x4": [
+    1272,
+    654,
+    645,
+    1298
+   ],
+   "size": [
+    645,
+    1298
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_left": {
+   "file": "characters/rooney/turnaround/three_quarter_left.png",
+   "sheet_rect_x4": [
+    1973,
+    656,
+    611,
+    1299
+   ],
+   "size": [
+    611,
+    1299
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "side_left": {
+   "file": "characters/rooney/turnaround/side_left.png",
+   "sheet_rect_x4": [
+    2763,
+    666,
+    471,
+    1291
+   ],
+   "size": [
+    471,
+    1291
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_right": {
+   "file": "characters/rooney/turnaround/three_quarter_right.png",
+   "sheet_rect_x4": [
+    3373,
+    659,
+    675,
+    1300
+   ],
+   "size": [
+    675,
+    1300
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "back": {
+   "file": "characters/rooney/turnaround/back.png",
+   "sheet_rect_x4": [
+    4095,
+    659,
+    669,
+    1305
+   ],
+   "size": [
+    669,
+    1305
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "head": {
+  "front": {
+   "file": "characters/rooney/head/front.png",
+   "sheet_rect_x4": [
+    1281,
+    2295,
+    665,
+    694
+   ],
+   "size": [
+    665,
+    694
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_left": {
+   "file": "characters/rooney/head/three_quarter_left.png",
+   "sheet_rect_x4": [
+    1993,
+    2293,
+    671,
+    699
+   ],
+   "size": [
+    671,
+    699
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "side": {
+   "file": "characters/rooney/head/side.png",
+   "sheet_rect_x4": [
+    2704,
+    2301,
+    629,
+    693
+   ],
+   "size": [
+    629,
+    693
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_right": {
+   "file": "characters/rooney/head/three_quarter_right.png",
+   "sheet_rect_x4": [
+    3369,
+    2296,
+    675,
+    699
+   ],
+   "size": [
+    675,
+    699
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "back": {
+   "file": "characters/rooney/head/back.png",
+   "sheet_rect_x4": [
+    4113,
+    2299,
+    680,
+    695
+   ],
+   "size": [
+    680,
+    695
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "expressions": {
+  "neutral": {
+   "file": "characters/rooney/expressions/neutral.png",
+   "sheet_rect_x4": [
+    1237,
+    3293,
+    487,
+    519
+   ],
+   "size": [
+    487,
+    519
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": true
+   }
+  },
+  "happy": {
+   "file": "characters/rooney/expressions/happy.png",
+   "sheet_rect_x4": [
+    1722,
+    3291,
+    493,
+    521
+   ],
+   "size": [
+    493,
+    521
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": false
+   }
+  },
+  "smug": {
+   "file": "characters/rooney/expressions/smug.png",
+   "sheet_rect_x4": [
+    2230,
+    3291,
+    497,
+    521
+   ],
+   "size": [
+    497,
+    521
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "confused": {
+   "file": "characters/rooney/expressions/confused.png",
+   "sheet_rect_x4": [
+    2737,
+    3293,
+    489,
+    518
+   ],
+   "size": [
+    489,
+    518
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "laughing": {
+   "file": "characters/rooney/expressions/laughing.png",
+   "sheet_rect_x4": [
+    3237,
+    3296,
+    526,
+    516
+   ],
+   "size": [
+    526,
+    516
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "embarrassed": {
+   "file": "characters/rooney/expressions/embarrassed.png",
+   "sheet_rect_x4": [
+    3794,
+    3296,
+    515,
+    515
+   ],
+   "size": [
+    515,
+    515
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "shocked": {
+   "file": "characters/rooney/expressions/shocked.png",
+   "sheet_rect_x4": [
+    4326,
+    3292,
+    503,
+    520
+   ],
+   "size": [
+    503,
+    520
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "mouths": {
+  "rest": {
+   "file": "characters/rooney/mouths/rest.png",
+   "sheet_rect_x4": [
+    112,
+    4088,
+    440,
+    268
+   ],
+   "size": [
+    440,
+    268
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": true
+   }
+  },
+  "a": {
+   "file": "characters/rooney/mouths/a.png",
+   "sheet_rect_x4": [
+    550,
+    4088,
+    440,
+    268
+   ],
+   "size": [
+    440,
+    268
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "e": {
+   "file": "characters/rooney/mouths/e.png",
+   "sheet_rect_x4": [
+    988,
+    4088,
+    438,
+    267
+   ],
+   "size": [
+    438,
+    267
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "i": {
+   "file": "characters/rooney/mouths/i.png",
+   "sheet_rect_x4": [
+    1424,
+    4088,
+    426,
+    267
+   ],
+   "size": [
+    426,
+    267
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "o": {
+   "file": "characters/rooney/mouths/o.png",
+   "sheet_rect_x4": [
+    1848,
+    4088,
+    422,
+    267
+   ],
+   "size": [
+    422,
+    267
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "smile": {
+   "file": "characters/rooney/mouths/smile.png",
+   "sheet_rect_x4": [
+    2268,
+    4088,
+    420,
+    267
+   ],
+   "size": [
+    420,
+    267
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": false
+   }
+  }
+ },
+ "upper": {
+  "talking": {
+   "file": "characters/rooney/upper/talking.png",
+   "sheet_rect_x4": [
+    2372,
+    4120,
+    844,
+    683
+   ],
+   "size": [
+    844,
+    683
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "explaining": {
+   "file": "characters/rooney/upper/explaining.png",
+   "sheet_rect_x4": [
+    3224,
+    4120,
+    648,
+    685
+   ],
+   "size": [
+    648,
+    685
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "hands_up": {
+   "file": "characters/rooney/upper/hands_up.png",
+   "sheet_rect_x4": [
+    3876,
+    4120,
+    516,
+    686
+   ],
+   "size": [
+    516,
+    686
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "seated": {
+   "file": "characters/rooney/upper/seated.png",
+   "sheet_rect_x4": [
+    4416,
+    4135,
+    432,
+    677
+   ],
+   "size": [
+    432,
+    677
+   ],
+   "cut": {
+    "bottom": true,
+    "left": false,
+    "right": false
+   }
+  }
+ }
+}

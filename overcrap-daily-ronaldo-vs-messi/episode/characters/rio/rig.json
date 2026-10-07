@@ -1,0 +1,90 @@
+{
+ "_doc": "Rio's lip sync pastes his sheet's mouth cells (lips, moustache and beard) over his mouth: 'mouth' is [cx, cy, w] as fractions of the drawing (centre of the closed lips, corner-to-corner width). Gesture busts stand where turnaround/front has its face (_stand_ref).",
+ "_mouth_style": "patch",
+ "_patch_lips": 0.52,
+ "_patch_cy": 0.47,
+ "_patch_oval": 0.6,
+ "_stand_ref": "turnaround/front",
+ "_calm": "turnaround/front",
+ "turnaround/front": {
+  "mouth": [
+   0.543,
+   0.341,
+   0.2
+  ]
+ },
+ "upper/folded_arms": {
+  "mouth": [
+   0.67,
+   0.462,
+   0.15
+  ]
+ },
+ "upper/warning": {
+  "mouth": [
+   0.705,
+   0.471,
+   0.14
+  ]
+ },
+ "upper/shrug": {
+  "mouth": [
+   0.592,
+   0.43,
+   0.1
+  ]
+ },
+ "expressions/neutral": {
+  "mouth": [
+   0.528,
+   0.742,
+   0.32
+  ]
+ },
+ "expressions/side_eye": {
+  "mouth": [
+   0.674,
+   0.739,
+   0.27
+  ]
+ },
+ "expressions/confused": {
+  "mouth": [
+   0.68,
+   0.692,
+   0.29
+  ]
+ },
+ "expressions/embarrassed": {
+  "mouth": [
+   0.495,
+   0.75,
+   0.29
+  ]
+ },
+ "head/front": {
+  "mouth": [
+   0.53,
+   0.773,
+   0.305
+  ]
+ },
+ "head/three_quarter_right": {
+  "mouth": [
+   0.76,
+   0.715,
+   0.28
+  ]
+ },
+ "expressions/laughing": {
+  "no_mouth": true
+ },
+ "expressions/shocked": {
+  "no_mouth": true
+ },
+ "upper/laughing_bent": {
+  "no_mouth": true
+ },
+ "_cu_px": 700,
+ "_cu_ramp": 0.3
+}

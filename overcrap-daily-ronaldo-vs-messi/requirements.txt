@@ -1,0 +1,10 @@
+numpy
+scipy
+pillow
+opencv-contrib-python
+soundfile
+skia-python
+cmudict
+pocketsphinx
+# only to remake art (tools/ep/upscale*.py) and transcripts:
+# torch torchvision spandrel (CPU wheels) / sherpa-onnx librosa

@@ -1,0 +1,608 @@
+{
+ "turnaround": {
+  "front": {
+   "file": "characters/rio/turnaround/front.png",
+   "sheet_rect_x4": [
+    1183,
+    592,
+    587,
+    1238
+   ],
+   "size": [
+    587,
+    1238
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_left": {
+   "file": "characters/rio/turnaround/three_quarter_left.png",
+   "sheet_rect_x4": [
+    1854,
+    592,
+    549,
+    1238
+   ],
+   "size": [
+    549,
+    1238
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "side": {
+   "file": "characters/rio/turnaround/side.png",
+   "sheet_rect_x4": [
+    2535,
+    599,
+    419,
+    1228
+   ],
+   "size": [
+    419,
+    1228
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_right": {
+   "file": "characters/rio/turnaround/three_quarter_right.png",
+   "sheet_rect_x4": [
+    3089,
+    593,
+    581,
+    1238
+   ],
+   "size": [
+    581,
+    1238
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "back": {
+   "file": "characters/rio/turnaround/back.png",
+   "sheet_rect_x4": [
+    3751,
+    596,
+    565,
+    1236
+   ],
+   "size": [
+    565,
+    1236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "head": {
+  "front": {
+   "file": "characters/rio/head/front.png",
+   "sheet_rect_x4": [
+    1212,
+    2124,
+    544,
+    654
+   ],
+   "size": [
+    544,
+    654
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_left": {
+   "file": "characters/rio/head/three_quarter_left.png",
+   "sheet_rect_x4": [
+    1863,
+    2126,
+    465,
+    651
+   ],
+   "size": [
+    465,
+    651
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "side": {
+   "file": "characters/rio/head/side.png",
+   "sheet_rect_x4": [
+    2480,
+    2127,
+    528,
+    650
+   ],
+   "size": [
+    528,
+    650
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "three_quarter_right": {
+   "file": "characters/rio/head/three_quarter_right.png",
+   "sheet_rect_x4": [
+    3153,
+    2121,
+    468,
+    656
+   ],
+   "size": [
+    468,
+    656
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "back": {
+   "file": "characters/rio/head/back.png",
+   "sheet_rect_x4": [
+    3796,
+    2129,
+    538,
+    649
+   ],
+   "size": [
+    538,
+    649
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "expressions": {
+  "neutral": {
+   "file": "characters/rio/expressions/neutral.png",
+   "sheet_rect_x4": [
+    1208,
+    3040,
+    420,
+    531
+   ],
+   "size": [
+    420,
+    531
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "side_eye": {
+   "file": "characters/rio/expressions/side_eye.png",
+   "sheet_rect_x4": [
+    1715,
+    3042,
+    411,
+    529
+   ],
+   "size": [
+    411,
+    529
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "confused": {
+   "file": "characters/rio/expressions/confused.png",
+   "sheet_rect_x4": [
+    2221,
+    3038,
+    388,
+    533
+   ],
+   "size": [
+    388,
+    533
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "embarrassed": {
+   "file": "characters/rio/expressions/embarrassed.png",
+   "sheet_rect_x4": [
+    2730,
+    3040,
+    448,
+    532
+   ],
+   "size": [
+    448,
+    532
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "laughing": {
+   "file": "characters/rio/expressions/laughing.png",
+   "sheet_rect_x4": [
+    3306,
+    3033,
+    477,
+    541
+   ],
+   "size": [
+    477,
+    541
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "shocked": {
+   "file": "characters/rio/expressions/shocked.png",
+   "sheet_rect_x4": [
+    3909,
+    3037,
+    436,
+    540
+   ],
+   "size": [
+    436,
+    540
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "mouths": {
+  "rest": {
+   "file": "characters/rio/mouths/rest.png",
+   "sheet_rect_x4": [
+    96,
+    3792,
+    441,
+    236
+   ],
+   "size": [
+    441,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": true
+   }
+  },
+  "a": {
+   "file": "characters/rio/mouths/a.png",
+   "sheet_rect_x4": [
+    535,
+    3792,
+    442,
+    236
+   ],
+   "size": [
+    442,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "e": {
+   "file": "characters/rio/mouths/e.png",
+   "sheet_rect_x4": [
+    975,
+    3792,
+    468,
+    236
+   ],
+   "size": [
+    468,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "i": {
+   "file": "characters/rio/mouths/i.png",
+   "sheet_rect_x4": [
+    1441,
+    3792,
+    482,
+    236
+   ],
+   "size": [
+    482,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "o": {
+   "file": "characters/rio/mouths/o.png",
+   "sheet_rect_x4": [
+    1921,
+    3792,
+    482,
+    236
+   ],
+   "size": [
+    482,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "u": {
+   "file": "characters/rio/mouths/u.png",
+   "sheet_rect_x4": [
+    2401,
+    3792,
+    502,
+    236
+   ],
+   "size": [
+    502,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "mbp": {
+   "file": "characters/rio/mouths/mbp.png",
+   "sheet_rect_x4": [
+    2901,
+    3792,
+    492,
+    236
+   ],
+   "size": [
+    492,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "closed": {
+   "file": "characters/rio/mouths/closed.png",
+   "sheet_rect_x4": [
+    3391,
+    3792,
+    505,
+    236
+   ],
+   "size": [
+    505,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": true
+   }
+  },
+  "fv": {
+   "file": "characters/rio/mouths/fv.png",
+   "sheet_rect_x4": [
+    3894,
+    3792,
+    506,
+    236
+   ],
+   "size": [
+    506,
+    236
+   ],
+   "cut": {
+    "bottom": false,
+    "left": true,
+    "right": false
+   }
+  }
+ },
+ "upper": {
+  "folded_arms": {
+   "file": "characters/rio/upper/folded_arms.png",
+   "sheet_rect_x4": [
+    2402,
+    4256,
+    323,
+    504
+   ],
+   "size": [
+    323,
+    504
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "warning": {
+   "file": "characters/rio/upper/warning.png",
+   "sheet_rect_x4": [
+    2809,
+    4257,
+    418,
+    503
+   ],
+   "size": [
+    418,
+    503
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "shrug": {
+   "file": "characters/rio/upper/shrug.png",
+   "sheet_rect_x4": [
+    3248,
+    4254,
+    618,
+    506
+   ],
+   "size": [
+    618,
+    506
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "laughing_bent": {
+   "file": "characters/rio/upper/laughing_bent.png",
+   "sheet_rect_x4": [
+    3897,
+    4260,
+    415,
+    500
+   ],
+   "size": [
+    415,
+    500
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ },
+ "body": {
+  "stand_neutral": {
+   "file": "characters/rio/body/stand_neutral.png",
+   "sheet_rect_x4": [
+    266,
+    4988,
+    223,
+    488
+   ],
+   "size": [
+    223,
+    488
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "walk_1": {
+   "file": "characters/rio/body/walk_1.png",
+   "sheet_rect_x4": [
+    718,
+    4988,
+    371,
+    491
+   ],
+   "size": [
+    371,
+    491
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "walk_2": {
+   "file": "characters/rio/body/walk_2.png",
+   "sheet_rect_x4": [
+    1103,
+    4988,
+    343,
+    490
+   ],
+   "size": [
+    343,
+    490
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  },
+  "walk_3": {
+   "file": "characters/rio/body/walk_3.png",
+   "sheet_rect_x4": [
+    1461,
+    4990,
+    387,
+    489
+   ],
+   "size": [
+    387,
+    489
+   ],
+   "cut": {
+    "bottom": false,
+    "left": false,
+    "right": false
+   }
+  }
+ }
+}
