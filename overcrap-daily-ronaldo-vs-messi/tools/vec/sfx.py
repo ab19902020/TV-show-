@@ -297,5 +297,84 @@ def strap(**kw):
     return out
 
 
-SFX = dict(alarm=alarm, crickets=crickets, strap=strap, step=step, land=land, marker=marker, door_open=door_open, door_close=door_close, cushion=cushion, chair_creak=chair_creak,
+def record_scratch(**kw):
+    """A DJ record scratch: a burst of filtered noise and a tone pulled down then back up."""
+    t = _t(0.42)
+    rng = np.random.RandomState(21)
+    u = t / t[-1]
+    pitch = 180 + 900 * np.abs(np.sin(np.pi * u * 1.5)) * (1 - u)
+    ph = 2 * np.pi * np.cumsum(pitch) / SR
+    tone = np.sign(np.sin(ph)) * 0.35 + np.sin(ph * 2.01) * 0.3
+    hiss = _band(rng.randn(len(t)), 900, 6000) * (0.6 + 0.4 * np.sin(np.pi * u * 3) ** 2)
+    env = np.clip(t / 0.01, 0, 1) * np.clip((t[-1] - t) / 0.06, 0, 1)
+    return _f32(_band(tone + hiss * 0.8, 120, 7000) * env, 0.32)
+
+
+def _brass(freq, dur, seed=0):
+    """A short brass-ish stab: a few harmonics with a soft attack and a little vibrato."""
+    t = _t(dur)
+    vib = 1 + 0.004 * np.sin(2 * np.pi * 5.5 * t) * np.clip(t / 0.2, 0, 1)
+    ph = 2 * np.pi * np.cumsum(freq * vib) / SR
+    y = sum(np.sin(ph * k) / k ** 0.9 for k in range(1, 8))
+    env = np.clip(t / 0.03, 0, 1) * np.exp(-np.maximum(t - 0.1, 0) / (dur * 0.7))
+    return _lp(np.tanh(y * 0.9) * env, 3500)
+
+
+def dun_dun(**kw):
+    """The dramatic sting: dun... dun... DUNNN (low brass and a timpani-ish thud)."""
+    out = np.zeros(int(2.1 * SR))
+    for t0, f, d, g in ((0.0, 98.0, 0.32, 0.6), (0.42, 92.5, 0.32, 0.6), (0.84, 87.3, 1.2, 1.0)):
+        y = (_brass(f, d) + 0.6 * _brass(f * 1.5, d)) * g
+        thud = np.sin(2 * np.pi * 55 * _t(d)) * _decay(len(_t(d)), 0.002, 0.18) * g
+        i = int(t0 * SR)
+        out[i:i + len(y)] += y + thud * 0.8
+    return _f32(out / (np.abs(out).max() + 1e-9), 0.5)
+
+
+def sad_trombone(**kw):
+    """Wah wah wah waaah: four falling trombone notes, the last one wobbling."""
+    out = np.zeros(int(2.0 * SR))
+    notes = ((0.0, 293.7, 0.28), (0.31, 277.2, 0.28), (0.62, 261.6, 0.28), (0.93, 246.9, 1.0))
+    for k, (t0, f, d) in enumerate(notes):
+        t = _t(d)
+        wob = 1 + (0.025 * np.sin(2 * np.pi * 6.5 * t) * np.clip((t - 0.15) / 0.2, 0, 1) if k == 3 else 0)
+        bend = 1 - 0.03 * (t / d) if k == 3 else 1
+        ph = 2 * np.pi * np.cumsum(f * wob * bend) / SR
+        y = sum(np.sin(ph * h) * (0.9 ** h) for h in range(1, 10))
+        # the 'wah': a mute opening and closing
+        wah = 0.35 + 0.65 * np.sin(np.pi * np.clip(t / d, 0, 1)) ** 1.5
+        y = _lp(y * wah, 1800) * np.clip(t / 0.02, 0, 1) * np.clip((d - t) / 0.08, 0, 1)
+        i = int(t0 * SR)
+        out[i:i + len(y)] += y
+    return _f32(out / (np.abs(out).max() + 1e-9), 0.42)
+
+
+def whistle(**kw):
+    """A referee's whistle: a pea-whistle trill, one short blast."""
+    t = _t(0.55)
+    f = 2850 + 120 * np.sin(2 * np.pi * 34 * t)
+    y = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.75 + 0.25 * np.sin(2 * np.pi * 34 * t))
+    y += 0.2 * _band(np.random.RandomState(4).randn(len(t)), 2000, 5000)
+    env = np.clip(t / 0.015, 0, 1) * np.clip((t[-1] - t) / 0.05, 0, 1)
+    return _f32(y * env, 0.16)
+
+
+def impact(**kw):
+    """A crash-zoom hit: a low boom with a bright snap on top."""
+    t = _t(0.7)
+    boom = np.sin(2 * np.pi * (70 - 30 * t) * t) * np.exp(-t / 0.22)
+    snap = _band(np.random.RandomState(9).randn(len(t)), 1500, 8000) * np.exp(-t / 0.03)
+    return _f32(np.tanh((boom + snap * 0.5) * 1.5), 0.5)
+
+
+def ding(**kw):
+    """A bright 'ding' (a point scored)."""
+    t = _t(1.0)
+    y = (np.sin(2 * np.pi * 1568 * t) + 0.5 * np.sin(2 * np.pi * 3136 * t) + 0.25 * np.sin(2 * np.pi * 4704 * t)) * \
+        np.exp(-t / 0.35) * np.clip(t / 0.003, 0, 1)
+    return _f32(y, 0.14)
+
+
+SFX = dict(record_scratch=record_scratch, dun_dun=dun_dun, sad_trombone=sad_trombone, whistle=whistle, impact=impact,
+           ding=ding, alarm=alarm, crickets=crickets, strap=strap, step=step, land=land, marker=marker, door_open=door_open, door_close=door_close, cushion=cushion, chair_creak=chair_creak,
            click=click, key=key, typing=typing, type=typing, whoosh=whoosh, hop=hop, sting=guitar_sting)

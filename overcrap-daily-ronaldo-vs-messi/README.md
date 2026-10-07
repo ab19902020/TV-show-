@@ -11,15 +11,15 @@ the original voice takes from the production pack.
 | Time | Beat | On screen |
 |---|---|---|
 | 0:00 | Cold open: Mark's wedding analogy | Wide three-shot (Mark and Rooney at the desk, Roy standing), push in to Mark; name straps |
-| 0:20 | "What song's he asking for?" / Darren | Rooney close-ups, Roy dead-pan in the reverse, held reactions after "Darren" and "Depends on Darren" |
-| 0:44 | Ronaldo and Portugal | Mark gets bigger; **DEFCON 1**: red alert banner, the frame pulses red, klaxon |
-| 1:02 | "Coward." / "I would." | Snap-in on Roy |
+| 0:20 | "What song's he asking for?" / Darren | Rooney close-ups, Roy dead-pan with a slow push, held reactions after "Darren" and "Depends on Darren" |
+| 0:44 | Ronaldo and Portugal | **DEFCON 1**: crash zoom, red alert banner, the frame pulses red, klaxon, speed lines |
+| 1:15 | "Coward." / "I would." | Crash zoom on Roy |
 | 1:22 | Messi's state funeral | "They'll see him again." then silence on Mark's face (crickets); "No." / "Fair." |
-| 1:41 | **Rio enters** | The door goes, full wide shot, Rio strides in from the Man United door and stands next to Roy |
+| 1:41 | **Rio enters** | Record scratch, the door, full wide shot; Rio strides in already shouting "Whoa, whoa, whoa" |
 | 1:45 | "I wasn't booked." | Straps: RIO FERDINAND — NOT BOOKED, then STILL NOT BOOKED; the **Ronaldo alarm** goes off |
-| 2:07 | Forest | Rapid interruptions, "You're a Forest fan anyway", a beat, crash zoom on Mark, Rooney in fits (silent: the take has no laugh), "I AM NOT A FOREST FAN" |
-| 2:31 | Ham | "Iberico." — strap: BREAKING / MOON: POSSIBLY IBERICO — Rooney satisfied, "Why are we discussing lunar meat?!" |
-| 2:56 | Ending, faster | Mark thinks he's won ("Of course." / "Thank you."), "Just not about football." … "GOODNIGHT" and a hard cut to black |
+| 2:07 | Forest | Rapid interruptions, "You're a Forest fan anyway", dun-dun-DUNNN on Mark, crash zoom and shake on "OH, FOR GOD'S SAKE", Rooney in fits (silent: the take has no laugh); a **RIO 1–0 MARK** score bug arrives with a whistle and keeps count from here |
+| 2:29 | Ham | THE CASE FOR CRISTIANO ticks up beside Rio as he lists it; "Iberico." — BREAKING / MOON: POSSIBLY IBERICO — Rooney satisfied, "Why are we discussing lunar meat?!" |
+| 2:56 | Ending, faster | Mark scores one back on "Thank you" (2–1), "Just not about football." → **VAR CHECK… NO GOAL**, sad trombone, 2–0; "Forest." 3–0; "GOODNIGHT" and a hard cut to black |
 
 ## Cast and set
 
@@ -58,7 +58,15 @@ python3 tools/ep/render.py 1080p                # -> out/overcrap_1080p.mp4 (res
   their sheets' mouth rows (lips and beard), placed by the `mouth` entries in `characters/<name>/rig.json`
   and colour-matched to the drawing. Close-ups put the expression bust over a body drawing; Rio's
   waist-length gesture drawings switch to his full-body drawing whenever the frame shows below the waist.
-* `tools/vec/sfx.py` — synthesised foley: door, footsteps, whoosh, the klaxon, crickets, the strap chime and
-  room tone under everything. The audio cuts with the picture after "GOODNIGHT".
+* Lip sync: every line is force-aligned (pocketsphinx), mapped to each sheet's mouth shapes, then tightened
+  against the voice itself (`gate_frames`): mouths shut wherever the voice is quiet and change a frame before
+  the sound. Mark's mouths are hand-placed on every drawing he talks in, under a guard line at his nose; on
+  shouted vowels his shouting drawings show their own drawn shout. Rio's beard stays his own: only the opening
+  of each mouth shape (teeth, tongue, the dark inside) is pasted into it, and closed sounds show his mouth as
+  drawn.
+* Camera: crash zooms (`!` shot codes), slow pushes on dead-pan lines (`PUSH`), shakes on Mark's shouts.
+* `tools/vec/sfx.py` — synthesised sound (no samples): door, footsteps, whoosh, klaxon, crickets, record scratch,
+  dun-dun-DUNNN, sad trombone, referee whistle, impact hits, a ding, the strap chime and room tone under
+  everything. The audio cuts with the picture after "GOODNIGHT".
 
 The production pack's scripts and director notes are in `episode/pack/`.

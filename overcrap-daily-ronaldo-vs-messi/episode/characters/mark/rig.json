@@ -2,13 +2,12 @@
  "_mouth_ratio": 0.27,
  "expressions/smug": {
   "lips": [
-   0.535,
-   0.8,
-   0.598,
-   0.69
+   0.54,
+   0.795,
+   0.603,
+   0.645
   ],
-  "nose": 0.595,
-  "mw": 0.23
+  "nose": 0.588
  },
  "expressions/sad": {
   "lips": [
@@ -42,12 +41,13 @@
   "mw": 0.23
  },
  "expressions/shouting": {
-  "mouth": [
-   0.553,
-   0.648,
-   0.28,
-   0.23
-  ]
+  "lips": [
+   0.414,
+   0.695,
+   0.53,
+   0.757
+  ],
+  "nose": 0.521
  },
  "expressions/angry_rant": {
   "lips": [
@@ -85,11 +85,13 @@
   "mw": 0.24
  },
  "upper/crossed_arms": {
-  "mouth": [
-   0.605,
-   0.475,
-   0.21
-  ]
+  "lips": [
+   0.49,
+   0.695,
+   0.458,
+   0.49
+  ],
+  "nose": 0.44
  },
  "upper/arms_down": {
   "lips": [
@@ -150,5 +152,37 @@
   ],
   "nose": 0.652,
   "mw": 0.245
- }
+ },
+ "expressions/shocked": {
+  "lips": [
+   0.43,
+   0.686,
+   0.608,
+   0.769
+  ],
+  "nose": 0.594
+ },
+ "upper/desk_rant": {
+  "lips": [
+   0.431,
+   0.599,
+   0.52,
+   0.644
+  ],
+  "nose": 0.513,
+  "head_frac": 0.72
+ },
+ "_shout_drawn": [
+  "expressions/shouting",
+  "upper/desk_rant",
+  "expressions/angry_rant",
+  "upper/both_hands_out"
+ ],
+ "_rest_when_silent": [
+  "expressions/shouting",
+  "upper/desk_rant",
+  "expressions/angry_rant",
+  "upper/both_hands_out",
+  "upper/pointing"
+ ]
 }

@@ -116,9 +116,9 @@ class Rig:
         img = self.image(key)
         H, W = img.shape[:2]
         panel = key.split('/')[0]
-        hf = {'upper': 0.6, 'body': 0.35, 'turnaround': 0.35, 'closeup': 0.6}.get(panel, 1.0)
-        info = F.find_face(img, head_frac=hf)
         ov = self.over.get(key, {})
+        hf = ov.get('head_frac', {'upper': 0.6, 'body': 0.35, 'turnaround': 0.35, 'closeup': 0.6}.get(panel, 1.0))
+        info = F.find_face(img, head_frac=hf)
         if info is None:
             info = dict(box=(0, 0, W, H), eyes=[], mouth=None, mouth_mask=np.zeros((H, W), bool),
                         face=np.zeros((H, W), bool), skin=np.array([75, 15, 25], np.float32))
@@ -234,6 +234,10 @@ class Rig:
 
     def drawing(self, key, mouth=None, blink=0.0, flip=False):
         """RGBA of a drawing with the given mouth (None = as drawn) and eyelids."""
+        if mouth == 'shout':
+            # a shouted vowel: drawings with a big open shout of their own show it as drawn,
+            # the others take the open 'a'
+            mouth = None if key in self.over.get('_shout_drawn', []) else 'a'
         ck = (key, mouth, round(blink, 1), flip)
         if ck in self.cache:
             return self.cache[ck]
@@ -246,8 +250,10 @@ class Rig:
                 base = F.erase_mouth(img, info) if 'lips_box' in info else F.without_mouth(img, info)
                 self.cache[('nomouth', key)] = base
             if self.over.get('_mouth_style') == 'patch':
-                part = self.patch_part(mouth)
                 inner = self.over.get('_inner')
+                if inner is not None:
+                    mouth = self.over.get('_alias', {}).get(mouth, mouth)
+                part = self.patch_part(mouth)
                 if inner is not None:
                     # only the open mouth from the sheet (teeth, tongue, lips) over the drawing's own
                     # beard; closed shapes show the mouth as drawn
@@ -351,24 +357,40 @@ def patch_mouth(img, info, cell, squash=1.0, lips=PATCH_LIPS, cell_cy=0.49, oval
     return out
 
 
-def inner_mouth(img, info, cell, oval, squash=1.0, lips=PATCH_LIPS, cell_cy=0.49):
-    """Rio's lip sync: from a mouth cell of his sheet only the opening (an oval given in cell
-    fractions: cx, cy, rx, ry) is pasted, scaled and placed as patch_mouth places the whole
-    cell; the beard and moustache around it stay the drawing's own."""
+def inner_mouth(img, info, cell, shape, squash=1.0, lips=PATCH_LIPS, cell_cy=0.49):
+    """Rio's lip sync: from a mouth cell of his sheet only the opening itself - the dark inside,
+    teeth, tongue and its ink rim, inside an oval given in cell fractions (cx, cy, rx, ry[, dy,
+    scale]) - is pasted onto his mouth, placed as patch_mouth places the whole cell. The cell's
+    skin (lips) and moustache are left out, so his drawn moustache, lips and beard stay his own
+    around a crisp opening. dy moves the opening down (cell fractions), scale shrinks it."""
+    ox, oy, rx, ry = shape[:4]
+    dy = shape[4] if len(shape) > 4 else 0.0
+    sc = shape[5] if len(shape) > 5 else 1.0
     cx, cy, mw, _ = info['mouth']
     ch, cw = cell.shape[:2]
-    s = mw / lips / cw
+    s = mw / lips / cw * sc
     sx = s * squash
-    patch = cv2.resize(cell, (max(2, int(cw * sx)), max(2, int(ch * s))),
+    rgb = cell[..., :3]
+    L = cv2.cvtColor(rgb.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
+    yy, xx = np.mgrid[0:ch, 0:cw].astype(np.float32)
+    d = np.sqrt(((xx / cw - ox) / rx) ** 2 + ((yy / ch - oy) / ry) ** 2)
+    oval = np.clip((1.0 - d) / 0.07, 0, 1)
+    # the cell's skin (its lips and chin) is not the opening: measured as the median of the
+    # cell's light orange pixels
+    sk = (L[..., 0] > 45) & (L[..., 1] > 12) & (L[..., 2] > 25)
+    skin = np.median(L[sk], axis=0) if sk.sum() > 50 else np.array([65, 25, 45], np.float32)
+    notskin = (np.linalg.norm(L - skin, axis=2) > 14).astype(np.uint8)
+    k = max(3, int(cw * 0.006)) | 1
+    notskin = cv2.morphologyEx(notskin, cv2.MORPH_OPEN, np.ones((k, k), np.uint8))
+    a = cv2.GaussianBlur(notskin.astype(np.float32), (0, 0), max(1.0, cw * 0.003)) * oval
+    rgba = np.dstack([rgb, (a * 255).astype(np.uint8)])
+    patch = cv2.resize(rgba, (max(2, int(cw * sx)), max(2, int(ch * s))),
                        interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_CUBIC)
     h, w = patch.shape[:2]
-    x0, y0 = int(round(cx - 0.5 * w)), int(round(cy - cell_cy * h))
-    ox, oy, rx, ry = oval
-    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    d = np.sqrt(((xx / w - ox) / rx) ** 2 + ((yy / h - oy) / ry) ** 2)
-    alpha = np.clip((1.0 - d) / 0.18, 0, 1)
+    x0 = int(round(cx - 0.5 * w))
+    y0 = int(round(cy - (cell_cy - dy) * h / sc * sc - (1 - sc) * (cell_cy - oy) * h / sc * 0))
     out = img.copy()
-    F.paste(out, np.dstack([patch[..., :3], (alpha * 255).astype(np.uint8)]), x0, y0)
+    F.paste(out, patch, x0, y0)
     return out
 
 
@@ -407,8 +429,8 @@ def phones_to_frames(words, dur, fps=FPS, loud=False, style='sheet'):
         for ph, a, b in w['phones']:
             ph = re.sub(r'\d', '', ph)
             key = vowels.get(ph) or cons.get(ph, other)
-            if key == 'a' and loud and style == 'sheet':
-                key = 'wide_shout'
+            if key in ('a', 'e', 'o') and loud and style == 'sheet':
+                key = 'shout'                    # the drawing's own shout mouth where it has one
             isv = ph in vowels
             for f in range(max(0, int(a * fps)), min(n, max(int(a * fps) + 1, int(round(b * fps))))):
                 sc = (b - a) + (0.15 if isv else 0) + (0.3 if key == rest else 0)
@@ -422,6 +444,34 @@ def phones_to_frames(words, dur, fps=FPS, loud=False, style='sheet'):
         held = held + 1 if m == last else 1
         out.append(m)
         last = m
+    return out
+
+
+def gate_frames(frames, x, style='sheet', fps=FPS):
+    """Tighten aligned mouth frames against the voice itself: every frame where the voice is
+    quiet (and is not about to start) gets the closed mouth - the aligner stretches the first
+    and last words over the pauses around them, which left mouths hanging open in silence -
+    and each mouth change comes one frame before its sound. Runs of a single frame are merged
+    so shapes still hold for at least two frames."""
+    rest = STYLES[style][2]
+    hop = SR / fps
+    n = len(frames)
+    rms = np.zeros(n)
+    for i in range(n):
+        a, b = int(max(0, (i - 0.25) * hop)), int(min(len(x), (i + 1.25) * hop))
+        if b > a:
+            rms[i] = np.sqrt(np.mean(x[a:b] ** 2))
+    thr = max(0.006, 0.10 * np.percentile(rms, 95))
+    voiced = rms > thr
+    lead = list(frames[1:]) + [frames[-1]]                 # one frame ahead of the sound
+    out = []
+    for i in range(n):
+        on = voiced[i] or (i + 1 < n and voiced[i + 1])
+        out.append(lead[i] if on else rest)
+    # no single-frame flickers: a lone frame takes its neighbour's shape
+    for i in range(1, n - 1):
+        if out[i] != out[i - 1] and out[i] != out[i + 1]:
+            out[i] = out[i - 1] if out[i] != rest else out[i]
     return out
 
 
@@ -508,6 +558,7 @@ class Timeline:
         self.shots = []            # (t, dict)
         self.fx = []               # (t, name, gain, kw)
         self.blinks = {}           # who -> [t]: blinks the staging asks for (the rest are random)
+        self.shakes = []           # (t, amplitude in 1/1000 of the frame width, duration)
         self.cues = {}
 
     def key(self, t, who, e='step', **kv):
@@ -619,8 +670,11 @@ class Renderer:
         self.mouth_frames = {}
         for ln in tl.lines:
             loud = ln['id'] in getattr(tl.script, 'LOUD', ())
-            self.mouth_frames[ln['id']] = phones_to_frames(ln['words'], ln['dur'], loud=loud,
-                                                           style=ln['who'] if ln['who'] in STYLES else 'sheet')
+            style = ln['who'] if ln['who'] in STYLES else 'sheet'
+            fr = phones_to_frames(ln['words'], ln['dur'], loud=loud, style=style)
+            if ln['audio']:
+                fr = gate_frames(fr, load_audio(ln['audio']), style)
+            self.mouth_frames[ln['id']] = fr
 
     def bg(self, name):
         if name not in self.bgs:
@@ -693,18 +747,45 @@ class Renderer:
             return dict(kind='feet', pos=(fx, fy), fw=fw, body=body, flip=flip)
         return None
 
-    def camera(self, t):
-        s, t1 = self.tl.shot_at(t)
-        rect = s['rect']
-        if callable(rect):
-            key = ('cam', s['t'])
+    def _rect(self, r, t0):
+        if callable(r):
+            key = ('cam', id(r), t0)
             if key not in self.scaled:
-                self.scaled[key] = rect(self, s['t'] + 0.2)
-            rect = self.scaled[key]
-        return s, rect
+                self.scaled[key] = r(self, t0 + 0.2)
+            return self.scaled[key]
+        return r
+
+    def camera(self, t):
+        """The shot's camera at time t: its rect, then (optionally) a crash zoom in from a wider
+        rect ('crash_from', over 'crash' seconds), a slow push in over the whole shot ('push': the
+        fraction the frame narrows by, about 'focus' or the frame centre) and the timeline's
+        camera shakes."""
+        s, t1 = self.tl.shot_at(t)
+        x0, y0, w = self._rect(s['rect'], s['t'])
+        u = t - s['t']
+        if s.get('crash_from') is not None and u < s.get('crash', 0.12):
+            a = self._rect(s['crash_from'], s['t'])
+            k = u / s.get('crash', 0.12)
+            k = 1 - (1 - k) ** 3
+            x0, y0, w = a[0] + (x0 - a[0]) * k, a[1] + (y0 - a[1]) * k, a[2] + (w - a[2]) * k
+        push = s.get('push')
+        if push:
+            k = min(1.0, max(0.0, u / max(t1 - s['t'], 1e-3)))
+            k = k * k * (3 - 2 * k)
+            h = w * OUT[1] / OUT[0]
+            fx, fy = s.get('focus') or (0.5, 0.42)
+            cx, cy = x0 + fx * w, y0 + fy * h
+            sc = 1 - push * k
+            x0, y0, w = cx - fx * w * sc, cy - fy * h * sc, w * sc
+        for ts, amp, dur in self.tl.shakes:
+            if ts <= t < ts + dur:
+                e = (1 - (t - ts) / dur) ** 2 * amp * w / 1000.0
+                x0 += e * math.sin(t * 97.0) * 1.0
+                y0 += e * math.cos(t * 83.0) * 0.8
+        return s, (x0, y0, w)
 
     def sprite_scaled(self, rig, key, mouth, blink, flip, scale):
-        sq = round(math.log(scale) * 60) / 60
+        sq = round(math.log(scale) * 400) / 400        # fine steps: no visible jumps in a camera push
         ck = (rig.name, key, mouth, round(blink, 1), flip, sq)
         hit = self.scaled.get(ck)
         if hit is not None:
@@ -750,7 +831,8 @@ class Renderer:
         # the body drawing, anchored by its face (seated) or its feet (standing)
         info = rig.face(key)
         W, H = info['size']
-        body_mouth = (mouth if talk else None) if cu is None else None
+        idle = rig.over.get('_rest_when_silent', [])       # drawn open mouths close when not talking
+        body_mouth = (mouth if talk else ('rest' if key in idle else None)) if cu is None else None
         res, s = self.sprite_scaled(rig, key, body_mouth, blink if cu is None else 0.0, pl['flip'], fw_out / max(info['width'], 1))
         cx, cy = info['center']
         if pl['flip']:
@@ -806,7 +888,7 @@ class Renderer:
         fcx, fcy = px + cx * s, py + cy * s
         cinfo = rig.face(cu)
         cs = fw_out / max(cinfo['width'], 1)
-        cres, cs = self.sprite_scaled(rig, cu, mouth if talk else None, blink, pl['flip'], cs)
+        cres, cs = self.sprite_scaled(rig, cu, mouth if talk else ('rest' if cu in idle else None), blink, pl['flip'], cs)
         ccx, ccy = cinfo['center']
         if pl['flip']:
             ccx = cinfo['size'][0] - ccx

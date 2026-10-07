@@ -56,6 +56,11 @@ def mix(R):
     fx = np.zeros(n, np.float32)
     for t, name, gain, kw in tl.fx:
         x = SFX.SFX[name](**kw)
+        if kw.get('cut'):                      # cut short (a line comes in over it), with a quick fade
+            k = int(kw['cut'] * E.SR)
+            x = x[:k].copy()
+            f = min(len(x), int(0.06 * E.SR))
+            x[len(x) - f:] *= np.linspace(1, 0, f)
         i = int(t * E.SR)
         fx[i:i + len(x)] += x[:n - i] * gain
     # footsteps: two per walk cycle (8 drawings a second -> a step every 4 drawings)
