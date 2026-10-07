@@ -182,6 +182,19 @@ class Rig:
         low = xs[ys >= yb - max(4, int(H * 0.01))]
         info['feet'] = (float((low.min() + low.max()) / 2), float(yb))
         info['size'] = (W, H)
+        ref = self.over.get('_height_ref')
+        if ref and key != ref and key.split('/')[0] in self.over.get('_height_panels', ['body']):
+            # walk drawings: the profile face is too small to measure, so the drawing is sized by
+            # its height (top of head to feet) against the reference standing drawing
+            r = self.face(ref)
+            rys = np.nonzero(self.image(ref)[..., 3] > 128)[0]
+            rtop, rh = rys.min(), r['feet'][1] - rys.min()
+            top = ys.min()
+            fig = yb - top
+            info['width'] = float(r['width'] * fig / rh)
+            ey = top + (r['center'][1] - rtop) * fig / rh
+            band = xs[(ys >= top) & (ys <= ey)]
+            info['center'] = (float(np.median(band)), float(ey))
         self.info[key] = info
         return info
 
