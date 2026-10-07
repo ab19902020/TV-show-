@@ -84,7 +84,7 @@ def _lazy(fn, *a, **k):
 R_MED = _lazy(standing, 'roy', 'roy_stand', 0.13)
 R_CU = _lazy(standing, 'roy', 'roy_stand', 0.22)
 R_TIGHT = _lazy(standing, 'roy', 'roy_stand', 0.34)
-I_MED = _lazy(standing, 'rio', 'rio_stand', 0.15, 0.5, 0.36)
+I_MED = _lazy(standing, 'rio', 'rio_stand', 0.19, 0.5, 0.36)
 I_CU = _lazy(standing, 'rio', 'rio_stand', 0.21, 0.5, 0.40)
 I_TIGHT = _lazy(standing, 'rio', 'rio_stand', 0.29, 0.5, 0.42)
 
