@@ -203,23 +203,22 @@ STAGE = {
 
 # a silent reaction shot held after a line: line id -> (shot, who, face, hold)
 REACT = {
-    'MG_04': ('Nc', 'rooney', 'confused', 0.7),          # "...a bloke called Darren in a high vis jacket."
-    'RK_02': ('2', 'mark', 'confused', 1.0),             # "Depends on Darren."
-    'RK_07': ('Mc', 'mark', 'sad', 0.6),                 # "I would."
-    'RK_09': ('Mc', 'mark', 'shocked', 1.6),             # "They'll see him again." - the silence
-    'RK_10': ('Mc', 'mark', 'facepalm', 0.9),            # "No."
-    'RF_03': ('2', 'mark', 'confused', 0.6),             # "I wasn't booked."
-    'RK_12': ('Mc', 'mark', 'shocked', 0.5),             # "You're very defensive."
-    'MG_29': ('Ic', 'rio', 'neutral', 0.45),             # Mark thinks he has won
-    'RF_18': ('Mc', 'mark', 'shocked', 1.75),            # "Just not about football." - VAR, sad trombone
-    'RK_14': ('Nc', 'rooney', 'embarrassed', 0.5),       # "Still trying to get Ronaldo out the wedding."
+    'MG_04': ('Nc', 'rooney', 'confused', 0.5),          # "...a bloke called Darren in a high vis jacket."
+    'RK_02': ('2', 'mark', 'confused', 0.7),             # "Depends on Darren."
+    'RK_07': ('Mc', 'mark', 'sad', 0.45),                 # "I would."
+    'RK_09': ('Mc', 'mark', 'shocked', 1.3),             # "They'll see him again." - the silence
+    'RK_10': ('Mc', 'mark', 'facepalm', 0.7),            # "No."
+    'RF_03': ('2', 'mark', 'confused', 0.4),             # "I wasn't booked."
+    'RK_12': ('Mc', 'mark', 'shocked', 0.35),             # "You're very defensive."
+    'MG_29': ('Ic', 'rio', 'neutral', 0.3),             # Mark thinks he has won
+    'RF_18': ('Mc', 'mark', 'shocked', 1.1),            # "Just not about football." - VAR, sad trombone
+    'RK_14': ('Nc', 'rooney', 'embarrassed', 0.35),       # "Still trying to get Ronaldo out the wedding."
 }
 # a deadpan beat before a line: the cut to the speaker comes first, the line after the pause
 BEAT = {
-    'MG_03': 0.25, 'RK_01': 0.3, 'WR_02': 0.45, 'RK_02': 0.6, 'RK_04': 0.3, 'RK_06': 0.35, 'RK_07': 0.35, 'MG_10': 0.4,
-    'RK_08': 0.3, 'RK_09': 0.5, 'RK_10': 0.6, 'WR_07': 0.45, 'MG_14': 0.3, 'WR_08': 0.25, 'MG_15': 0.35, 'RK_11': 0.3,
-    'RF_07': 0.35, 'RF_11': 0.25, 'RK_12': 0.3, 'RF_15': 0.5, 'WR_09': 0.35, 'RF_16': 0.6, 'RF_18': 0.3, 'MG_30': 0.1,
-    'RK_13': 0.35, 'RF_20': 0.3, 'WR_10': 0.5, 'RK_14': 0.3,
+    'RK_01': 0.15, 'WR_02': 0.3, 'RK_02': 0.4, 'RK_06': 0.2, 'RK_07': 0.2, 'MG_10': 0.25, 'RK_09': 0.4, 'RK_10': 0.45,
+    'WR_07': 0.3, 'MG_15': 0.2, 'RK_11': 0.15, 'RF_07': 0.25, 'RK_12': 0.15, 'RF_15': 0.35, 'WR_09': 0.2, 'RF_16': 0.45,
+    'RF_18': 0.2, 'RK_13': 0.2, 'RF_20': 0.2, 'WR_10': 0.35, 'RK_14': 0.15,
 }
 # a slow push in over a line's opening shot (the fraction the frame narrows by)
 PUSH = {
@@ -242,8 +241,10 @@ SCORE = {
 }
 CASE = ['CHAMPIONS LEAGUES', "BALLON D'ORS", 'RECORDS', 'GOALS', 'STANDARDS']
 CASE_WORDS = ['champions', 'ballon', 'records', 'goals', 'standards']
-GAP = 0.2                                   # the next line comes straight in
-GAP_FAST = 0.12                             # the ending, and the interruptions
+# each voice clip already carries ~0.25 s of its own lead-in and tail, so lines butt straight up
+# against each other; interruptions and the ending cut in over the tail
+GAP = 0.0
+GAP_FAST = -0.12
 FAST = {'MG_18', 'RF_08', 'MG_19', 'RF_09', 'MG_20', 'MG_28', 'RF_17', 'MG_29', 'RF_18', 'MG_30', 'RK_13', 'MG_31',
         'RF_19', 'MG_32', 'RF_20', 'MG_33', 'WR_10', 'RK_14', 'RF_21'}
 REACT_HOLD = 0.9
@@ -309,7 +310,6 @@ def build():
     def crash(t, code):
         """A crash zoom: in from the subject's wider framing in a few frames, with a hit."""
         cut(t, code, crash_from=SHOTS[CRASH_FROM[code]][1], crash=0.13)
-        tl.sfx(t, 'impact', 0.55)
         tl.shakes.append((t + 0.1, 7.0, 0.35))
 
     def look(t, who, face):
@@ -318,9 +318,8 @@ def build():
     def gfx(t, **kv):
         key(t, 'gfx', **kv)
 
-    def score(t, sc, sound):
+    def score(t, sc, sound=None):
         gfx(t, score=sc, score_t=t)
-        tl.sfx(t, sound, 0.7 if sound == 'whistle' else 0.8)
 
     # everyone's starting state: Mark and Rooney at the desk, Roy standing, Rio not here
     key(0, 'mark', loc='seat', body='upper/both_hands_out', face='expressions/smug', flip=False)
@@ -339,8 +338,7 @@ def build():
             # strides in already talking
             t = tl.wait(0.3)
             cut(t, 'SWf', push=0.07, focus=(0.18, 0.55))
-            tl.sfx(t, 'record_scratch', 0.9)
-            tl.sfx(t + 0.1, 'door_open', 1.2)
+            tl.sfx(t + 0.05, 'door_open', 1.2)
             look(t + 0.12, 'mark', 'shocked')
             key(t + 0.12, 'mark', body='upper/arms_down')
             look(t + 0.2, 'rooney', 'shocked')
@@ -359,8 +357,8 @@ def build():
             cut(t, 'Mc', push=0.06)
             key(t, 'mark', body='upper/arms_down')
             look(t, 'mark', 'shocked')
-            tl.sfx(t, 'dun_dun', 0.75)
-            tl.wait(0.95)
+            tl.sfx(t, 'whoosh', 1.0)
+            tl.wait(0.7)
             last_code = 'Mc'
             continue
         if item == '@rooney_laughs':
@@ -371,8 +369,8 @@ def build():
                 key(t + j * 0.16, 'rooney', nod=0.0)
                 key(t + j * 0.16 + 0.08, 'rooney', nod=1.8, e='ease')
             key(t + 8 * 0.16, 'rooney', nod=0.0, e='ease')
-            score(t + 0.25, (1, 0), 'whistle')
-            tl.wait(1.35)
+            score(t + 0.25, (1, 0))
+            tl.wait(1.1)
             look(tl.t, 'rooney', 'happy')
             last_code = 'Nc'
             continue
@@ -383,7 +381,7 @@ def build():
             key(t + 0.15, 'rooney', nod=0.0)
             key(t + 0.35, 'rooney', nod=1.2, e='ease')
             key(t + 0.6, 'rooney', nod=0.0, e='ease')
-            tl.wait(0.95)
+            tl.wait(0.7)
             last_code = 'Nc'
             continue
         if item == '@end':
@@ -457,7 +455,6 @@ def build():
                 tw = word_time(ln, w)
                 if tw is not None:
                     gfx(tw, case=k + 1, case_t=tw)
-                    tl.sfx(tw, 'ding', 0.45)
         if lid == 'MG_24':
             gfx(tc, case=None)
         if lid == 'RK_09':
@@ -475,9 +472,8 @@ def build():
                 look(t, rwho, rface)
             if lid == 'RF_18':                     # VAR rules Mark's point out
                 gfx(t + 0.05, var='VAR CHECK', var_t=t + 0.05)
-                gfx(t + 0.55, var='NO GOAL', var_t=t + 0.55, score=(2, 0), score_t=t + 0.55)
+                gfx(t + 0.45, var='NO GOAL', var_t=t + 0.45, score=(2, 0), score_t=t + 0.45)
                 gfx(t + hold + 0.1, var=None)
-                tl.sfx(t + 0.55, 'sad_trombone', 0.75, cut=hold + 0.05 - 0.55 + 0.25)
             tl.wait(hold)
     return tl
 

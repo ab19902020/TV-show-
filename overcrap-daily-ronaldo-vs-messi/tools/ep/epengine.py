@@ -106,7 +106,10 @@ class Rig:
             panel, name = key.split('/')
             hi = os.path.join(EP, 'characters_x16', self.name, panel, name + '.png')
             path = hi if os.path.exists(hi) else os.path.join(EP, self.idx[panel][name]['file'])
-            self.imgs[key] = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            for fix in self.over.get('_eye_fix', {}).get(key, []):
+                img = fix_eye(img, fix)
+            self.imgs[key] = img
         return self.imgs[key]
 
     def face(self, key):
@@ -249,7 +252,13 @@ class Rig:
             if base is None and self.over.get('_mouth_style') != 'patch':
                 base = F.erase_mouth(img, info) if 'lips_box' in info else F.without_mouth(img, info)
                 self.cache[('nomouth', key)] = base
-            if self.over.get('_mouth_style') == 'patch':
+            if self.over.get('_mouth_style') == 'drawn':
+                m = self.over.get('_alias', {}).get(mouth, mouth)
+                shape = self.over.get('_shapes', {}).get(m) or DRAWN_SHAPES.get(m)
+                ov = self.over.get(key, {})
+                out = img if shape is None else drawn_mouth(img, info, shape, ov.get('squash', 1.0), ov.get('tilt', 0.0),
+                                                            self.over.get('_mouth_size', 1.0) * ov.get('size', 1.0))
+            elif self.over.get('_mouth_style') == 'patch':
                 inner = self.over.get('_inner')
                 if inner is not None:
                     mouth = self.over.get('_alias', {}).get(mouth, mouth)
@@ -273,7 +282,7 @@ class Rig:
                 rest_px = ov['mw'] * info['size'][0] if 'mw' in ov else self.mouth_ratio() * info['width']
                 width = rest_px * part[2] / rest_w
                 if mouth != 'rest':
-                    width *= OPEN_SCALE
+                    width *= self.over.get('_open_scale', OPEN_SCALE)
                 part = recolor_part(part, info['skin'])
                 sq = ov.get('squash', 1.0)
                 dy = 0.0
@@ -282,15 +291,57 @@ class Rig:
                     # reaches up into the nose
                     s = width / max(part[2], 1e-6)
                     top = info['lips_box'][2] + ov.get('lip_dy', 0.0) * info['size'][1]
+                    if mouth != 'rest' and 'nose' in ov:
+                        # an open mouth never starts right under the nose: it would read as covering it
+                        nose = ov['nose']
+                        ny = (max(p[1] for p in nose) if isinstance(nose, list) else nose) * info['size'][1]
+                        top = max(top, ny + self.over.get('_nose_gap', 0.0) * info['width'])
                     dy = top + part[3] * s / 2 - info['mouth'][1]
                 out = F.with_mouth(base, info, part, width, dy=dy, squash_x=sq, angle=ov.get('tilt', 0.0))
-        if blink > 0:
-            out = F.blink(out, info, blink)
+        if blink > 0 and len(info['eyes']) == 2 and not self.over.get('_no_blink'):
+            out = F.blink(out, info, blink)             # never one eye only: that reads as a wink / cross-eyed
         if flip:
             out = out[:, ::-1].copy()
         self.cache[ck] = out
         trim(self.cache, 150e6, keep=lambda k: k[0] == 'nomouth')
         return out
+
+
+def fix_eye(img, fix):
+    """Repaint an eye whose pupil looks the wrong way on the sheet (Roy's arms-crossed drawing
+    has one pupil jammed in the inner corner, which reads as cross-eyed): the eye's opening
+    (a polygon) is filled with the eye white, a new iris drawn where it should look, and the
+    upper lid line drawn back over the top. Coordinates are fractions of the drawing size."""
+    H, W = img.shape[:2]
+    out = img.copy()
+    S = 4                                            # supersampled for clean anti-aliased edges
+    poly = np.round(np.array(fix['poly']) * [W, H] * S).astype(np.int32)
+    x0, y0 = poly.min(0) // S - 30
+    x1, y1 = poly.max(0) // S + 30
+    x0, y0, x1, y1 = max(0, x0), max(0, y0), min(W, x1), min(H, y1)
+    h, w = y1 - y0, x1 - x0
+    off = np.array([x0, y0]) * S
+
+    def layer(draw):
+        m = np.zeros((h * S, w * S), np.uint8)
+        draw(m)
+        return cv2.resize(m, (w, h), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+
+    opening = layer(lambda m: cv2.fillPoly(m, [poly - off], 255, cv2.LINE_AA))
+    icx, icy, irx, iry = fix['iris']
+    iris = layer(lambda m: cv2.ellipse(m, (int((icx * W - x0) * S), int((icy * H - y0) * S)),
+                                       (int(irx * W * S), int(iry * H * S)), 0, 0, 360, 255, -1, cv2.LINE_AA))
+    iris *= opening
+    lid_pts = np.round(np.array(fix['lid']) * [W, H] * S).astype(np.int32) - off
+    lid = layer(lambda m: cv2.polylines(m, [lid_pts], False, 255, int(fix['lid_w'] * W * S), cv2.LINE_AA))
+    reg = out[y0:y1, x0:x1, :3].astype(np.float32)
+    white = np.array(fix.get('white', [246, 246, 250]), np.float32)
+    dark = np.array(fix.get('dark', [18, 16, 20]), np.float32)
+    reg = reg * (1 - opening[..., None]) + white * opening[..., None]
+    reg = reg * (1 - iris[..., None]) + dark * iris[..., None]
+    reg = reg * (1 - lid[..., None]) + dark * lid[..., None]
+    out[y0:y1, x0:x1, :3] = reg.clip(0, 255).astype(np.uint8)
+    return out
 
 
 @lru_cache(maxsize=64)
@@ -391,6 +442,93 @@ def inner_mouth(img, info, cell, shape, squash=1.0, lips=PATCH_LIPS, cell_cy=0.4
     y0 = int(round(cy - (cell_cy - dy) * h / sc * sc - (1 - sc) * (cell_cy - oy) * h / sc * 0))
     out = img.copy()
     F.paste(out, patch, x0, y0)
+    return out
+
+
+# drawn mouth openings, sized by the drawing's closed-lip width:
+# (width, height, top teeth, bottom teeth, tongue, roundness 0..1)
+DRAWN_SHAPES = {
+    'a': (0.78, 0.50, 0.30, 0.00, 0.55, 0.15),
+    'e': (0.86, 0.32, 0.36, 0.16, 0.00, 0.05),
+    'i': (0.74, 0.18, 0.50, 0.40, 0.00, 0.00),
+    'o': (0.46, 0.46, 0.22, 0.00, 0.45, 0.90),
+    'u': (0.34, 0.32, 0.00, 0.00, 0.50, 1.00),
+    'fv': (0.66, 0.15, 0.85, 0.00, 0.00, 0.00),
+    'cdg': (0.70, 0.22, 0.45, 0.30, 0.00, 0.05),
+    'l': (0.66, 0.24, 0.35, 0.00, 0.50, 0.10),
+    'r': (0.42, 0.30, 0.25, 0.00, 0.30, 0.80),
+    'th': (0.70, 0.17, 0.55, 0.30, 0.00, 0.00),
+}
+
+
+def drawn_mouth(img, info, shape, squash=1.0, tilt=0.0, size=1.0, ink=(22, 16, 18)):
+    """A mouth opening drawn in the flat cartoon style of the drawings themselves - a dark
+    inside with teeth and a tongue, inside an ink outline - over the drawing's own closed
+    mouth, so a bearded face keeps its own moustache and beard and only the opening moves.
+    The top edge stays at the drawn upper lip; the opening drops down from it."""
+    cx, cy, mw, _ = info['mouth']
+    w0, h0, tt, bt, tg, rnd = shape
+    w, h = w0 * mw * size * squash, h0 * mw * size
+    S = 4                                                   # supersampled, then reduced: smooth edges
+    pad = int(0.12 * mw) + 4
+    PW, PH = int(w + 2 * pad), int(h + 2 * pad)
+    ox, oy = cx - PW / 2, cy - 0.10 * h - pad              # hangs from just above the lip line
+    N = 48
+    ts = np.linspace(0, 1, N)
+    xs = (ts - 0.5) * w
+    # top edge: a shallow arch; bottom: a deep curve (an oval for O/U)
+    top = -0.06 * h * np.sin(np.pi * ts) + 0.05 * h * np.sin(np.pi * ts) ** 8
+    bot = h * (np.sin(np.pi * ts) ** (0.55 + 0.45 * (1 - rnd)))
+    slot = np.concatenate([np.stack([xs, top], 1), np.stack([xs[::-1], bot[::-1]], 1)])
+    if rnd > 0:
+        a = np.linspace(-np.pi, np.pi, len(slot))
+        oval = np.stack([np.cos(a) * w / 2, h / 2 + np.sin(a) * h / 2], 1)
+        # match the slot's point order: along the top left to right, back along the bottom
+        oval = np.concatenate([np.stack([xs, h / 2 - np.sqrt(np.clip(1 - (2 * xs / w) ** 2, 0, 1)) * h / 2], 1),
+                               np.stack([xs[::-1], h / 2 + np.sqrt(np.clip(1 - (2 * xs[::-1] / w) ** 2, 0, 1)) * h / 2], 1)])
+        pts = slot * (1 - rnd) + oval * rnd
+    else:
+        pts = slot
+    th = math.radians(tilt)
+    R = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+    pts = pts @ R.T + [PW / 2, pad + 0.10 * h]
+
+    def mask(draw):
+        m = np.zeros((PH * S, PW * S), np.uint8)
+        draw(m)
+        return cv2.resize(m, (PW, PH), interpolation=cv2.INTER_AREA).astype(np.float32) / 255
+
+    P = np.round(pts * S).astype(np.int32)
+    inside = mask(lambda m: cv2.fillPoly(m, [P], 255, cv2.LINE_AA))
+    lw = max(2, int(0.045 * mw * size * S))
+    outline = mask(lambda m: cv2.polylines(m, [P], True, 255, lw, cv2.LINE_AA))
+    yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float32)
+    u = (xx - PW / 2) * math.cos(-th) - (yy - pad - 0.10 * h) * math.sin(-th)
+    v = (xx - PW / 2) * math.sin(-th) + (yy - pad - 0.10 * h) * math.cos(-th)
+    teeth = np.zeros_like(inside)
+    if tt > 0:
+        teeth = np.maximum(teeth, np.clip((tt * h - v) / 1.5, 0, 1))
+    if bt > 0:
+        teeth = np.maximum(teeth, np.clip((v - (1 - bt) * h * 0.92) / 1.5, 0, 1) * (np.abs(u) < 0.36 * w))
+    teeth *= inside
+    tongue = np.zeros_like(inside)
+    if tg > 0:
+        d = np.sqrt((u / (0.34 * w)) ** 2 + ((v - h * 1.02) / (tg * h)) ** 2)
+        tongue = np.clip((1 - d) / 0.08, 0, 1) * inside
+    col = np.zeros((PH, PW, 3), np.float32)
+    col[:] = (34, 14, 52)                                   # the dark inside (BGR: a deep red-brown)
+    col = col * (1 - tongue[..., None]) + np.array([78, 72, 178], np.float32) * tongue[..., None]
+    col = col * (1 - teeth[..., None]) + np.array([244, 244, 246], np.float32) * teeth[..., None]
+    col = col * (1 - outline[..., None]) + np.array(ink, np.float32) * outline[..., None]
+    alpha = np.maximum(inside, outline)
+    out = img.copy()
+    x0, y0 = int(round(ox)), int(round(oy))
+    H, W = img.shape[:2]
+    xa, ya, xb, yb = max(0, x0), max(0, y0), min(W, x0 + PW), min(H, y0 + PH)
+    if xa < xb and ya < yb:
+        al = alpha[ya - y0:yb - y0, xa - x0:xb - x0, None]
+        reg = out[ya:yb, xa:xb, :3].astype(np.float32)
+        out[ya:yb, xa:xb, :3] = (reg * (1 - al) + col[ya - y0:yb - y0, xa - x0:xb - x0] * al).astype(np.uint8)
     return out
 
 

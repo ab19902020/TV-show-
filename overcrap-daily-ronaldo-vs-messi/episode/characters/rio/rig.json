@@ -1,6 +1,6 @@
 {
  "_doc": "Rio's lip sync pastes his sheet's mouth cells (lips, moustache and beard) over his mouth: 'mouth' is [cx, cy, w] as fractions of the drawing (centre of the closed lips, corner-to-corner width). Gesture busts stand where turnaround/front has its face (_stand_ref).",
- "_mouth_style": "patch",
+ "_mouth_style": "drawn",
  "_patch_lips": 0.52,
  "_patch_cy": 0.47,
  "_patch_oval": 0.6,
@@ -129,8 +129,5 @@
   ]
  },
  "_cu_overlap": 0.45,
- "_height_ref": "turnaround/front",
- "_alias": {
-  "i": "e"
- }
+ "_height_ref": "turnaround/front"
 }
