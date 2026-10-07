@@ -234,9 +234,18 @@ class Rig:
                 self.cache[('nomouth', key)] = base
             if self.over.get('_mouth_style') == 'patch':
                 part = self.patch_part(mouth)
-                out = img if part is None else patch_mouth(img, info, part, self.over.get(key, {}).get('squash', 1.0),
-                                                           self.over.get('_patch_lips', PATCH_LIPS),
-                                                           self.over.get('_patch_cy', 0.49), self.over.get('_patch_oval', 0.6))
+                inner = self.over.get('_inner')
+                if inner is not None:
+                    # only the open mouth from the sheet (teeth, tongue, lips) over the drawing's own
+                    # beard; closed shapes show the mouth as drawn
+                    out = img if (part is None or mouth not in inner) else inner_mouth(
+                        img, info, part, inner[mouth], self.over.get(key, {}).get('squash', 1.0),
+                        self.over.get('_patch_lips', PATCH_LIPS), self.over.get('_patch_cy', 0.49))
+                else:
+                    out = img if part is None else patch_mouth(img, info, part, self.over.get(key, {}).get('squash', 1.0),
+                                                               self.over.get('_patch_lips', PATCH_LIPS),
+                                                               self.over.get('_patch_cy', 0.49),
+                                                               self.over.get('_patch_oval', 0.6))
             else:
                 parts = self.mouth_parts()
                 part = parts.get(mouth) or parts.get('rest')
@@ -326,6 +335,27 @@ def patch_mouth(img, info, cell, squash=1.0, lips=PATCH_LIPS, cell_cy=0.49, oval
     rgba = np.dstack([patch, alpha * 255]).astype(np.uint8)
     out = img.copy()
     F.paste(out, rgba, x0, y0)
+    return out
+
+
+def inner_mouth(img, info, cell, oval, squash=1.0, lips=PATCH_LIPS, cell_cy=0.49):
+    """Rio's lip sync: from a mouth cell of his sheet only the opening (an oval given in cell
+    fractions: cx, cy, rx, ry) is pasted, scaled and placed as patch_mouth places the whole
+    cell; the beard and moustache around it stay the drawing's own."""
+    cx, cy, mw, _ = info['mouth']
+    ch, cw = cell.shape[:2]
+    s = mw / lips / cw
+    sx = s * squash
+    patch = cv2.resize(cell, (max(2, int(cw * sx)), max(2, int(ch * s))),
+                       interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_CUBIC)
+    h, w = patch.shape[:2]
+    x0, y0 = int(round(cx - 0.5 * w)), int(round(cy - cell_cy * h))
+    ox, oy, rx, ry = oval
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    d = np.sqrt(((xx / w - ox) / rx) ** 2 + ((yy / h - oy) / ry) ** 2)
+    alpha = np.clip((1.0 - d) / 0.18, 0, 1)
+    out = img.copy()
+    F.paste(out, np.dstack([patch[..., :3], (alpha * 255).astype(np.uint8)]), x0, y0)
     return out
 
 
@@ -774,7 +804,7 @@ class Renderer:
             # Roy: the body from mid-beard down (its own head would show beside a turned one)
             chin = int((info['mouth'][1] + 0.22 * info['width']) * s)
         else:
-            chin = int(cu_bottom - 0.14 * fw_out - py)
+            chin = int(cu_bottom - rig.over.get('_cu_overlap', 0.14) * fw_out - py)
         chin = max(0, min(res.shape[0], chin))
         over(frame, res[chin:], px, py + chin)
         mk = ('cumask', who, cu, pl['flip'], cres.shape)
