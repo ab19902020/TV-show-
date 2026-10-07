@@ -9,35 +9,35 @@
  "turnaround/front": {
   "mouth": [
    0.543,
-   0.341,
+   0.2607,
    0.2
   ]
  },
  "upper/folded_arms": {
   "mouth": [
    0.67,
-   0.462,
+   0.427,
    0.15
   ]
  },
  "upper/warning": {
   "mouth": [
    0.705,
-   0.471,
+   0.4455,
    0.14
   ]
  },
  "upper/shrug": {
   "mouth": [
    0.592,
-   0.43,
+   0.4136,
    0.1
   ]
  },
  "expressions/neutral": {
   "mouth": [
    0.528,
-   0.742,
+   0.7206,
    0.32
   ]
  },
@@ -65,14 +65,14 @@
  "head/front": {
   "mouth": [
    0.53,
-   0.773,
+   0.754,
    0.305
   ]
  },
  "head/three_quarter_right": {
   "mouth": [
-   0.76,
-   0.715,
+   0.7209,
+   0.6759,
    0.28
   ]
  },
@@ -85,6 +85,6 @@
  "upper/laughing_bent": {
   "no_mouth": true
  },
- "_cu_px": 700,
+ "_cu_px": 780,
  "_cu_ramp": 0.3
 }

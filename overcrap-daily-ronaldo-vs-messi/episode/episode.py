@@ -84,7 +84,7 @@ def _lazy(fn, *a, **k):
 R_MED = _lazy(standing, 'roy', 'roy_stand', 0.13)
 R_CU = _lazy(standing, 'roy', 'roy_stand', 0.22)
 R_TIGHT = _lazy(standing, 'roy', 'roy_stand', 0.34)
-I_MED = _lazy(standing, 'rio', 'rio_stand', 0.19, 0.5, 0.36)
+I_MED = _lazy(standing, 'rio', 'rio_stand', 0.20, 0.5, 0.40)
 I_CU = _lazy(standing, 'rio', 'rio_stand', 0.21, 0.5, 0.40)
 I_TIGHT = _lazy(standing, 'rio', 'rio_stand', 0.29, 0.5, 0.42)
 
@@ -181,7 +181,7 @@ STAGE = {
     'RF_15': ('Ix', IU + 'folded_arms', 'head/front', []),
     'WR_09': ('Nc', NU + 'seated', 'confused', []),
     'MG_26': ('Mx', MU + 'desk_rant', 'shouting', []),
-    'RF_16': ('Ic', IU + 'folded_arms', 'head/three_quarter_right', []),
+    'RF_16': ('Ic', IU + 'folded_arms', 'side_eye', []),
     'MG_27': ('M', MU + 'both_hands_out', 'confused', [('lunar', 'Mc'), ('lunar', 'face=angry_rant')]),
     # ending: a touch faster
     'MG_28': ('M', MU + 'pointing', 'smug', [('could', 'Mc')]),
