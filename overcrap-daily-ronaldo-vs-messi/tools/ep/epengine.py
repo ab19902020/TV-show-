@@ -224,6 +224,29 @@ class Rig:
             self.parts[key] = cv2.imread(path, cv2.IMREAD_UNCHANGED)[..., :3]
         return self.parts[key]
 
+    def erased(self, key):
+        """The drawing with its own mouth painted out (cached), for the open mouths to go on."""
+        ck = ('erased', key)
+        if ck not in self.cache:
+            img, info = self.image(key), self.face(key)
+            ov = self.over.get(key, {})
+            if 'erase' in ov:
+                W, H = info['size']
+                bx = [ov['erase'][0] * W, ov['erase'][1] * W, ov['erase'][2] * H, ov['erase'][3] * H]
+            else:
+                cx, cy, mw, _ = info['mouth']
+                e = self.over.get('_erase_box', [0.75, 0.75, 0.3, 0.4])       # left, right, up, down in mouth widths
+                bx = [cx - e[0] * mw, cx + e[1] * mw, cy - e[2] * mw, cy + e[3] * mw]
+            if self.over.get('_erase_mode') == 'lipline':
+                self.cache[ck] = erase_lip_line(img, info, bx)
+            elif self.over.get('_erase_mode') == 'flat':
+                self.cache[ck] = flatten_lips(img, info, bx)
+            elif self.over.get('_erase_mode') == 'none':
+                self.cache[ck] = img
+            else:
+                self.cache[ck] = erase_marks(img, info, bx)
+        return self.cache[ck]
+
     def mouth_ratio(self):
         """Closed-mouth width / face width, from the front head close-up."""
         r = self.over.get('_mouth_ratio')
@@ -256,13 +279,20 @@ class Rig:
                 m = self.over.get('_alias', {}).get(mouth, mouth)
                 shape = self.over.get('_shapes', {}).get(m) or DRAWN_SHAPES.get(m)
                 ov = self.over.get(key, {})
-                out = img if shape is None else drawn_mouth(img, info, shape, ov.get('squash', 1.0), ov.get('tilt', 0.0),
-                                                            self.over.get('_mouth_size', 1.0) * ov.get('size', 1.0))
+                size = self.over.get('_mouth_size', 1.0) * ov.get('size', 1.0)
+                if shape is not None:
+                    out = drawn_mouth(self.erased(key), info, shape, ov.get('squash', 1.0), ov.get('tilt', 0.0), size)
+                else:
+                    # closed sounds inside a line: the same base with closed lips, so the lips
+                    # don't flicker between the drawn ones and the open mouth
+                    out = closed_mouth(self.erased(key), info, ov.get('squash', 1.0), ov.get('tilt', 0.0), size)
             elif self.over.get('_mouth_style') == 'patch':
                 inner = self.over.get('_inner')
                 if inner is not None:
                     mouth = self.over.get('_alias', {}).get(mouth, mouth)
                 part = self.patch_part(mouth)
+                if self.over.get('_erase'):
+                    img = self.erased(key)
                 if inner is not None:
                     # only the open mouth from the sheet (teeth, tongue, lips) over the drawing's own
                     # beard; closed shapes show the mouth as drawn
@@ -303,8 +333,104 @@ class Rig:
         if flip:
             out = out[:, ::-1].copy()
         self.cache[ck] = out
-        trim(self.cache, 150e6, keep=lambda k: k[0] == 'nomouth')
+        trim(self.cache, 150e6, keep=lambda k: k[0] in ('nomouth', 'erased'))
         return out
+
+
+def erase_marks(img, info, box):
+    """Paint out a drawing's own mouth before a new one goes on (a bearded or grinning drawing
+    would otherwise show its drawn mouth beside the new one): inside `box` (pixels x0, x1, y0, y1)
+    the thin dark lines, the lips and the teeth are found and inpainted from the skin and beard
+    around them. Thick dark shapes (a moustache, a goatee) are not thin lines and stay."""
+    H, W = img.shape[:2]
+    x0, x1, y0, y1 = [int(round(v)) for v in box]
+    fw = info['width']
+    m = int(0.08 * fw) + 4
+    X0, X1, Y0, Y1 = max(0, x0 - m), min(W, x1 + m), max(0, y0 - m), min(H, y1 + m)
+    crop = np.ascontiguousarray(img[Y0:Y1, X0:X1, :3])
+    L = cv2.cvtColor(crop.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
+    k = max(3, int(0.05 * fw)) | 1
+    bh = cv2.morphologyEx(L[..., 0], cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    thin = bh > 9                                           # dark lines thinner than k
+    lips = (L[..., 1] > 22) & (L[..., 0] < 75)              # red lips, tongue, gums
+    teeth = (L[..., 0] > 78) & (L[..., 2] < 26) & (L[..., 1] < 12)   # white or cream teeth
+    inner = (L[..., 0] < 32)                                 # the dark inside of a drawn open mouth
+    inside = np.zeros(thin.shape, bool)
+    inside[y0 - Y0:y1 - Y0, x0 - X0:x1 - X0] = True
+    mask = (thin | lips | teeth | inner) & inside & (img[Y0:Y1, X0:X1, 3] > 200)
+    d = max(2, int(0.012 * fw))
+    mask = cv2.dilate(mask.astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * d + 1, 2 * d + 1)))
+    mask &= inside.astype(np.uint8)
+    if not mask.any():
+        return img
+    fill = cv2.inpaint(crop, mask * 255, max(3, int(0.02 * fw)), cv2.INPAINT_TELEA)
+    out = img.copy()
+    soft = cv2.GaussianBlur(mask.astype(np.float32), (0, 0), max(1.0, 0.004 * fw))
+    soft = np.maximum(soft, mask.astype(np.float32))[..., None]
+    out[Y0:Y1, X0:X1, :3] = (crop * (1 - soft) + fill * soft).astype(np.uint8)
+    return out
+
+
+def flatten_lips(img, info, box):
+    """Roy: his drawn lips (the salmon shapes and the line between them, inside `box`) take the
+    flat grey of the beard around them, so a drawn opening doesn't sit beside a second, closed
+    mouth. Flat, not blurred: it keeps the drawing's flat-colour look."""
+    H, W = img.shape[:2]
+    x0, x1, y0, y1 = [int(round(v)) for v in box]
+    crop = np.ascontiguousarray(img[y0:y1, x0:x1, :3])
+    L = cv2.cvtColor(crop.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
+    chroma = np.hypot(L[..., 1], L[..., 2])
+    warm = (chroma > 16) & (L[..., 0] > 30)                 # lips / skin showing between the hairs
+    fw = info['width']
+    k = max(3, int(0.04 * fw)) | 1
+    bh = cv2.morphologyEx(L[..., 0], cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    mask = (warm | (bh > 10)) & (img[y0:y1, x0:x1, 3] > 200)
+    beard = ~mask & (chroma < 14)
+    if beard.sum() < 20 or not mask.any():
+        return img
+    grey = np.median(crop[beard], axis=0)
+    # an elliptical box, so the change has no straight edges
+    yy, xx = np.mgrid[0:y1 - y0, 0:x1 - x0].astype(np.float32)
+    ell = ((xx - (x1 - x0) / 2) / ((x1 - x0) / 2)) ** 2 + ((yy - (y1 - y0) / 2) / ((y1 - y0) / 2)) ** 2 <= 1
+    m = cv2.dilate((mask & ell).astype(np.uint8), np.ones((3, 3), np.uint8)).astype(np.float32)
+    m = cv2.GaussianBlur(m, (0, 0), 1.0)[..., None]
+    out = img.copy()
+    out[y0:y1, x0:x1, :3] = (crop * (1 - m) + grey * m).astype(np.uint8)
+    return out
+
+
+def erase_lip_line(img, info, box):
+    """Rio: take out only the thin drawn lip line (and the lips' darker shading) inside `box`,
+    filling it with the lip-band skin around it. The moustache and the goatee are thick, so
+    they are left exactly as drawn."""
+    x0, x1, y0, y1 = [int(round(v)) for v in box]
+    crop = np.ascontiguousarray(img[y0:y1, x0:x1, :3])
+    L = cv2.cvtColor(crop.astype(np.float32) / 255, cv2.COLOR_BGR2LAB)
+    fw = info['width']
+    k = max(5, int(0.035 * fw)) | 1
+    bh = cv2.morphologyEx(L[..., 0], cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    skin = (np.hypot(L[..., 1], L[..., 2]) > 25) & (L[..., 0] > 45)
+    near_skin = cv2.blur(skin.astype(np.float32), (k * 2 + 1, k * 2 + 1)) > 0.35
+    shade = (np.hypot(L[..., 1], L[..., 2]) > 20) & (L[..., 0] > 25) & (L[..., 0] < np.median(L[..., 0][skin]) - 8) \
+        if skin.sum() > 20 else np.zeros_like(skin)
+    mask = ((bh > 8) | shade) & near_skin & (img[y0:y1, x0:x1, 3] > 200)
+    yy, xx = np.mgrid[0:y1 - y0, 0:x1 - x0].astype(np.float32)
+    ell = ((xx - (x1 - x0) / 2) / ((x1 - x0) / 2)) ** 2 + ((yy - (y1 - y0) / 2) / ((y1 - y0) / 2)) ** 2 <= 1
+    mask &= ell
+    if not mask.any() or skin.sum() < 20:
+        return img
+    m = cv2.dilate(mask.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool) & (skin | mask)
+    # fill from the skin right around it (normalised blur of the skin only)
+    w = (skin & ~m).astype(np.float32)
+    sig = max(2.0, 0.02 * fw)
+    num = cv2.GaussianBlur(crop.astype(np.float32) * w[..., None], (0, 0), sig)
+    den = cv2.GaussianBlur(w, (0, 0), sig)[..., None]
+    fill = num / np.maximum(den, 1e-4)
+    a = cv2.GaussianBlur(m.astype(np.float32), (0, 0), 0.8)
+    a = np.maximum(a, m)[..., None]
+    out = img.copy()
+    out[y0:y1, x0:x1, :3] = (crop * (1 - a) + fill * a).clip(0, 255).astype(np.uint8)
+    return out
 
 
 def fix_eye(img, fix):
@@ -529,6 +655,33 @@ def drawn_mouth(img, info, shape, squash=1.0, tilt=0.0, size=1.0, ink=(22, 16, 1
         al = alpha[ya - y0:yb - y0, xa - x0:xb - x0, None]
         reg = out[ya:yb, xa:xb, :3].astype(np.float32)
         out[ya:yb, xa:xb, :3] = (reg * (1 - al) + col[ya - y0:yb - y0, xa - x0:xb - x0] * al).astype(np.uint8)
+    return out
+
+
+def closed_mouth(img, info, squash=1.0, tilt=0.0, size=1.0, ink=(22, 16, 18)):
+    """Closed lips in the drawings' style: one ink line, a little thicker in the middle."""
+    cx, cy, mw, _ = info['mouth']
+    w = 0.62 * mw * size * squash
+    S = 4
+    pad = int(0.1 * mw) + 4
+    PW, PH = int(w + 2 * pad), int(0.3 * mw + 2 * pad)
+    ts = np.linspace(-1, 1, 40)
+    th = math.radians(tilt)
+    pts = np.stack([ts * w / 2, 0.035 * mw * (1 - ts ** 2) - 0.02 * mw], 1)
+    R = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+    pts = pts @ R.T + [PW / 2, PH / 2]
+    m = np.zeros((PH * S, PW * S), np.uint8)
+    lw = max(2, int(0.04 * mw * size * S))
+    cv2.polylines(m, [np.round(pts * S).astype(np.int32)], False, 255, lw, cv2.LINE_AA)
+    a = cv2.resize(m, (PW, PH), interpolation=cv2.INTER_AREA).astype(np.float32)[..., None] / 255
+    out = img.copy()
+    x0, y0 = int(round(cx - PW / 2)), int(round(cy - PH / 2))
+    H, W = img.shape[:2]
+    xa, ya, xb, yb = max(0, x0), max(0, y0), min(W, x0 + PW), min(H, y0 + PH)
+    if xa < xb and ya < yb:
+        al = a[ya - y0:yb - y0, xa - x0:xb - x0]
+        reg = out[ya:yb, xa:xb, :3].astype(np.float32)
+        out[ya:yb, xa:xb, :3] = (reg * (1 - al) + np.array(ink, np.float32) * al).astype(np.uint8)
     return out
 
 
@@ -836,7 +989,7 @@ class Renderer:
         for b in self.blinks[who]:
             k = (t - b) * FPS
             if 0 <= k < 4:
-                return [0.6, 1.0, 1.0, 0.6][int(k)]
+                return [0.45, 0.75, 0.75, 0.45][int(k)]
         return 0.0
 
     def speaking(self, who, t):
@@ -970,7 +1123,8 @@ class Renderer:
         info = rig.face(key)
         W, H = info['size']
         idle = rig.over.get('_rest_when_silent', [])       # drawn open mouths close when not talking
-        body_mouth = (mouth if talk else ('rest' if key in idle else None)) if cu is None else None
+        quiet = rig.over.get('_silent_mouth', 'rest')
+        body_mouth = (mouth if talk else (quiet if key in idle else None)) if cu is None else None
         res, s = self.sprite_scaled(rig, key, body_mouth, blink if cu is None else 0.0, pl['flip'], fw_out / max(info['width'], 1))
         cx, cy = info['center']
         if pl['flip']:
@@ -1026,7 +1180,7 @@ class Renderer:
         fcx, fcy = px + cx * s, py + cy * s
         cinfo = rig.face(cu)
         cs = fw_out / max(cinfo['width'], 1)
-        cres, cs = self.sprite_scaled(rig, cu, mouth if talk else ('rest' if cu in idle else None), blink, pl['flip'], cs)
+        cres, cs = self.sprite_scaled(rig, cu, mouth if talk else (quiet if cu in idle else None), blink, pl['flip'], cs)
         ccx, ccy = cinfo['center']
         if pl['flip']:
             ccx = cinfo['size'][0] - ccx

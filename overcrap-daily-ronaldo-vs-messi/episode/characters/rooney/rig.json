@@ -88,5 +88,6 @@
  "_cu_ramp": 0.2,
  "turnaround/front": {
   "no_mouth": true
- }
+ },
+ "_erase": true
 }

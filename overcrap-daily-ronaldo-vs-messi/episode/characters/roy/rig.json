@@ -87,7 +87,13 @@
    0.2435,
    0.15
   ],
-  "face_w": 0.93
+  "face_w": 0.93,
+  "erase": [
+   0.455,
+   0.645,
+   0.233,
+   0.262
+  ]
  },
  "body/pointing": {
   "mouth": [
@@ -95,7 +101,13 @@
    0.2255,
    0.14
   ],
-  "face_w": 1.008
+  "face_w": 1.008,
+  "erase": [
+   0.42,
+   0.605,
+   0.219,
+   0.249
+  ]
  },
  "body/open_hand": {
   "mouth": [
@@ -113,7 +125,13 @@
    0.105
   ],
   "squash": 0.9,
-  "face_w": 1.021
+  "face_w": 1.021,
+  "erase": [
+   0.352,
+   0.478,
+   0.224,
+   0.249
+  ]
  },
  "_cu_full_body": true,
  "body/walk_1": {
@@ -210,5 +228,24 @@
   ]
  },
  "_cu_px": 100000,
- "_no_blink": true
+ "_no_blink": true,
+ "_erase_mode": "flat",
+ "_rest_when_silent": [
+  "expressions/neutral",
+  "expressions/angry",
+  "expressions/speaking",
+  "expressions/disgust",
+  "expressions/sarcastic",
+  "expressions/confused",
+  "expressions/annoyed",
+  "expressions/shouting",
+  "expressions/dry_humour",
+  "expressions/thinking",
+  "head/detail",
+  "body/arms_crossed",
+  "body/pointing",
+  "body/open_hand",
+  "body/palm_down"
+ ],
+ "_silent_mouth": "mbp"
 }

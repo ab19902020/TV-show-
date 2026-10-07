@@ -123,10 +123,10 @@ STAGE = {
     'MG_05': ('M', MU + 'both_hands_out', 'angry_rant', [('imaginary', 'Mc')]),
     # Ronaldo / Portugal
     'MG_06': ('2', MU + 'arms_down', 'neutral', [('messi', 'M'), ('ronaldo', 'body=both_hands_out'), ('emergency', 'Mc')]),
-    'RK_03': ('R', RB + 'palm_down', 'neutral', []),
+    'RK_03': ('R', RB + 'arms_crossed', 'neutral', []),
     'MG_07': ('Mc', MU + 'pointing', 'smug', []),
     'WR_03': ('N', NU + 'explaining', 'neutral', []),
-    'RK_04': ('Rc', RB + 'palm_down', 'annoyed', []),
+    'RK_04': ('Rc', RB + 'arms_crossed', 'annoyed', []),
     'MG_08': ('M', MU + 'both_hands_out', 'angry_rant', [("doesn't", 'body=shrug'), ('portugal', 'Mc'),
                                                          ('defcon', '!Mx'), ('defcon', 'face=shouting')]),
     'WR_04': ('N', NU + 'seated', 'neutral', []),
@@ -136,7 +136,7 @@ STAGE = {
     'WR_05': ('Nc', NU + 'seated', 'smug', []),
     'RK_06': ('!Rx', RB + 'arms_crossed', 'disgust', []),
     'WR_06': ('N', NU + 'talking', 'smug', []),
-    'RK_07': ('Rx', RB + 'pointing', 'neutral', []),
+    'RK_07': ('Rx', RB + 'arms_crossed', 'neutral', []),
     'MG_10': ('Mc', MU + 'arms_down', 'sad', []),
     # Messi send-off
     'MG_11': ('M', MU + 'both_hands_out', 'smug', [('state', 'body=shrug'), ('alive', 'Mc')]),

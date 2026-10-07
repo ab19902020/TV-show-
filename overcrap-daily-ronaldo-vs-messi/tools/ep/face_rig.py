@@ -405,26 +405,103 @@ def with_mouth(base, info, part, width, dx=0.0, dy=0.0, squash_x=1.0, angle=0.0)
     return out
 
 
+def eye_region(rgba, info, eye):
+    """The whole visible eye: its white plus the pupil and iris inside it (a turned head's far
+    eye has its pupil at the edge of the white, so the white alone is not enough)."""
+    cx, cy, rx, ry = eye[:4]
+    H, W = rgba.shape[:2]
+    x0, x1 = int(max(0, cx - 2.2 * rx)), int(min(W, cx + 2.2 * rx))
+    y0, y1 = int(max(0, cy - 2.2 * ry)), int(min(H, cy + 2.2 * ry))
+    L = lab(rgba[y0:y1, x0:x1, :3])
+    white = (L[..., 0] > 80) & (np.hypot(L[..., 1], L[..., 2]) < 14)
+    n, cc, st, cen = cv2.connectedComponentsWithStats(white.astype(np.uint8), connectivity=8)
+    if n < 2:
+        return None
+    d = [np.hypot(cen[k][0] + x0 - cx, cen[k][1] + y0 - cy) for k in range(1, n)]
+    k = 1 + int(np.argmin(d))
+    w = cc == k
+    # whites split in two by the pupil: the other big pieces close by belong to the same eye
+    for j in range(1, n):
+        if j != k and st[j, cv2.CC_STAT_AREA] > 0.08 * st[k, cv2.CC_STAT_AREA] and \
+                np.hypot(cen[j][0] - cen[k][0], cen[j][1] - cen[k][1]) < 2.2 * rx:
+            w |= cc == j
+    ys, xs = np.nonzero(w)
+    wy0, wy1 = ys.min(), ys.max()
+    dark = (L[..., 0] < 45) & ~w
+    # the pupil is a thick dark blob; the eye's ink outline is a thin line: an opening keeps the
+    # first and drops the second
+    k = max(3, int(0.45 * min(rx, ry))) | 1
+    thick = cv2.morphologyEx(dark.astype(np.uint8), cv2.MORPH_OPEN,
+                             cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))) > 0
+    near = cv2.dilate(w.astype(np.uint8), np.ones((7, 7), np.uint8)) > 0
+    nd, dc = cv2.connectedComponents(thick.astype(np.uint8), connectivity=8)
+    ids = np.unique(dc[near & thick])
+    pupil = np.isin(dc, ids[ids > 0])
+    band = np.zeros_like(pupil)
+    band[max(0, wy0 - 2):wy1 + 3] = True
+    pupil &= band
+    reg = (w | pupil).astype(np.uint8)
+    hull = np.zeros_like(reg)
+    cv2.fillConvexPoly(hull, cv2.convexHull(cv2.findNonZero(reg)), 1)
+    # never over the eye's outline: dark pixels near the edge of the eye shape (a pupil inside it
+    # is covered by the lid)
+    t = max(2, int(0.18 * min(rx, ry)))
+    edge = hull & ~(cv2.erode(hull, np.ones((2 * t + 1, 2 * t + 1), np.uint8)))
+    hull &= ~(dark & ~pupil & (edge > 0)).astype(np.uint8)
+    m = np.zeros((H, W), bool)
+    m[y0:y1, x0:x1] = hull > 0
+    return m
+
+
 def blink(rgba, info, amount=1.0, lash=(40, 30, 30)):
-    """Close the eyes: skin lids over the whites (and pupils), with a lash line."""
+    """Close the eyes: skin lids (the skin right around each eye) come down over the whole eye,
+    whites and pupils, with a lash line along the bottom when shut."""
     if info is None or not info['eyes'] or amount <= 0:
         return rgba
     out = rgba.copy()
-    skin_bgr = cv2.cvtColor(np.float32([[info['skin']]]), cv2.COLOR_LAB2BGR)[0, 0] * 255
-    for (cx, cy, rx, ry, _) in info['eyes']:
-        rx2, ry2 = rx * 1.15, ry * 1.2
-        lid = np.zeros(out.shape[:2], np.uint8)
-        cut = cy - ry2 + 2 * ry2 * min(amount, 1.0)
-        cv2.ellipse(lid, (int(cx), int(cy)), (int(rx2), int(ry2)), 0, 0, 360, 1, -1)
-        lid[int(cut):] = 0
-        lid = lid.astype(bool) & (out[..., 3] > 0)
-        out[lid, :3] = skin_bgr.astype(np.uint8)
-        if amount >= 0.95:
-            t = max(2, int(ry * 0.18))
-            cv2.ellipse(out, (int(cx), int(cy + ry * 0.1)), (int(rx * 1.05), int(ry * 0.35)), 0, 10, 170,
-                        (*lash, 255), t, cv2.LINE_AA)
+    for eye in info['eyes']:
+        cx, cy, rx, ry = eye[:4]
+        m = info.setdefault('_eye_regions', {}).get(eye[:2])
+        if m is None:
+            m = eye_region(rgba, info, eye)
+            info['_eye_regions'][eye[:2]] = m if m is not None else False
+        if m is None or m is False:
+            continue
+        ys, xs = np.nonzero(m)
+        top, bot = ys.min(), ys.max()
+        k = max(3, int(0.6 * ry))
+        ring = (cv2.dilate(m.astype(np.uint8), np.ones((2 * k + 1, 2 * k + 1), np.uint8)) > 0) & ~m
+        ring[:int(cy)] = False                                # the skin below the eye, not the brow
+        L = lab(out[..., :3])
+        sk = ring & (np.linalg.norm(L - info['skin'], axis=2) < 22) & (out[..., 3] > 200)
+        if sk.sum() > 10:
+            skin = np.median(out[..., :3][sk], axis=0)
         else:
-            cv2.line(out, (int(cx - rx), int(cut)), (int(cx + rx), int(cut)), (*lash, 255), max(2, int(ry * 0.12)), cv2.LINE_AA)
+            skin = cv2.cvtColor(np.float32([[info['skin']]]), cv2.COLOR_LAB2BGR)[0, 0] * 255
+        cut = top + (bot - top + 1) * min(amount, 1.0)
+        lid = m.copy()
+        lid[int(cut):] = False
+        soft = cv2.GaussianBlur(lid.astype(np.float32), (0, 0), 0.8)
+        soft = np.maximum(soft * m, lid)[..., None]
+        out[..., :3] = (out[..., :3] * (1 - soft) + skin * soft).astype(np.uint8)
+        t = max(2, int(ry * 0.16))
+        if amount >= 0.95:
+            # the lash: a smooth arc a little above the lower edge of the eye, inset at the corners
+            cols = np.unique(xs)
+            c0, c1 = cols.min(), cols.max()
+            inset = max(1, int(0.08 * (c1 - c0)))
+            sel = [c for c in cols if c0 + inset <= c <= c1 - inset]
+            if len(sel) > 3:
+                pts = np.array([[c, ys[xs == c].max()] for c in sel], np.float32)
+                pts[:, 1] -= max(1, 0.2 * (bot - top))
+                if len(pts) > 7:
+                    pts[:, 1] = np.convolve(np.pad(pts[:, 1], 3, mode='edge'), np.ones(7) / 7, 'valid')
+                cv2.polylines(out, [pts[::max(1, len(pts) // 24)].astype(np.int32)], False, (*lash, 255), t,
+                              cv2.LINE_AA)
+        else:
+            row = np.nonzero(m[min(int(cut), out.shape[0] - 1)])[0]
+            if len(row):
+                cv2.line(out, (int(row.min()), int(cut)), (int(row.max()), int(cut)), (*lash, 255), t, cv2.LINE_AA)
     return out
 
 

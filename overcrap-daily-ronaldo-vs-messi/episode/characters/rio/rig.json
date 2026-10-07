@@ -129,5 +129,25 @@
   ]
  },
  "_cu_overlap": 0.45,
- "_height_ref": "turnaround/front"
+ "_height_ref": "turnaround/front",
+ "_erase_box": [
+  0.85,
+  0.85,
+  0.25,
+  0.25
+ ],
+ "_erase_mode": "lipline",
+ "_rest_when_silent": [
+  "turnaround/front",
+  "upper/folded_arms",
+  "upper/warning",
+  "upper/shrug",
+  "expressions/neutral",
+  "expressions/side_eye",
+  "expressions/confused",
+  "expressions/embarrassed",
+  "head/front",
+  "head/three_quarter_right"
+ ],
+ "_silent_mouth": "rest"
 }
