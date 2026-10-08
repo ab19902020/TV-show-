@@ -807,6 +807,11 @@ WHIPS = [b(69) - 0.5 / 30]
 CAPTIONS = []
 STABS = [170.396, 171.139, 171.674, 172.208, 172.951, 173.682]
 
+# Optional director upgrade, kept separate from Claude's original shot design.
+# Adds five short band close-ups, Goldbridge's more animated selfie, and light cues.
+from film import upgrade as director_upgrade
+director_upgrade.apply(globals())
+
 for _s in SH[1:]:                                    # every cut half a frame early: on the frame nearest its beat
     _s["t"] -= 0.5 / 30
 SHOTS = finish(SH, TL["total"])
