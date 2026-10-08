@@ -9,6 +9,7 @@ Delivery for the brief "ROONEY'S MATCHDAY TAKEOVER": the supplied song, untouche
 | `setup.sh` | rebuilds the project: AnimnationStuido- at `9b9412663640847ff4adf3ca3381414e016eef38`, plus the overlay and the episode |
 
 | `White_Pele_PREVIEW_720p.mp4` | the preview: 1280x720, 30 fps, 177.5 s, the full song. QA in `episode/QA.md` (decode, frame timestamps, sample-exact sync at the start, middle, finale and all 23 chunk joins) |
+| `White_Pele_PREVIEW_720p_share.mp4` | the same preview at a lower video bitrate (26 MB), for sending; the audio is copied unchanged |
 | `stills/contact_sheet.jpg` | three frames of each of the 68 shots |
 | `zip/` | the production ZIP (episode, library overlay, setup, stills) in 7 parts under 25 MB, with checksums; see `zip/REASSEMBLE.md` |
 
