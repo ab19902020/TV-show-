@@ -1,9 +1,10 @@
 # The White Pelé — source and asset manifest
 
-Every input this production uses, where it came from, and what it is used for. Nothing in the film is generated
-by an image or video model (no image-generation service is available to this production, and Runway is not used):
-new drawings are recompositions or recolours of the approved artwork below, or are drawn in code in the house style
-(`film/things.py`, `film/props.py`, `tools/make_art.py`).
+Every input this production uses, where it came from, and what it is used for. Runway is not used, and this
+production generated no images itself. The upgrade pack below was supplied by the client: its notes say it was made
+with built-in image generation from reference frames of the first preview. It is used as supplied (cut out and
+upscaled only). Every other drawing is a recomposition or recolour of the approved artwork below, or is drawn in code
+in the house style (`film/things.py`, `film/props.py`, `tools/make_art.py`).
 
 ## Repositories (exact commits)
 
@@ -51,3 +52,18 @@ new drawings are recompositions or recolours of the approved artwork below, or a
 Library: `props/lunch/football.png`, `props/music/microphone.png`, the pub's drum kit (cut from the pub plate for the
 stadium stage). Drawn here in the house style: Keane's clapping hands (`props.clap`), the tiny trophy, the broom, three United scarf patterns, the clipboard,
 flags, confetti (engine), the street sign (live type `SIGN_TEXT`).
+
+## The upgrade pack (supplied with the second round of direction)
+
+`White_Pele_Backgrounds.zip` and `White_Pele_Characters_Props_Direction.zip`, merged into `upgrade-pack/` (the sheets,
+`ASSET_PROMPTS.json` and `CLAUDE_DIRECTOR_NOTES.md` as delivered). Plates are about 1672 x 941, so they are not native 4K.
+
+| Asset | Where it went | Treatment |
+|---|---|---|
+| BG01–BG10 | `library/backgrounds/white-pele/bg01…bg10-*.png`, plates B01–B10 (`film/props.py` UP) | upscaled 4x; empty stands on B07–B09 filled with the drawn crowd layer (`CROWD_ZONES`) |
+| CH01 Rooney performance | `wayne-rooney` drawings `perf-stand/reach/lean/point/back/kneel` | cut whole, Real-ESRGAN 4x (`tools/make_art.py upgrade`); perf-stand has hand-set face marks for lip sync |
+| CH02 Rooney walk | `pwalk1-4` (side cycle), `pwalk-back`, its mirror `pwalk-back-m`, `pwalk-back34` | as above; the back key mirrored for the other step |
+| CH03 Rooney football (**young Rooney, red kit: memory/tribute only, not a specific match**) | `ball-ready/run/strike/bicycle/land/celebrate` | as above |
+| CH04 reactions | Rio `palms`, `laughbent2`, `scarf`; Keane `folded`, `clap`, `broom` (+ `broom-hand` and the broom as its own prop, `upgrade-derived`) | as above |
+| CH05 supporters | new library character `white-pele-supporters` (`fan1-6`) | as above; two smiles closed for lip sync (`close_mouth`) |
+| PR01 props | `library/props/white-pele/*` (ball, mics, sticks, scarf, guitar, bass, trophy) | cut and 4x; the football replaces the lunch ball |

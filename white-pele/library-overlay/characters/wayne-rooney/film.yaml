@@ -24,3 +24,23 @@ drawings:
   kit-run3: {sheet: reference/white-pele/model-sheet-kit10.png, box: [936, 1224, 1074, 1372], faces: R, x8: true, plain: true}
   kit-shrug: {sheet: reference/white-pele/model-sheet-kit10.png, box: [560, 1040, 718, 1173], faces: F, x8: true, extend: 0.5}
   kit-nod: {sheet: reference/white-pele/model-sheet-kit10.png, box: [710, 1040, 832, 1173], faces: R, x8: true, extend: 0.5}
+  # the White Pelé upgrade pack (episodes/white-pele/upgrade-pack, cut by tools/make_art.py upgrade)
+  perf-stand: {image: reference/upgrade/perf-stand.png, faces: F, marks: {eyes: [[490, 430, 65, 55], [715, 430, 62, 52]], mouth: [480, 562, 745, 545, 610, 585], chin: 760}}
+  perf-reach: {image: reference/upgrade/perf-reach.png, faces: R}
+  perf-lean:  {image: reference/upgrade/perf-lean.png, faces: R}
+  perf-point: {image: reference/upgrade/perf-point.png, faces: F}
+  perf-back:  {image: reference/upgrade/perf-back.png, faces: B, plain: true}
+  perf-kneel: {image: reference/upgrade/perf-kneel.png, faces: R}
+  pwalk1: {image: reference/upgrade/pwalk1.png, faces: R}
+  pwalk2: {image: reference/upgrade/pwalk2.png, faces: R}
+  pwalk3: {image: reference/upgrade/pwalk3.png, faces: R}
+  pwalk4: {image: reference/upgrade/pwalk4.png, faces: R}
+  pwalk-back: {image: reference/upgrade/pwalk-back.png, faces: B, plain: true}
+  pwalk-back34: {image: reference/upgrade/pwalk-back34.png, faces: R, plain: true}
+  ball-ready: {image: reference/upgrade/ball-ready.png, faces: R, plain: true}
+  ball-run: {image: reference/upgrade/ball-run.png, faces: R, plain: true}
+  ball-strike: {image: reference/upgrade/ball-strike.png, faces: R, plain: true}
+  ball-bicycle: {image: reference/upgrade/ball-bicycle.png, faces: R, plain: true}
+  ball-land: {image: reference/upgrade/ball-land.png, faces: R, plain: true}
+  ball-celebrate: {image: reference/upgrade/ball-celebrate.png, faces: F}
+  pwalk-back-m: {image: reference/upgrade/pwalk-back-m.png, faces: B, plain: true}

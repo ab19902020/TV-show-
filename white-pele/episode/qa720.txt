@@ -1,6 +1,6 @@
 video h264 1280 720 30/1 None dur 177.500000 frames 5325
 audio aac None None 0/0 48000 dur 177.536000 frames 8323
-format dur 177.536000 size MB 92.10496
+format dur 177.536000 size MB 92.748886
 decode errors: '' rc 0
 video packets 5325 first 0.0 last 177.466667 dt min/max 0.03333 0.03333 gaps>1.5f 0
 audio packets 8323 first -0.021333 gaps 0

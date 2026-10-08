@@ -17,3 +17,7 @@ drawings:
   walk4: {image: reference/white-pele/walk4.png, faces: R, plain: true}
   point: {image: reference/white-pele/point.png, faces: F, jaw: 0.75,    # on Pass Mic's Gary pointing
           marks: {eyes: [[690, 600, 85, 90], [920, 600, 80, 90]]}}
+  folded: {image: reference/upgrade/folded.png, faces: F}
+  clap: {image: reference/upgrade/clap.png, faces: F}
+  broom: {image: reference/upgrade/broom.png, faces: F, marks: {eyes: [[470, 440, 60, 50], [650, 440, 60, 50]], mouth: [460, 595, 640, 595, 550, 600], chin: 720}}
+  broom-hand: {image: reference/upgrade/broom-hand.png, faces: F, marks: {eyes: [[470, 440, 60, 50], [650, 440, 60, 50]], mouth: [460, 595, 640, 595, 550, 600], chin: 720}}   # the broom is the prop cut:broom

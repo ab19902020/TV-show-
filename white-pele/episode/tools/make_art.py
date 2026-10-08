@@ -457,6 +457,147 @@ def mark_stand():
 RECIPES["mark-stand"] = mark_stand
 
 
+# ---------------------------------------------------------------- the upgrade pack (episodes/white-pele/upgrade-pack)
+PACK = Path(__file__).resolve().parents[1] / "upgrade-pack"
+PACK_CUTS = {        # sheet: [(character folder, drawing name), ...] in reading order (rows top to bottom, left to right)
+    "CH01_rooney_performance": [("wayne-rooney", n) for n in
+                                ("perf-stand", "perf-reach", "perf-lean", "perf-point", "perf-back", "perf-kneel")],
+    "CH02_rooney_walk": [("wayne-rooney", n) for n in
+                         ("pwalk1", "pwalk2", "pwalk3", "pwalk4", "pwalk-back", "pwalk-back34")],
+    "CH03_rooney_football": [("wayne-rooney", n) for n in
+                             ("ball-ready", "ball-run", "ball-strike", "ball-bicycle", "ball-land", "ball-celebrate")],
+    "CH04_reactions": [("rio-ferdinand", "palms"), ("rio-ferdinand", "laughbent2"), ("rio-ferdinand", "scarf"),
+                       ("roy-keane", "folded"), ("roy-keane", "clap"), ("roy-keane", "broom")],
+    "CH05_supporters": [("white-pele-supporters", f"fan{k}") for k in range(1, 7)],
+}
+PROP_CUTS = ["ball", "mic", "mic-side", "stick-a", "stick-b", "scarf", "guitar", "bass", "trophy"]
+
+
+def pack_parts(sheet):
+    """the figures on one of the pack's transparent sheets, each with the stray bits inside its box, in reading order"""
+    im = load(PACK / f"{sheet}.png")
+    n, lab, st, cen = cv2.connectedComponentsWithStats((im[..., 3] > 20).astype(np.uint8), 8)
+    big = [k for k in range(1, n) if st[k][4] > 1500]
+    rows = sorted(big, key=lambda k: st[k][1])
+    order = sorted(big, key=lambda k: (0 if st[k][1] + st[k][3] / 2 < im.shape[0] / 2 or sheet.startswith("PR")
+                                       and st[k][1] < 420 else 1, st[k][0]))
+    out = []
+    for k in order:
+        x, y, w, h = st[k][:4]
+        keep = lab == k
+        for j in range(1, n):                       # small detached pieces (a highlight, a lace) inside the box
+            if j not in big and x <= cen[j][0] <= x + w and y <= cen[j][1] <= y + h:
+                keep |= lab == j
+        part = im.copy()
+        part[~keep, 3] = 0
+        pad = 12
+        out.append(part[max(0, y - pad):y + h + pad, max(0, x - pad):x + w + pad])
+    return out
+
+
+def upgrade():
+    """cut every figure and prop of the upgrade pack into the library, upscaled 4x with Real-ESRGAN (the engine's
+    upscaler, as Pass Mic's cut-outs were): reference/upgrade/<drawing>.png"""
+    sys.path.insert(0, str(ROOT))
+    from studio.film.art import upscale_rgba
+    for sheet, names in PACK_CUTS.items():
+        parts = pack_parts(sheet)
+        assert len(parts) == len(names), (sheet, len(parts))
+        for (cid, name), part in zip(names, parts):
+            d = CH / cid / "reference" / "upgrade"
+            d.mkdir(parents=True, exist_ok=True)
+            part = upscale_rgba(part)
+            Image.fromarray(part).save(d / f"{name}.png")
+            print(cid, name, part.shape[1], "x", part.shape[0])
+    parts = pack_parts("PR01_music_football_props")
+    props = CH.parent / "props" / "white-pele"
+    props.mkdir(parents=True, exist_ok=True)
+    for name, part in zip(PROP_CUTS, parts):
+        Image.fromarray(upscale_rgba(part)).save(props / f"{name}.png")
+        print("prop", name, part.shape[1], "x", part.shape[0])
+
+
+RECIPES["upgrade"] = upgrade
+
+
+def upgrade_derived():
+    """from the pack's cuts: the back-view walk keys flipped (the other foot forward, so two keys make a step), and
+    Keane's broom taken out of his hand as its own prop so it can sweep (his fist stays; cut-props.json says where)"""
+    import json
+    for cid, name in (("wayne-rooney", "pwalk-back"), ("rio-ferdinand", "back-walk")):
+        d = CH / cid / "reference" / "upgrade"
+        src = d / f"{name}.png" if (d / f"{name}.png").exists() else None
+        if src is None:                                  # Rio's back view is his model sheet's (film.yaml "back")
+            continue
+        im = load(src)
+        Image.fromarray(np.ascontiguousarray(im[:, ::-1])).save(d / f"{name}-m.png")
+    d = CH / "roy-keane" / "reference" / "upgrade"
+    im = load(d / "broom.png")
+    H, W = im.shape[:2]
+    m = np.zeros((H, W), bool)
+    m[0:725, 940:1095] = True                           # the handle above his fist
+    m[935:1745, 968:] = True                            # the handle below it (clear of his sleeve)
+    m[1745:, 868:] = True                               # the head
+    m[1868:, 868:915] = False                           # his shoe's toe
+    m &= im[..., 3] > 0
+    broom = np.zeros_like(im)
+    broom[m] = im[m]
+    hand = im.copy()
+    hand[m, 3] = 0
+    n, lab, st, _ = cv2.connectedComponentsWithStats((hand[..., 3] > 20).astype(np.uint8), 8)
+    main = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+    hand[(lab != main) & (lab > 0), 3] = 0               # the broom head's outline left behind
+    ys, xs = np.nonzero(broom[..., 3] > 0)
+    x0, y0 = xs.min(), ys.min()
+    Image.fromarray(broom[y0:ys.max() + 1, x0:xs.max() + 1]).save(d / "broom-prop.png")
+    Image.fromarray(hand).save(d / "broom-hand.png")
+    grip = (1000 - int(x0), 830 - int(y0))              # the middle of his fist on the handle
+    (d / "cut-props.json").write_text(json.dumps({"broom": {
+        "image": "roy-keane/reference/upgrade/broom-prop.png", "grip": grip, "at": [1000, 830]}}, indent=1))
+    print("broom prop", broom.shape, "grip", grip)
+
+
+RECIPES["upgrade-derived"] = upgrade_derived
+
+
+def leg_paper():
+    """the sheet's paper the cut kept between walking legs (a pale triangle over the ground): a pale region in the
+    lower half that borders the transparent ground or the contact shadow is paper, a white trainer is ringed by ink.
+    Applied to the walk keys of Goldbridge, Neville and Keane after walk-shadows / roy"""
+    for cid in ("mark-goldbridge", "gary-neville", "roy-keane"):
+        for k in (1, 2, 3, 4):
+            f = CH / cid / "reference" / "white-pele" / f"walk{k}.png"
+            im = load(f)
+            H = im.shape[0]
+            rgb = im[..., :3].astype(np.int16)
+            pale = (rgb.min(2) > 200) & (rgb.max(2) - rgb.min(2) < 28) & (im[..., 3] > 200)
+            pale[:int(0.5 * H)] = False
+            n, lab, st, _ = cv2.connectedComponentsWithStats(pale.astype(np.uint8), 8)
+            soft = im[..., 3] < 200                      # the ground around the feet, the contact shadow
+            gone = 0
+            for j in range(1, n):
+                if (st[j, cv2.CC_STAT_AREA] < 0.0004 * H * H
+                        or st[j, cv2.CC_STAT_HEIGHT] < 0.8 * st[j, cv2.CC_STAT_WIDTH]):   # a trainer is wide
+                    continue
+                comp = (lab == j).astype(np.uint8)
+                ring = cv2.dilate(comp, np.ones((7, 7), np.uint8)).astype(bool) & ~comp.astype(bool)
+                if (soft & ring).sum() > 0.15 * ring.sum():
+                    grow = cv2.dilate(comp, np.ones((3, 3), np.uint8)).astype(bool)
+                    im[grow & (rgb.min(2) > 150), 3] = 0
+                    gone += int(st[j, cv2.CC_STAT_AREA])
+            # the sheet's header strip: anything not joined to the figure
+            n2, lab2, st2, _ = cv2.connectedComponentsWithStats((im[..., 3] > 20).astype(np.uint8), 8)
+            if n2 > 2:
+                main = 1 + int(np.argmax(st2[1:, cv2.CC_STAT_AREA]))
+                near = cv2.dilate((lab2 == main).astype(np.uint8), np.ones((15, 15), np.uint8)) > 0
+                im[~near, 3] = 0
+            Image.fromarray(im).save(f)
+            print(cid, k, "paper px removed", gone)
+
+
+RECIPES["leg-paper"] = leg_paper
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or RECIPES:
         RECIPES[name]()

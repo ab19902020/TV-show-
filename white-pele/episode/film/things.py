@@ -132,7 +132,9 @@ def scarf_cloth(kind, w, h):
 
 
 def football():
-    im = np.asarray(Image.open(PROPS / "lunch" / "football.png").convert("RGBA"))
+    """the upgrade pack's football (props/white-pele/ball.png, PR01), the library's lunch football if it is missing"""
+    f = PROPS / "white-pele" / "ball.png"
+    im = np.asarray(Image.open(f if f.exists() else PROPS / "lunch" / "football.png").convert("RGBA"))
     return im
 
 

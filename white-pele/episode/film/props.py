@@ -15,6 +15,7 @@ import functools
 
 import cv2
 import numpy as np
+from PIL import Image
 
 from studio.film import ep
 
@@ -179,6 +180,12 @@ PLATE_SRC = {
 }
 # the documentary's Old Trafford exteriors and tunnels (TV-show- repo, manchester-united-documentary/assets/
 # backgrounds, copied into library/backgrounds/stadiums/ by this production)
+# the upgrade pack's ten empty sets (library/backgrounds/white-pele/), B01..B10, used as drawn (upscaled 4x)
+UP = {"B01": "white-pele/bg01-pub-stage-front", "B02": "white-pele/bg02-pub-stage-side",
+      "B03": "white-pele/bg03-pub-audience-reverse", "B04": "white-pele/bg04-backstreet-pitch",
+      "B05": "white-pele/bg05-pub-street", "B06": "white-pele/bg06-stadium-tunnel", "B07": "white-pele/bg07-pitch-low",
+      "B08": "white-pele/bg08-stadium-concert-front", "B09": "white-pele/bg09-stadium-stage-reverse",
+      "B10": "white-pele/bg10-rooftop-performance"}
 DOC = {"EXT": "stadiums/old-trafford-exterior-dusk", "EXT2": "stadiums/old-trafford-exterior-red-lit",
        "TUN": "stadiums/tunnel-corridor", "TUNP": "stadiums/tunnel-to-pitch"}
 
@@ -444,18 +451,30 @@ CROWD_ZONES = {
            ([(0, 428), (1672, 428), (1672, 548), (0, 548)], 3.4, 4.6)],
     "MEM": [([(0, 60), (1672, 60), (1672, 420), (0, 420)], 2.4, 4.4),
             ([(0, 430), (1672, 430), (1672, 560), (0, 560)], 4.4, 5.4)],
+    # the upgrade pack's stadium sets: their seats are empty, so they are filled the same way
+    "B07": [([(0, 170), (1672, 170), (1672, 420), (0, 420)], 2.4, 3.6),
+            ([(0, 420), (1672, 420), (1672, 650), (0, 650)], 3.6, 5.6)],
+    "B08": [([(0, 140), (1672, 140), (1672, 330), (0, 330)], 2.2, 3.0),
+            ([(0, 330), (1672, 330), (1672, 565), (0, 565)], 3.0, 4.0)],
+    "B09": [([(60, 220), (1610, 220), (1610, 400), (60, 400)], 2.4, 3.2),
+            ([(30, 400), (1640, 400), (1640, 540), (30, 540)], 3.2, 4.2),
+            ([(20, 540), (1650, 540), (1650, 700), (20, 700)], 4.2, 6.0)],
 }
 SHIRTS = [(206, 20, 30)] * 6 + [(240, 238, 232)] * 2 + [(28, 24, 26)] * 2 + [(30, 50, 140), (230, 200, 40)]
 SKIN = [(246, 200, 168), (224, 168, 128), (190, 130, 90), (140, 92, 60), (98, 64, 44)]
 HAIR = [(40, 30, 26), (90, 60, 36), (20, 18, 18), (150, 110, 60), (200, 170, 110)]
 
 
-def seat_mask(big, poly, K=4):
+SEAT_DARK = {"B08": 28, "B09": 40}          # night sets: seats in shadow still count as seats
+SEAT_NOT = {"B08": [(110, 40, 385, 660), (1290, 40, 1560, 660)]}    # its truss towers and speaker stacks (1x px)
+
+
+def seat_mask(big, poly, K=4, dark=70):
     """the seats inside a zone (red, or the empty grey of a stand) at 4x"""
     m = np.zeros(big.shape[:2], np.uint8)
     cv2.fillPoly(m, [np.int32(np.float32(poly) * K)], 1)
     hsv = cv2.cvtColor(big, cv2.COLOR_RGB2HSV)
-    red = ((hsv[..., 0] < 10) | (hsv[..., 0] > 170)) & (hsv[..., 1] > 110) & (hsv[..., 2] > 70)
+    red = ((hsv[..., 0] < 10) | (hsv[..., 0] > 170)) & (hsv[..., 1] > 90) & (hsv[..., 2] > dark)
     return (m > 0) & red
 
 
@@ -467,12 +486,14 @@ def crowd_layer(k, up):
         im = cv2.imread(str(cache), cv2.IMREAD_UNCHANGED)
         return cv2.cvtColor(im, cv2.COLOR_BGRA2RGBA)
     K = 4
-    base = _x4(PLATE_SRC[k])
+    base = _x4(PLATE_SRC[k] if k in PLATE_SRC else UP[k])
     H, W = base.shape[:2]
     lay = np.zeros((H, W, 4), np.uint8)
     rng = np.random.default_rng(31)
     for poly, r0, r1 in CROWD_ZONES[k]:
-        seats = seat_mask(base, poly)
+        seats = seat_mask(base, poly, dark=SEAT_DARK.get(k, 70))
+        for x0, y0, x1, y1 in SEAT_NOT.get(k, ()):
+            seats[y0 * K:y1 * K, x0 * K:x1 * K] = False
         ys = [p[1] for p in poly]
         top, bot = min(ys), max(ys)
         y = float(top)
@@ -530,7 +551,7 @@ def stands(img, s, t, M, sc):
     no two neighbours move together), lit by the floodlights (dimmed at night); a scarf wave runs round the ground
     when the shot asks (s["wave"]: (t0, t1)) and scarves go up all together for s["scarves"] spans"""
     from studio.film.stage import SONG
-    k = "MEM" if s["plate"] == "MEM" else "OT"
+    k = s["plate"] if s["plate"] in CROWD_ZONES else "OT"
     S = SONG()
     down = _crowd_view(k, False, M)
     upl = _crowd_view(k, True, M)
@@ -552,7 +573,7 @@ def stands(img, s, t, M, sc):
     dy = -amp * np.maximum(0, np.sin(math.pi * ((ph + 0.35 * col) % 1.0))) ** 1.5
     mapx, mapy = np.meshgrid(np.arange(OW, dtype=np.float32), np.arange(OH, dtype=np.float32))
     layer = cv2.remap(layer, mapx, mapy - dy[None, :], cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-    tone = s.get("crowd_tone", 0.82 if k == "OT" else 1.0)
+    tone = s.get("crowd_tone", 1.0 if k == "MEM" else 0.82)
     layer[..., :3] *= tone
     if s.get("blur", 0) > 0:                       # in the shot's depth of field, as the plate behind it is
         layer = cv2.GaussianBlur(layer, (0, 0), s["blur"] * RS)
@@ -579,6 +600,8 @@ def plate_image(k):
         return _cached("MEM", memory)
     if k in DOC:
         return _cached(k, lambda: _x4(DOC[k]))
+    if k in UP:
+        return _cached(k, lambda: _x4(UP[k]))
     return None
 
 
@@ -639,12 +662,20 @@ def hold(lay, item, Ms2, t, a):
         A[:, 2] = p0 - A[:, :2] @ c0
         _paste(lay, big, A)
         return
-    img, grip = prop_image(item["prop"], item["size"] * k * (4 if item["prop"] in ("trophy", "broom") else 1))
-    if item["prop"] in ("football", "mic"):
-        s_ = item["size"] * k / img.shape[0]
+    if item["prop"].startswith("cut:"):                # a prop cut from this drawing (tools/make_art.py): same px
+        img, grip = cut_prop(item["prop"][4:])
+        s_ = k
     else:
-        s_ = 0.25
+        img, grip = prop_image(item["prop"], item["size"] * k * (4 if item["prop"] in ("trophy", "broom") else 1))
+        if item["prop"] in ("football", "mic"):
+            s_ = item["size"] * k / img.shape[0]
+        else:
+            s_ = 0.25
     deg = item.get("deg", 0.0) + item.get("wobble", 0.0) * math.sin(t * 9.0)
+    if item.get("sweep"):                               # a broom swept to and fro: (degrees, strokes a second, from)
+        amp, hz, t0 = item["sweep"]
+        if t >= t0:
+            deg += amp * math.sin(2 * math.pi * hz * (t - t0)) * min(1.0, (t - t0) / 0.25)
     if mir:
         img = img[:, ::-1]
         grip = (img.shape[1] - grip[0], grip[1])
@@ -655,6 +686,16 @@ def hold(lay, item, Ms2, t, a):
     A = np.float32([[c, -s2, 0], [s2, c, 0]])
     A[:, 2] = np.float32([gx, gy]) - A[:, :2] @ np.float32(grip)
     _paste(lay, img, A)
+
+
+@functools.lru_cache(maxsize=4)
+def cut_prop(name):
+    """(RGBA uint8, grip) of a prop cut out of a character drawing by tools/make_art.py (cut-props.json)"""
+    import json
+    from studio.paths import CHARACTERS
+    meta = json.loads((CHARACTERS / "roy-keane" / "reference" / "upgrade" / "cut-props.json").read_text())[name]
+    im = np.asarray(Image.open(CHARACTERS / meta["image"]).convert("RGBA"))
+    return im, tuple(meta["grip"])
 
 
 # ---------------------------------------------------------------- the ball
@@ -838,6 +879,13 @@ def dribble(img, s, t, M, sc):
     S = SONG()
     beats = S.beat_index(t) + S.phase(t)
     u = beats % 1.0                                              # a touch on every beat
+    if not kid.get("screen"):                                    # on a plate: everything in proportion to him
+        k = kid["h"] / 700.0
+        d = -1 if kid.get("mirror") else 1
+        ahead = (70 + 120 * (1 - (1 - u) ** 2) - 40 * u) * k * d
+        r = 0.0625 * kid["h"]
+        spec = dict(keys=[(t - 1, x + ahead - 200 * k * d, y - r), (t, x + ahead, y - r)], r=r, floor=y)
+        return ball(img, dict(ball=spec), t, M, sc)
     ahead = 70 + 120 * (1 - (1 - u) ** 2) - 40 * u
     r = 30
     spec = dict(keys=[(t - 1, x + ahead - 200, y - r), (t, x + ahead, y - r)], r=r, floor=y)
@@ -1061,11 +1109,14 @@ def clap(img, s, t, M, sc):
 
 
 # ---------------------------------------------------------------- confetti lying on the stage
-@functools.lru_cache(maxsize=1)
-def _floor_bits():
+DECKS = {"OTS": STAGE_DECK, "B08": (40, 618, 1630, 806)}     # where confetti settles (1x px)
+
+
+@functools.lru_cache(maxsize=4)
+def _floor_bits(plate="OTS"):
     rng = np.random.default_rng(9)
-    x0, ytop, x1, yfront = STAGE_DECK
-    n = 520
+    x0, ytop, x1, yfront = DECKS.get(plate, STAGE_DECK)
+    n = 520 if plate == "OTS" else 1400
     xs = rng.uniform(x0 + 20, x1 - 20, n)
     ys = rng.uniform(ytop + 2, yfront - 1, n)
     cols = np.float32([[0.86, 0.06, 0.09], [0.97, 0.96, 0.94], [1.0, 0.80, 0.22]])[rng.integers(0, 3, n)]
@@ -1073,7 +1124,17 @@ def _floor_bits():
 
 
 def floor_confetti(img, s, t, M, sc):
-    xs, ys, ang, cols = _floor_bits()
+    """the confetti lying on the stage; s["swept"] = (x0, x1, y0, y1, t0, t1): a patch the broom pushes the confetti
+    out of, from x0 towards x1, between t0 and t1 (a ridge of it moving ahead of the broom)"""
+    xs, ys, ang, cols = _floor_bits(s["plate"])
+    if s.get("swept"):
+        sx0, sx1, sy0, sy1, t0, t1 = s["swept"]
+        u = float(np.clip((t - t0) / (t1 - t0), 0, 1))
+        front = sx0 + (sx1 - sx0) * u
+        inside = (ys >= sy0) & (ys <= sy1) & (xs >= min(sx0, sx1)) & (xs <= max(sx0, sx1))
+        behind = inside & ((xs < front) if sx1 > sx0 else (xs > front))
+        jitter = (np.sin(xs * 12.9898 + ys * 78.233) * 0.5 + 0.5) * 6.0
+        xs = np.where(behind, front + np.sign(sx1 - sx0) * jitter, xs)
     out = img.copy()
     k = sc / 4.0
     for x, y, a, c in zip(xs, ys, ang, cols):
@@ -1175,6 +1236,8 @@ def strike_flash(img, s, t, M, sc):
     a = 1 - (t - tc) / 0.2
     out = img.copy()
     cx, cy = 1090 * RS, 975 * RS
+    if s.get("strike_at"):                                        # plate px
+        cx, cy = M[0, 0] * s["strike_at"][0] + M[0, 2], M[1, 1] * s["strike_at"][1] + M[1, 2]
     for k in range(7):
         ang = -0.6 + k * 0.32
         r0, r1 = 50 * RS, (110 + 90 * (1 - a)) * RS

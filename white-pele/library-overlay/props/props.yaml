@@ -1,0 +1,157 @@
+# Props. id = <set folder>/<file name>; the picture is props/<id>.png (transparent, cut out of its sheet).
+# The uncut sheets are kept in each set's source/ folder; cut_from and sheet_box say where each prop was cut.
+lunch/football:
+  title: Football
+  size: [296, 291]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [21, 851, 317, 1142]
+lunch/fork:
+  title: Fork
+  size: [62, 370]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [481, 418, 543, 788]
+lunch/glass-water:
+  title: Glass of water
+  size: [179, 253]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [734, 110, 905, 355]
+lunch/hand-with-fork-evra:
+  title: Dark-skinned hand in a red United sleeve holding a fork with a piece of chicken (Evra)
+  size: [329, 418]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [12, 1165, 341, 1583]
+lunch/hand-with-fork-ronaldo:
+  title: Light-skinned hand in a red United sleeve holding a fork with a piece of chicken (Ronaldo)
+  size: [336, 419]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [330, 1164, 666, 1583]
+lunch/knife:
+  title: Table knife
+  size: [57, 379]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [767, 409, 824, 788]
+lunch/plate-chicken-salad:
+  title: Plate of sliced chicken and salad
+  size: [331, 224]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [13, 125, 344, 349]
+lunch/plate-empty:
+  title: Empty white plate
+  size: [336, 224]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [357, 125, 693, 349]
+lunch/sauna-bucket:
+  title: Wooden sauna bucket with ladle
+  size: [302, 262]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [636, 880, 938, 1142]
+lunch/towel-folded:
+  title: Folded white towel
+  size: [317, 221]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [331, 905, 648, 1126]
+lunch/water-drop-large:
+  title: Water drop, large
+  size: [68, 138]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [750, 1255, 818, 1393]
+lunch/water-drop-medium:
+  title: Water drop, medium
+  size: [51, 102]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [780, 1418, 831, 1520]
+lunch/water-drop-small:
+  title: Water drop, small
+  size: [47, 91]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [841, 1349, 888, 1440]
+lunch/water-jug:
+  title: Glass water jug
+  size: [294, 369]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [65, 420, 351, 781]
+music/bass-guitar:
+  title: Red four-string bass guitar
+  size: [227, 695]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1019, 11, 1246, 706]
+music/cable-black:
+  title: Coiled black instrument cable
+  size: [199, 239]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1027, 734, 1226, 973]
+music/cable-red:
+  title: Coiled red instrument cable
+  size: [199, 233]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1027, 972, 1226, 1205]
+music/drum-kit:
+  title: Red five-piece drum kit with two crash cymbals and a hi-hat
+  size: [731, 618]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [6, 34, 737, 652]
+music/electric-guitar:
+  title: Red single-cut electric guitar
+  size: [252, 680]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [739, 17, 991, 697]
+music/keyboard-on-stand:
+  title: Red synth keyboard on an X stand
+  size: [716, 521]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [8, 694, 724, 1215]
+music/microphone:
+  title: Handheld microphone
+  size: [92, 289]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [762, 808, 854, 1097]
+music/microphone-stand:
+  title: Microphone on a straight stand
+  size: [169, 537]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [864, 699, 1033, 1236]
+white-pele/ball:
+  title: Football
+  size: [1468, 1456]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [63, 65, 430, 429]
+white-pele/mic:
+  title: Handheld microphone
+  size: [852, 1560]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [523, 47, 736, 437]
+white-pele/mic-side:
+  title: Handheld microphone, side on
+  size: [1972, 764]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [807, 152, 1300, 343]
+white-pele/stick-a:
+  title: Drumstick
+  size: [956, 1396]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [1319, 63, 1558, 412]
+white-pele/stick-b:
+  title: Drumstick
+  size: [1092, 1332]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [1372, 90, 1645, 423]
+white-pele/scarf:
+  title: Red and white bar scarf
+  size: [2440, 872]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [4, 599, 614, 817]
+white-pele/guitar:
+  title: Red electric guitar with strap
+  size: [1468, 1924]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [589, 413, 956, 894]
+white-pele/bass:
+  title: Red bass guitar with strap
+  size: [1556, 1908]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [954, 418, 1343, 895]
+white-pele/trophy:
+  title: Gold trophy
+  size: [1388, 1492]
+  cut_from: white-pele/source/PR01_music_football_props.png
+  sheet_box: [1310, 517, 1657, 890]

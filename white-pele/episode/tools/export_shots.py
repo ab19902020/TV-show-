@@ -11,11 +11,14 @@ from film.direction import SHOTS, WHIPS
 from film.timeline import WORDS
 
 EP = Path(__file__).resolve().parents[1]
-PLACE = {"F": "pub stage", "FC": "pub stage (crowd)", "PUB": "the pub floor", "ST": "Manchester street at dusk",
+PLACE = {"B01": "pub stage, front", "B02": "pub stage, side", "B03": "the pub from the stage",
+         "B04": "terrace courtyard pitch (memory)", "B05": "street outside the pub", "B06": "players' tunnel",
+         "B07": "the pitch, floodlit (memory)", "B08": "stadium concert stage", "B09": "stage looking out to the stands",
+         "B10": "rooftop above the city", "F": "pub stage", "FC": "pub stage (crowd)", "PUB": "the pub floor", "ST": "Manchester street at dusk",
          "MW": "the mural wall", "S": "Sir Matt Busby Way", "EXT": "Old Trafford exterior, dusk",
          "EXT2": "Old Trafford exterior, red-lit", "TUN": "the tunnel", "TUNP": "tunnel mouth to the pitch",
          "OT": "Old Trafford, floodlit", "OTS": "Old Trafford, stage on the pitch", "MEM": "memory: afternoon match"}
-NAMES = {"rooney": "Rooney", "rio": "Rio", "mark": "Goldbridge", "gary": "Neville", "roy": "Keane",
+NAMES = {**{f"fan{k}{x}": "supporters" for k in range(1, 7) for x in ("", "b")}, "rooney": "Rooney", "rio": "Rio", "mark": "Goldbridge", "gary": "Neville", "roy": "Keane",
          "maguire": "Maguire (drums)", "sesko": "Šeško (guitar)", "cunha": "Cunha (bass)", "kid": "young Rooney (red 10)"}
 
 

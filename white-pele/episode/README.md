@@ -16,6 +16,7 @@ where the recording does.
 | `film/` | the production: `timeline.py` (bars, lines), `direction.py` (68 shots: plates, cast, camera, lights, props, show effects), `perf.py` (who sings, plays and dances where; faces), `actors.py` (drawing placement, walks, holds, foot tap, post effects), `props.py` (plates, crowds, props, effects), `things.py` (house-style props drawn in code), `sound.py` (the soundtrack), `align_song.py`, `timing.py`, `analyse.py` |
 | `tools/make_art.py` | builds every derived drawing (badge, red 10 kit, Keane's head swap, Neville's clipboard, mic overlay, contact shadows) |
 | `tools/export_shots.py` | exports the shot table: `shots.json`, `SHOTS.md` (start/end, location, cast, lyric, action, camera, props, lighting, transition) |
+| `upgrade-pack/` | the client's upgrade pack (sheets, director notes, prompts) as delivered |
 | `SOURCES.md` | the source and asset manifest: repositories with exact commits, the song, every drawing and plate and how it was treated |
 
 ## Render

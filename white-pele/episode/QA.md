@@ -1,4 +1,30 @@
-# QA — White_Pele_PREVIEW_720p.mp4
+# QA — White_Pele_PREVIEW_720p.mp4 (v2: the upgrade pack)
+
+## v2 (this render)
+
+The video was restaged on the client's upgrade pack. That covers the ten new sets and Rooney's performance, walk
+and football poses. It also covers the Rio and Keane reactions, six supporters and the props, in 72 shots. The full
+render passed the same checks as v1: H.264 1280x720 30 fps, 5325 frames, timestamps continuous (no gaps), a full
+decode with no errors, and **0.00 ms audio offset at all 31 check points** (start, middle, the clap, the finale and
+all 23 chunk joins; correlation 0.984 or better). See `qa720.txt`.
+
+New since v1:
+- Contact shadows under every figure on the new sets.
+- The overhead kick on the floodlit pitch from the pack's key poses: run in, takeoff, the strike with the ball
+  meeting the boot (impact flash), the landing, then the net and the celebration.
+- Keane's clap is now his own drawing, on the crash at 149.243 s, then his arms fold again.
+- The broom button: Keane sweeps a visible patch, and the confetti is pushed ahead of the broom. Rooney looks over
+  at him and Rio laughs.
+- Separate supporters at three depths in the pub, a rooftop cutaway, a rear view into the tunnel and a reverse
+  view of the stage. Paper left between the walking legs is removed.
+- Rooney is on screen about 70% of the time (78% with young Rooney).
+
+Known, for the review:
+- The pack's walk sheet has four side keys and is played as the cycle. It is not an in-betweened contact, down,
+  passing and up cycle.
+- The pack's poses are whole drawings, so pose changes are cuts or swaps on the beat, not rigged in-betweens.
+
+## v1
 
 Render: `EP_RES=1280x720 ... render --jobs 4 --chunks 24 --resume` (24 chunks of 222 frames; 12 re-rendered after the
 fixes below). Encoded 125 MB, refitted by the engine to 92 MB (two-pass) for the repository; the full-quality master

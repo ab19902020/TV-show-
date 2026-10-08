@@ -222,3 +222,53 @@ pub-and-restaurant/united-pub-stage-side-crowd:
   size: [1672, 941]
   orientation: landscape
   source: uploaded in chat (music video, 4 October 2026)
+white-pele/bg01-pub-stage-front:
+  title: Pub stage, front (empty)
+  size: [1672, 941]
+  orientation: landscape
+  source: BG01_pub_stage_front.png (White Pelé upgrade pack)
+white-pele/bg02-pub-stage-side:
+  title: Pub stage from stage left (empty)
+  size: [1672, 941]
+  orientation: landscape
+  source: BG02_pub_stage_side.png (White Pelé upgrade pack)
+white-pele/bg03-pub-audience-reverse:
+  title: Pub from the stage, looking to the bar (empty)
+  size: [1672, 941]
+  orientation: landscape
+  source: BG03_pub_audience_reverse.png (White Pelé upgrade pack)
+white-pele/bg04-backstreet-pitch:
+  title: Terrace courtyard street pitch at dusk
+  size: [1672, 941]
+  orientation: landscape
+  source: BG04_backstreet_pitch.png (White Pelé upgrade pack)
+white-pele/bg05-pub-street:
+  title: Corner pub on a terrace street at blue hour
+  size: [1672, 941]
+  orientation: landscape
+  source: BG05_pub_street.png (White Pelé upgrade pack)
+white-pele/bg06-stadium-tunnel:
+  title: Red players' tunnel to the pitch
+  size: [1672, 941]
+  orientation: landscape
+  source: BG06_stadium_tunnel.png (White Pelé upgrade pack)
+white-pele/bg07-pitch-low:
+  title: Floodlit stadium pitch, low angle
+  size: [1672, 941]
+  orientation: landscape
+  source: BG07_pitch_low.png (White Pelé upgrade pack)
+white-pele/bg08-stadium-concert-front:
+  title: Stadium concert stage, front
+  size: [1672, 941]
+  orientation: landscape
+  source: BG08_stadium_concert_front.png (White Pelé upgrade pack)
+white-pele/bg09-stadium-stage-reverse:
+  title: Stadium concert stage, looking out to the stands
+  size: [1672, 940]
+  orientation: landscape
+  source: BG09_stadium_stage_reverse.png (White Pelé upgrade pack)
+white-pele/bg10-rooftop-performance:
+  title: Manchester rooftop at night, stadium glow
+  size: [1672, 941]
+  orientation: landscape
+  source: BG10_rooftop_performance.png (White Pelé upgrade pack)

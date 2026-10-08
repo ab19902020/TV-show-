@@ -1,0 +1,16 @@
+name: White Pelé supporters
+short: Supporters
+role: crowd
+style: house
+height_cm: 175
+note: 'Six United supporters from the White Pelé upgrade pack (CH05_supporters.png, supplied with the episode),
+  each cut whole (tools/make_art.py upgrade). Not real people: crowd extras for the pub and the stadium.'
+likeness: 'Six fans: a bearded man holding a scarf up, a shaven-headed man in a black jacket with both fists up, a
+  blonde woman clapping in a scarf, a bearded man mid-jump, a man cupping his ear in a scarf, a bearded man filming
+  on his phone. Red United shirts, jeans or trackies, red-and-white trainers.'
+outfits:
+  matchday:
+    description: Red home shirts, scarves, jeans or trackies, red-and-white trainers.
+    sheets: []
+reference:
+  model-sheet.png: 'the upgrade pack''s supporters sheet (CH05_supporters.png): six figures with alpha'

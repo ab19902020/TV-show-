@@ -48,13 +48,14 @@ Folder = id = the full name in kebab-case. Episodes refer to a character by id.
 | Senne Lammens | [`senne-lammens`](characters/senne-lammens/) | player | home | no kit yet | 1 | 0 |
 | Steve Holland | [`steve-holland`](characters/steve-holland/) | coach | casual | no kit yet | 1 | 0 |
 | Wayne Rooney | [`wayne-rooney`](characters/wayne-rooney/) | pundit | casual | 4/4 sheets checked | 4 | 0 |
+| White Pelé supporters | [`white-pele-supporters`](characters/white-pele-supporters/) | crowd | matchday | no kit yet | 1 | 0 |
 | Youri Tielemans | [`youri-tielemans`](characters/youri-tielemans/) | player | home, casual, suit | no kit yet | 2 | 0 |
 
 Puppet kit = the front, three-quarter, side and hands sheets, labelled part by part and checked by eye. "no kit yet" characters have only reference art. Reference sheets live in each character's `reference/` folder, described in its `character.yaml`.
 
 ## Backgrounds
 
-44 empty sets, by setting. Landscape fits the 16:9 episodes as they are; **portrait** ones (941x1672) need a landscape version or a crop first. Full details in [backgrounds.yaml](backgrounds/backgrounds.yaml).
+54 empty sets, by setting. Landscape fits the 16:9 episodes as they are; **portrait** ones (941x1672) need a landscape version or a crop first. Full details in [backgrounds.yaml](backgrounds/backgrounds.yaml).
 
 ### Stadiums
 
@@ -70,6 +71,21 @@ Puppet kit = the front, three-quarter, side and hands sheets, labelled part by p
 | [`stadiums/sky-blue`](backgrounds/stadiums/sky-blue.png) | Empty sky-blue football stadium | landscape 1672x941 |
 | [`stadiums/tunnel-corridor`](backgrounds/stadiums/tunnel-corridor.png) | Red stadium tunnel corridor | landscape 1672x941 |
 | [`stadiums/tunnel-to-pitch`](backgrounds/stadiums/tunnel-to-pitch.png) | Stadium tunnel out to the pitch | landscape 1672x941 |
+
+### The White Pelé sets
+
+| id | Set | Shape |
+|---|---|---|
+| [`white-pele/bg01-pub-stage-front`](backgrounds/white-pele/bg01-pub-stage-front.png) | Pub stage, front (empty) | landscape 1672x941 |
+| [`white-pele/bg02-pub-stage-side`](backgrounds/white-pele/bg02-pub-stage-side.png) | Pub stage from stage left (empty) | landscape 1672x941 |
+| [`white-pele/bg03-pub-audience-reverse`](backgrounds/white-pele/bg03-pub-audience-reverse.png) | Pub from the stage, looking to the bar (empty) | landscape 1672x941 |
+| [`white-pele/bg04-backstreet-pitch`](backgrounds/white-pele/bg04-backstreet-pitch.png) | Terrace courtyard street pitch at dusk | landscape 1672x941 |
+| [`white-pele/bg05-pub-street`](backgrounds/white-pele/bg05-pub-street.png) | Corner pub on a terrace street at blue hour | landscape 1672x941 |
+| [`white-pele/bg06-stadium-tunnel`](backgrounds/white-pele/bg06-stadium-tunnel.png) | Red players' tunnel to the pitch | landscape 1672x941 |
+| [`white-pele/bg07-pitch-low`](backgrounds/white-pele/bg07-pitch-low.png) | Floodlit stadium pitch, low angle | landscape 1672x941 |
+| [`white-pele/bg08-stadium-concert-front`](backgrounds/white-pele/bg08-stadium-concert-front.png) | Stadium concert stage, front | landscape 1672x941 |
+| [`white-pele/bg09-stadium-stage-reverse`](backgrounds/white-pele/bg09-stadium-stage-reverse.png) | Stadium concert stage, looking out to the stands | landscape 1672x940 |
+| [`white-pele/bg10-rooftop-performance`](backgrounds/white-pele/bg10-rooftop-performance.png) | Manchester rooftop at night, stadium glow | landscape 1672x941 |
 
 ### Training ground
 
@@ -152,7 +168,7 @@ Puppet kit = the front, three-quarter, side and hands sheets, labelled part by p
 
 ## Props
 
-22 cut-out props (transparent PNG). Uncut sheets are in each set's `source/` folder.
+31 cut-out props (transparent PNG). Uncut sheets are in each set's `source/` folder.
 
 | id | Prop |
 |---|---|
@@ -178,6 +194,15 @@ Puppet kit = the front, three-quarter, side and hands sheets, labelled part by p
 | [`music/keyboard-on-stand`](props/music/keyboard-on-stand.png) | Red synth keyboard on an X stand |
 | [`music/microphone`](props/music/microphone.png) | Handheld microphone |
 | [`music/microphone-stand`](props/music/microphone-stand.png) | Microphone on a straight stand |
+| [`white-pele/ball`](props/white-pele/ball.png) | Football |
+| [`white-pele/mic`](props/white-pele/mic.png) | Handheld microphone |
+| [`white-pele/mic-side`](props/white-pele/mic-side.png) | Handheld microphone, side on |
+| [`white-pele/stick-a`](props/white-pele/stick-a.png) | Drumstick |
+| [`white-pele/stick-b`](props/white-pele/stick-b.png) | Drumstick |
+| [`white-pele/scarf`](props/white-pele/scarf.png) | Red and white bar scarf |
+| [`white-pele/guitar`](props/white-pele/guitar.png) | Red electric guitar with strap |
+| [`white-pele/bass`](props/white-pele/bass.png) | Red bass guitar with strap |
+| [`white-pele/trophy`](props/white-pele/trophy.png) | Gold trophy |
 
 ## Extras (background cast)
 
@@ -193,4 +218,4 @@ Older finished 'Stick to Football' party artwork, kept for the look and the stag
 
 ## Audio
 
-Voice bank: 0 clips in 40 character folders; sound effects: 36; music: 0. See [audio/README.md](audio/README.md) for what goes where.
+Voice bank: 0 clips in 41 character folders; sound effects: 36; music: 0. See [audio/README.md](audio/README.md) for what goes where.

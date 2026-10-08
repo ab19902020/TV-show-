@@ -17,3 +17,6 @@ drawings:
   q34:   {sheet: reference/model-sheet.png, box: [776, 158, 914, 482], faces: R, x8: true}
   run1:  {sheet: reference/model-sheet.png, box: [586, 1238, 712, 1380], faces: R, x8: true, plain: true}
   run2:  {sheet: reference/model-sheet.png, box: [752, 1238, 890, 1380], faces: R, x8: true, plain: true}
+  palms: {image: reference/upgrade/palms.png, faces: F}
+  laughbent2: {image: reference/upgrade/laughbent2.png, faces: R}
+  scarf: {image: reference/upgrade/scarf.png, faces: F, marks: {eyes: [[950, 525, 52, 45], [1080, 500, 45, 52]], mouth: [950, 668, 1110, 668, 1030, 680], chin: 800}}

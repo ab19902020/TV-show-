@@ -162,6 +162,9 @@ def draw_actor(shared, a, t, s, M, sc, pos):
         u = S.beat_index(t) + S.phase(t) + a["bob"].get("phase", 0.0)
         g = dict(g, sy=1.0, sx=1.0, dx=0.0, rot=1.6 * math.sin(math.pi * u), jump=0.010 * abs(math.sin(math.pi * u)),
                  tilt=g.get("tilt", 0.0) + 1.2 * math.sin(math.pi * u))
+    if (not a.get("screen") and a.get("eye") is None
+            and a.get("shadow", s.get("shadows", str(s.get("plate", "")).startswith("B")))):
+        contact_shadow(shared, a, g, M, sc)
     spec = CAST.spec(key.split(":")[0])["drawings"][key.split(":")[1]]
     st = R.PERF.state(who, t, R.world_resolver(s, who, pos), s["t"]) if d.has_face and not a.get("still_face") else {}
     native = spec.get("native_inst")
@@ -246,6 +249,32 @@ def draw_actor(shared, a, t, s, M, sc, pos):
         E.over_sparse(shared, lay, a.get("blur", 0.0) * RS)
     if a.get("mic"):
         ST.mic_stand(shared, Ms2, key, (Fx, Fy), a["mic"])
+
+
+def contact_shadow(shared, a, g, M, sc):
+    """a soft dark contact shadow on the ground under the feet: smaller and fainter the higher they are off it
+    (a jump on the beat, the overhead kick: a["ground"] is the floor's y when the feet leave it)"""
+    import cv2
+    x, y = a["feet"]
+    h = a["h"]
+    ground = a.get("ground", y)
+    lift = max(0.0, ground - y) + g.get("jump", 0.0) * h
+    f = float(np.clip(1.0 - lift / (0.9 * h), 0.25, 1.0))
+    X, Y = apply(M, x, ground)
+    rx, ry = 0.17 * h * sc * (0.6 + 0.4 * f), 0.028 * h * sc * (0.6 + 0.4 * f)
+    if rx < 2 or not (-rx < X < OW + rx and -ry < Y < OH + ry):
+        return
+    m = int(rx * 1.6 + 6)
+    x0, y0 = max(0, int(X - m)), max(0, int(Y - m))
+    x1, y1 = min(OW, int(X + m)), min(OH, int(Y + m))
+    if x1 <= x0 or y1 <= y0:
+        return
+    sub = np.zeros((y1 - y0, x1 - x0), np.float32)
+    cv2.ellipse(sub, (int(X - x0), int(Y - y0)), (int(rx), max(1, int(ry))), 0, 0, 360, 1.0, -1, cv2.LINE_AA)
+    sub = cv2.GaussianBlur(sub, (0, 0), max(1.0, 0.35 * ry + 1)) * 0.42 * f
+    roi = shared[y0:y1, x0:x1]
+    roi[..., :3] *= (1 - sub[..., None])
+    roi[..., 3] = roi[..., 3] + sub * (1 - roi[..., 3])
 
 
 def tap(lay, spec, Ms2, t):

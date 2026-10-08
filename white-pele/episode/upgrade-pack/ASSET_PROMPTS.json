@@ -1,0 +1,70 @@
+{
+  "generation": "Built-in image generation; reference frames from supplied preview",
+  "style_prompt": "Bold black outlines, rounded British football caricatures, oversized expressive eyes, warm dimensional cel shading. Match supplied video.",
+  "assets": [
+    {
+      "id": "BG01_pub_stage_front",
+      "prompt": "An EMPTY Manchester football pub stage seen straight-on at standing eye height. Red velvet curtain, amber wall lamps, exposed dark wood, football memorabilia frames with no readable writing. Wider deeper stage than the reference with clear flat wood floor filling lower third, space to add singer centre, drummer rear centre, guitarists on either side. Speaker stacks at far edges, ceiling light rig. No characters, no crowd, no instruments or microphone stands. Base lighting only, no baked confetti or moving beams."
+    },
+    {
+      "id": "BG02_pub_stage_side",
+      "prompt": "An EMPTY Manchester football pub stage seen from stage-left at a 35-degree angle, consistent red velvet curtain, dark timber walls, amber sconces, ceiling rig. Broad visible wooden floor plane, rear drum riser, speaker at far right. Depth for placing full-body performers. No characters, crowd, instruments, mic stands, confetti or baked moving beams."
+    },
+    {
+      "id": "BG03_pub_audience_reverse",
+      "prompt": "Reverse view from the stage into an EMPTY cosy Manchester football pub, looking toward the bar. Dark timber, amber lamps, red stools, pub tables pushed to edges, bunting above, memorabilia without readable words. Open central floor for inserting separate cheering crowd characters. Stage lip visible bottom edge. No people, no instruments."
+    },
+    {
+      "id": "BG04_backstreet_pitch",
+      "prompt": "EMPTY northern English brick terrace courtyard converted into a little street football pitch at dusk. Chalk goal on far brick wall, scuffed ball court markings, warm kitchen windows, bins grouped at far edge, red scarf on fence, small puddles. Low sideline camera with wide clear foreground ground for animated dribbling, middle ground open and level. Same illustrated cartoon finish. No people, no ball, no words."
+    },
+    {
+      "id": "BG05_pub_street",
+      "prompt": "EMPTY Manchester red-brick terrace street outside a corner football pub at blue hour, red and white bunting, warm doorway and windows, pavement and roadway both fully visible. Side-on street elevation suitable for a walk cycle, almost orthographic camera, level horizontal pavement contact line. No people, cars or text. Avoid crowd silhouettes."
+    },
+    {
+      "id": "BG06_stadium_tunnel",
+      "prompt": "EMPTY red and black Old Trafford-inspired players tunnel, dramatic symmetrical one-point perspective, rectangular ceiling lights, dark rubber floor with clear contact plane, opens to brilliant green pitch and distant red stadium seating. Lots of unobstructed foreground for rear-view character walk. No characters, text, smoke or equipment."
+    },
+    {
+      "id": "BG07_pitch_low",
+      "prompt": "EMPTY Old Trafford-inspired stadium pitch at night seen from grass level near touchline. Sweeping stands, distinctive roof trusses, bright floodlights, painted sideline angled into distance, open grass lower half for full-body football action and an overhead kick. Crowd only as tiny abstract distant colour flecks, no foreground people or ball, no text, no concert stage."
+    },
+    {
+      "id": "BG08_stadium_concert_front",
+      "prompt": "EMPTY large concert stage built on a football stadium pitch, viewed straight-on from near audience eye height. Red seating and roof trusses in distant background. Black steel truss arch, low rear drum riser, black wooden floor filling lower third, speaker towers outside performer area, subtle red and amber base illumination. No people, instruments, microphone stands, confetti, fireworks, moving beams or audience silhouettes. Leave generous usable space for full-size band."
+    },
+    {
+      "id": "BG09_stadium_stage_reverse",
+      "prompt": "EMPTY stadium concert reverse angle from just behind the lead singer's position looking out toward Old Trafford-inspired red stands and roof trusses at night. Stage floor extends from bottom to its front lip one-third up, two wedge monitors near side edges. Open foreground for adding rear-view Rooney, audience space beyond. Stand spectators only tiny abstract colour flecks. No foreground characters, microphone, readable words, confetti."
+    },
+    {
+      "id": "BG10_rooftop_performance",
+      "prompt": "EMPTY flat Manchester pub rooftop at blue hour, distant red-lit stadium roof trusses across city skyline, warm brick parapets, subtle damp reflections, ventilation boxes tucked at edges. Open flat centre and foreground to add lead singer performing to camera. Red glow and cool sky contrast, cartoon illustration matching reference. No characters, instruments, mic stands, lettering."
+    },
+    {
+      "id": "CH01_rooney_performance",
+      "prompt": "A clean animation POSE SHEET of ONLY the Wayne Rooney character from reference: exact big rounded head, short light-brown buzz cut, slight chin stubble, expressive large eyes and thick eyebrows, stocky short body. Same BLACK t-shirt with tiny red chest emblem, black trousers, grey-white trainers. Six fully separate full-body poses in a neat 3 columns x 2 rows grid, generous transparent gaps, nothing touching or cropped: (1) front standing neutral holding black handheld mic in RIGHT hand at chest, (2) three-quarter facing left singing stance right hand mic near lips left hand open, (3) profile facing right mic near lips leaning forward slight bent knees, (4) wide grounded stance mic in right hand left arm pointing to crowd, (5) rear three-quarter arm raised with mic in right hand, (6) kneeling on right knee mic at mouth looking up. Mouth CLOSED as a thin smiling slit on every pose to allow separate mouth replacement. Consistent outfit, head/body ratio and recognisable face. No lettering, mouth banks, background, props other than correctly gripped mic, ground or cast shadows. Transparent background."
+    },
+    {
+      "id": "CH02_rooney_walk",
+      "prompt": "A clean animation sheet of ONLY Wayne Rooney matching the reference exact face, round big head, brown buzz cut, eyebrows, stocky body. BLACK t-shirt tiny red chest emblem, black trousers, grey-white trainers. Six fully separate full-body poses, 3 columns x 2 rows, generous transparent gaps: four consecutive side-view walk cycle key poses moving toward right (left-foot forward contact; down passing into stride; right-foot forward contact; up passing into stride), then rear view walking away with left leg forward, then rear three-quarter looking back grinning with black mic in right hand at hip. First four same scale, truly side-on torso and face and constant ground height with legs articulating, no floating shoes. Thin CLOSED mouth slit, no mouth bank, no labels, no floor, no shadow, no background. Transparent background."
+    },
+    {
+      "id": "CH03_rooney_football",
+      "prompt": "A clean animation POSE SHEET of ONLY Wayne Rooney's recognisable cartoon design from reference, short brown buzz cut, big rounded head, broad eyebrows and stocky build, shown as slightly younger athletic football Rooney. RED short-sleeve football jersey with small plain crest patch, WHITE shorts, BLACK socks, BLACK boots. Six separate full-body action poses in 3 columns x 2 rows with transparent generous gaps: (1) poised to dribble weight on left leg right foot hovering above ground, (2) running forward three-quarter, (3) right-foot shot striking leg extended left foot planted, (4) airborne overhead bicycle kick striking right leg above head arms balanced, (5) controlled landing from overhead kick on side with knees bent arms bracing, (6) arms wide celebrating with grounded legs. No ball (will be separate prop), no mic, no labels, no mouth bank, no background or shadows. Mouth CLOSED slit each. Keep entire feet and limbs visible and each pose nonoverlapping. Transparent background."
+    },
+    {
+      "id": "CH04_reactions",
+      "prompt": "A clean transparent character animation sheet in same art and SAME designs as reference, six separated full-body poses in 3 columns x 2 rows. TOP row: Rio Ferdinand caricature matching reference tall slim black-haired dark beard man wearing black zip jacket black trousers white trainers: (1) incredulous eyebrow raised palms open, (2) laughing bent forward hands on thighs, (3) enthusiastically raising red-white scarf overhead. BOTTOM row: Roy Keane caricature matching reference grey cropped hair grey beard severe expressive brows black jacket black trousers dark trainers: (4) arms folded unimpressed, (5) reluctantly clapping hands held together in front torso, (6) holding long broom upright in right hand staring unimpressed. Mouth CLOSED thin slit for all, vary eyebrows to sell acting. Enough empty transparent space around each for individual cutout. No labels, mouth banks, scene, ground or shadows. Anatomy clean no extra limbs. Transparent background."
+    },
+    {
+      "id": "CH05_supporters",
+      "prompt": "Create a transparent production character POSE SHEET with six DIFFERENT adult football supporters, each separated and fully visible head to shoes in 3 columns x 2 rows, generous gaps. Match attached British football cartoon style bold outlines oversized expressive eyes stocky rounded characters warm cel shading. Generic Manchester United fans, varied male and female, varied skin tones and hairstyles, red casual shirts, jackets, scarves, jeans and trainers. Poses: holding scarf overhead; two fists celebrating; clapping; bouncing with one knee lifted; cupping one hand to ear for singalong; holding phone vertically at chest to film. CLOSED thin slit mouths for replaceable lip sync. No real celebrity needed, no text, no scenery, no cast shadows. Genuine transparent background."
+    },
+    {
+      "id": "PR01_music_football_props",
+      "prompt": "Create a transparent animation PROP SHEET with eight well separated objects laid out evenly in two rows of four, generous gaps. Same bold outlined cel-shaded illustrated cartoon rendering as attached reference. Objects left to right top row: black-and-white football side view; black handheld microphone front three-quarter; black handheld microphone profile horizontal; pair of separate wooden drumsticks. Bottom row: red-white supporter scarf unfolded horizontal; red electric guitar with white pickguard full neck and strap; red-black electric bass full neck and strap; gold trophy with two handles on small dark base. No characters, hands, lettering, backdrop, labels, cast shadows or floor. Entire objects uncut and separate. Genuine transparent background."
+    }
+  ]
+}

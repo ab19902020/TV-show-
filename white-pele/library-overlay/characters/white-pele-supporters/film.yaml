@@ -1,0 +1,8 @@
+# The upgrade pack's supporters, cut whole (episodes/white-pele/tools/make_art.py upgrade).
+drawings:
+  fan1: {image: reference/upgrade/fan1.png, faces: F, marks: {eyes: [[985, 580, 55, 50], [1150, 560, 50, 50]], mouth: [930, 700, 1180, 690, 1050, 710], chin: 870}}
+  fan2: {image: reference/upgrade/fan2.png, faces: F}
+  fan3: {image: reference/upgrade/fan3.png, faces: F, close_mouth: [625, 630, 95, 45], marks: {eyes: [[548, 518, 60, 65], [718, 490, 55, 60]], mouth: [545, 610, 720, 600, 625, 625], chin: 740}}
+  fan4: {image: reference/upgrade/fan4.png, faces: F, marks: {eyes: [[628, 410, 60, 60], [800, 375, 50, 55]], mouth: [620, 505, 800, 480, 720, 500], chin: 640}}
+  fan5: {image: reference/upgrade/fan5.png, faces: F, close_mouth: [790, 555, 90, 32], marks: {eyes: [[690, 455, 55, 55], [850, 400, 45, 55]], mouth: [705, 545, 880, 505, 790, 550], chin: 640}}
+  fan6: {image: reference/upgrade/fan6.png, faces: F, marks: {eyes: [[405, 450, 55, 55], [575, 440, 50, 55]], mouth: [400, 545, 590, 545, 495, 560], chin: 690}}
