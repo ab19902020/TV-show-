@@ -193,6 +193,11 @@ def draw_actor(shared, a, t, s, M, sc, pos):
             fst["lookx"] = float(np.clip(fst["lookx"] + ST.turn_look(key), -1.2, 1.2))
     else:
         fst = {}
+    # Rio pupil-aim guard for close-ups: keep both eyes centred when he turns.
+    # This is a procedural stabilizer, not a substitute for checking source eye art.
+    if who == "rio" and fst:
+        fst["lookx"] = float(np.clip(fst.get("lookx", 0.0), -0.42, 0.42))
+        fst["looky"] = float(np.clip(fst.get("looky", 0.0), -0.20, 0.20))
     B = groove_matrix(g, (fx, fy), Hd)
     Ms2 = compose(Ms, B)
     head = rigid_head(d, g, B, Ms, Hd)
