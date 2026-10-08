@@ -18,6 +18,7 @@ fi
 git -C "$DIR" fetch origin ccr-703a2362-lbr343 || true
 git -C "$DIR" checkout "$ENGINE_COMMIT"
 cp -a "$HERE/library-overlay/." "$DIR/library/"
+cp -a "$HERE/engine-overlay/." "$DIR/"     # tools/index_library.py: the white-pele background folder
 mkdir -p "$DIR/episodes/white-pele"
 cp -a "$HERE/episode/." "$DIR/episodes/white-pele/"
 echo "ready: $DIR/episodes/white-pele (README.md there has the render and resume steps)"
