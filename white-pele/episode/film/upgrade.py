@@ -1,7 +1,7 @@
 """ChatGPT director's polish for The White Pelé, layered over Claude's v3.
 
 Called by direction.py before `finish(SH, ...)`: no source assets or audio are replaced.
-Five short concert inserts preserve the complete 177.520-second timeline; the
+Eight short concert inserts preserve the complete 177.520-second timeline; the
 original shot resumes after each insert. All poses and instruments already
 exist in Claude's v3 project. This is source code, not a claimed final render.
 """
@@ -19,13 +19,16 @@ def apply(namespace):
     b = namespace["b"]
     originals = list(shots)
 
-    # Five *additional* on-beat musical cutaways. The original shot comes back
+    # Eight *additional* on-beat musical cutaways. The original shot comes back
     # after <1 second so Rooney's lead vocal and the story are not interrupted.
     inserts = (
         (14.38, "sesko", "B02", 0.78),
         (15.82, "maguire", "B02", 0.78),
+        (79.70, "maguire", "B08", 0.56),
         (90.68, "cunha", "B08", 0.88),
+        (93.64, "cunha", "B08", 0.65),
         (118.18, "maguire", "B08", 0.78),
+        (137.65, "sesko", "B08", 0.65),
         (159.12, "sesko", "B08", 0.88),
     )
     for t, musician, plate, duration in inserts:
@@ -57,13 +60,30 @@ def apply(namespace):
                 if kind == "actors" and isinstance(group, list):
                     for actor in group:
                         if actor["who"] == "mark":
-                            actor["keys"] = [(shot["t"], "mark-goldbridge:shouting"),
-                                             (shot["t"] + 0.38, "mark-goldbridge:cheer"),
-                                             (shot["t"] + 0.81, "mark-goldbridge:shouting")]
+                            # Real existing pose keys: excited phone reaction,
+                            # two fist pumps, back into the chant. No fake sprite.
+                            actor["keys"] = [
+                                (shot["t"], "mark-goldbridge:shouting"),
+                                (shot["t"] + 0.26, "mark-goldbridge:cheer"),
+                                (shot["t"] + 0.54, "mark-goldbridge:shouting"),
+                                (shot["t"] + 0.83, "mark-goldbridge:cheer"),
+                                (shot["t"] + 1.12, "mark-goldbridge:shouting"),
+                            ]
                             actor["look_cam"] = True
-                            actor["dance"] = 1.2
-            shot["drift"] = 2.35
-            shot["rec_flash"] = [shot["t"] + 0.16, shot["t"] + 0.95]
+                            actor["dance"] = 1.35
+            shot["drift"] = 2.55
+            shot["shake"] = min(0.65, max(0.35, shot.get("shake", 0)))
+            shot["vf"] = dict(shot.get("vf") or {}, live=True, chat=True,
+                              label="GOLDBRIDGE  •  SELFIE CAM")
+            shot["rec_flash"] = [shot["t"] + 0.20, shot["t"] + 0.87]
+            shot["crash"] = [shot["t"] + 0.48]
+
+        # Three chorus impacts: short lower-safe kinetic typography that
+        # does not obscure the singer's face or alter the soundtrack.
+        if shot["plate"] == "B08" and any(
+                abs(shot["t"] - b(n)) < 0.04 for n in (51, 95, 106)):
+            shot["anthem_title"] = dict(top="WHITE PELÉ", sub="WAYNE ROONEY",
+                                        duration=1.05)
 
         # Stadium and pub-performance beams now get a subtle beat-driven
         # lift in camera.py, not an indiscriminate full-screen strobe.
