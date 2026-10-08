@@ -8,5 +8,8 @@ Delivery for the brief "ROONEY'S MATCHDAY TAKEOVER": the supplied song, untouche
 | `library-overlay/` | the new and changed library files (characters, derived drawings, backgrounds), copied over the engine's `library/` |
 | `setup.sh` | rebuilds the project: AnimnationStuido- at `9b9412663640847ff4adf3ca3381414e016eef38`, plus the overlay and the episode |
 
-The 720p preview and the production ZIP are added once the preview render has passed QA. The 4K final will be
-rendered only after the preview is approved.
+| `White_Pele_PREVIEW_720p.mp4` | the preview: 1280x720, 30 fps, 177.5 s, the full song. QA in `episode/QA.md` (decode, frame timestamps, sample-exact sync at the start, middle, finale and all 23 chunk joins) |
+| `stills/contact_sheet.jpg` | three frames of each of the 68 shots |
+| `zip/` | the production ZIP (episode, library overlay, setup, stills) in 7 parts under 25 MB, with checksums; see `zip/REASSEMBLE.md` |
+
+**The 4K final has not been rendered.** It waits for approval of the preview (steps in `episode/README.md`).

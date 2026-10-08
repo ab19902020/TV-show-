@@ -1,0 +1,38 @@
+video h264 1280 720 30/1 None dur 177.500000 frames 5325
+audio aac None None 0/0 48000 dur 177.536000 frames 8323
+format dur 177.536000 size MB 92.10496
+decode errors: '' rc 0
+video packets 5325 first 0.0 last 177.466667 dt min/max 0.03333 0.03333 gaps>1.5f 0
+audio packets 8323 first -0.021333 gaps 0
+audio len s 177.536 source 177.52016666666665
+sync @   3.00s: offset +0.00 ms corr 0.997
+sync @  15.20s: offset +0.00 ms corr 0.998
+sync @  60.00s: offset +0.00 ms corr 0.999
+sync @  88.90s: offset +0.00 ms corr 0.997
+sync @ 120.00s: offset +0.00 ms corr 0.998
+sync @ 149.24s: offset +0.00 ms corr 0.994
+sync @ 165.00s: offset +0.00 ms corr 0.998
+sync @ 172.00s: offset +0.00 ms corr 0.999
+sync @   7.40s: offset +0.00 ms corr 0.998
+sync @  14.80s: offset +0.00 ms corr 0.998
+sync @  22.20s: offset +0.00 ms corr 0.999
+sync @  29.60s: offset +0.00 ms corr 0.998
+sync @  37.00s: offset +0.00 ms corr 0.998
+sync @  44.40s: offset +0.00 ms corr 0.999
+sync @  51.80s: offset +0.00 ms corr 0.999
+sync @  59.20s: offset +0.00 ms corr 0.998
+sync @  66.60s: offset +0.00 ms corr 1.000
+sync @  74.00s: offset +0.00 ms corr 0.996
+sync @  81.40s: offset +0.00 ms corr 0.996
+sync @  88.80s: offset +0.00 ms corr 0.997
+sync @  96.20s: offset +0.00 ms corr 0.999
+sync @ 103.60s: offset +0.00 ms corr 0.988
+sync @ 111.00s: offset +0.00 ms corr 0.999
+sync @ 118.40s: offset +0.00 ms corr 0.997
+sync @ 125.80s: offset +0.00 ms corr 0.984
+sync @ 133.20s: offset +0.00 ms corr 0.999
+sync @ 140.60s: offset +0.00 ms corr 0.999
+sync @ 148.00s: offset +0.00 ms corr 0.997
+sync @ 155.40s: offset +0.00 ms corr 0.998
+sync @ 162.80s: offset +0.00 ms corr 0.995
+sync @ 170.20s: offset +0.00 ms corr 0.999
