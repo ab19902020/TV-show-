@@ -25,7 +25,7 @@ drawings:
   kit-shrug: {sheet: reference/white-pele/model-sheet-kit10.png, box: [560, 1040, 718, 1173], faces: F, x8: true, extend: 0.5}
   kit-nod: {sheet: reference/white-pele/model-sheet-kit10.png, box: [710, 1040, 832, 1173], faces: R, x8: true, extend: 0.5}
   # the White Pelé upgrade pack (episodes/white-pele/upgrade-pack, cut by tools/make_art.py upgrade)
-  perf-stand: {image: reference/upgrade/perf-stand.png, faces: F, marks: {eyes: [[490, 430, 65, 55], [715, 430, 62, 52]], mouth: [480, 562, 745, 545, 610, 585], chin: 760}}
+  perf-stand: {image: reference/upgrade/perf-stand-m.png, faces: F, jaw: 0.8, marks: {eyes: [[490, 430, 65, 55], [715, 430, 62, 52]], mouth: [522, 566, 702, 561, 612, 584], chin: 760}}   # make_art perf-mouth
   perf-reach: {image: reference/upgrade/perf-reach.png, faces: R}
   perf-lean:  {image: reference/upgrade/perf-lean.png, faces: R}
   perf-point: {image: reference/upgrade/perf-point.png, faces: F}

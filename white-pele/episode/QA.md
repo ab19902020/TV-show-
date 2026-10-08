@@ -1,4 +1,33 @@
-# QA — White_Pele_PREVIEW_720p.mp4 (v2: the upgrade pack)
+# QA — White_Pele_PREVIEW_720p.mp4 (v3)
+
+## v3 (this render)
+
+Same file checks as before, all passing: 5325 frames, continuous timestamps, a clean full decode, and 0.00 ms
+audio offset at all 31 check points (`qa720.txt`).
+
+Fixed from the v2 review:
+- **Goldbridge:**
+  - The Sir Matt Busby Way shot is restaged. He poses as a full figure, and he and Rio walk off together (no
+    still cut-out pushed off screen).
+  - The trophy shot keeps both fists and the trophy in frame.
+  - The paper between his legs is gone from his front and walk drawings.
+- **Keane:** the eyebrow animation is limited on his drawings, so it no longer drags his brow line into his eye.
+- **Rooney:** the drawn grin on his standing pose is replaced by a plain smile line, so the lip sync no longer
+  shows two mouths.
+- **Rio:** paper cut from his back view, and his broken walk drawing taken out of the cycle.
+- **Stage:** the bass drum's front skin is repainted, the stadium crowd behind the stage is softer, and the wings
+  are spaced clear of the frame edges and the sparks.
+
+On camera:
+- Four shots are seen through Goldbridge's phone (REC, timecode, LIVE viewer count, channel name).
+- Crash zooms land on "Wayne" in the close-ups.
+- A broadcast caption gives Rooney's name.
+- Every shot on the new sets has a handheld drift.
+- Phones flash in the crowd shots.
+- Rooney, Rio and Keane play to the lens.
+- The video ends with Keane's hand over the lens.
+
+## v2 (the upgrade pack)
 
 ## v2 (this render)
 

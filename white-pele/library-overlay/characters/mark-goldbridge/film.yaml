@@ -14,7 +14,7 @@ drawings:
   walk2: {image: reference/white-pele/walk2.png, faces: R, plain: true}
   walk3: {image: reference/white-pele/walk3.png, faces: R, plain: true}
   walk4: {image: reference/white-pele/walk4.png, faces: R, plain: true}
-  front: {image: reference/passmic/turnaround/front.png, faces: F}
+  front: {image: reference/white-pele/front.png, faces: F}   # leg paper cut (make_art mark-front)
   q34:   {image: reference/passmic/turnaround/three_quarter_right.png, faces: R}
   back:  {image: reference/passmic/turnaround/back.png, faces: B, plain: true}
   cheer: {sheet: reference/model-sheet.png, box: [553, 834, 704, 941], faces: F, x8: true,   # both fists up, shouting (filmed with still_face: his eyes are too small to rig)

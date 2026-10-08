@@ -573,10 +573,12 @@ def stands(img, s, t, M, sc):
     dy = -amp * np.maximum(0, np.sin(math.pi * ((ph + 0.35 * col) % 1.0))) ** 1.5
     mapx, mapy = np.meshgrid(np.arange(OW, dtype=np.float32), np.arange(OH, dtype=np.float32))
     layer = cv2.remap(layer, mapx, mapy - dy[None, :], cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-    tone = s.get("crowd_tone", 1.0 if k == "MEM" else 0.82)
+    tone = s.get("crowd_tone", {"MEM": 1.0, "B08": 0.5, "B09": 0.72, "B07": 0.78}.get(k, 0.82))
     layer[..., :3] *= tone
-    if s.get("blur", 0) > 0:                       # in the shot's depth of field, as the plate behind it is
-        layer = cv2.GaussianBlur(layer, (0, 0), s["blur"] * RS)
+    soft = {"B08": 1.4, "B09": 0.7}.get(k, 0.0) * max(1.0, sc / (OW / 1672.0)) ** 0.5   # far behind the stage
+    bl = max(s.get("blur", 0), soft)
+    if bl > 0:                                     # in the shot's depth of field, as the plate behind it is
+        layer = cv2.GaussianBlur(layer, (0, 0), bl * RS)
     return img * (1 - layer[..., 3:4]) + layer[..., :3]
 
 
@@ -839,6 +841,24 @@ def kit_sprite():
     ys, xs = np.nonzero(m > 8)
     x0, y0, x1, y1 = xs.min(), ys.min(), xs.max() + 1, ys.max() + 1
     rgba = np.dstack([big[y0:y1, x0:x1], m[y0:y1, x0:x1]]).astype(np.float32) / 255.0
+    # the bass drum's front head, repainted whole (the plate's was a flat pale disc, nicked at the rim): a deep
+    # red head with a white ring, its port hole, a rim highlight, inside the drum's own shell
+    cx, cy, R = (850 * 4 - x0), (455 * 4 - y0), 62 * 4
+    head = np.zeros(rgba.shape[:2], np.float32)
+    cv2.circle(head, (cx, cy), int(R * 0.93), 1.0, -1, cv2.LINE_AA)
+    Y, X = np.mgrid[0:rgba.shape[0], 0:rgba.shape[1]].astype(np.float32)
+    d = np.sqrt((X - cx) ** 2 + (Y - cy + 0.25 * R) ** 2) / R
+    col = np.float32([0.55, 0.06, 0.08])[None, None] * (1.15 - 0.45 * np.clip(d, 0, 1))[..., None]
+    paint = np.zeros(rgba.shape[:2] + (3,), np.float32)
+    paint[:] = col
+    cv2.circle(paint, (cx, cy), int(R * 0.64), (0.96, 0.93, 0.88), int(R * 0.09), cv2.LINE_AA)
+    cv2.circle(paint, (cx, cy), int(R * 0.93), (0.08, 0.03, 0.03), int(R * 0.05), cv2.LINE_AA)
+    cv2.circle(paint, (int(cx + 0.38 * R), int(cy + 0.38 * R)), int(R * 0.15), (0.04, 0.02, 0.02), -1, cv2.LINE_AA)
+    cv2.ellipse(paint, (cx, cy), (int(R * 0.86), int(R * 0.86)), 0, 200, 250, (0.95, 0.55, 0.45), int(R * 0.035),
+                cv2.LINE_AA)
+    h = head[..., None]
+    rgba[..., :3] = rgba[..., :3] * (1 - h) + paint * h
+    rgba[..., 3] = np.maximum(rgba[..., 3], head)
     rgba[..., :3] *= rgba[..., 3:4]
     return rgba, (x0 / 4.0, y0 / 4.0)
 

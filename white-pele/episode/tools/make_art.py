@@ -598,6 +598,74 @@ def leg_paper():
 RECIPES["leg-paper"] = leg_paper
 
 
+def perf_mouth():
+    """Rooney's pack standing pose with its wide baked grin (and the cheek creases at its ends) taken out and a
+    plainer smile line drawn in, so the lip sync opens the mouth from that line instead of under a second mouth"""
+    d = CH / "wayne-rooney" / "reference" / "upgrade"
+    im = load(d / "perf-stand.png")
+    rgb = np.ascontiguousarray(im[..., :3])
+    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV).astype(np.int16)
+    band = np.zeros(im.shape[:2], bool)
+    band[548:612, 440:775] = True
+    ink = rgb.max(2) < 120
+    crease = ((hsv[..., 0] < 9) | (hsv[..., 0] > 170)) & (hsv[..., 1] > 90)
+    m = (band & (ink | crease)).astype(np.uint8)
+    m = cv2.dilate(m, np.ones((9, 9), np.uint8))
+    bgr = cv2.inpaint(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR), m * 255, 11, cv2.INPAINT_TELEA)
+    out = im.copy()
+    out[..., :3] = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
+    xs = np.linspace(522, 702, 40)
+    a, b, c = np.polyfit([522, 612, 702], [566, 584, 561], 2)
+    pts = np.int32(np.stack([xs, a * xs * xs + b * xs + c], 1) * 8)
+    lay = np.zeros(im.shape[:2], np.float32)
+    cv2.polylines(lay, [pts], False, 1.0, 10, cv2.LINE_AA, 3)
+    lay = cv2.GaussianBlur(lay, (0, 0), 0.8)[..., None]
+    out[..., :3] = (out[..., :3] * (1 - lay) + np.float32([28, 14, 12]) * lay).astype(np.uint8)
+    Image.fromarray(out).save(d / "perf-stand-m.png")
+    print("perf-stand-m", out.shape)
+
+
+RECIPES["perf-mouth"] = perf_mouth
+
+
+def rio_back():
+    """Rio from behind (his model sheet's back view, as the engine builds it at 8x) with the sheet's paper between
+    his legs cut away -> reference/white-pele/back.png"""
+    src = ROOT / "build" / "film" / "rio-ferdinand" / "back.png"
+    im = load(src)
+    H = im.shape[0]
+    rgb = im[..., :3].astype(np.int16)
+    pale = (rgb.min(2) > 185) & (rgb.max(2) - rgb.min(2) < 30) & (im[..., 3] > 100)
+    pale[:int(0.55 * H)] = False
+    n, lab, st, _ = cv2.connectedComponentsWithStats(pale.astype(np.uint8), 8)
+    for j in range(1, n):
+        if st[j, cv2.CC_STAT_AREA] > 0.0003 * H * H and st[j, cv2.CC_STAT_HEIGHT] > 0.8 * st[j, cv2.CC_STAT_WIDTH]:
+            grow = cv2.dilate((lab == j).astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
+            im[grow & (rgb.min(2) > 150), 3] = 0
+    save(im, "rio-ferdinand", "back")
+
+
+RECIPES["rio-back"] = rio_back
+
+
+def mark_front():
+    """Goldbridge front-on (Pass Mic turnaround/front) with the paper between his legs cut away"""
+    im = load(CH / "mark-goldbridge" / "reference" / "passmic" / "turnaround" / "front.png")
+    H = im.shape[0]
+    rgb = im[..., :3].astype(np.int16)
+    pale = (rgb.min(2) > 185) & (rgb.max(2) - rgb.min(2) < 30) & (im[..., 3] > 100)
+    pale[:int(0.55 * H)] = False
+    n, lab, st, _ = cv2.connectedComponentsWithStats(pale.astype(np.uint8), 8)
+    for j in range(1, n):
+        if st[j, cv2.CC_STAT_AREA] > 0.0003 * H * H and st[j, cv2.CC_STAT_HEIGHT] > 0.8 * st[j, cv2.CC_STAT_WIDTH]:
+            grow = cv2.dilate((lab == j).astype(np.uint8), np.ones((5, 5), np.uint8)).astype(bool)
+            im[grow & (rgb.min(2) > 150), 3] = 0
+    save(ground_shadow(im), "mark-goldbridge", "front")
+
+
+RECIPES["mark-front"] = mark_front
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or RECIPES:
         RECIPES[name]()

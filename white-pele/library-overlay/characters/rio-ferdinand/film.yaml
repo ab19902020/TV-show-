@@ -13,7 +13,7 @@ drawings:
   walk1: {sheet: reference/model-sheet.png, box: [180, 1240, 274, 1380], faces: R, x8: true, plain: true}
   walk2: {sheet: reference/model-sheet.png, box: [290, 1240, 364, 1380], faces: R, x8: true, plain: true}
   walk3: {sheet: reference/model-sheet.png, box: [366, 1240, 460, 1380], faces: R, x8: true, plain: true}
-  back:  {sheet: reference/model-sheet.png, box: [935, 158, 1085, 482], faces: B, x8: true, plain: true}
+  back:  {image: reference/white-pele/back.png, faces: B, plain: true}   # model sheet back view, leg paper cut (make_art rio-back)
   q34:   {sheet: reference/model-sheet.png, box: [776, 158, 914, 482], faces: R, x8: true}
   run1:  {sheet: reference/model-sheet.png, box: [586, 1238, 712, 1380], faces: R, x8: true, plain: true}
   run2:  {sheet: reference/model-sheet.png, box: [752, 1238, 890, 1380], faces: R, x8: true, plain: true}

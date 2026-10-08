@@ -138,7 +138,7 @@ def walker(who, keys, path, h, period=0.5, stride=True, **kw):
 
 
 WALK = {"rooney": ["wayne-rooney:walk1", "wayne-rooney:walk2", "wayne-rooney:walk3", "wayne-rooney:walk2"],
-        "rio": ["rio-ferdinand:walk1", "rio-ferdinand:walk2", "rio-ferdinand:walk3", "rio-ferdinand:walk2"],
+        "rio": ["rio-ferdinand:walk1", "rio-ferdinand:walk3"],     # (walk2's back shoe is cut off on the sheet)
         "mark": [f"mark-goldbridge:walk{k}" for k in (1, 2, 3, 4)],
         "gary": [f"gary-neville:walk{k}" for k in (1, 2, 3, 4)],
         "roy": [f"roy-keane:walk{k}" for k in (1, 2, 3, 4)],
@@ -199,7 +199,26 @@ def add(*shots):
 
 def S_(t0, plate, cams, layers, **kw):
     """a shot: cams [(t, (cx, cy, zoom[, roll]))] or (cam0, cam1) spread over the shot (end filled in by finish)"""
+    kw.setdefault("drift", 0.9 if str(plate).startswith("B") else 0.5)    # handheld: the operator is there
+    if plate == "OT":                                  # the crowd shots: phones flash back at the lens
+        kw.setdefault("rec_flash", [t0 + 0.55, t0 + 1.6, t0 + 2.75])
     return stage(t0, plate, cams, layers, **kw)
+
+
+def wayne(t0, t1):
+    """the onsets of "Wayne" sung inside a stretch: where the crash zooms land"""
+    from film.timeline import WORDS
+    return [w[0] for w in WORDS if w[2] == "wayne" and t0 <= w[0] < t1]
+
+
+def crash_cams(t0, t1, wide, tight):
+    """hold wide, then snap in to tight on each "Wayne" (a crash zoom), easing back out a little between them"""
+    hits = wayne(t0, t1)
+    ks = [(t0, wide)]
+    for i, h in enumerate(hits):
+        ks += [(h - 0.04, push(wide, 1.0 + 0.04 * i)), (h + 0.07, push(tight, 1.0 + 0.04 * i))]
+    ks.append((t1, push(tight, 1.06 + 0.04 * len(hits))))
+    return ks
 
 
 def move(t0, t1, c0, c1):
@@ -208,6 +227,10 @@ def move(t0, t1, c0, c1):
 
 # ================================================================ the upgrade: the pack's sets (props.UP, B01..B10)
 # Every set's floor, measured on the plate (1x px): a person's height in plate px where their feet are.
+def st_h(y):                                 # ST the matchday street (eye level 505)
+    return 2.5 * (y - 505)
+
+
 def h3(y):                                   # B03 the pub from the stage (eye level 211, the bar stools 0.75 m)
     return 0.98 * (y - 211)
 
@@ -304,8 +327,8 @@ add(S_(b(5), "B01", move(b(5), b(7), frame(*ROO1, "mcu", dx=0.03), push(frame(*R
        pub1([roo(R_STAND, *ROO1, look_cam=True)], blur={"sesko": 5.0, "cunha": 5.0, "maguire": 4.0}),
        blur=4.0, **CALM))
 # 13.7 (bar 7): the side of the stage: the singer downstage, the band behind him
-add(S_(b(7), "B02", move(b(7), b(8), (900, 560, 1.45), (880, 560, 1.55)),
-       pub2([roo(R_STAND, *ROO2)]), blur=0.0, **CALM))
+add(S_(b(7), "B02", crash_cams(b(7), b(8), (900, 560, 1.45), frame(*ROO2, "mcu", dx=0.03)),
+       pub2([roo(R_STAND, *ROO2, look_cam=True)]), blur=0.0, crash=wayne(b(7), b(8)), **CALM))
 # 15.2 (bar 8): the drums come in: Maguire's sticks on the kit
 add(S_(b(8), "B02", move(b(8), b(9), (1180, 445, 4.4), (1180, 440, 4.7)),
        pub2([roo(R_STAND, *ROO2, blur=8.0)], blur={"sesko": 6.0, "cunha": 4.0}), blur=2.0, **VERSE))
@@ -317,7 +340,8 @@ add(S_(b(9), "B01", move(b(9), b(11), (700, 420, 2.0), (690, 412, 2.12)),
 add(S_(b(11), "B03", move(b(11), b(13), (836, 520, 1.22), (836, 516, 1.28)),
        [("actors", "CROWD_PUB")],
        blur=2.0, grade="crowd", lights=0.0, beams=0.0, sweep=dict(n=3, amount=0.3), rim=0.3,
-       rim_color=(1.0, 0.72, 0.45), scarves_t=b(11, 0.15)))
+       rim_color=(1.0, 0.72, 0.45), scarves_t=b(11, 0.15), vf=dict(label="GOLDBRIDGE  •  THE PUB"),
+       drift=1.8))
 # 22.5 (bar 13): Rooney plants his feet and leads the room: the side of the stage, the room's fists in front
 add(S_(b(13), "B02", move(b(13), b(15), (860, 560, 1.35), (850, 556, 1.45)),
        pub2([roo(R_POINT, *ROO2, look_cam=True)],
@@ -421,7 +445,7 @@ add(S_(b(28), "B05", [(b(28), (1330, 650, 2.0)), (b(30), (700, 650, 2.0))],
 add(S_(b(30), "B05", move(b(30), b(31), (900, 560, 2.4), (930, 560, 2.5)),
        [("actors", [walker("mark", WALK["mark"], [(b(30), (1300, 712)), (b(31), (1299, 712))], h5(712), period=0.35,
                            mirror=True),
-                    A("gary", "gary-neville:clipboard", (900, 1150), 860, ref="gary-neville:stand",
+                    A("gary", "gary-neville:clipboard", (900, 1260), 900, ref="gary-neville:stand",
                       face=(-0.4, -0.2))])],
        blur=4.0, grade="crowd", **QUIET))
 # 48.8 (bar 31): the mural: THE WHITE PELE painted on the gable (one phrase)
@@ -432,16 +456,22 @@ add(S_(b(31), "MW", move(b(31), b(33), (700, 470, 1.3), (640, 470, 1.4)),
 add(S_(b(33), "B05", move(b(33), b(35), (520, 560, 1.6), (440, 560, 1.66)),
        [("actors", "CROWD_ST"),
         ("actors", [walk5("rio", 1000, 716, b(33), b(35)), walk5("rooney", 900, 724, b(33), b(35))])],
-       blur=0.0, grade="crowd", **QUIET))
-# 54.6 (bar 35): on Sir Matt Busby Way Goldbridge poses for a camera that isn't there; Rio drags him on
-add(S_(b(35), "ST", move(b(35), b(37), (520, 470, 2.0), (560, 470, 2.06)),
+       blur=0.0, grade="crowd", vf=dict(label="GOLDBRIDGE  •  MATCHDAY"), drift=1.8, **QUIET))
+# 54.6 (bar 35): on Sir Matt Busby Way Goldbridge poses under the street sign for a camera that isn't there; Rio
+# walks in to fetch him...
+MARK_SIGN = (600, 700)
+add(S_(b(35), "ST", move(b(35), b(36, 0.5), (520, 520, 1.5), (540, 520, 1.56)),
        [("props", "street_sign"),
-        ("actors", [A("mark", "mark-goldbridge:pointing", (540, 1180), 840, ref="mark-goldbridge:stand",
-                      look_cam=True, face=(0.5, 0.9),
-                      path=[(b(35), (540, 1180)), (b(36, 0.5), (540, 1180)), (b(37), (980, 1180))]),
-                    walker("rio", WALK["rio"], [(b(35, 0.2), (20, 980)), (b(36, 0.5), (360, 980)),
-                                                (b(37), (820, 980))], 700, period=0.5)])],
-       blur=2.5, grade="crowd", **QUIET))
+        ("actors", [A("mark", "mark-goldbridge:front", MARK_SIGN, st_h(700), look_cam=True, face=(0.6, 1.0)),
+                    walker("rio", WALK["rio"], [(b(35, 0.1), (-260, 712)), (b(36, 0.5), (230, 712))], st_h(712),
+                           period=1.0)])],
+       blur=1.5, grade="crowd", **QUIET))
+# 56.7: ...and they head off up the road together, both walking
+add(S_(b(36, 0.5), "ST", move(b(36, 0.5), b(37), (600, 520, 1.5), (760, 520, 1.5)),
+       [("props", "street_sign"),
+        ("actors", [walker("mark", WALK["mark"], [(b(36, 0.5), MARK_SIGN), (b(37), (601, 700))], st_h(700)),
+                    walker("rio", WALK["rio"], [(b(36, 0.5), (330, 712)), (b(37), (331, 712))], st_h(712))])],
+       blur=1.5, grade="crowd", **QUIET))
 # 57.4 (bar 37): above the city: a rooftop, the stadium glowing beyond; he sings to it alone
 ROOF = ((640, 790), h10(790))
 add(S_(b(37), "B10", move(b(37), b(39), (836, 520, 1.25), (800, 540, 1.4)),
@@ -468,9 +498,9 @@ add(S_(b(44), "EXT2", move(b(44), b(47), (836, 520, 1.3), (836, 560, 1.7)),
 
 # ---------------------------------------------------------------- the stadium: B06 tunnel, B08 stage, B09 reverse
 ROO8 = ((836, 772), h8(772))                 # the singer's mark, front centre
-RIO8 = ((420, 712), h8(712))                 # the wings: Rio stage left, Goldbridge and Keane stage right
-MARK8 = ((1250, 706), h8(706))
-ROY8 = ((1360, 724), h8(724))
+RIO8 = ((440, 712), h8(712))                 # the wings: Rio stage left, Goldbridge and Keane stage right
+MARK8 = ((1170, 706), h8(706))
+ROY8 = ((1275, 724), h8(724))
 BAND8 = band_at(((836, 612), h8(612)), ((560, 664), h8(664)), ((1112, 664), h8(664)), kit=True)
 
 
@@ -514,11 +544,12 @@ add(S_(b(52), "B08", move(b(52), b(53), (760, 640, 3.0), (820, 650, 3.3)),
 # 80.7 (bar 53): "He goes by the name of Wayne Rooney"
 add(S_(b(53), "B08", move(b(53), b(55), CU8("mcu"), push(CU8("mcu"), 1.06)),
        st8([roo(R_STAND, *ROO8, look_cam=True)], blur={"maguire": 6.0, "sesko": 6.0, "cunha": 6.0}), blur=6.0,
+       lower=dict(t0=b(53, 0.15), t1=b(55) - 0.1, top="WAYNE ROONEY", sub="THE WHITE PELÉ  •  LIVE AT OLD TRAFFORD"),
        **CHORUS))
 # 83.6 (bar 55): the name, close
-add(S_(b(55), "B08", move(b(55), b(57), CU8("cu"), push(CU8("cu"), 1.05)),
+add(S_(b(55), "B08", crash_cams(b(55), b(57), CU8("mcu"), CU8("cu")),
        st8([roo(R_STAND, *ROO8, look_cam=True)], blur={"maguire": 8.0, "sesko": 8.0, "cunha": 8.0}), blur=7.0,
-       **CHORUS))
+       crash=wayne(b(55), b(57)), **CHORUS))
 # 86.6 (bar 57): the crowd sings his name back and shouts "Hey!"
 add(S_(b(57), "OT", move(b(57), b(59), (836, 380, 1.4), (836, 380, 1.47)),
        [("props", "stands"), ("actors", "CROWD_B"),
@@ -529,11 +560,9 @@ add(S_(b(57), "OT", move(b(57), b(59), (836, 380, 1.4), (836, 380, 1.47)),
 add(S_(b(59), "B08", move(b(59), b(61), WIDE8, push(WIDE8, 1.08)), st8([roo(R_STAND, *ROO8), *wings()],
        extra=[FG(b(59))]), **CHORUS))
 # 92.4 (bar 61): stage left: Rio's scarf up, Goldbridge beside him, firing up the front rows
-add(S_(b(61), "B08", move(b(61), b(63), (420, 600, 3.6), (430, 600, 3.8)),
-       st8([A("rio", "rio-ferdinand:scarf", *RIO8, look_cam=True),
-            A("mark", "mark-goldbridge:stand", (480, 724), h8(724), look_cam=True)], band=False,
-           extra=[("fg_fans", dict(y=0.78, n=10, seed=5, blur=6.0, arms=0.9, scale=1.2, rim=0.8))]),
-       blur=3.0, **CHORUS))
+add(S_(b(61), "B08", move(b(61), b(63), frame(*RIO8, "ms", dx=0.05), push(frame(*RIO8, "ms", dx=0.05), 1.12)),
+       st8([A("rio", "rio-ferdinand:scarf", *RIO8, look_cam=True, face=(0.8, 1.0))], band=False),
+       blur=3.0, vf=dict(label="GOLDBRIDGE  •  ON THE STAGE"), drift=1.8, **CHORUS))
 
 # ---- verse 2 -----------------------------------------------------------------------------------------------------
 # 95.3 (bar 63): "Hey!" and "Volley smash in the derby night": he points out over them
@@ -598,16 +627,15 @@ KEANE_FEET = (ROY8[0][0], ROY8[0][1] - 0.16 * ROY8[1], 12.0)
 add(S_(b(73), "B08", move(b(73), b(74), KEANE_FEET, push(KEANE_FEET, 1.04)),
        st8([A("roy", "roy-keane:folded", *ROY8, tap=TAP8, dance=0.0)], band=False), blur=3.0, **VERSE))
 # 111.4 (bar 74): ...Rio spots it; Keane stops dead and glares at him; Rio looks away
-add(S_(b(74), "B08", move(b(74), b(75, 0.5), (1300, 640, 4.6), (1300, 640, 4.8)),
-       st8([A("rio", "rio-ferdinand:palms", (1225, 718), h8(718)),
+add(S_(b(74), "B08", move(b(74), b(75, 0.5), (1210, 640, 4.6), (1210, 640, 4.8)),
+       st8([A("rio", "rio-ferdinand:palms", (1130, 718), h8(718)),
             A("roy", "roy-keane:folded", *ROY8, dance=0.0, tap=TAP8)], band=False), blur=4.0, **VERSE))
 # 113.6: the moment Rio looks away, the foot goes again
 add(S_(b(75, 0.5), "B08", move(b(75, 0.5), b(76), KEANE_FEET, push(KEANE_FEET, 1.03)),
        st8([A("roy", "roy-keane:folded", *ROY8, tap=TAP8, dance=0.0)], band=False), blur=3.0, **VERSE))
 # 114.4 (bar 76): from behind him, the crowd singing it back: "England's hope and United's pride"
 add(S_(b(76), "OT", move(b(76), b(78), (836, 420, 1.3), (836, 410, 1.38)),
-       [("props", "stands"), ("actors", "CROWD_C"),
-        ("actors", [A("rooney", R_BACK, (960, 1560), 1240, screen=True, blur=2.0)])],
+       [("props", "stands"), ("actors", "CROWD_C")],
        blur=4.0, grade="crowd", lights=0.0, beams=0.0, sweep=dict(n=3, amount=0.35)))
 # 117.3 (bar 78): "Goals and glory side by side": Rooney and the band
 add(S_(b(78), "B08", move(b(78), b(80), (836, 640, 3.0), (836, 640, 3.25)), st8([roo(R_STAND, *ROO8, look_cam=True)]),
@@ -616,13 +644,14 @@ add(S_(b(78), "B08", move(b(78), b(80), (836, 640, 3.0), (836, 640, 3.25)), st8(
 # ---- the breakdown: the drums stop -----------------------------------------------------------------------------
 SPOT = dict(at="rooney", r=60, dark=0.62, tall=1.6)
 add(S_(b(80), "B08", move(b(80), b(82), (836, 600, 1.9), (836, 610, 2.15)),
-       st8([roo(R_STAND, *ROO8), *wings()], extra=[("props", "phones")]), spot=SPOT, **CALM))
+       st8([roo(R_STAND, *ROO8)], extra=[("props", "phones")]), spot=SPOT, **CALM))
 # 123.1 (bar 82): Goldbridge comes up with his tiny trophy to crown him; Rooney eyes it and sings on
-add(S_(b(82), "B08", move(b(82), b(84), (880, 680, 4.0), (878, 680, 4.25)),
-       st8([roo(R_STAND, *ROO8),
-            A("mark", "mark-goldbridge:cheer", (962, 812), h8(772), ref="mark-goldbridge:stand", still_face=True,
-              hold=[dict(prop="trophy", at=(690, 846), size=34, behind=True, wobble=4.0)])], band=False),
-       blur=4.0, spot=dict(SPOT, r=110), **CALM))
+add(S_(b(82), "B08", move(b(82), b(84), frame(*ROO8, "ms", dx=0.22), push(frame(*ROO8, "ms", dx=0.22), 1.05)),
+       st8([roo(R_STAND, *ROO8, look_cam=True)], band=False,
+           extra=[("actors", [A("mark", "mark-goldbridge:cheer", (1390, 1250), 600, screen=True, still_face=True,
+                                blur=1.0, hold=[dict(prop="trophy", at=(690, 846), size=34, behind=True,
+                                                     wobble=4.0)])])]),
+       blur=3.0, spot=dict(SPOT, r=240, dark=0.4), **CALM))
 # 126.0 (bar 84): the crowd swaying, phones up
 add(S_(b(84), "OT", move(b(84), b(86), (836, 380, 1.5), (836, 375, 1.56)),
        [("props", "stands"), ("props", "phones"), ("actors", "CROWD_D"),
@@ -635,33 +664,34 @@ add(S_(b(86), "B08", move(b(86), b(88), frame(*ROO8, "ms", dx=0.05), push(frame(
 # ---- chorus 3 ----------------------------------------------------------------------------------------------------
 # 132.0 (bar 88): from behind Rooney: the crowd in layers, the front singing, the stands pulsing
 add(S_(b(88), "OT", move(b(88), b(91), (836, 400, 1.15), (836, 410, 1.3)),
-       [("props", "stands"), ("actors", "CROWD_E"),
-        ("actors", [A("rooney", R_BACK, (960, 1600), 1300, screen=True, blur=1.5)])],
+       [("props", "stands"), ("actors", "CROWD_E")],
        blur=3.5, grade="crowd", lights=0.0, beams=0.0, sweep=dict(n=4, amount=0.4)))
 add(S_(b(91), "B08", move(b(91), b(93), CU8("mcu"), push(CU8("mcu"), 1.06)),
        st8([roo(R_STAND, *ROO8, look_cam=True)], blur={"maguire": 6, "sesko": 6, "cunha": 6}), blur=6.0, **CHORUS))
 # 139.3 (bar 93): the reverse: him and Rio from behind, the whole ground singing at them
 add(S_(b(93), "B09", move(b(93), b(95), (836, 520, 1.25), (836, 520, 1.32)),
        [("props", "stands"),
-        ("actors", [A("rio", "rio-ferdinand:back", (1140, 1060), 640, blur=1.0), roo(R_BACK, (720, 1180), 860)])],
+        ("actors", [A("rio", "rio-ferdinand:back", (1150, 1150), 680, blur=1.0), roo(R_BACK, (720, 1180), 860)])],
        blur=0.0, grade="crowd", lights=0.0, beams=0.0, crowd_jump=1.4))
 # 142.3 (bar 95): everything
 add(S_(b(95), "B08", move(b(95), b(96), (836, 590, 1.3), (836, 605, 1.48)), st8([roo(R_STAND, *ROO8), *wings()],
        extra=[FG(b(95)), ("pyro", None)]), **ANTHEM))
-add(S_(b(96), "B08", move(b(96), b(97), CU8("cu"), push(CU8("cu"), 1.05)),
-       st8([roo(R_STAND, *ROO8, look_cam=True)], blur={"maguire": 8, "sesko": 8, "cunha": 8}), blur=7.0, **ANTHEM))
+add(S_(b(96), "B08", crash_cams(b(96), b(97), CU8("mcu"), CU8("cu")),
+       st8([roo(R_STAND, *ROO8, look_cam=True)], blur={"maguire": 8, "sesko": 8, "cunha": 8}), blur=7.0,
+       crash=wayne(b(96), b(97)), **ANTHEM))
 add(S_(b(97), "B08", move(b(97), b(98), frame(*RIO8, "full", dx=0.1), push(frame(*RIO8, "full", dx=0.1), 1.06)),
        st8([A("rio", "rio-ferdinand:palms", *RIO8, face=(0.9, 1.0), look_cam=True)], band=False), blur=4.0,
        **ANTHEM))
-add(S_(b(98), "B08", move(b(98), b(99), frame(MARK8[0], MARK8[1], "cu", dy=0.02),
-                         push(frame(MARK8[0], MARK8[1], "cu", dy=0.02), 1.06)),
-       st8([A("mark", "mark-goldbridge:shouting", *MARK8, ref="mark-goldbridge:stand")], band=False),
-       blur=6.0, **ANTHEM))
+add(S_(b(98), "B08", move(b(98), b(99), frame(MARK8[0], MARK8[1], "cu", dy=-0.04),
+                         push(frame(MARK8[0], MARK8[1], "cu", dy=-0.04), 1.06)),
+       st8([A("mark", "mark-goldbridge:shouting", *MARK8, ref="mark-goldbridge:stand", look_cam=True)], band=False),
+       blur=6.0, vf=dict(label="GOLDBRIDGE  •  SELFIE CAM"), drift=2.2, **ANTHEM))
 # 146.8 (bar 99): Keane, arms folded... and on the crash he claps. Once. Then the arms fold again
 CLAP = 149.243
 add(S_(b(99), "B08", move(b(99), b(100, 0.2), frame(*ROY8, "ms"), push(frame(*ROY8, "ms"), 1.08)),
        st8([A("roy", "roy-keane:folded", *ROY8, dance=0.0,
-              keys=[(b(99), "roy-keane:folded"), (CLAP - 0.12, "roy-keane:clap"), (CLAP + 0.45, "roy-keane:folded")])],
+              keys=[(b(99), "roy-keane:folded"), (CLAP - 0.12, "roy-keane:clap"), (CLAP + 0.45, "roy-keane:folded")],
+              look_cam=True)],
                band=False, extra=[("props", "strike_flash")]), blur=5.0, strike=CLAP,
        strike_at=(ROY8[0][0] + 0.05 * ROY8[1], ROY8[0][1] - 0.62 * ROY8[1]), **ANTHEM))
 add(S_(b(100, 0.2), "OT", move(b(100, 0.2), b(101), (836, 380, 1.4), (836, 375, 1.5)),
@@ -669,7 +699,7 @@ add(S_(b(100, 0.2), "OT", move(b(100, 0.2), b(101), (836, 380, 1.4), (836, 375, 
         ("pyro_near", None)], blur=5.0, grade="crowd", lights=0.0, beams=0.0, sweep=dict(n=4, amount=0.45)))
 # 151.1 (bar 101): the scarf wave goes round the ground; Rooney turns the mic and the credit to the fans
 add(S_(b(101), "B08", move(b(101), b(104), (836, 540, 1.12), (836, 590, 1.38)),
-       st8([roo(R_POINT, *ROO8), *wings()], extra=[FG(b(101))]), wave=(b(101), b(104)), **ANTHEM))
+       st8([roo(R_POINT, *ROO8), *wings()], extra=[FG(b(101))]), wave=(b(101), b(104)), **dict(ANTHEM, haze=0.25)))
 # 155.5 (bar 104): "Hey! Hey!": fists and flags
 add(S_(b(104), "OT", move(b(104), b(106), (836, 380, 1.45), (836, 370, 1.55)),
        [("props", "stands"), ("actors", "CROWD_E"), ("stage_edge", dict(y=0.88, monitor=1, mic=None, blur=9.0)),
@@ -683,7 +713,7 @@ add(S_(b(106), "B08", move(b(106), b(109), (836, 600, 1.38), (836, 612, 1.56)), 
 # with his scarf up; the confetti comes down on the stands
 add(S_(b(109), "B09", move(b(109), b(113), (836, 500, 1.15), (836, 470, 1.3)),
        [("props", "stands"),
-        ("actors", [A("rio", "rio-ferdinand:back", (1180, 1010), 600, blur=0.8), roo(R_BACK, (720, 1190), 880)])],
+        ("actors", [A("rio", "rio-ferdinand:back", (1190, 1140), 660, blur=0.8), roo(R_BACK, (720, 1190), 880)])],
        blur=0.0, grade="crowd", lights=0.0, beams=0.0, crowd_jump=1.8, scarves=[(b(110), b(113))]))
 # 168.6 (bar 113): the last word; the smile held
 add(S_(b(113), "B08", move(b(113), b(115), CU8("mcu"), push(CU8("mcu"), 1.04)),
@@ -698,13 +728,14 @@ SWEPT = (ROY8[0][0] + 0.10 * ROY8[1], ROY8[0][0] - 0.65 * ROY8[1], ROY8[0][1] - 
 add(S_(173.70, "B08", move(173.70, 175.30, frame(*ROY8, "ms", dx=-0.1), push(frame(*ROY8, "ms", dx=-0.1), 1.04)),
        st8([A("roy", "roy-keane:broom-hand", *ROY8, dance=0.0, hold=[BROOM])], band=False,
            extra=[("props", "floor_confetti")]), blur=3.0, swept=SWEPT, confetti=False, **CALM))
-# 175.3: Rooney gives him a sideways look, Rio is bent double laughing; Keane holds the look and sweeps on
-add(S_(175.30, "B08", move(175.30, SONG_END, (1215, 650, 3.4), (1215, 648, 3.52)),
-       st8([A("rio", "rio-ferdinand:laughbent2", (1060, 728), h8(728), blur=0.8),
-            roo(R_STAND, (1200, 742), h8(742)),
-            A("roy", "roy-keane:broom-hand", *ROY8, dance=0.0, hold=[dict(BROOM, sweep=(9.0, 1.6, 175.3))])],
+# 175.3: Rooney gives him a sideways look, Rio is bent double laughing; Keane stares down the lens... and puts
+# his hand over it. Black
+add(S_(175.30, "B08", move(175.30, SONG_END, (1110, 650, 3.3), (1110, 648, 3.42)),
+       st8([A("rio", "rio-ferdinand:laughbent2", (935, 728), h8(728), blur=0.8),
+            roo(R_STAND, (1095, 742), h8(742)),
+            A("roy", "roy-keane:broom-hand", *ROY8, dance=0.0, look_cam=True, hold=[dict(BROOM, sweep=(9.0, 1.6, 175.3))])],
            band=False, extra=[("props", "floor_confetti")]), blur=2.0, swept=SWEPT, confetti=False,
-       fade_out=(SONG_END - 0.7, SONG_END), **CALM))
+       lens_hand=(SONG_END - 1.0, SONG_END - 0.15), **CALM))
 
 
 # ---------------------------------------------------------------- the crowd shots' people (United Road's helpers)
@@ -765,7 +796,7 @@ for _s in SH:
     _s["layers"] = [(k, CROWDS[v] if k == "actors" and isinstance(v, str) else v) for k, v in _s["layers"]]
 
 # ---------------------------------------------------------------- the show
-FOUNTAINS = [(300, 802), (1372, 802)]               # B08: the front corners of the stage
+FOUNTAINS = [(250, 802), (1420, 802)]               # B08: the front corners of the stage
 FOUNTAINS_BIG = [(620, 802), (1050, 802)]
 PYRO_H = 260
 PYRO = [(b(51), 2.2, 1.0), (b(95), 3.0, 1.3), (b(106), 2.4, 1.0), (b(115), 2.4, 1.3)]

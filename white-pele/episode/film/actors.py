@@ -329,6 +329,7 @@ def post(img, s, t):
     if s.get("fade_out"):
         a, bb = s["fade_out"]
         img = img * (1 - ST.sm((t - a) / max(1e-3, bb - a)))
+    img = importlib.import_module("film.camera").apply(img, s, t)
     return img
 
 
