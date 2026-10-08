@@ -1,0 +1,19 @@
+# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
+# given face landmarks. Check build/film/rio-ferdinand_check.jpg after any change.
+drawings:
+  front: {kit: casual/front, faces: F}
+  # The White Pelé (episodes/white-pele): the rooney-g-unit scene's approved drawings (reference/poses/) and the
+  # model sheet's gesture, walk and turnaround poses
+  mic:     {image: reference/poses/rio-mic.png, faces: L}
+  laugh:   {image: reference/poses/rio-laugh.png, faces: R}
+  folded:  {sheet: reference/model-sheet.png, box: [596, 1056, 688, 1193], faces: F, x8: true, extend: 0.5}
+  rally:   {sheet: reference/model-sheet.png, box: [698, 1056, 814, 1193], faces: F, x8: true, extend: 0.5}
+  shrug:   {sheet: reference/model-sheet.png, box: [806, 1056, 970, 1193], faces: F, x8: true, extend: 0.5}
+  laughbent: {sheet: reference/model-sheet.png, box: [970, 1056, 1084, 1193], faces: R, x8: true, extend: 0.3}
+  walk1: {sheet: reference/model-sheet.png, box: [180, 1240, 274, 1380], faces: R, x8: true, plain: true}
+  walk2: {sheet: reference/model-sheet.png, box: [290, 1240, 364, 1380], faces: R, x8: true, plain: true}
+  walk3: {sheet: reference/model-sheet.png, box: [366, 1240, 460, 1380], faces: R, x8: true, plain: true}
+  back:  {sheet: reference/model-sheet.png, box: [935, 158, 1085, 482], faces: B, x8: true, plain: true}
+  q34:   {sheet: reference/model-sheet.png, box: [776, 158, 914, 482], faces: R, x8: true}
+  run1:  {sheet: reference/model-sheet.png, box: [586, 1238, 712, 1380], faces: R, x8: true, plain: true}
+  run2:  {sheet: reference/model-sheet.png, box: [752, 1238, 890, 1380], faces: R, x8: true, plain: true}

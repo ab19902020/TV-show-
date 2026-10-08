@@ -1,0 +1,21 @@
+# Drawings this character is filmed in (studio/film/art.py). Pass Mic's cut-outs (reference/passmic/) are used
+# as they are; the White Pelé drawings (reference/white-pele/) are derived from them (episodes/white-pele/tools).
+drawings:
+  stand:    {image: reference/white-pele/stand.png, faces: F}       # header strip and leg paper cut (make_art mark-stand)
+  pointing: {image: reference/passmic/upper/pointing.png, faces: R, marks: {eyes: [[780, 770, 90, 70], [1110, 790, 70, 70]]}}
+  fistpump: {image: reference/passmic/upper/fist_pump.png, faces: R, marks: {eyes: [[880, 760, 90, 70], [1220, 790, 70, 70]]}}
+  shrug:    {image: reference/passmic/upper/shrug.png, faces: F}
+  armsdown: {image: reference/passmic/upper/arms_down.png, faces: F}
+  shouting: {image: reference/passmic/expressions/shouting.png, faces: R, marks: {eyes: [[1121, 946, 130, 100], [1568, 1000, 110, 100]]}}
+  laughing: {image: reference/passmic/expressions/laughing.png, faces: F}
+  shocked:  {image: reference/passmic/expressions/shocked.png, faces: F, marks: {eyes: [[660, 1070, 140, 170], [1107, 1070, 140, 170]]}}
+  smug:     {image: reference/passmic/expressions/smug.png, faces: R, marks: {eyes: [[953, 1160, 110, 90], [1364, 1035, 100, 90]]}}
+  walk1: {image: reference/white-pele/walk1.png, faces: R, plain: true}
+  walk2: {image: reference/white-pele/walk2.png, faces: R, plain: true}
+  walk3: {image: reference/white-pele/walk3.png, faces: R, plain: true}
+  walk4: {image: reference/white-pele/walk4.png, faces: R, plain: true}
+  front: {image: reference/passmic/turnaround/front.png, faces: F}
+  q34:   {image: reference/passmic/turnaround/three_quarter_right.png, faces: R}
+  back:  {image: reference/passmic/turnaround/back.png, faces: B, plain: true}
+  cheer: {sheet: reference/model-sheet.png, box: [553, 834, 704, 941], faces: F, x8: true,   # both fists up, shouting (filmed with still_face: his eyes are too small to rig)
+          marks: {eyes: [[622, 869, 4.5, 4], [639, 869, 4.5, 4]]}}

@@ -1,0 +1,19 @@
+name: Mark Goldbridge
+short: Goldbridge
+role: presenter
+style: house
+height_cm: 178
+note: 'From the Pass Mic repository (ab19902020/Passmic, series/ep01, commit 745870f7): the bold expressive parody
+  sheet (Style 1) and its cut-outs, the same art the TV-show- repo''s Overcrap episode uses. Filmed from those
+  whole drawings (film.yaml); no puppet kit.'
+likeness: 'Mark Goldbridge, fan-channel host parody: short swept-up light brown hair with a fade, round face,
+  heavy brows, big expressive eyes; red hoodie with a small crest, black joggers, white trainers.'
+outfits:
+  casual:
+    description: Red hoodie, black joggers, white trainers.
+    sheets: []
+reference:
+  model-sheet.png: 'Pass Mic character sheet (Style 1, bold and expressive): turnaround, head views, expressions,
+    mouth set, hands, arm and upper-body poses, walk and run, extra poses (cheering, talking to camera)'
+note_reference: 'reference/passmic/ holds Pass Mic''s cut-outs of that sheet (upper/ and expressions/ at 16x, walk/ and
+  turnaround/ at 4x); reference/white-pele/ the drawings derived for The White Pelé (tools/make_art.py in that episode).'
