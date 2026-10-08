@@ -176,7 +176,23 @@ def lens_hand(img, t, span):
     return out * (1 - 0.92 * dark) * (1 - dark * dark * 0.08)
 
 
+def concert_pulse(img, t, s):
+    """Subtle beat-reactive wash, restrained to preserve facial detail.
+
+    Only used on selected pub/stadium stage shots. Not a strobe and never
+    applied to the crowd, the quiet outro button or Keane's lens ending.
+    """
+    from studio.film.stage import SONG
+    phase = float(SONG().phase(t))
+    attack = math.exp(-min(phase, 1.0 - phase) ** 2 / 0.011)
+    level = min(1.0, max(0.0, float(s.get("lights", 1.0)) / 1.7))
+    lift = level * (0.018 + 0.028 * attack)
+    return np.clip(img + (1.0 - img) * lift, 0.0, 1.0)
+
+
 def apply(img, s, t):
+    if s.get("polish_lights"):
+        img = concert_pulse(img, t, s)
     if s.get("rec_flash"):
         img = flash_pop(img, t, s["rec_flash"])
     if s.get("crash"):
