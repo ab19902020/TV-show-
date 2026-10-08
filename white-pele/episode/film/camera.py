@@ -75,6 +75,52 @@ def viewfinder(img, t, s, o):
     d.text((m + 30 * RS, H - m - 74 * RS), o.get("label", "GOLDBRIDGE CAM"), font=_font(44),
            fill=(255, 255, 255, 235))
     img = img * 0.96 + 0.02                          # a phone's flatter, lifted picture
+    out = _over(img, np.asarray(lay))
+    return live_chat(out, t, s) if o.get("chat") else out
+
+
+def live_chat(img, t, s):
+    """Goldbridge's cartoon livestream comments, restricted to his selfie shot.
+
+    Lightweight transparent UI: three timed messages plus floating reaction
+    bubbles on the far right, keeping the centre face and microphone clear.
+    """
+    dt = max(0.0, float(t - s["t"]))
+    messages = [
+        ("REDARMY", "WAYNE! WAYNE!"),
+        ("STRETFORD", "UP THE REDS"),
+        ("MANCHESTER", "ROY SMILED?!"),
+        ("UNITED4EVER", "WHITE PELÉ!"),
+    ]
+    shown = min(len(messages), 1 + int(dt / 0.34))
+    first = max(0, shown - 3)
+    lay = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    x = int(OW - 590 * RS)
+    w, row_h = int(475 * RS), int(94 * RS)
+    y0 = int(OH - 385 * RS)
+    for row, index in enumerate(range(first, shown)):
+        appear = max(0.0, min(1.0, (dt - index * 0.34) / 0.16))
+        if appear <= 0:
+            continue
+        alpha = int(195 * appear)
+        y = y0 + row * row_h
+        d.rounded_rectangle([x, y, x + w, y + int(82 * RS)],
+                            radius=max(3, int(14 * RS)), fill=(10, 12, 21, alpha))
+        who, message = messages[index]
+        d.text((x + 18 * RS, y + 7 * RS), who, font=_font(25),
+               fill=(255, 193, 72, int(245 * appear)))
+        d.text((x + 18 * RS, y + 34 * RS), message, font=_font(37),
+               fill=(255, 255, 255, int(255 * appear)))
+    # Reactions rise on the screen edge; no strobing or obscuring the actor.
+    for k in range(4):
+        phase = (dt * 0.8 + k * 0.25) % 1.0
+        cx = OW - (65 + (k % 2) * 48) * RS + math.sin(dt * 3.5 + k) * 8 * RS
+        cy = OH - (175 + phase * 370) * RS
+        rad = (15 + 5 * phase) * RS
+        alpha = int(195 * (1.0 - phase))
+        d.ellipse((cx-rad, cy-rad, cx+rad, cy+rad), fill=(240, 48, 78, alpha),
+                  outline=(255, 220, 220, alpha), width=max(1, int(3 * RS)))
     return _over(img, np.asarray(lay))
 
 
@@ -176,13 +222,61 @@ def lens_hand(img, t, span):
     return out * (1 - 0.92 * dark) * (1 - dark * dark * 0.08)
 
 
+def concert_pulse(img, t, s):
+    """Subtle beat-reactive wash, restrained to preserve facial detail.
+
+    Only used on selected pub/stadium stage shots. Not a strobe and never
+    applied to the crowd, the quiet outro button or Keane's lens ending.
+    """
+    from studio.film.stage import SONG
+    phase = float(SONG().phase(t))
+    attack = math.exp(-min(phase, 1.0 - phase) ** 2 / 0.011)
+    level = min(1.0, max(0.0, float(s.get("lights", 1.0)) / 1.7))
+    lift = level * (0.018 + 0.028 * attack)
+    return np.clip(img + (1.0 - img) * lift, 0.0, 1.0)
+
+
+def impact_title(img, t, s, o):
+    """Brief, smooth chorus typography over existing stage footage."""
+    start = float(o.get("at", s["t"]))
+    duration = max(0.1, float(o.get("duration", 1.05)))
+    dt = float(t - start)
+    if not 0.0 <= dt < duration:
+        return img
+    fade = min(1.0, dt / 0.20, (duration - dt) / 0.26)
+    fade = max(0.0, fade * fade * (3.0 - 2.0 * fade))
+    enter = min(1.0, dt / 0.25)
+    enter = 1.0 - (1.0 - enter) ** 3
+    lay = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    title, subtitle = o.get("top", "WHITE PELÉ"), o.get("sub", "WAYNE ROONEY")
+    ft, fs = _font(104), _font(36)
+    tw = d.textbbox((0, 0), title, font=ft)[2]
+    sw = d.textbbox((0, 0), subtitle, font=fs)[2]
+    w = max(tw, sw + int(30 * RS))
+    x = int((OW - w) / 2)
+    y = int(OH - (250 + 35 * (1.0 - enter)) * RS)
+    d.rounded_rectangle((x - 33 * RS, y - 8 * RS, x + w + 33 * RS, y + 161 * RS),
+                        radius=max(2, int(17 * RS)), fill=(10, 9, 14, int(176 * fade)))
+    d.rectangle((x - 33 * RS, y - 8 * RS, x - 22 * RS, y + 161 * RS),
+                fill=(210, 35, 45, int(248 * fade)))
+    d.text((x, y), title, font=ft, fill=(255, 246, 226, int(255 * fade)))
+    d.text((x + 3 * RS, y + 110 * RS), subtitle, font=fs,
+           fill=(255, 190, 78, int(240 * fade)))
+    return _over(img, np.asarray(lay))
+
+
 def apply(img, s, t):
+    if s.get("polish_lights"):
+        img = concert_pulse(img, t, s)
     if s.get("rec_flash"):
         img = flash_pop(img, t, s["rec_flash"])
     if s.get("crash"):
         img = crash(img, t, s["crash"])
     if s.get("lower"):
         img = lower_third(img, t, s["lower"])
+    if s.get("anthem_title"):
+        img = impact_title(img, t, s, s["anthem_title"])
     if s.get("vf"):
         img = viewfinder(img, t, s, s["vf"])
     if s.get("lens_hand"):

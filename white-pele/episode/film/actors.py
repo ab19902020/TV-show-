@@ -193,6 +193,21 @@ def draw_actor(shared, a, t, s, M, sc, pos):
             fst["lookx"] = float(np.clip(fst["lookx"] + ST.turn_look(key), -1.2, 1.2))
     else:
         fst = {}
+    # Rio pupil-aim guard for close-ups: keep both eyes centred when he turns.
+    # This is a procedural stabilizer, not a substitute for checking source eye art.
+    if who == "rio" and fst:
+        fst["lookx"] = float(np.clip(fst.get("lookx", 0.0), -0.42, 0.42))
+        fst["looky"] = float(np.clip(fst.get("looky", 0.0), -0.20, 0.20))
+    # Roy's stern look must not push the animated eyebrows into his pupils.
+    # v3 repaired several underlying drawings; this keeps procedural face
+    # changes within a restrained range without replacing those drawings.
+    if who == "roy" and fst:
+        if "brow" in fst:
+            fst["brow"] = float(np.clip(fst["brow"], -0.58, 0.22))
+        if "lookx" in fst:
+            fst["lookx"] = float(np.clip(fst["lookx"], -0.46, 0.46))
+        if "looky" in fst:
+            fst["looky"] = float(np.clip(fst["looky"], -0.16, 0.16))
     B = groove_matrix(g, (fx, fy), Hd)
     Ms2 = compose(Ms, B)
     head = rigid_head(d, g, B, Ms, Hd)
