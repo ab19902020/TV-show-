@@ -1,0 +1,24 @@
+name: Dana White
+short: Dana
+role: promoter
+style: upload
+height_cm: 178
+likeness: 'Shorter stocky caricature: bald dome, heavy brow, stubble, muscular arms.'
+outfits:
+  polo:
+    description: Black polo, dark jeans, black trainers
+  boxing:
+    description: Black vest, black shorts with white stripes, blue gloves, black boots
+reference:
+  dana_casual.png: Hearn v White pack sheet, as delivered
+  dana_casual-clean.png: 'dana_casual.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  dana_boxing.png: Hearn v White pack sheet, as delivered
+  dana_boxing-clean.png: 'dana_boxing.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  dana_laundry.png: Hearn v White pack sheet, as delivered
+  dana_laundry-clean.png: 'dana_laundry.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  dana_walk.png: Hearn v White pack sheet, as delivered
+  dana_walk-clean.png: 'dana_walk.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'

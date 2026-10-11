@@ -1,0 +1,10 @@
+# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
+# given face landmarks. Check build/film/security-guard_check.jpg after any change.
+drawings:
+  front: {sheet: reference/security-clean.png, box: [581, 7, 834, 436], faces: F}
+  crossed: {sheet: reference/security-clean.png, box: [978, 5, 1191, 440], faces: F}
+  stop: {sheet: reference/security-clean.png, box: [1414, 5, 1667, 439], faces: F}
+  gesture: {sheet: reference/security-clean.png, box: [49, 445, 401, 866], faces: F}
+  card: {sheet: reference/security-clean.png, box: [540, 446, 807, 867], faces: F}
+  trolley: {sheet: reference/security-clean.png, box: [917, 451, 1358, 863], faces: F, plain: true}
+  startled: {sheet: reference/security-clean.png, box: [1460, 451, 1703, 867], faces: F}

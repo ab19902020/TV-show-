@@ -1,0 +1,45 @@
+# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
+# given face landmarks. Check build/film/dana-white_check.jpg after any change.
+drawings:
+  front: {sheet: reference/dana_casual-clean.png, box: [542, 11, 759, 358], faces: F}
+  q34: {sheet: reference/dana_casual-clean.png, box: [873, 12, 1054, 359], faces: R}
+  side: {sheet: reference/dana_casual-clean.png, box: [1205, 12, 1340, 357], faces: R}
+  point: {sheet: reference/dana_casual-clean.png, box: [46, 376, 337, 725], faces: F}
+  palms: {sheet: reference/dana_casual-clean.png, box: [444, 369, 750, 719], faces: F}
+  crossed: {sheet: reference/dana_casual-clean.png, box: [837, 371, 1030, 722], faces: F}
+  hips: {sheet: reference/dana_casual-clean.png, box: [1142, 370, 1415, 720], faces: F}
+  shrug: {sheet: reference/dana_casual-clean.png, box: [29, 732, 384, 1073], faces: F}
+  stop: {sheet: reference/dana_casual-clean.png, box: [466, 731, 697, 1074], faces: F}
+  mic: {sheet: reference/dana_casual-clean.png, box: [812, 729, 1046, 1076], faces: F}
+  crouch: {sheet: reference/dana_casual-clean.png, box: [1124, 743, 1418, 1070], faces: F}
+  guard: {sheet: reference/dana_boxing-clean.png, box: [439, 6, 692, 355], faces: L}
+  jab: {sheet: reference/dana_boxing-clean.png, box: [751, 8, 1063, 355], faces: L}
+  jab2: {sheet: reference/dana_boxing-clean.png, box: [1092, 8, 1432, 355], faces: L}
+  jab3: {sheet: reference/dana_boxing-clean.png, box: [31, 371, 349, 708], faces: L}
+  guard_high: {sheet: reference/dana_boxing-clean.png, box: [410, 370, 702, 709], faces: L}
+  jab4: {sheet: reference/dana_boxing-clean.png, box: [725, 374, 1085, 709], faces: L}
+  lean_back: {sheet: reference/dana_boxing-clean.png, box: [1126, 374, 1413, 707], faces: L}
+  crouch_guard: {sheet: reference/dana_boxing-clean.png, box: [65, 785, 343, 1058], faces: L, plain: true}
+  cover: {sheet: reference/dana_boxing-clean.png, box: [428, 729, 695, 1058], faces: L, plain: true}
+  tired: {sheet: reference/dana_boxing-clean.png, box: [800, 734, 1038, 1067], faces: F}
+  arms_up: {sheet: reference/dana_boxing-clean.png, box: [1167, 710, 1420, 1068], faces: F, plain: true}
+  hug: {sheet: reference/dana_laundry-clean.png, box: [50, 15, 331, 329], faces: F, plain: true}
+  hug2: {sheet: reference/dana_laundry-clean.png, box: [388, 14, 642, 326], faces: F, plain: true}
+  peek: {sheet: reference/dana_laundry-clean.png, box: [701, 153, 1044, 322], faces: F, marks: {eyes: [[862, 257, 17, 12], [928, 257, 17, 12]], mouth: [883, 297, 912, 297, 897, 297], chin: 306, neck: [897, 318], head: [800, 150, 960, 320]}}
+  crawl: {sheet: reference/dana_laundry-clean.png, box: [1086, 13, 1440, 323], faces: F, plain: true}
+  tumble1: {sheet: reference/dana_laundry-clean.png, box: [11, 347, 362, 687], faces: F, plain: true}
+  tumble2: {sheet: reference/dana_laundry-clean.png, box: [371, 346, 716, 670], faces: F, plain: true}
+  tumble3: {sheet: reference/dana_laundry-clean.png, box: [726, 374, 1096, 685], faces: F, plain: true}
+  prone: {sheet: reference/dana_laundry-clean.png, box: [1053, 524, 1440, 674], faces: F, plain: true}
+  towel_head: {sheet: reference/dana_laundry-clean.png, box: [45, 683, 328, 1061], faces: F}
+  towel_shoulder: {sheet: reference/dana_laundry-clean.png, box: [396, 660, 663, 1074], faces: F}
+  dust: {sheet: reference/dana_laundry-clean.png, box: [766, 672, 1014, 1072], faces: F}
+  climb: {sheet: reference/dana_laundry-clean.png, box: [1109, 680, 1421, 1039], faces: F, plain: true}
+  w0: {sheet: reference/dana_walk-clean.png, box: [84, 10, 377, 469], faces: R, plain: false, plain: true}
+  w1: {sheet: reference/dana_walk-clean.png, box: [519, 10, 730, 469], faces: R, plain: false, plain: true}
+  w2: {sheet: reference/dana_walk-clean.png, box: [882, 9, 1160, 469], faces: R, plain: false, plain: true}
+  w3: {sheet: reference/dana_walk-clean.png, box: [1297, 9, 1581, 468], faces: R, plain: false, plain: true}
+  w4: {sheet: reference/dana_walk-clean.png, box: [83, 475, 395, 929], faces: R, plain: false, plain: true}
+  w5: {sheet: reference/dana_walk-clean.png, box: [518, 475, 752, 927], faces: R, plain: false, plain: true}
+  w6: {sheet: reference/dana_walk-clean.png, box: [886, 476, 1165, 928], faces: R, plain: false, plain: true}
+  w7: {sheet: reference/dana_walk-clean.png, box: [1297, 476, 1593, 927], faces: R, plain: false, plain: true}

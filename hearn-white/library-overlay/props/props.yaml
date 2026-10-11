@@ -1,0 +1,172 @@
+# Props. id = <set folder>/<file name>; the picture is props/<id>.png (transparent, cut out of its sheet).
+# The uncut sheets are kept in each set's source/ folder; cut_from and sheet_box say where each prop was cut.
+lunch/football:
+  title: Football
+  size: [296, 291]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [21, 851, 317, 1142]
+lunch/fork:
+  title: Fork
+  size: [62, 370]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [481, 418, 543, 788]
+lunch/glass-water:
+  title: Glass of water
+  size: [179, 253]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [734, 110, 905, 355]
+lunch/hand-with-fork-evra:
+  title: Dark-skinned hand in a red United sleeve holding a fork with a piece of chicken (Evra)
+  size: [329, 418]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [12, 1165, 341, 1583]
+lunch/hand-with-fork-ronaldo:
+  title: Light-skinned hand in a red United sleeve holding a fork with a piece of chicken (Ronaldo)
+  size: [336, 419]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [330, 1164, 666, 1583]
+lunch/knife:
+  title: Table knife
+  size: [57, 379]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [767, 409, 824, 788]
+lunch/plate-chicken-salad:
+  title: Plate of sliced chicken and salad
+  size: [331, 224]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [13, 125, 344, 349]
+lunch/plate-empty:
+  title: Empty white plate
+  size: [336, 224]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [357, 125, 693, 349]
+lunch/sauna-bucket:
+  title: Wooden sauna bucket with ladle
+  size: [302, 262]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [636, 880, 938, 1142]
+lunch/towel-folded:
+  title: Folded white towel
+  size: [317, 221]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [331, 905, 648, 1126]
+lunch/water-drop-large:
+  title: Water drop, large
+  size: [68, 138]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [750, 1255, 818, 1393]
+lunch/water-drop-medium:
+  title: Water drop, medium
+  size: [51, 102]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [780, 1418, 831, 1520]
+lunch/water-drop-small:
+  title: Water drop, small
+  size: [47, 91]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [841, 1349, 888, 1440]
+lunch/water-jug:
+  title: Glass water jug
+  size: [294, 369]
+  cut_from: lunch/source/evra-and-ronaldo-lunch-atlas.png
+  sheet_box: [65, 420, 351, 781]
+music/bass-guitar:
+  title: Red four-string bass guitar
+  size: [227, 695]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1019, 11, 1246, 706]
+music/cable-black:
+  title: Coiled black instrument cable
+  size: [199, 239]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1027, 734, 1226, 973]
+music/cable-red:
+  title: Coiled red instrument cable
+  size: [199, 233]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [1027, 972, 1226, 1205]
+music/drum-kit:
+  title: Red five-piece drum kit with two crash cymbals and a hi-hat
+  size: [731, 618]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [6, 34, 737, 652]
+music/electric-guitar:
+  title: Red single-cut electric guitar
+  size: [252, 680]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [739, 17, 991, 697]
+music/keyboard-on-stand:
+  title: Red synth keyboard on an X stand
+  size: [716, 521]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [8, 694, 724, 1215]
+music/microphone:
+  title: Handheld microphone
+  size: [92, 289]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [762, 808, 854, 1097]
+music/microphone-stand:
+  title: Microphone on a straight stand
+  size: [169, 537]
+  cut_from: music/source/instruments-sheet.png
+  sheet_box: [864, 699, 1033, 1236]
+hearn-white/trolley-q34:
+  title: Laundry trolley, three-quarter view
+  size: [334, 320]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [18, 24, 352, 344]
+hearn-white/trolley-side:
+  title: Laundry trolley, side view
+  size: [326, 276]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [378, 50, 704, 326]
+hearn-white/trolley-tipped:
+  title: Laundry trolley tipped on its side
+  size: [354, 295]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [729, 40, 1083, 335]
+hearn-white/trolley-lid:
+  title: Laundry trolley lid
+  size: [343, 217]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [1095, 113, 1438, 330]
+hearn-white/towel-pile:
+  title: Pile of white towels
+  size: [348, 314]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [10, 383, 358, 697]
+hearn-white/towel:
+  title: White towel
+  size: [327, 278]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [377, 415, 704, 693]
+hearn-white/microphone:
+  title: Handheld microphone with cable
+  size: [259, 322]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [782, 387, 1041, 709]
+hearn-white/folding-chair:
+  title: Black folding chair
+  size: [326, 358]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [1100, 365, 1426, 723]
+hearn-white/boxing-bell:
+  title: Brass ring bell
+  size: [331, 314]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [19, 741, 350, 1055]
+hearn-white/gloves-red:
+  title: Pair of red boxing gloves
+  size: [348, 322]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [367, 735, 715, 1057]
+hearn-white/gloves-blue:
+  title: Pair of blue boxing gloves
+  size: [349, 326]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [729, 735, 1078, 1061]
+hearn-white/cable-ramp:
+  title: Cable protector ramp (yellow top)
+  size: [352, 305]
+  cut_from: hearn-white/source/props-sheet.png
+  sheet_box: [1084, 752, 1436, 1057]

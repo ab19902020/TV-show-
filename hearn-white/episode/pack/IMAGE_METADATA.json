@@ -1,0 +1,221 @@
+[
+  {
+    "name": "eddie_casual.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1340765
+  },
+  {
+    "name": "dana_casual.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1411878
+  },
+  {
+    "name": "eddie_walk.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1194551
+  },
+  {
+    "name": "dana_walk.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1239617
+  },
+  {
+    "name": "eddie_boxing.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1434186
+  },
+  {
+    "name": "dana_boxing.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1505541
+  },
+  {
+    "name": "dana_laundry.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1700716
+  },
+  {
+    "name": "expressions.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 2458811
+  },
+  {
+    "name": "fury_joshua.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1614361
+  },
+  {
+    "name": "supporting_cast.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1640318
+  },
+  {
+    "name": "props.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1868520
+  },
+  {
+    "name": "security.png",
+    "size": [
+      1774,
+      887
+    ],
+    "alpha": [
+      0,
+      255
+    ],
+    "bytes": 1281230
+  },
+  {
+    "name": "paired_fight_reference.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "alpha": [
+      0,
+      254
+    ],
+    "bytes": 2361017
+  },
+  {
+    "name": "bg_loading_bay.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2568889
+  },
+  {
+    "name": "bg_corridor.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2530006
+  },
+  {
+    "name": "bg_press_area.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2468167
+  },
+  {
+    "name": "bg_dressing_room.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2150207
+  },
+  {
+    "name": "bg_arena_wide.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2362561
+  },
+  {
+    "name": "bg_ring_side.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2393549
+  },
+  {
+    "name": "bg_ringside.png",
+    "size": [
+      1672,
+      941
+    ],
+    "alpha": null,
+    "bytes": 2255217
+  }
+]

@@ -1,0 +1,25 @@
+name: Eddie Hearn
+short: Eddie
+role: promoter
+style: upload
+height_cm: 191
+likeness: 'Tall narrow caricature: swept brown quiff with faded sides, full dark beard, heavy angry brows.'
+outfits:
+  suit:
+    description: Navy suit, open-neck white shirt, black shoes
+  boxing:
+    description: White vest, navy shorts with white stripe, red gloves, black boots
+reference:
+  eddie_casual.png: Hearn v White pack sheet, as delivered
+  eddie_casual-clean.png: 'eddie_casual.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  eddie_boxing.png: Hearn v White pack sheet, as delivered
+  eddie_boxing-clean.png: 'eddie_boxing.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  eddie_walk.png: Hearn v White pack sheet, as delivered
+  eddie_walk-clean.png: 'eddie_walk.png with alpha noise under 40 and stray strokes (motion accents, neighbours'' fingertips)
+    removed: the film cuts from this'
+  expressions.png: 'Expression heads from the Hearn v White pack: Eddie top two rows, Dana bottom two (neutral, smug, angry,
+    side-eye, shock, embarrassed, tired, blink); the BANNED board uses Dana''s angry head'
+  paired_fight_reference.png: 'Paired fight compositions from the pack (guard, jab, cross, haymakers, clinch, arms raised):
+    a staging reference only, its backdrop is not cut away'

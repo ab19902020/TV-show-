@@ -1,0 +1,13 @@
+name: Laundry Attendant
+short: Attendant
+role: attendant
+style: upload
+height_cm: 160
+likeness: Utterly bored, curly bun, union-flag headscarf, grey overalls.
+outfits:
+  overalls:
+    description: Grey work overalls, black boots
+reference:
+  supporting_cast.png: Hearn v White pack sheet, as delivered
+  supporting_cast-clean.png: 'supporting_cast.png with alpha noise under 40 and stray strokes (motion accents, neighbours''
+    fingertips) removed: the film cuts from this'
