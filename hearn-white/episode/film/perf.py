@@ -3,6 +3,7 @@ get a nod, and the script's looks and reactions: Dana watching the trolley then 
 the freeze on his eyes, Eddie's four-frame eye dart, both surprised at "Fine.", Eddie's smile with panicking brows,
 Fury and Joshua's disbelieving joy. Mouths come from the recordings (lip sync a frame ahead)."""
 import json
+import math
 
 from studio.film import ep
 from studio.film.perf import Performance
@@ -55,26 +56,47 @@ META = {
 BASE = {"eddie": (-0.1, 0.1), "dana": (-0.45, -0.1), "tyson": (0.1, 0.25), "joshua": (-0.05, 0.0),
         "announcer": (0.1, 0.0), "referee": (-0.2, 0.0), "attendant": (-0.25, -0.2), "security": (-0.35, -0.05)}
 bin_dir = ("dir", -0.6, 0.45, -0.15)
+
+
+def rolling(t0, t1, step=0.09, rx=0.95, ry=0.75, ph=0.0):
+    """eyes rolling round and round (out cold, seeing stars)"""
+    out, t, k = [], t0, 0
+    while t < t1:
+        a = ph + k * 0.9
+        out.append((t, min(t1, t + step), ("dir", rx * math.cos(a), ry * math.sin(a), 0.0)))
+        t += step
+        k += 1
+    return out
+
+
+T_DOWN, T_BELL2 = m("fall") + 0.8, m("bell2")
+tdn = m("down")
+REF_LOOKS = [(tdn + 0.75, tdn + 1.05, ("dir", -0.9, 0.7, -0.3)), (tdn + 1.05, tdn + 1.35, ("dir", 0.9, 0.7, 0.3)),
+             (tdn + 1.35, tdn + 1.55, ("dir", -0.9, 0.7, -0.3)), (tdn + 1.55, m("c_ref3"), ("dir", 0.9, 0.7, 0.3)),
+             (m("c_ref3"), T_BELL2 + 0.2, "cam")]
 GAZE = {
-    "dana": [(m("faceoff"), m("bell2"), "eddie"),
+    "dana": rolling(T_DOWN, T_BELL2, ph=1.3) + [(m("faceoff"), m("bell2"), "eddie"),
              (m("trolley"), m("look_cam") - 0.05, "attendant"), (m("look_cam"), le("L007") + 0.3, "cam"),
              (m("bump"), m("tumble"), "cam"), (m("glance"), m("glance") + 0.5, "eddie")],
-    "eddie": [(m("faceoff"), m("bell2"), "dana"),
+    "eddie": rolling(T_DOWN, T_BELL2) + [(m("faceoff"), m("bell2"), "dana"),
               (m("dart"), m("dart") + 0.14, bin_dir), (m("dart") + 0.14, m("dart") + 0.28, "dana"),
               (m("dart") + 0.28, m("dart") + 0.42, "security"), (m("dart") + 0.42, ls("L022"), "dana"),
               (m("surprise"), m("c_list"), ("dir", 0.0, -0.1, 0.0)), (le("L038") - 1.4, le("L038"), "cam")],
     "security": [(m("lid"), ls("L011"), "down")],
     "joshua": [(m("c_aj") - 0.2, m("c_fury4"), "down")],
-    "referee": [(m("bell"), m("c_ann4"), "eddie")],
+    "referee": REF_LOOKS + [(m("bell"), m("c_ann4"), "eddie")],
     "tyson": [(m("landed"), m("c_aj"), "down")],
 }
+FIGHT_FACES = [(m("slug"), m("dko"), -0.9, -0.4, 0.1), (m("dko"), m("impact") + 0.06, -1.0, -0.6, 0.1),
+               (m("impact") + 0.06, m("fall") + 0.4, 1.0, -0.5, 0.05), (T_DOWN, T_BELL2, 0.9, 0.55, 0.15)]
 EXPR = {
-    "dana": [(m("faceoff"), m("ex1"), -0.9, -0.35, 0.2), (m("ex1") + 0.3, m("ex1") + 1.5, 1.0, -0.4, 0.05),
+    "referee": [(m("c_ref3"), T_BELL2 + 0.4, 0.95, -0.25, 0.15)],
+    "dana": FIGHT_FACES + [(m("faceoff"), m("ex1"), -0.9, -0.35, 0.2), (m("ex1") + 0.3, m("ex1") + 1.5, 1.0, -0.4, 0.05),
              (m("ex3a"), m("ex3b"), 0.7, -0.2, 0.05), (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2),
              (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1), (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3),
              (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),(m("bump"), m("tumble") + 0.6, 1.0, -0.3, 0.1), (m("surprise"), m("c_list"), 0.95, -0.15, 0.2),
              (m("c_trolley"), m("climb"), -0.4, -0.2, 0.3)],
-    "eddie": [(m("faceoff"), m("ex1"), -0.9, -0.3, 0.2), (m("ex2") + 0.3, ls("L040"), 1.0, -0.45, 0.05),
+    "eddie": FIGHT_FACES + [(m("faceoff"), m("ex1"), -0.9, -0.3, 0.2), (m("ex2") + 0.3, ls("L040"), 1.0, -0.45, 0.05),
               (m("ex3b") + 0.4, m("ex3b") + 1.2, 0.85, -0.55, 0.05), (m("ex3c") + 0.6, m("ex3c") + 1.2, 0.9, -0.2, 0.05),
               (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2), (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1),
               (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3), (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),

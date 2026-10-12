@@ -110,8 +110,17 @@ SEQ = [
     ("gap", 0.18), ("line", "L049"),
     ("gap", 0.18), ("line", "L050"),
     ("gap", 0.18), ("line", "L051"),
-    ("gap", 0.3, "bell2"),
-    ("gap", 2.0, "arms"),                     # both raise their arms; the ref looks at a blank card
+    ("gap", 0.12),
+    ("gap", 3.3, "slug"),                     # they shove apart and slug it out: every punch lands, faster and faster
+    ("gap", 0.6, "dko"),                      # both wind up an enormous one
+    ("gap", 0.45, "impact"),                  # the cross-counter: both land on the same frame; everything freezes
+    ("gap", 1.0, "fall"),                     # both go over like felled trees and hit the canvas on the same frame
+    ("gap", 1.2, "down"),                     # flat out, stars circling their heads
+    ("gap", 0.95, "c_dstars"),                # Dana: eyes rolling, stars
+    ("gap", 0.9, "c_estars"),                 # Eddie: the same
+    ("gap", 1.0, "c_ref3"),                   # the referee looks from one to the other, and at us
+    ("gap", 0.3, "bell2"),                    # saved by the bell: both spring up
+    ("gap", 2.0, "arms"),                     # both raise their arms as if they had won; the ref looks at a blank card
     # ---- 7. decision and callback
     ("gap", 0.1, "c_ann4"), ("line", "L052"),
     ("gap", 0.3, "c_ed9"), ("line", "L053"),

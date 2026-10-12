@@ -341,7 +341,8 @@ def puff(lay, s, it, t, M, sc):
     m = fill.astype(np.float32) / 255
     ink = cv2.morphologyEx(fill, cv2.MORPH_GRADIENT, np.ones((max(3, int(3 * sc * K)),) * 2, np.uint8)).astype(np.float32) / 255
     shade = cv2.GaussianBlur(m, (0, 0), R * K * 0.25)
-    rgb = np.ones((hh, ww, 3), np.float32) * (0.80 + 0.17 * shade)[..., None] * np.float32([0.97, 0.97, 1.0])
+    tint = np.float32([0.92, 0.86, 0.78]) if it.get("dust") else np.float32([0.97, 0.97, 1.0])
+    rgb = np.ones((hh, ww, 3), np.float32) * (0.80 + 0.17 * shade)[..., None] * tint
     rgb = rgb * (1 - ink[..., None]) + np.float32(INK) / 255 * ink[..., None]
     al = np.maximum(m, ink) * fade
     rgb = cv2.resize(rgb * al[..., None], (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
@@ -350,3 +351,49 @@ def puff(lay, s, it, t, M, sc):
     reg = lay[cy0:cy1, cx0:cx1]
     reg[..., :3] = reg[..., :3] * (1 - al[..., None]) + rgb
     reg[..., 3] = reg[..., 3] * (1 - al) + al
+
+
+def _star5(r):
+    a = np.linspace(-np.pi / 2, 1.5 * np.pi, 11)[:-1]
+    rad = np.where(np.arange(10) % 2 == 0, r, 0.45 * r)
+    return np.stack([np.cos(a) * rad, np.sin(a) * rad], 1)
+
+
+def stars(lay, s, it, t, M, sc):
+    """cartoon stars circling a knocked-out head: four yellow stars on a tilted ring above it, the near ones bigger,
+    one turn every 0.9 s; follows the head (s["_heads"], filled as the people are drawn)"""
+    if not (it["t0"] <= t < it["t1"]):
+        return
+    hd = s.get("_heads", {}).get(it["follow"])
+    if hd is None:
+        return
+    X, Y, R, (ax, ay) = hd
+    rx, ry = 0.85 * R, 0.26 * R
+    d = 1.05 * R + rx * abs(ax)                                 # just past the top of the head, along the body,
+    cx, cy = X + d * ax, Y + d * ay - 0.45 * R                  # floating a little above it
+    fade = min(1.0, (t - it["t0"]) / 0.15)
+    ph = 2 * np.pi * (t - it["t0"]) / 0.9
+    for k in range(5):
+        a = ph + k * 2 * np.pi / 5
+        depth = 0.5 + 0.5 * np.sin(a)                               # 1 = in front
+        x, y = cx + rx * np.cos(a), cy + ry * np.sin(a)
+        r = R * (0.22 + 0.12 * depth)
+        P = _star5(r)
+        rot = np.array([[np.cos(a * 0.7), -np.sin(a * 0.7)], [np.sin(a * 0.7), np.cos(a * 0.7)]])
+        P = P @ rot.T + [x, y]
+        x0, y0 = int(max(0, P[:, 0].min() - 4)), int(max(0, P[:, 1].min() - 4))
+        x1, y1 = int(min(lay.shape[1], P[:, 0].max() + 5)), int(min(lay.shape[0], P[:, 1].max() + 5))
+        if x1 <= x0 or y1 <= y0:
+            continue
+        K = 4
+        m = np.zeros(((y1 - y0) * K, (x1 - x0) * K), np.uint8)
+        q = np.int32(np.round((P - [x0, y0]) * K * 8))
+        cv2.fillPoly(m, [q], 255, cv2.LINE_AA, 3)
+        e = np.zeros_like(m)
+        cv2.polylines(e, [q], True, 255, max(2, int(0.09 * r * K)), cv2.LINE_AA, 3)
+        m = cv2.resize(m.astype(np.float32) / 255, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+        e = cv2.resize(e.astype(np.float32) / 255, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+        col = np.ones((y1 - y0, x1 - x0, 3), np.float32) * np.float32([1.0, 0.86, 0.15]) * (0.75 + 0.25 * depth)
+        col = col * (1 - e[..., None]) + np.float32(INK) / 255 * e[..., None]
+        al = np.maximum(m, e) * fade
+        _over(lay, x0, y0, col, al)

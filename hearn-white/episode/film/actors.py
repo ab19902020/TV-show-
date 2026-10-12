@@ -28,10 +28,11 @@ from studio.film.cast import CAST
 from studio.film.engine import OH, OW, RS
 from studio.paths import BUILD, LIBRARY
 
-from film import eyes, mouths
+from film import eyes, mouths, noses
 
 eyes.install()
 mouths.install()
+noses.install()
 
 
 def _install_camera():
@@ -319,6 +320,25 @@ def front_layer(key):
     return c, (x0 / d.S + d.ox, y0 / d.S + d.oy), d.S
 
 
+@functools.lru_cache(maxsize=256)
+def head_point(key):
+    """the head of a drawing (sheet px): its marked head box's centre and radius, or, for a drawing with no face
+    marks (arms up), the top of the figure's middle third"""
+    d, _ = CAST.get(key)
+    hb = d.spec.get("head")
+    if hb:
+        return ((hb[0] + hb[2]) / 2, (hb[1] + hb[3]) / 2, 0.5 * max(hb[2] - hb[0], hb[3] - hb[1]))
+    a = d.u8[1.0][..., 3] > 128
+    ys, xs = np.nonzero(a)
+    fx, _ = feet_mid(key)
+    cx = (fx - d.ox) * d.S
+    band = np.abs(xs - cx) < 0.08 * (xs.max() - xs.min())
+    top = ys[band].min()
+    hgt = ys.max() - ys.min()
+    r = 0.085 * hgt
+    return (cx / d.S + d.ox, (top + r) / d.S + d.oy, r / d.S)
+
+
 def scene(img, s, t, M, sc):
     """("props", "scene"): everything in s["cast"] at time t, far to near"""
     from studio.film import render as R
@@ -336,6 +356,7 @@ def scene(img, s, t, M, sc):
     for fl in s.get("flashes", ()):                                     # press camera flashes in the crowd
         img = things.flashes(img, s, t, M, sc, fl[0], fl[1], seed=fl[2] if len(fl) > 2 else 1)
     lay = np.zeros((OH, OW, 4), np.float32)
+    s["_heads"] = {}
     for it in items:
         if "fn" in it:
             getattr(things, it["fn"])(lay, s, it, t, M, sc)
@@ -363,6 +384,12 @@ def scene(img, s, t, M, sc):
             if it.get("shadow", True) and cl is None:
                 things.contact_shadow(lay, s, it, t, M, sc, F, Hs, at_time(it.get("dy", 0.0), t))
             E.place(lay, d, st, Ms, clip=clip, alpha=it.get("alpha", 1.0))
+            hx, hy, hr = head_point(key)
+            fx_, fy_ = feet_mid(key)
+            T_ = lambda x, y: (Ms[0, 0] * x + Ms[0, 1] * y + Ms[0, 2], Ms[1, 0] * x + Ms[1, 1] * y + Ms[1, 2])
+            (HX, HY), (FX, FY) = T_(hx, hy), T_(fx_, fy_)
+            n_ = max(1e-3, float(np.hypot(HX - FX, HY - FY)))
+            s["_heads"][it["who"]] = (HX, HY, hr * float(np.hypot(Ms[0, 0], Ms[1, 0])), ((HX - FX) / n_, (HY - FY) / n_))
             fr = front_layer(key)
             if fr is not None:                                     # the mic back over the moving mouth
                 c, (sx0, sy0), S_ = fr
@@ -381,7 +408,13 @@ def scene(img, s, t, M, sc):
                     off = np.array([gx, gy]) - A @ np.array([gp[0] * im.shape[1], gp[1] * im.shape[0]])
                     place_rgba(lay, im, np.hstack([A, off[:, None]]))
     lay = light(lay, s, sc)
-    return img * (1 - lay[..., 3:4]) + lay[..., :3]
+    img = img * (1 - lay[..., 3:4]) + lay[..., :3]
+    img = stage_light(img, s, t, M, sc)
+    for t0, dur in s.get("white", ()):                          # a white impact frame, gone in a few frames
+        u = (t - t0) / dur
+        if 0 <= u < 1:
+            img = img + (1 - img) * (0.85 * (1 - u) ** 1.5)
+    return img
 
 
 # ---------------------------------------------------------------- the people lit by the set they stand in
@@ -440,3 +473,56 @@ def light(lay, s, sc):
         rgb = rgb + add * (al[..., None] - rgb)                         # screen, premultiplied
     lay[y0:y1, x0:x1, :3] = np.clip(rgb, 0, al[..., None])
     return lay
+
+
+
+# ---------------------------------------------------------------- arena lighting: dramatic lights over pathetic action
+# pool: (centre x, y, radius x, y in plate px, brighten, darken outside); beams: (top x, floor x, floor y, width at
+# the floor) from the rig above; haze: glow added under the rig; bloom: the brights glowing
+STAGE = {
+    "R": dict(pool=(836, 800, 820, 240, 0.16, 0.30), haze=0.06, bloom=0.22,
+              beams=[(260, 520, 880, 360), (620, 760, 880, 300), (1060, 920, 880, 300), (1420, 1160, 880, 360)]),
+    "A": dict(pool=(836, 640, 560, 120, 0.14, 0.24), haze=0.05, bloom=0.20,
+              beams=[(420, 640, 650, 200), (836, 836, 650, 220), (1250, 1030, 650, 200)]),
+    "S": dict(pool=(836, 900, 900, 320, 0.08, 0.16), haze=0.03, bloom=0.16, beams=[]),
+}
+
+
+def _cone(h, w, pts, blur):
+    m = np.zeros((h, w), np.float32)
+    cv2.fillPoly(m, [np.int32(np.round(pts))], 1.0, cv2.LINE_AA)
+    return cv2.GaussianBlur(m, (0, 0), blur)
+
+
+def stage_light(img, s, t, M, sc):
+    g = STAGE.get(s.get("plate"))
+    if not g:
+        return img
+    H, W = img.shape[:2]
+    q = 4                                                       # light computed at a quarter of the frame size
+    h, w = H // q, W // q
+    P = lambda x, y: ((M[0, 0] * x + M[0, 2]) / q, (M[1, 1] * y + M[1, 2]) / q)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    cx, cy, rx, ry, up, down = g["pool"]
+    (X, Y), k = P(cx, cy), M[0, 0] / q
+    r2 = ((xx - X) / (rx * k)) ** 2 + ((yy - Y) / (ry * k)) ** 2
+    pool = np.exp(-r2 * 1.2)
+    lit = 1 - down + (down + up) * pool                          # brighter in the pool, darker away from it
+    beams = np.zeros((h, w), np.float32)
+    for i, (tx, fx, fy, fw) in enumerate(g["beams"]):
+        sway = 18 * math.sin(0.35 * t + 1.7 * i)
+        a, b = P(tx, -80), P(fx + sway, fy)
+        hw = 0.5 * fw * k
+        pts = [(a[0] - 0.08 * hw, a[1]), (a[0] + 0.08 * hw, a[1]), (b[0] + hw, b[1]), (b[0] - hw, b[1])]
+        fade = np.clip(1 - (yy - a[1]) / max(1.0, b[1] - a[1]), 0, 1) ** 0.6
+        beams += _cone(h, w, pts, max(2.0, 0.25 * hw)) * fade * (0.8 + 0.2 * math.sin(1.3 * t + i))
+    beams = np.clip(beams, 0, 1.2)
+    haze = g["haze"] * np.clip(1 - yy / (0.55 * h), 0, 1)
+    up_ = lambda a: cv2.resize(a, (W, H), interpolation=cv2.INTER_LINEAR)
+    img = img * up_(lit)[..., None]
+    img = img + (1 - img) * (0.16 * up_(beams) + up_(haze))[..., None] * np.float32([1.0, 0.97, 0.92])
+    small = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
+    bright = np.clip((small.max(2, keepdims=True) - 0.78) / 0.22, 0, 1) * small
+    bloom = cv2.GaussianBlur(bright, (0, 0), 6)
+    img = img + (1 - img) * up_(bloom) * g["bloom"]
+    return np.clip(img, 0, 1)

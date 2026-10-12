@@ -6,6 +6,8 @@ Every punch is staged the way a cartoon fight reads: a held anticipation (the ar
 a 2-3 frame lunge into the punch drawing, a hold on the extension, then the recovery back to guard; the one hit takes
 an impact burst, a camera shake, a knock-back and flying sweat. Guards bounce (actors.life: "bounce")."""
 
+import numpy as np
+
 GUARDS = {"guard", "guard2", "guard_high"}
 
 
@@ -135,6 +137,47 @@ class Fighter:
         self.lean(t, 14.0 * f).flip(t + 0.08, True).lean(t + 0.12, -6.0 * f)
         self.hold(t).to(t + 0.25, self.x + dx)
         self.flip(t + dur, False).lean(t + dur + 0.08, 0.0)
+        return self
+
+    def tremble(self, t0, t1, base, amp=2.0, every=0.07):
+        """the shake of a fighter loading up everything he has"""
+        k, t = 0, t0
+        while t < t1:
+            self.rots.append((t, base + (amp if k % 2 else -amp)))
+            t += every
+            k += 1
+        return self
+
+    def knockout(self, t, dur=0.75, lift=150.0, pose="arms_up", slide=0.0):
+        """felled like a tree: the arms fly up and the whole stiff body goes over backwards about the feet,
+        slow at first and faster and faster, flat on the canvas at t + dur, one bounce"""
+        f = self.facing
+        self.pose(t, pose)
+        cur = [r for r in sorted(self.rots, key=lambda kv: kv[0]) if r[0] <= t]
+        r0 = cur[-1][1] if cur else 0.0
+        self.rots.append((t, r0))
+        self.lifts.append((t, 0.0))
+        for u in (0.25, 0.5, 0.7, 0.85, 1.0):
+            ang = -90.0 * f * u ** 2.2 + r0 * (1 - u)
+            self.rots.append((t + dur * u, ang))
+            self.lifts.append((t + dur * u, lift * np.sin(np.radians(90.0 * u ** 2.2))))
+        self.rots.extend([(t + dur + 0.1, -82.0 * f), (t + dur + 0.2, -90.0 * f)])
+        self.lifts.extend([(t + dur + 0.1, lift + 30.0), (t + dur + 0.2, lift)])
+        self.hold(t).to(t + dur, self.x + slide * f)          # the feet skid in as the body goes over
+        self.fx.append(dict(fn="puff", t0=t + dur - 0.02, dur=0.45, at=(self.x - 0.5 * self.h * f, self.y + 10),
+                            size=0.42 * self.h, z=6004, dust=True))
+        self.shakes.append((t + dur, 14.0, 0.45))
+        self.down = (t + dur, lift)
+        return self
+
+    def popup(self, t, pose="arms_up"):
+        """saved by the bell: straight back up, all in one go"""
+        f = self.facing
+        lift = getattr(self, "down", (t, 0.0))[1]
+        self.rots.extend([(t, -90.0 * f), (t + 0.16, 6.0 * f), (t + 0.26, 0.0)])
+        self.shakes.append((t + 0.02, 6.0, 0.25))
+        self.lifts.extend([(t, lift), (t + 0.12, 70.0), (t + 0.26, 0.0)])
+        self.pose(t, pose)
         return self
 
     # ---------------------------------------------------------------- the actor

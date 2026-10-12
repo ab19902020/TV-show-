@@ -479,12 +479,51 @@ Dn.hold(ts + 0.05).lean(ts + 0.05, -5.0).to(ts + 0.45, 1170).lean(ts + 0.4, 6.0)
 Dn.lean(ts + 1.0, 0.0).hold(ts + 1.05).to(ts + 1.45, CL_D[0]).lean(ts + 1.45, -5.0)
 Dn.pose(ts + 0.3, "guard").pose(ts + 1.05, "tired")
 E.pose(ts + 0.3, "guard").pose(ts + 1.05, "tired")
-# the bell: both raise their arms as if they had won
+# 8: "...and sold the fight": they shove apart and slug it out, every punch landing, faster and faster
+tsl, tdk, tim, tfa = m("slug"), m("dko"), m("impact"), m("fall")
+BASE = {E: 615, Dn: 1095}
+HEADS = {E: (-2, 489), Dn: (-11, 445)}                         # the head in guard, from the feet (ring px)
+TIPS = {"jab": 327, "jab_long": 350, "cross": 372, "jab2": 345, "jab4": 340}   # glove tip ahead of the feet
+TIPS_D = {"jab": 281, "jab2": 345, "jab4": 340}
+for F_ in (E, Dn):
+    F_.pose(tsl, "guard").hold(tsl).to(tsl + 0.25, BASE[F_]).lean(tsl + 0.2, 0.0)
+SLUG = [(0.42, E, "jab", 0.12), (0.95, Dn, "jab2", 0.12), (1.40, E, "cross", 0.12), (1.82, Dn, "jab4", 0.10),
+        (2.18, E, "jab", 0.08), (2.48, Dn, "jab", 0.08), (2.72, E, "jab_long", 0.07), (2.94, Dn, "jab2", 0.07)]
+for dt, A_, pose, wind in SLUG:
+    V = Dn if A_ is E else E
+    t = tsl + dt
+    x0 = A_.x
+    A_.punch(t, pose, 55, wind="guard", wind_t=wind, hold=0.07, back=0.13, lean=7, swing=0.06)
+    tip = x0 + 55 * A_.facing + (TIPS if A_ is E else TIPS_D)[pose] * A_.facing      # where the glove lands
+    hy = V.y - HEADS[V][1]
+    V.hit(t + 0.06, pose="lean_back" if V is Dn else "block", knock=38, lean=13, settle=0.3,
+          at=(tip - 25 * A_.facing, hy + 10), size=105)
+    V.pose(t + 0.34, "guard").hold(t + 0.24).to(t + 0.36, BASE[V])
+# 9: both load up an enormous one, trembling; the cross-counter lands on both at once; a freeze
+E.pose(tdk, "wind").hold(tdk).to(tdk + 0.25, 595).lean(tdk + 0.25, -9.0).tremble(tdk + 0.3, tim - 0.02, -9.0)
+Dn.pose(tdk, "lean_back").hold(tdk).to(tdk + 0.25, 1175).lean(tdk + 0.25, 9.0).tremble(tdk + 0.3, tim - 0.02, 9.0)
+E.pose(tim, "jab_long").hold(tim).to(tim + 0.06, 630).lean(tim + 0.06, 8.0)
+Dn.pose(tim, "jab4").hold(tim).to(tim + 0.06, 1140).lean(tim + 0.06, -8.0)
+for F_ in (E, Dn):
+    F_.hold(tfa).lean(tfa, F_.rots[-1][1])
+E.sfx.append((tim - 0.01, "whoosh", 120))
+Dn.sfx.append((tim - 0.01, "whoosh", 120))
+DKO_FX = [dict(fn="impact", t0=tim + 0.06, at=(818, 322), size=230, z=6010),         # Dana's glove on Eddie's face
+          dict(fn="impact", t0=tim + 0.06, at=(982, 362), size=230, z=6010),         # Eddie's on Dana's
+          dict(fn="sweat", t0=tim + 0.06, at=(760, 290), n=9, dir=-1, size=200, z=6011),
+          dict(fn="sweat", t0=tim + 0.06, at=(1030, 330), n=9, dir=1, size=200, z=6011)]
+# 10: both go over backwards like felled trees and hit the canvas on the same frame; stars circle their heads
+E.knockout(tfa, lift=0.29 * H_ED, slide=85)
+Dn.knockout(tfa, lift=0.29 * H_DA, slide=85)
+STARS = [dict(fn="stars", follow=w, t0=tfa + 0.75, t1=m("bell2") + 0.1, z=6020) for w in ("eddie", "dana")]
+# 11: saved by the bell: both spring up and raise their arms as if they had won
+E.popup(tbell2)
+Dn.popup(tbell2)
 for F_, home in ((E, 560), (Dn, 1110)):
-    F_.hold(tbell2 + 0.2).lean(tbell2 + 0.3, 0.0).pose(tbell2 + 0.3, "arms_up").to(tbell2 + 0.8, home)
+    F_.hold(tbell2 + 0.3).to(tbell2 + 0.8, home)
     F_.pose(m("c_ann4"), "guard" if F_ is E else "tired")       # Dana, spent, hands on his knees for the decision
 E.hold(m("c_ann4") - 0.01).to(m("c_ann4"), 500)
-E.pose(m("c_trolley") + 2.6 + (le("L057") - ls("L057")), "jab_long").pose(m("climb") + 0.4, "guard")
+E.pose(m("glance") + 0.2, "jab_long").pose(m("climb") + 0.6, "guard")       # points Dana at the exit
 # the exit: Dana steps round to the side of the bin, crouches, springs up over the rim and drops in out of sight
 # (behind its canvas: nothing of him is ever cut in the air); he rides out inside it
 tcl = m("climb")
@@ -497,14 +536,18 @@ Dn.pose(ls("L041") - 0.12, "guard_high").pose(le("L041") + 0.25, "guard")
 eddie_fight = E.item(P)
 TH_R = 90 * (812 - 289) * 0.0065                              # the trolley's height in the ring
 dana_fight = Dn.item(P, clip=keys((0, None), (tcl + 0.8, 812 - 0.22 * TH_R)))     # its canvas' bottom edge
-FIGHT_FX = E.fx + Dn.fx
-SHAKES = E.shakes + Dn.shakes + [(e3b + 0.43, 12.0, 0.4)]
-KICKS = [(e2 + 0.36, 1.05, 0.5), (e3b + 0.43, 1.10, 0.6), (e3d + 1.0, 1.04, 0.9)]
+FIGHT_FX = E.fx + Dn.fx + DKO_FX + STARS
+SHAKES = E.shakes + Dn.shakes + [(e3b + 0.43, 12.0, 0.4), (tim + 0.06, 18.0, 0.55)]
+KICKS = [(e2 + 0.36, 1.05, 0.5), (e3b + 0.43, 1.10, 0.6), (e3d + 1.0, 1.04, 0.9)] + \
+    [(tsl + dt + 0.06, 1.035, 0.3) for dt, *_ in SLUG] + [(tim + 0.06, 1.14, 0.7)]
+FLASHES = [(tim + 0.06, 0.14), (tfa + 0.75, 0.06)]                # white impact frames
+tdn = m("down")
+RF_MID = (885, 655)                                             # between the two of them, upstage
 ref_fight = P("referee", keys((0, "stop"), (ls("L045") - 0.1, "break"), (ls("L045") + 1.2, "stop"),
-                              (tbell2 + 0.6, "card")),
+                              (m("c_ref3") + 0.1, "break"), (tbell2 + 0.05, "stop"), (tbell2 + 0.6, "card")),
               keys((0, RF_R), (ls("L045") - 0.45, RF_R), (ls("L045") - 0.1, (1345, 640)), (ls("L045") + 1.2, (1345, 640)),
-                   (ls("L045") + 1.7, RF_R)), look=None, ease=True,
-              show=[(0, m("c_ann4"))])
+                   (ls("L045") + 1.7, RF_R), (tdn + 0.15, RF_R), (tdn + 0.75, RF_MID)), look=None, ease=True,
+              steps=True, show=[(0, m("c_ann4"))])
 NEAR = dict(fn="near_ropes", ys=[850, 975], z=5000, w=20, blur=3.5)
 RING_FLASH = [((40, 20, 1630, 300), 5.0, 3)]
 
@@ -515,7 +558,8 @@ def ring(extra=()):
 
 def RW(t, cams, cast=None, **kw):
     """a shot inside the ring: the fight's shakes and snap zooms, the press flashes in the crowd"""
-    return W(t, "R", cams, cast if cast is not None else ring(), shakes=SHAKES, kicks=KICKS, flashes=RING_FLASH, **kw)
+    return W(t, "R", cams, cast if cast is not None else ring(), shakes=SHAKES, kicks=KICKS, flashes=RING_FLASH,
+             white=FLASHES, **kw)
 
 
 # 7: the announcer back in, then the trolley
@@ -559,8 +603,22 @@ S6 = [
     RW(m("c_cl1"), [(m("c_cl1"), (840, 420, 2.0)), (m("c_ref2"), (840, 420, 2.15))], blur=1.5),
     RW(m("c_ref2"), (900, 520, 1.15)),
     W(m("c_fj3"), "S", (836, 700, 1.5), ringside()),
-    RW(m("c_cl2"), [(m("c_cl2"), (840, 400, 2.3)), (m("bell2"), (840, 400, 2.6))], blur=2.0),
-    RW(tbell2, [(tbell2, (836, 520, 1.12)), (m("c_ann4"), (836, 510, 1.18))]),
+    RW(m("c_cl2"), [(m("c_cl2"), (840, 400, 2.3)), (tsl, (840, 400, 2.5))], blur=2.0),
+    # the slugfest: a two-shot, snapping in on every punch; Fury and Joshua wincing; the last flurry
+    RW(tsl, [(tsl, (870, 470, 1.35)), (tsl + 1.62, (870, 462, 1.45))]),
+    W(tsl + 1.62, "S", (836, 700, 1.5), ringside(face=[(tsl + 1.62, tsl + 2.12, 0.9, -0.45)],
+                                                  looks=("dir", 0.0, -0.35, 0.0))),
+    RW(tsl + 2.12, [(tsl + 2.12, (870, 462, 1.45)), (tdk, (870, 455, 1.55))]),
+    # the wind-up: a slow push in on the two of them; the impact and the freeze
+    RW(tdk, [(tdk, (900, 470, 1.3)), (tim, (905, 440, 1.62))], locked=True),
+    RW(tim, [(tim, (905, 440, 1.62)), (tfa, (905, 436, 1.68))], locked=True),
+    # the fall: the whole ring; flat out; the stars, close; the referee
+    RW(tfa, [(tfa, (836, 470, 1.0)), (tdn, (836, 470, 1.0))], locked=True),
+    RW(tdn, [(tdn, (836, 520, 1.0)), (m("c_dstars"), (836, 530, 1.06))], locked=True),
+    RW(m("c_dstars"), [(m("c_dstars"), (1500, 650, 2.6)), (m("c_estars"), (1500, 650, 2.75))], locked=True, blur=1.5),
+    RW(m("c_estars"), [(m("c_estars"), (200, 650, 2.6)), (m("c_ref3"), (200, 650, 2.75))], locked=True, blur=1.5),
+    RW(m("c_ref3"), [(m("c_ref3"), (885, 470, 2.0)), (tbell2, (885, 470, 2.1))], blur=1.5),
+    RW(tbell2, [(tbell2, (836, 500, 1.05)), (m("c_ann4"), (836, 510, 1.18))]),
 ]
 S7 = [
     RW(m("c_ann4"), (836, 500, 1.3), ring_end()),

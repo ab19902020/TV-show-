@@ -22,7 +22,7 @@ drawings:
   crouch_guard: {sheet: reference/cuts/eddie_boxing/crouch_guard.png, box: [0, 0, 264, 278], faces: R, plain: true, from: 'eddie_boxing.png [57, 788, 321, 1066]'}
   cover: {sheet: reference/cuts/eddie_boxing/cover.png, box: [0, 0, 253, 350], faces: R, plain: true, from: 'eddie_boxing.png [414, 719, 667, 1069]'}
   tired: {sheet: reference/cuts/eddie_boxing/tired.png, box: [0, 0, 240, 328], faces: R, from: 'eddie_boxing.png [786, 742, 1026, 1070]', marks: {head: [49.5, 1.0, 238.8, 124.9], mouth: [162, 109.5, 178.5, 108, 170, 108.6], chin: 122.5, neck: [179.5, 135.0], eyes: [[175.0, 87.0, 4.5, 3.5]]}}
-  arms_up: {sheet: reference/cuts/eddie_boxing/arms_up.png, box: [0, 0, 246, 374], faces: R, plain: true, from: 'eddie_boxing.png [1163, 708, 1409, 1082]'}
+  arms_up: {sheet: reference/cuts/eddie_boxing/arms_up.png, box: [0, 0, 246, 374], faces: R, marks: {eyes: [[132, 67, 7, 5]], mouth: [140, 83, 160, 83, 151, 83.5], chin: 104, neck: [130, 112], head: [62, 6, 166, 112]}, from: 'eddie_boxing.png [1163, 708, 1409, 1082]', jaw: 1.4}
   w0: {sheet: reference/cuts/eddie_walk/w0.png, box: [0, 0, 288, 458], faces: R, plain: true, from: 'eddie_walk.png [132, 8, 420, 466]'}
   w1: {sheet: reference/cuts/eddie_walk/w1.png, box: [0, 0, 275, 454], faces: R, plain: true, from: 'eddie_walk.png [492, 12, 767, 466]'}
   w2: {sheet: reference/cuts/eddie_walk/w2.png, box: [0, 0, 207, 458], faces: R, plain: true, from: 'eddie_walk.png [932, 8, 1139, 466]'}

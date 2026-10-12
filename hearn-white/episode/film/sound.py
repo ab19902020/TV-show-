@@ -15,7 +15,7 @@ from studio.film import ep
 from studio.film.shots import Marks
 
 from film import crowdfx as C
-from film.direction import SB, Dn, E
+from film.direction import SB, SLUG, Dn, E
 from film.timeline import TL
 
 L = json.loads(ep.path("lines.json").read_text())
@@ -75,11 +75,53 @@ def cough():
     return A.room(out, 1.6, 0.45)
 
 
+# ---------------------------------------------------------------- cartoon sounds (made here: the library has none)
+def slide_whistle(f0, f1, dur, vib=5.5):
+    """a slide whistle gliding from f0 to f1 Hz: breathy sine with a wobble"""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    f = f0 * (f1 / f0) ** (t / dur) * (1 + 0.012 * np.sin(2 * np.pi * vib * t))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    rng = np.random.default_rng(3)
+    y = np.sin(ph) + 0.08 * np.sin(2 * ph) + 0.05 * A.bp(rng.standard_normal(n).astype(np.float32), 600, 4000, 2)
+    return (y * A.fade(n, 0.03, 0.08)).astype(np.float32)
+
+
+def tweets(dur, seed=4):
+    """little birds circling a knocked-out head: quick rising chirps in pairs"""
+    rng = np.random.default_rng(seed)
+    n = int(dur * SR)
+    out = np.zeros(n, np.float32)
+    t = 0.05
+    while t < dur - 0.2:
+        for k in range(rng.integers(2, 4)):
+            d = rng.uniform(0.06, 0.09)
+            m_ = int(d * SR)
+            tt = np.arange(m_) / SR
+            f = rng.uniform(2600, 3400) * (1 + 0.5 * tt / d)
+            ch = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * tt / d) ** 2
+            i = int((t + k * 0.1) * SR)
+            if i + m_ < n:
+                out[i:i + m_] += ch.astype(np.float32) * rng.uniform(0.6, 1.0)
+        t += rng.uniform(0.38, 0.55)
+    return out
+
+
+def boing(dur=0.6, f=180.0):
+    """a cartoon spring: a twangy tone bending down with a fast wobble"""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    fr = f * (1.6 - 0.6 * t / dur) * (1 + 0.18 * np.sin(2 * np.pi * 14 * t) * np.exp(-t / 0.25))
+    ph = 2 * np.pi * np.cumsum(fr) / SR
+    y = (np.sin(ph) + 0.35 * np.sin(2 * ph) + 0.15 * np.sin(3 * ph)) * np.exp(-t / (0.35 * dur))
+    return (y * A.fade(n, 0.003, 0.05)).astype(np.float32)
+
+
 # ---------------------------------------------------------------- the arena crowd
 def crowd_gain(a, b):
     """the bed: dips under every line, near silence for the face-off, up for the action"""
     spans = [(v["start"] - 0.15, v["end"] + 0.2) for v in TL["lines"].values() if a <= v["start"] < b]
-    action = [(m("ex1"), m("c_ed7")), (m("c_ex3"), m("c_cl1")), (m("bell2"), m("c_ann4"))]
+    action = [(m("ex1"), m("c_ed7")), (m("c_ex3"), m("c_cl1")), (m("slug"), m("dko")), (m("bell2"), m("c_ann4"))]
 
     def g(tt):
         out = np.ones_like(tt, dtype=np.float32)
@@ -93,6 +135,10 @@ def crowd_gain(a, b):
                          [0.3, 1.0, 1.0, 0.1, 0.1, 0.8])
         # slow motion: the room drops away while the haymakers swing
         out *= np.interp(tt, [m("ex3d"), m("ex3d") + 0.3, m("ex3d") + 1.5, m("ex3d") + 1.8], [1.0, 0.35, 0.35, 1.0])
+        # the wind-up: the room holds its breath; the freeze on the impact; then it erupts
+        out *= np.interp(tt, [m("dko"), m("dko") + 0.25, m("impact"), m("impact") + 0.05, m("impact") + 0.35,
+                              m("fall") + 0.5], [1.0, 0.35, 0.35, 0.05, 0.05, 1.4])
+        out *= np.interp(tt, [m("down") + 0.3, m("c_dstars"), m("c_ref3"), m("bell2")], [1.4, 0.8, 0.5, 0.5])
         out *= np.interp(tt, [m("c_end"), m("black")], [1.0, 0.4])
         return out
     return g
@@ -133,6 +179,12 @@ def reactions(bus):
     put(bus, A.lp(slow, 900, 2).astype(np.float32), m("ex3d") + 0.6, -26)
     put(bus, C.laugh(2.6, seed=20), m("ex3d") + 1.55, -26)
     put(bus, C.laugh(2.0, seed=21), m("sep") + 0.6, -30)                # they lean back in
+    # the slugfest: the roar builds with every punch that lands
+    put(bus, C.roar(3.2, seed=30, cheer=0.9), m("slug") + 0.4, -24)
+    put(bus, C.roar(2.0, seed=31, cheer=1.0), m("slug") + 2.0, -23)
+    # the double knockout: a huge roar a beat after the freeze, a laugh at the two of them flat out
+    put(bus, C.roar(3.0, seed=32, cheer=1.0), m("impact") + 0.35, -20)
+    put(bus, C.laugh(3.0, people=24, seed=33), m("down") + 0.3, -24)
     put(bus, C.cheer(3.5, seed=22), m("bell2") + 0.3, -25)
     put(bus, C.laugh(2.4, seed=23), m("arms") + 0.3, -29)
     put(bus, C.laugh(2.6, seed=24), le("L052") + 0.1, -27)              # "a draw!"
@@ -169,6 +221,25 @@ def fight(bus):
     A.ev(bus, "cloth/cloth-e", m("sep") + 0.1, -34)
     A.ev(bus, "cloth/cloth-a", m("sep") + 1.4, -34)
     A.ev(bus, "foley/body-fall-a", m("sep") + 1.45, -35)
+    # the slugfest: every punch lands
+    for k, (dt, A_, pose, wind) in enumerate(SLUG):
+        t = m("slug") + dt + 0.06
+        A.ev(bus, "impacts/punch-%s" % "abcdef"[k % 6], t, -19, pan=0.2 if A_ is E else -0.2, semis=(k % 3) - 1)
+        A.ev(bus, "cloth/cloth-%s" % "bdf"[k % 3], t + 0.03, -33)
+    # the wind-up: a slide whistle climbing with the trembling; the cross-counter: two punches on one frame
+    put(bus, slide_whistle(300, 1300, m("impact") - m("dko") - 0.2), m("dko") + 0.2, -30)
+    for nm, sm in (("impacts/punch-a", -2), ("impacts/punch-d", -5)):
+        A.ev(bus, nm, m("impact") + 0.06, -14, semis=sm)
+    A.ev(bus, "impacts/gong-big", m("impact") + 0.06, -26, semis=4)
+    # the fall: a slide whistle down, both bodies hit the canvas together, the ring boards boom
+    put(bus, slide_whistle(1400, 220, 0.75), m("fall"), -28)
+    for nm, pn in (("foley/body-fall-a", -0.4), ("foley/body-fall-b", 0.4)):
+        A.ev(bus, nm, m("fall") + 0.75, -17, pan=pn)
+    A.ev(bus, "impacts/tom-hit", m("fall") + 0.75, -20, semis=-9)
+    # out cold: birds tweeting round their heads until the bell; saved by it, they spring up: boing
+    put(bus, A.room(tweets(m("bell2") - m("fall") - 0.8), 0.6, 0.2), m("fall") + 0.85, -31)
+    put(bus, boing(0.6, 170), m("bell2") + 0.03, -25, pan=-0.3)
+    put(bus, boing(0.6, 210), m("bell2") + 0.06, -25, pan=0.3)
 
 
 def foley(bus):
@@ -234,6 +305,12 @@ def music(bus):
     y = A.title_sting(2.4)
     y *= A.fade(len(y), 0.25, 0.5)[:, None]
     bus.add(A.at_level(y, -22), ARENA)
+    # the slugfest: the drums come back, faster and faster, and stop dead on the cross-counter
+    t, k = m("slug") + 0.2, 0
+    while t < m("impact"):
+        A.ev(bus, "impacts/tom-hit", t, -28 if k % 2 == 0 else -33, semis=-3 + min(5, k // 4))
+        k += 1
+        t += max(0.12, 0.34 - 0.012 * k)
     # fight music: a drum pulse from the bell to the first embarrassing glove tap, then nothing
     a, b = m("bell") + 0.6, m("ex2") + 0.36
     t, k = a, 0

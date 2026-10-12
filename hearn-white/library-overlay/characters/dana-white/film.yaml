@@ -22,7 +22,7 @@ drawings:
   crouch_guard: {sheet: reference/cuts/dana_boxing/crouch_guard.png, box: [0, 0, 278, 273], faces: L, plain: true, from: 'dana_boxing.png [65, 785, 343, 1058]'}
   cover: {sheet: reference/cuts/dana_boxing/cover.png, box: [0, 0, 267, 329], faces: L, plain: true, from: 'dana_boxing.png [428, 729, 695, 1058]'}
   tired: {sheet: reference/cuts/dana_boxing/tired.png, box: [0, 0, 238, 333], faces: F, from: 'dana_boxing.png [800, 734, 1038, 1067]', jaw: 1.4, marks: {eyes: [[21.2, 86.6, 7.0, 3.38], [56.1, 79.2, 10.62, 4.75]], head: [0.8, 0.0, 201.2, 126.3], mouth: [35.8, 114.4, 60.8, 111.1, 48.2, 111.4], chin: 130.2, neck: [48.2, 143.4]}}
-  arms_up: {sheet: reference/cuts/dana_boxing/arms_up.png, box: [0, 0, 253, 358], faces: F, plain: true, from: 'dana_boxing.png [1167, 710, 1420, 1068]'}
+  arms_up: {sheet: reference/cuts/dana_boxing/arms_up.png, box: [0, 0, 253, 358], faces: L, marks: {eyes: [[80, 80, 4, 3], [113, 81, 11, 6]], mouth: [79, 107, 101, 109, 90, 107.5], chin: 125, neck: [110, 135], head: [70, 30, 172, 128]}, from: 'dana_boxing.png [1167, 710, 1420, 1068]', jaw: 1.4}
   hug: {sheet: reference/cuts/dana_laundry/hug.png, box: [0, 0, 281, 314], faces: F, plain: true, from: 'dana_laundry.png [50, 15, 331, 329]'}
   hug2: {sheet: reference/cuts/dana_laundry/hug2.png, box: [0, 0, 254, 312], faces: F, plain: true, from: 'dana_laundry.png [388, 14, 642, 326]'}
   peek: {sheet: reference/cuts/dana_laundry/peek.png, box: [0, 0, 343, 169], faces: F, marks: {eyes: [[161, 104, 17, 12], [227, 104, 17, 12]], mouth: [182, 144, 211, 144, 196, 144], chin: 153, neck: [196, 165], head: [99, -3, 259, 167]}, from: 'dana_laundry.png [701, 153, 1044, 322]', jaw: 1.4}

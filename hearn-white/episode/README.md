@@ -2,7 +2,7 @@
 
 Original fictional satire from the *Hearn v White* production pack (`pack/`): Eddie bans Dana, Dana gets in by
 laundry trolley and tumbles out at Tyson Fury's feet, the two promoters negotiate themselves into a fight, and the
-fight is a draw. 1920 x 1080 master, 30 fps, 3 min 38 s, 81 shots. The preview is rendered at 1280 x 720; the 4K
+fight is a draw. 1920 x 1080 master, 30 fps, 3 min 48 s, 91 shots. The preview is rendered at 1280 x 720; the 4K
 final waits for approval of the preview.
 
 ## What's on screen, by time
@@ -18,8 +18,8 @@ final waits for approval of the preview.
 | 1:45 | | the red corner's dressing room | Eddie in his suit, reluctant; a puff of smoke and he's in his kit, slumped |
 | 1:47 | | the blue corner's dressing room | Dana alone, shadowboxing far too hard, then bent double catching his breath |
 | 1:49 | 5. Special announcement | arena | A sting and crowd swell with air horns and press flashes; the announcer in the ring; Fury and Joshua ringside; Eddie smiles with panicking brows (a mixed cheer, a laugh); Dana raises his gloves (the bigger cheer) and the attendant takes the stray towel; the referee's rules |
-| 2:29 | 6. The fight | ring | The bell (the camera shaking with it); a silent face-off, both bouncing, circling, one cough; Fury's "It's not a podcast". **Exchange 1:** Eddie winds up a long jab; Dana leans back far too far and windmills, the crowd laughs. **2:** Dana's little jab taps Eddie's guard: the squeak, a snap zoom, the fight music stops dead, Eddie's outrage ("You actually hit me!"; Dana drops his guard to answer). **3:** Eddie's flurry, jab jab jab, Dana bobbing under each. **4:** Dana's counter to the body lands: impact burst, flying sweat, a camera shake, Eddie knocked back and stumbling, the crowd roars. **5:** Eddie lunges with a wild cross, Dana ducks, Eddie's momentum spins him round. **6:** slow motion: both back off and throw enormous haymakers from much too far away, both miss, both spin; the whole room pitched down, then it snaps back. Fury and Joshua wince. **7:** exhausted, they stagger into a clinch, heads together and both faces in shot; "Break!" (the referee steps in); they wobble apart and lean back in; the bell; both raise their arms; the referee scratches his head at a blank card |
-| 3:11 | 7. Decision and callback | ring, ringside | "a draw" (Dana bent double, spent); the attendant pushes the trolley in; Dana glances at Eddie, Eddie points, Dana steps round to the side of the bin, crouches, springs over the rim and drops in out of sight (the towels puff up, the lid slams); rolled off still bickering; Fury and Joshua staring; the last wheel squeak; black |
+| 2:29 | 6. The fight | ring | The bell (the camera shaking with it); a silent face-off, both bouncing, circling, one cough; Fury's "It's not a podcast". **Exchange 1:** Eddie winds up a long jab; Dana leans back far too far and windmills, the crowd laughs. **2:** Dana's little jab taps Eddie's guard: the squeak, a snap zoom, the fight music stops dead, Eddie's outrage ("You actually hit me!"; Dana drops his guard to answer). **3:** Eddie's flurry, jab jab jab, Dana bobbing under each. **4:** Dana's counter to the body lands: impact burst, flying sweat, a camera shake, Eddie knocked back and stumbling, the crowd roars. **5:** Eddie lunges with a wild cross, Dana ducks, Eddie's momentum spins him round. **6:** slow motion: both back off and throw enormous haymakers from much too far away, both miss, both spin; the whole room pitched down, then it snaps back. Fury and Joshua wince. **7:** exhausted, they stagger into a clinch, heads together and both faces in shot; "Break!" (the referee steps in); they wobble apart and lean back in; the whispered rematch deal. **8: the slugfest.** "...and sold the fight": they shove apart and slug it out, eight punches that all land, faster and faster (impact stars, flying sweat, heads snapping back, a snap zoom on every one, the drums coming back faster and faster, Fury and Joshua wincing). **9: the double knockout.** Both load up an enormous one, trembling, the room holding its breath (a slide whistle climbing); the cross-counter lands on both at once: a white flash, the freeze, the gong; both go over backwards like felled trees and hit the canvas on the same frame (a slide whistle down, the boom, dust). Out cold, stars circling their heads and birds tweeting, eyes rolling; the referee looks from one to the other, and at us. **10:** saved by the bell: both spring up (boing) with their arms raised as if they had won; the referee scratches his head at a blank card |
+| 3:21 | 7. Decision and callback | ring, ringside | "a draw" (Dana bent double, spent); the attendant pushes the trolley in; Dana glances at Eddie, Eddie points, Dana steps round to the side of the bin, crouches, springs over the rim and drops in out of sight (the towels puff up, the lid slams); rolled off still bickering; Fury and Joshua staring; the last wheel squeak; black |
 
 ## Voices
 
@@ -84,13 +84,17 @@ a face are matched in size. A far eye drawn as a dark sliver past the nose keeps
 staged the way a cartoon fight reads: an anticipation (the arm drawn back, the body shifting back), a two- or
 three-frame lunge into the punch drawing, a hold on the extension, the recovery to guard. Speed lines trail the
 glove; the hit takes an impact star, flying sweat, a knock-back and a camera shake; big moments take a snap zoom.
-Guards bounce on the balls of the feet. The fighters watch each other from the face-off to the bell.
+Guards bounce on the balls of the feet. The fighters watch each other from the face-off to the bell. In the
+slugfest every punch lands where the glove ends up (`TIPS`: the glove's reach in each punch drawing), and the
+taker's head snaps back. `knockout` fells a fighter like a tree: stiff, arms up, going over backwards about the
+feet, slow then fast, one bounce, the feet skidding, a dust puff; `popup` brings him straight back up. The stars
+(`things.stars`) follow each head as it falls (the renderer records where every head is as it draws the people).
 
 **No head cut by the frame.** `tools/framing.py` follows every person's head through every shot, six times a
 second, and corrects the shot's camera until every head on screen is whole with headroom. Heads at the side of a
 shot are brought fully in or taken fully out, never left half in. The corrections are `film/framing.json`, keyed to
 each shot, so an edited shot is re-fitted by running the tool again (a shot framed by hand, like the freeze on Dana's
-eyes, is marked `locked` and left alone). Current result: 0 heads cut in 81 shots.
+eyes, is marked `locked` and left alone). Current result: 0 heads cut in 91 shots.
 `tools/lipcheck.py` renders every speaker's face at each line's stressed words and first M/B/P
 (`build/lipcheck.jpg`); every line is spoken on screen except the two from inside the bin.
 
@@ -114,6 +118,16 @@ outline round the mouth), so with a glove held at the chin the mouth opens behin
 the ring the lines are said in drawings with the face clear (Dana drops his guard to answer, says "Pay-per-view"
 bent double; the clinch keeps both faces in shot).
 
+**Noses (`film/noses.py`).** The pack draws the ring announcer with no nose at all, and Dana's nose as a soft skin
+shape with a hair-thin tip line; at screen size both read as no nose. Each of their drawings gets a cartoon nose
+inked in when it is loaded (the underside of the tip, a nostril wing each side, the bridge on the side the face
+turns to, a soft shadow and a highlight), in the drawing's own line colour, so it moves, scales and is lit with
+the face.
+
+**Arena lighting (`film/actors.py` `stage_light`).** Dramatic lights over pathetic action: in the arena, the ring
+and at ringside the canvas sits in a pool of light with the edges falling away into the dark, soft beams come down
+from the rig and sway slowly, haze glows under it, and the brights bloom.
+
 **Life.** Everyone standing breathes on their own rhythm and shifts their weight; a pose change lands with a quick
 settle; the talker's head bobs with the stress of their words; the attendant's steps bob her as she pushes; the
 trolley's wobbly wheel rattles it as it rolls; press flashes pop in the arena crowd.
@@ -130,11 +144,12 @@ falls; the slow motion pitches the whole room down and dulls it, then it snaps b
 |---|---|
 | `film/lines.py` | which recording each line comes from |
 | `film/timeline.py` | the dialogue edit: every line in order with the beats the script asks for, as named marks |
-| `film/direction.py` | 81 shots: each a camera in one of the seven sets with the people and props of that moment, every move keyed to the marks; the perspective of each set (`PPC`), the near rope and posts in front of the people, the fight written as moves |
+| `film/direction.py` | 91 shots: each a camera in one of the seven sets with the people and props of that moment, every move keyed to the marks; the perspective of each set (`PPC`), the near rope and posts in front of the people, the fight written as moves |
 | `film/fight.py` | the fighters' moves and the effects they make |
 | `film/actors.py` | the people and props in a set at true scale: poses on a beat, the walk cycle, tumbles and leans about the feet, lifts, clips, props in hands, the guard bounce, the camera shakes and snap zooms; faces through the engine's blinks, brows and looks, with the mouths and eyes below |
 | `film/mouths.py` | the drawn cartoon mouths |
 | `film/eyes.py` | the clean moving pupils |
+| `film/noses.py` | the inked noses for Dana and the announcer |
 | `film/things.py` | drawn in code: the BANNED board, the trolley lid, the near ring ropes, contact shadows, impact stars, sweat, speed lines, press flashes, the puff of smoke |
 | `film/props.py` | the engine's props hook, and the blue corner's dressing room (plate E) |
 | `film/perf.py` | the acting: whom each line is said to, its delivery, the stressed words, the looks and reactions, the mouth-shape smoothing |
