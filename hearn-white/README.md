@@ -13,6 +13,8 @@ eight characters, ten sets, 92 shots, 3 min 50 s, with the recordings you suppli
 | `engine-overlay/` | one engine file changed: `tools/index_library.py` (the boxing sets folder) |
 | `setup.sh` | rebuilds the project: AnimnationStuido- at `1213ed0aa2c79bd2da19b4a2230171296a6a67a6`, plus the overlays and the episode |
 
+**Whisper check.** 68 of 76 lines are heard word for word in the finished mix; the rest are mishearings of short clips (one to listen to: the attendant's "Then no." at 0:31 is heard as "And no").
+
 **Voices.** Your v5 recordings are used for every new or changed line; lines whose words did not change come from
 the earlier takes. **One line is still a synthetic stand-in: L066, Eddie's "Don't. He's load-bearing."**, which
 is not in Eddie's new file. Send that one line and it drops straight in (details in `episode/README.md`, "Voices").
