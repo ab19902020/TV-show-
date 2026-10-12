@@ -40,10 +40,11 @@ stand-ins.
 The edit is cut tight: lines follow each other a few frames apart (about 0.12-0.2 s), the jokes keep the pause
 they need and no more.
 
-Whisper re-hears every line in the finished mix (`check`): 52 of 59 match the script exactly. The other seven are
+Whisper re-hears every line in the finished mix (`check`): 51 of 59 match the script exactly. The other eight are
 mishearings of what is in the takes: "banned" heard as "band" (as the security guard says it), "Premium towels" as
-"premium towel" (muffled from inside the bin, on purpose), "security's" as "security is", "gloves" as "govs", "a man
-who has" as "a man who's", "Dana White" as "The White" (under the crowd), and "We'll put" as "will put".
+"premium towel" (muffled from inside the bin, on purpose), "security's" as "security is", "gloves" as "guvs",
+"Should we" as "Shall we", "a man who has" as "a man who's", "Dana White" as "White" (under the crowd), and "We'll
+put" as "will put".
 
 ## How it is made
 
