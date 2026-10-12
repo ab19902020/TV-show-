@@ -47,14 +47,14 @@ for lid, v in TL["lines"].items():
         cx, cy, r = (x0 + x1) / 2, (y0 + y1) / 2 + 0.1 * (y1 - y0), 0.62 * max(x1 - x0, y1 - y0)
         X0, Y0 = int(max(0, cx - r)), int(max(0, cy - r))
         X1, Y1 = int(min(img.shape[1], cx + r)), int(min(img.shape[0], cy + r))
-        crop = cv2.resize(img[Y0:Y1, X0:X1], (220, 220), interpolation=cv2.INTER_AREA)
+        TS = int(__import__("os").environ.get("TILE", "220")); crop = cv2.resize(img[Y0:Y1, X0:X1], (TS, TS), interpolation=cv2.INTER_AREA)
         lab = f"{lid} {w['w']}"
-        cv2.putText(crop, lab, (4, 212), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 3, cv2.LINE_AA)
-        cv2.putText(crop, lab, (4, 212), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 230, 0), 1, cv2.LINE_AA)
+        cv2.putText(crop, lab, (4, TS - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 0), 3, cv2.LINE_AA)
+        cv2.putText(crop, lab, (4, TS - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 230, 0), 1, cv2.LINE_AA)
         tiles.append(crop)
         print(lab, key, f"{t:.2f}", flush=True)
 while len(tiles) % 10:
-    tiles.append(np.zeros((220, 220, 3), np.uint8))
+    tiles.append(np.zeros((TS, TS, 3), np.uint8))
 out = D.ep.path("lipcheck.jpg")
 cv2.imwrite(str(out), np.vstack([np.hstack(tiles[i:i + 10]) for i in range(0, len(tiles), 10)])[..., ::-1],
             [cv2.IMWRITE_JPEG_QUALITY, 88])

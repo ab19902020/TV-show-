@@ -56,25 +56,58 @@ BASE = {"eddie": (-0.1, 0.1), "dana": (-0.45, -0.1), "tyson": (0.1, 0.25), "josh
         "announcer": (0.1, 0.0), "referee": (-0.2, 0.0), "attendant": (-0.25, -0.2), "security": (-0.35, -0.05)}
 bin_dir = ("dir", -0.6, 0.45, -0.15)
 GAZE = {
-    "dana": [(m("trolley"), m("look_cam") - 0.05, "attendant"), (m("look_cam"), le("L007") + 0.3, "cam"),
+    "dana": [(m("faceoff"), m("bell2"), "eddie"),
+             (m("trolley"), m("look_cam") - 0.05, "attendant"), (m("look_cam"), le("L007") + 0.3, "cam"),
              (m("bump"), m("tumble"), "cam"), (m("glance"), m("glance") + 0.5, "eddie")],
-    "eddie": [(m("dart"), m("dart") + 0.14, bin_dir), (m("dart") + 0.14, m("dart") + 0.28, "dana"),
+    "eddie": [(m("faceoff"), m("bell2"), "dana"),
+              (m("dart"), m("dart") + 0.14, bin_dir), (m("dart") + 0.14, m("dart") + 0.28, "dana"),
               (m("dart") + 0.28, m("dart") + 0.42, "security"), (m("dart") + 0.42, ls("L022"), "dana"),
               (m("surprise"), m("c_list"), ("dir", 0.0, -0.1, 0.0)), (le("L038") - 1.4, le("L038"), "cam")],
     "security": [(m("lid"), ls("L011"), "down")],
     "joshua": [(m("c_aj") - 0.2, m("c_fury4"), "down")],
+    "referee": [(m("bell"), m("c_ann4"), "eddie")],
     "tyson": [(m("landed"), m("c_aj"), "down")],
 }
 EXPR = {
-    "dana": [(m("bump"), m("tumble") + 0.6, 1.0, -0.3, 0.1), (m("surprise"), m("c_list"), 0.95, -0.15, 0.2),
+    "dana": [(m("faceoff"), m("ex1"), -0.9, -0.35, 0.2), (m("ex1") + 0.3, m("ex1") + 1.5, 1.0, -0.4, 0.05),
+             (m("ex3a"), m("ex3b"), 0.7, -0.2, 0.05), (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2),
+             (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1), (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3),
+             (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),(m("bump"), m("tumble") + 0.6, 1.0, -0.3, 0.1), (m("surprise"), m("c_list"), 0.95, -0.15, 0.2),
              (m("c_trolley"), m("climb"), -0.4, -0.2, 0.3)],
-    "eddie": [(m("surprise"), m("c_list"), 1.0, -0.2, 0.3), (m("c_eddie"), m("dart") + 0.4, -0.7, -0.3, 0.3)],
+    "eddie": [(m("faceoff"), m("ex1"), -0.9, -0.3, 0.2), (m("ex2") + 0.3, ls("L040"), 1.0, -0.45, 0.05),
+              (m("ex3b") + 0.4, m("ex3b") + 1.2, 0.85, -0.55, 0.05), (m("ex3c") + 0.6, m("ex3c") + 1.2, 0.9, -0.2, 0.05),
+              (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2), (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1),
+              (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3), (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),
+              (m("surprise"), m("c_list"), 1.0, -0.2, 0.3), (m("c_eddie"), m("dart") + 0.4, -0.7, -0.3, 0.3)],
     "security": [(m("lid"), ls("L011"), 0.4, -0.15, 0.3)],
 }
 NOBLINK = {"dana": [(m("look_cam"), le("L007") + 0.2), (m("bump"), m("tumble"))],
            "eddie": [(m("dart"), ls("L022"))]}
 NODS = {"tyson": [(ls("L033") + 0.2, 1, 3.0)], "attendant": [(le("L013") - 0.2, 1, 2.0)]}
 
+
+def hold_shapes(track, must=("MBP", "FV")):
+    """cartoon lip sync: every mouth shape held at least 2 frames (a 1-frame shape takes its neighbour's), and a
+    mouth that would snap shut for 1-2 frames between two open shapes stays open (no chatter)"""
+    tr = list(track)
+    n = len(tr)
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and tr[j + 1] == tr[i]:
+            j += 1
+        L = j - i + 1
+        if tr[i] == "REST" and L <= 2 and 0 < i and j + 1 < n and tr[i - 1] != "REST" and tr[j + 1] != "REST":
+            for q in range(i, j + 1):
+                tr[q] = tr[i - 1] if tr[i - 1] not in must else tr[j + 1]
+        elif L == 1 and tr[i] not in must and 0 < i < n - 1 and tr[i] != "REST":
+            tr[i] = tr[i - 1] if tr[i - 1] != "REST" else tr[i + 1]
+        i = j + 1
+    return tr
+
+
 PERF = Performance(TL, L, WHO, SPK, META, lambda lid: ep.path("lines", f"{lid}.wav"), base=BASE, gaze=GAZE,
                    expr=EXPR, nods=NODS, noblink=NOBLINK, cuts=[s["t"] for s in SHOTS],
                    rest_target={"announcer": "cam", "referee": "cam"})
+for _w in WHO:
+    PERF.VIS[_w] = hold_shapes(PERF.VIS[_w])

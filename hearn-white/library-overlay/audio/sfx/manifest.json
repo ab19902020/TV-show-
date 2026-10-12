@@ -1,0 +1,414 @@
+{
+ "_source": "BigSoundBank.com by Joseph Sardin - CC0 1.0 (free for any use, no attribution required; credit appreciated: 'Additional sounds: Joseph SARDIN - BigSoundBank.com'). Clips with a 'url' come from Wikimedia Commons under the licence given (all CC0).",
+ "_layout": "<category>/<name>.ogg, 48 kHz Vorbis, trimmed from the source with 5 ms fades by tools/get_sfx.py",
+ "ambience/room-tone-hvac": {
+  "id": "0174",
+  "title": "ventilation-2",
+  "start": 2.0,
+  "end": 32.0
+ },
+ "ambience/city-through-window": {
+  "id": "2387",
+  "title": "apartment-closed-window",
+  "start": 10.0,
+  "end": 70.0
+ },
+ "ambience/rain-concrete": {
+  "id": "1289",
+  "title": "rain-on-concrete",
+  "start": 5.0,
+  "end": 35.0
+ },
+ "ambience/wind": {
+  "id": "0595",
+  "title": "wind",
+  "start": 10.0,
+  "end": 40.0
+ },
+ "ambience/street-distant": {
+  "id": "0608",
+  "title": "street-and-roads",
+  "start": 20.0,
+  "end": 50.0
+ },
+ "ambience/marina": {
+  "id": "1444",
+  "title": "pontoon-marina",
+  "start": 10.0,
+  "end": 50.0
+ },
+ "ambience/sea-gentle": {
+  "id": "1046",
+  "title": "small-waves-facing-the-ocean",
+  "start": 10.0,
+  "end": 40.0
+ },
+ "foley/pen-click-a": {
+  "id": "0810",
+  "title": "clicks-pen",
+  "start": 0.0,
+  "end": 0.32
+ },
+ "foley/pen-click-b": {
+  "id": "0810",
+  "title": "clicks-pen",
+  "start": 1.43,
+  "end": 1.8
+ },
+ "foley/pen-click-c": {
+  "id": "0613",
+  "title": "pen-click",
+  "start": 5.15,
+  "end": 5.6
+ },
+ "foley/cup-down": {
+  "id": "0627",
+  "title": "cup-on-a-table",
+  "start": 1.25,
+  "end": 2.04
+ },
+ "cloth/cloth-a": {
+  "id": "1104",
+  "title": "synthetic-coat-rubbed",
+  "start": 0.3,
+  "end": 0.88
+ },
+ "cloth/cloth-b": {
+  "id": "1104",
+  "title": "synthetic-coat-rubbed",
+  "start": 1.35,
+  "end": 1.9
+ },
+ "cloth/cloth-c": {
+  "id": "1104",
+  "title": "synthetic-coat-rubbed",
+  "start": 3.47,
+  "end": 3.78
+ },
+ "cloth/cloth-d": {
+  "id": "1104",
+  "title": "synthetic-coat-rubbed",
+  "start": 4.5,
+  "end": 4.92
+ },
+ "cloth/cloth-e": {
+  "id": "0013",
+  "title": "cloth",
+  "start": 0.1,
+  "end": 0.32
+ },
+ "cloth/cloth-f": {
+  "id": "0013",
+  "title": "cloth",
+  "start": 0.8,
+  "end": 1.12
+ },
+ "creaks/creak-long": {
+  "id": "3205",
+  "title": "creaking-door-2",
+  "start": 0.18,
+  "end": 1.6
+ },
+ "creaks/creak-short": {
+  "id": "3205",
+  "title": "creaking-door-2",
+  "start": 1.8,
+  "end": 2.2
+ },
+ "creaks/creak-mid": {
+  "id": "3207",
+  "title": "creaking-door-4",
+  "start": 1.1,
+  "end": 2.38
+ },
+ "creaks/creak-small": {
+  "id": "3207",
+  "title": "creaking-door-4",
+  "start": 4.15,
+  "end": 4.5
+ },
+ "paper/paper-handle": {
+  "id": "1251",
+  "title": "news-paper-manipulations",
+  "start": 0.2,
+  "end": 2.6
+ },
+ "paper/paper-lower": {
+  "id": "1251",
+  "title": "news-paper-manipulations",
+  "start": 6.05,
+  "end": 7.6
+ },
+ "paper/page-turn": {
+  "id": "0164",
+  "title": "turned-page",
+  "start": 0.03,
+  "end": 0.55
+ },
+ "paper/paper-short": {
+  "id": "0785",
+  "title": "paper",
+  "start": 0.15,
+  "end": 0.98
+ },
+ "impacts/tom-hit": {
+  "id": "2338",
+  "title": "bass-tom-1",
+  "start": 0.03,
+  "end": 2.0
+ },
+ "impacts/gong-big": {
+  "id": "1485",
+  "title": "gong-very-strong",
+  "start": 0.05,
+  "end": 9.7
+ },
+ "impacts/thunder-roll": {
+  "id": "3115",
+  "title": "thunder-4",
+  "start": 0.4,
+  "end": 8.8
+ },
+ "crowd/crowd-large": {
+  "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a9/360703_eguobyte_large-crowd-medium-distance-stereo.wav/360703_eguobyte_large-crowd-medium-distance-stereo.wav.mp3",
+  "title": "large-crowd-medium-distance-stereo (eguobyte, Wikimedia Commons)",
+  "license": "CC0",
+  "start": 2.0,
+  "end": 52.0
+ },
+ "sport/whistle-ref": {
+  "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/218318_splicesound_referee-whistle-blow-gymnasium.wav",
+  "title": "referee-whistle-blow-gymnasium (splicesound, Wikimedia Commons)",
+  "license": "CC0",
+  "start": 0.0,
+  "end": 3.3
+ },
+ "crowd/applause-big": {
+  "id": "0021",
+  "title": "applause-600-people",
+  "start": 3.0,
+  "end": 12.0
+ },
+ "foley/clap-single": {
+  "id": "1766",
+  "title": "applause-2 (one person)",
+  "start": 0.33,
+  "end": 0.72
+ },
+ "footsteps/step-a": {
+  "id": "3440",
+  "title": "squeaky-steps-1",
+  "start": 1.1,
+  "end": 1.62
+ },
+ "footsteps/step-b": {
+  "id": "3440",
+  "title": "squeaky-steps-1",
+  "start": 2.15,
+  "end": 2.66
+ },
+ "sport/ball-kick": {
+  "id": "1044",
+  "title": "ball-kicked",
+  "start": 2.38,
+  "end": 2.95
+ },
+ "doors/door-shut": {
+  "id": "2424",
+  "title": "apartment-door-closing-4",
+  "start": 0.0,
+  "end": 2.6
+ },
+ "sport/boxing-bell": {
+  "id": "1926",
+  "title": "boxing-bell-1 (three hits)",
+  "start": 0.0,
+  "end": 2.6
+ },
+ "sport/boxing-bell-b": {
+  "id": "1927",
+  "title": "boxing-bell-2 (three hits)",
+  "start": 0.0,
+  "end": 2.4
+ },
+ "impacts/punch-a": {
+  "id": "2460",
+  "title": "punch-5",
+  "start": 0.04,
+  "end": 0.6
+ },
+ "impacts/punch-b": {
+  "id": "2463",
+  "title": "punch-8",
+  "start": 0.03,
+  "end": 0.6
+ },
+ "impacts/punch-c": {
+  "id": "2468",
+  "title": "punch-13",
+  "start": 0.03,
+  "end": 0.55
+ },
+ "impacts/punch-d": {
+  "id": "2461",
+  "title": "punch-6",
+  "start": 0.03,
+  "end": 0.6
+ },
+ "impacts/punch-e": {
+  "id": "2459",
+  "title": "punch-4",
+  "start": 0.08,
+  "end": 0.6
+ },
+ "impacts/punch-f": {
+  "id": "2465",
+  "title": "punch-10",
+  "start": 0.06,
+  "end": 0.6
+ },
+ "whoosh/whoosh-a": {
+  "id": "1795",
+  "title": "whoosh-3 (long rope)",
+  "start": 0.18,
+  "end": 0.6
+ },
+ "whoosh/whoosh-b": {
+  "id": "1796",
+  "title": "whoosh-4 (long rope)",
+  "start": 0.18,
+  "end": 0.7
+ },
+ "whoosh/whoosh-c": {
+  "id": "1797",
+  "title": "whoosh-5 (wooden stick)",
+  "start": 0.1,
+  "end": 0.45
+ },
+ "whoosh/whoosh-d": {
+  "id": "1799",
+  "title": "whoosh-6 (wooden sheet)",
+  "start": 0.08,
+  "end": 0.45
+ },
+ "foley/body-fall-a": {
+  "id": "2453",
+  "title": "body-fall-2",
+  "start": 0.15,
+  "end": 1.2
+ },
+ "foley/body-fall-b": {
+  "id": "2452",
+  "title": "body-fall-1",
+  "start": 0.1,
+  "end": 1.4
+ },
+ "crowd/cheer-yeah-a": {
+  "id": "0236",
+  "title": "shouts-and-applauses-of-teens-1",
+  "start": 0.0,
+  "end": 4.2
+ },
+ "crowd/cheer-yeah-b": {
+  "id": "0237",
+  "title": "shouts-and-applauses-of-teens-2",
+  "start": 0.0,
+  "end": 5.5
+ },
+ "crowd/applause-40": {
+  "id": "3518",
+  "title": "applause-from-40-people-2",
+  "start": 1.5,
+  "end": 8.5
+ },
+ "crowd/air-horn": {
+  "id": "1048",
+  "title": "gas-fog-horn-1 (stadium supporters)",
+  "start": 0.0,
+  "end": 3.6
+ },
+ "voice/laugh-01": {
+  "id": "2092",
+  "title": "delirious-laughter (take 2092)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-02": {
+  "id": "2093",
+  "title": "delirious-laughter (take 2093)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-03": {
+  "id": "2094",
+  "title": "delirious-laughter (take 2094)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-04": {
+  "id": "2095",
+  "title": "delirious-laughter (take 2095)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-05": {
+  "id": "2096",
+  "title": "delirious-laughter (take 2096)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-06": {
+  "id": "2097",
+  "title": "delirious-laughter (take 2097)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-07": {
+  "id": "2098",
+  "title": "delirious-laughter (take 2098)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-08": {
+  "id": "2099",
+  "title": "delirious-laughter (take 2099)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-09": {
+  "id": "2100",
+  "title": "delirious-laughter (take 2100)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-10": {
+  "id": "2101",
+  "title": "delirious-laughter (take 2101)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-11": {
+  "id": "2102",
+  "title": "delirious-laughter (take 2102)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-12": {
+  "id": "2104",
+  "title": "delirious-laughter (take 2104)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-13": {
+  "id": "2105",
+  "title": "delirious-laughter (take 2105)",
+  "start": 0.0,
+  "end": 8.0
+ },
+ "voice/laugh-man": {
+  "id": "0475",
+  "title": "horrible-laugh-1 (a man laughing)",
+  "start": 0.0,
+  "end": 5.0
+ }
+}

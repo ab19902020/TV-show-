@@ -28,6 +28,38 @@ from studio.film.cast import CAST
 from studio.film.engine import OH, OW, RS
 from studio.paths import BUILD, LIBRARY
 
+from film import eyes, mouths
+
+eyes.install()
+mouths.install()
+
+
+def _install_camera():
+    """camera shake and snap zooms for the fight: a shot's "shakes" [(t, px, s)] shake the camera (screen px,
+    decaying), its "kicks" [(t, factor, s)] snap the camera in and ease it back"""
+    from studio.film import render as R
+    if getattr(R, "_undercard_cam", False):
+        return
+    orig = R.cam_at
+
+    def cam_at(s, t):
+        cx, cy, z = orig(s, t)
+        for t0, amp, dur in s.get("shakes", ()):
+            u = (t - t0) / dur
+            if 0 <= u < 1:
+                rng = np.random.default_rng(int(t * 30) + int(t0 * 1000))
+                k = amp * (1 - u) ** 1.5 / (OW / 1672.0 * z)
+                cx += rng.uniform(-1, 1) * k
+                cy += rng.uniform(-1, 1) * k
+        for t0, f, dur in s.get("kicks", ()):
+            u = (t - t0) / dur
+            if 0 <= u < 1:
+                z *= 1 + (f - 1) * (min(1.0, u * 8) * (1 - u) ** 2)
+        return cx, cy, z
+
+    R.cam_at = cam_at
+    R._undercard_cam = True
+
 # who -> (character id, height cm, standing height of the reference drawing in sheet px)
 PEOPLE = {"eddie": ("eddie-hearn", 191, 357), "dana": ("dana-white", 170, 347), "tyson": ("tyson-fury", 206, 431),
           "joshua": ("anthony-joshua", 198, 513), "announcer": ("ring-announcer", 175, 347),
@@ -155,6 +187,15 @@ def life(it, key, t):
             st = 0.035 * math.exp(-u / 0.075) * math.cos(u * 2 * math.pi / 0.24)
             sy *= 1 + st
             sx *= 1 - 0.5 * st
+    try:                                                  # talking: the body rides the voice a little (a cartoon
+        perf = importlib.import_module("film.perf").PERF  # show's talking bounce), more on the open sounds
+        f = int(round(t * 30))
+        if 0 <= f < len(perf.TALK[it["who"]]) and perf.TALK[it["who"]][f] and perf.VIS[it["who"]][f] not in ("REST", "MBP"):
+            a = float(perf.AMP[it["who"]][f])
+            sy *= 1 + 0.010 * (a - 0.4)
+            rot += 0.35 * math.sin(t * 9.0 + ph)
+    except (KeyError, ImportError, AttributeError):
+        pass
     if it.get("steps"):                                   # walking in one drawing (pushing the trolley): a step
         x0, _ = at_time(it["at"], t - 0.05, it.get("ease", False))     # every 0.42 s while the feet are moving,
         x1, _ = at_time(it["at"], t + 0.05, it.get("ease", False))     # the body rising and rocking with it
@@ -171,6 +212,10 @@ def person_matrix(s, it, key, t, M, sc):
     x, y = at_time(it["at"], t, it.get("ease", False))
     dy = at_time(it.get("dy", 0.0), t)
     h = cm * ppc(s, it.get("floor", y)) * it.get("scale", 1.0)               # plate px tall
+    b = it.get("bounce")
+    if b and key.split(":")[1] in b["poses"]:                                # a boxer's bounce on his toes
+        ph = PHASE[who]
+        dy += b["amp"] * h * abs(math.sin(math.pi * b["hz"] * t + ph))
     k = h * sc / stand * sheet_fac(key)                                      # screen px per sheet px
     fx, fy = feet_mid(key)
     Fx, Fy = M[0, 0] * x + M[0, 2], M[1, 1] * (y - dy) + M[1, 2]
@@ -260,6 +305,7 @@ def front_layer(key):
 def scene(img, s, t, M, sc):
     """("props", "scene"): everything in s["cast"] at time t, far to near"""
     from studio.film import render as R
+    _install_camera()                    # (render is fully loaded by the first frame; the patch is for the next one)
     perf = importlib.import_module("film.perf")
     things = importlib.import_module("film.things")
     items = [it for it in s["cast"] if visible(it, t)]
@@ -270,6 +316,8 @@ def scene(img, s, t, M, sc):
             h = PEOPLE[it["who"]][1] * ppc(s, y)
             pos[it["who"]] = (M[0, 0] * x + M[0, 2], M[1, 1] * (y - 0.93 * h) + M[1, 2])
     items.sort(key=lambda it: it.get("z", at_time(it["at"], t)[1] if "at" in it else 0.0))
+    for fl in s.get("flashes", ()):                                     # press camera flashes in the crowd
+        img = things.flashes(img, s, t, M, sc, fl[0], fl[1], seed=fl[2] if len(fl) > 2 else 1)
     lay = np.zeros((OH, OW, 4), np.float32)
     for it in items:
         if "fn" in it:

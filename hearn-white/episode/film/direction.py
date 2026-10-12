@@ -31,6 +31,8 @@ OCCL = {"A": {"ropes": [[(150, 646), (1530, 646), (1530, 664), (150, 664)],
                         [(1486, 466), (1532, 466), (1532, 702), (1486, 702)]]}}
 CM = {"eddie": 191, "dana": 170, "tyson": 206, "joshua": 198, "announcer": 175, "referee": 180, "attendant": 160,
       "security": 183}
+# press camera flashes popping in the crowd: (region in 1x plate px, flashes a second, seed)
+CROWD_FLASH = {"A": [((20, 40, 1650, 470), 9.0, 2)], "S": [((0, 0, 1672, 210), 3.0, 5)]}
 TITLE = (("THE UNDERCARD", "BEBAS", 190, None, 16, 330, (255, 255, 255)),)
 TAGLINE = (("HEARN  v  WHITE", "BEBAS", 70, None, 12, 735, (225, 40, 40)),)
 EYES = {}
@@ -62,6 +64,8 @@ def W(t, p, cams, cast, blur=0.0, drift=0.35, extra_layers=(), **kw):
     if isinstance(first, OnCam):
         kw.setdefault("subject", dict(who=first.who, frac=first.frac, dx=first.dx, up=first.up))
     layers = [("props", "scene")] + list(extra_layers)
+    if p in CROWD_FLASH:
+        kw.setdefault("flashes", CROWD_FLASH[p])
     if p in OCCL:
         layers += [("occl", k) for k in OCCL[p]]
     return world(t, PLATES[p], cams[0][1], cams=cams, layers=layers, cast=cast, ppc=PPC[p], blur=blur,
@@ -353,68 +357,89 @@ S5 = [
 ]
 
 # ====================================================================== 6. the fight
+# (film/fight.py: each fighter's moves on the edit's marks; the effects and camera shakes they make)
+from film.fight import Fighter                                              # noqa: E402
+
 ED_R, DA_R, RF_R = (560, 785), (1110, 785), (1390, 640)
-GUARD_FACE = None
-
-
-def shuffle(x0, t0, t1, amp=18, rate=1.4, ph=0.0):
-    import math
-    out, t = [], t0
-    while t < t1:
-        out.append((t, (x0 + amp * math.sin(2 * math.pi * rate * (t - t0) + ph), ED_R[1])))
-        t += 0.12
-    return out
-
-
+H_ED, H_DA = 191 * (785 - PPC["R"][0]) * PPC["R"][1], 170 * (785 - PPC["R"][0]) * PPC["R"][1]
 tb, tf = m("bell"), m("faceoff")
-e1, e2, e3a, e3b, e3c = m("ex1"), m("ex2"), m("ex3a"), m("ex3b"), m("ex3c")
+e1, e2, e3a, e3b, e3c, e3d, e3e = (m(k) for k in ("ex1", "ex2", "ex3a", "ex3b", "ex3c", "ex3d", "ex3e"))
 ts, tbell2 = m("sep"), m("bell2")
-CL_E, CL_D = (600, 785), (1075, 785)          # the clinch: heads together over the middle
-eddie_fight = P("eddie",
-                keys((0, "guard"), (e1 + 0.35, "wind"), (e1 + 0.55, "jab_long"), (e1 + 1.15, "guard"),
-                     (e2 + 0.35, "block"), (m("c_ed7") + 0.1, "guard"),
-                     (e3a + 0.3, "jab"), (e3a + 0.8, "guard"), (e3b + 0.35, "cross"), (e3b + 1.1, "guard"),
-                     (ts + 0.05, "tired"), (ts + 1.2, "guard"), (tbell2 + 0.3, "arms_up"), (m("c_ann4"), "guard"),
-                     (m("c_trolley") + 2.6 + (le("L057") - ls("L057")), "jab_long"), (m("climb") + 0.4, "guard")),
-                keys(*shuffle(ED_R[0], 0, e1 + 0.35, 14, 1.1), (e1 + 0.55, (ED_R[0] + 110, ED_R[1])),
-                     (e1 + 1.3, ED_R), (e3a + 0.3, (ED_R[0] + 60, ED_R[1])), (e3a + 0.8, ED_R),
-                     (e3b + 0.35, (ED_R[0] + 95, ED_R[1])), (e3b + 1.2, (ED_R[0] + 80, ED_R[1])),
-                     (e3c + 0.9, CL_E), (ts + 0.05, CL_E), (ts + 0.5, (600, ED_R[1])), (ts + 1.2, (600, ED_R[1])),
-                     (ts + 1.65, CL_E), (tbell2 + 0.3, CL_E), (tbell2 + 0.8, (560, ED_R[1])), (m("c_ann4") - 0.01, (560, ED_R[1])),
-                     (m("c_ann4"), (500, ED_R[1]))),
-                rot=keys((0, 0.0), (e3b + 0.35, 0.0), (e3b + 0.6, 9.0), (e3b + 1.1, 5.0), (e3c + 0.9, 9.0),
-                         (ts + 0.05, 9.0), (ts + 0.4, 0.0), (ts + 0.6, -6.0), (ts + 0.85, 5.0), (ts + 1.05, -4.0),
-                         (ts + 1.2, 0.0), (ts + 1.65, 9.0), (tbell2 + 0.3, 9.0), (tbell2 + 0.5, 0.0)),
-                ease=True)
-dana_fight = P("dana",
-               keys((0, "guard"), (e1 + 0.5, "lean_back"), (e1 + 0.8, "guard_high"), (e1 + 0.95, "lean_back"),
-                    (e1 + 1.1, "guard_high"), (e1 + 1.25, "lean_back"), (e1 + 1.6, "guard"),
-                    (e2 + 0.25, "jab"), (e2 + 0.75, "guard"),
-                    (e3a + 0.35, "crouch_guard"), (e3a + 0.95, "guard"), (e3b + 0.35, "jab4"), (e3b + 1.1, "guard"),
-                    (e3c + 0.6, "tired"), (ts + 1.2, "guard"), (ts + 1.55, "tired"), (tbell2 + 0.3, "arms_up"),
-                    (m("c_ann4"), "guard"),
-                    (m("climb"), "crouch_guard")),
-               keys(*shuffle(DA_R[0], 0, e1 + 0.5, 14, 1.25, 1.3), (e1 + 0.5, (DA_R[0] + 30, DA_R[1])),
-                    (e1 + 1.6, DA_R), (e2 + 0.25, (DA_R[0] - 120, DA_R[1])), (e2 + 0.8, DA_R),
-                    (e3b + 0.35, (DA_R[0] - 95, DA_R[1])), (e3b + 1.2, (DA_R[0] - 80, DA_R[1])),
-                    (e3c + 0.9, CL_D), (ts + 0.05, CL_D), (ts + 0.5, (1070, DA_R[1])), (ts + 1.2, (1070, DA_R[1])),
-                    (ts + 1.65, CL_D), (tbell2 + 0.3, CL_D), (tbell2 + 0.8, (1110, DA_R[1])),
-                    (m("glance") + 0.1, (1110, DA_R[1])), (m("climb") + 0.35, (1080, DA_R[1])), (m("climb") + 0.75, (995, DA_R[1] - 4))),
-               rot=keys((0, 0.0), (e1 + 0.5, 0.0), (e1 + 0.7, 16.0), (e1 + 0.85, 24.0), (e1 + 1.0, 12.0),
-                        (e1 + 1.15, 22.0), (e1 + 1.3, 10.0), (e1 + 1.6, 0.0), (e3b + 0.35, 0.0), (e3b + 0.6, -9.0),
-                        (e3b + 1.1, -5.0), (e3c + 0.9, -9.0), (ts + 0.05, -9.0), (ts + 0.4, 0.0),
-                        (ts + 0.6, 6.0), (ts + 0.85, -5.0), (ts + 1.05, 4.0), (ts + 1.2, 0.0), (ts + 1.65, -9.0),
-                        (tbell2 + 0.3, -9.0), (tbell2 + 0.5, 0.0)),
-               dy=keys((0, 0.0), (m("climb") + 0.35, 0.0), (m("climb") + 0.7, 190.0), (m("climb") + 1.4, -440.0)),
-               ease=True, clip=keys((0, None), (m("climb") + 0.72, 812 - 0.9 * 90 * (812 - 289) * 0.0065)))
+CL_E, CL_D = (640, 785), (1035, 785)          # the clinch: heads together over the middle
+E = Fighter("eddie", ED_R[0], +1, ED_R[1], H_ED)
+Dn = Fighter("dana", DA_R[0], -1, DA_R[1], H_DA)
+HEAD_E, HEAD_D = ED_R[1] - 0.86 * H_ED, DA_R[1] - 0.84 * H_DA
+
+# the face-off: bouncing, circling a little, nobody throwing anything
+E.hold(tf).to(tf + 0.7, 595).to(tf + 1.5, 570).to(tf + 2.3, 600).pose(tf + 1.1, "guard2").pose(tf + 2.0, "guard")
+Dn.hold(tf).to(tf + 0.8, 1080).to(tf + 1.6, 1100).to(tf + 2.4, 1070)
+# 1: Eddie's long jab; Dana leans back much too far and windmills, then recovers
+E.punch(e1 + 0.35, "jab_long", 120, wind="wind", wind_t=0.25, hold=0.35, back=0.4, lean=8)
+Dn.windmill(e1 + 0.33, dur=1.15)
+# 2: Dana's little jab taps Eddie's guard: the squeak (and Eddie's outrage)
+Dn.punch(e2 + 0.3, "jab", 70, wind="guard_high", wind_t=0.15, hold=0.2, back=0.35, lean=4)
+E.hit(e2 + 0.36, pose="block", knock=22, lean=6, settle=0.5, at=(E.x + 0.30 * H_ED, ED_R[1] - 0.62 * H_ED), size=48,
+      sweat=False)
+E.pose(m("c_ed7") + 0.05, "guard")
+# 3: Eddie's flurry, jab jab jab; Dana bobs under every one
+for k, dt in enumerate((0.2, 0.62, 1.04)):
+    E.punch(e3a + dt, "jab" if k != 1 else "jab_long", 55, wind="guard", wind_t=0.08, hold=0.1, back=0.16, lean=5)
+    Dn.duck(e3a + dt - 0.03, dur=0.26, dx=18 if k % 2 else -18)
+# 4: Dana's counter to the body: Eddie covers, is knocked back and stumbles
+Dn.punch(e3b + 0.35, "jab3", 95, wind="guard_high", wind_t=0.2, hold=0.22, back=0.4, lean=6, height=0.55)
+E.hit(e3b + 0.43, pose="cover", knock=80, lean=12, settle=0.8, at=(E.x + 0.26 * H_ED, ED_R[1] - 0.55 * H_ED), size=120)
+E.stumble(e3b + 0.62, 0.45, -35).guard(e3b + 1.15, x=560)
+# 5: Eddie comes back with a wild lunging cross; Dana ducks; Eddie's momentum spins him round
+E.punch(e3c + 0.35, "cross", 200, wind="wind", wind_t=0.25, hold=0.12, back=0.75, lean=14, home=560)
+E.spin(e3c + 0.6, dur=0.42)
+Dn.duck(e3c + 0.3, dur=0.5, dx=12)
+# 6: slow motion: both back off, wind up enormous haymakers and throw them from much too far away
+E.hold(e3d).to(e3d + 0.3, 330).pose(e3d + 0.1, "wind")
+Dn.hold(e3d).to(e3d + 0.3, 1350).pose(e3d + 0.1, "guard_high")
+E.punch(e3d + 0.85, "cross", 25, wind="wind", wind_t=0.5, hold=0.3, back=0.4, lean=16, swing=0.35, sound="whoosh_slow")
+Dn.punch(e3d + 0.85, "jab4", 25, wind="guard_high", wind_t=0.5, hold=0.3, back=0.4, lean=16, swing=0.35,
+         sound="whoosh_slow")
+E.spin(e3d + 1.4, dur=0.45)
+Dn.spin(e3d + 1.42, dur=0.45)
+# 7: exhausted, they stagger into each other: the clinch
+E.pose(e3e + 0.05, "tired").hold(e3e + 0.05).to(e3e + 1.0, CL_E[0]).lean(e3e + 1.0, 9.0)
+Dn.pose(e3e + 0.05, "tired").hold(e3e + 0.05).to(e3e + 1.0, CL_D[0]).lean(e3e + 1.0, -9.0)
+E.hold(ts + 0.05).lean(ts + 0.05, 9.0).to(ts + 0.45, 540).lean(ts + 0.4, -6.0).lean(ts + 0.65, 5.0).lean(ts + 0.85, -4.0)
+E.lean(ts + 1.0, 0.0).hold(ts + 1.05).to(ts + 1.45, CL_E[0]).lean(ts + 1.45, 9.0)
+Dn.hold(ts + 0.05).lean(ts + 0.05, -9.0).to(ts + 0.45, 1130).lean(ts + 0.4, 6.0).lean(ts + 0.65, -5.0).lean(ts + 0.85, 4.0)
+Dn.lean(ts + 1.0, 0.0).hold(ts + 1.05).to(ts + 1.45, CL_D[0]).lean(ts + 1.45, -9.0)
+Dn.pose(ts + 0.3, "guard").pose(ts + 1.05, "tired")
+E.pose(ts + 0.3, "guard").pose(ts + 1.05, "tired")
+# the bell: both raise their arms as if they had won
+for F_, home in ((E, 560), (Dn, 1110)):
+    F_.hold(tbell2 + 0.2).lean(tbell2 + 0.3, 0.0).pose(tbell2 + 0.3, "arms_up").to(tbell2 + 0.8, home)
+    F_.pose(m("c_ann4"), "guard")
+E.hold(m("c_ann4") - 0.01).to(m("c_ann4"), 500)
+E.pose(m("c_trolley") + 2.6 + (le("L057") - ls("L057")), "jab_long").pose(m("climb") + 0.4, "guard")
+Dn.hold(m("glance") + 0.1).to(m("climb") + 0.35, 1080).to(m("climb") + 0.75, 995).pose(m("climb"), "crouch_guard")
+Dn.lift(m("climb") + 0.35, 0.0).lift(m("climb") + 0.7, 190.0).lift(m("climb") + 1.4, -440.0)
+
+eddie_fight = E.item(P)
+dana_fight = Dn.item(P, clip=keys((0, None), (m("climb") + 0.72, 812 - 0.9 * 90 * (812 - 289) * 0.0065)))
+FIGHT_FX = E.fx + Dn.fx
+SHAKES = E.shakes + Dn.shakes + [(e3b + 0.43, 12.0, 0.4)]
+KICKS = [(e2 + 0.36, 1.05, 0.5), (e3b + 0.43, 1.10, 0.6), (e3d + 1.0, 1.04, 0.9)]
 ref_fight = P("referee", keys((0, "stop"), (ls("L045") - 0.1, "break"), (ls("L045") + 1.2, "stop"),
-                              (tbell2 + 0.6, "card")), RF_R, look=None,
+                              (tbell2 + 0.6, "card")),
+              keys((0, RF_R), (ls("L045") - 0.45, RF_R), (ls("L045") - 0.1, (1345, 640)), (ls("L045") + 1.2, (1345, 640)),
+                   (ls("L045") + 1.7, RF_R)), look=None, ease=True,
               show=[(0, m("c_ann4"))])
 NEAR = dict(fn="near_ropes", ys=[850, 975], z=5000, w=20, blur=3.5)
+RING_FLASH = [((40, 20, 1630, 300), 5.0, 3)]
 
 
 def ring(extra=()):
-    return [eddie_fight, dana_fight, ref_fight, NEAR] + list(extra)
+    return [eddie_fight, dana_fight, ref_fight, NEAR] + FIGHT_FX + list(extra)
+
+
+def RW(t, cams, cast=None, **kw):
+    """a shot inside the ring: the fight's shakes and snap zooms, the press flashes in the crowd"""
+    return W(t, "R", cams, cast if cast is not None else ring(), shakes=SHAKES, kicks=KICKS, flashes=RING_FLASH, **kw)
 
 
 # 7: the announcer back in, then the trolley
@@ -427,39 +452,44 @@ for it in RING_TROLLEY[:3]:
     it["show"] = [(tt0, 1e9)]
 RING_TROLLEY = RING_TROLLEY[:3]
 ann_ring = P("announcer", "mic", (835, 700), show=[(m("c_ann4"), m("c_trolley"))])
-# Dana into the bin: behind the trolley (drawn first), sinking out of sight below its rim
-cut_climb = m("climb")
 
 
-def ring_end():
-    d = dict(dana_fight)
-    return [eddie_fight, d, ref_fight, ann_ring, NEAR] + RING_TROLLEY
+def ring_end(close=False):
+    """the ring after the bell; the close-ups cheat the announcer out (half his face at the frame edge reads badly)"""
+    return [eddie_fight, dana_fight, ref_fight] + ([] if close else [ann_ring]) + [NEAR] + RING_TROLLEY
 
 
+wince = [(m("c_wince"), m("ex3e"), 0.9, -0.45)]
 S6 = [
     W(tb, "A", [(tb, (836, 300, 2.4)), (tf, (836, 320, 2.6))], [dict(prop="boxing-bell", at=(836, 420), h=230)],
-      blur=10.0, shake=True),
-    W(tf, "R", [(tf, (836, 520, 1.12)), (m("cough"), (836, 520, 1.25))], ring()),
+      blur=10.0, shakes=[(tb + 0.05, 10.0, 0.5), (tb + 0.33, 8.0, 0.4)]),
+    RW(tf, [(tf, (836, 520, 1.12)), (m("cough"), (836, 500, 1.32))]),
     W(m("c_ty1"), "S", (650, 700, 1.9), ringside(face=[(m("c_ty1"), m("c_fight"), -0.6, -0.3)])),
-    W(m("c_fight"), "R", (836, 520, 1.12), ring()),
-    W(m("c_ed7"), "R", on("R", ED_R[0], ED_R[1], "eddie", 0.55, dx=40), ring(), blur=2.0),
-    W(m("c_da7"), "R", on("R", *DA_R, "dana", 0.55, dx=-40), ring(), blur=2.0),
-    W(m("c_ed8"), "R", on("R", ED_R[0], ED_R[1], "eddie", 0.55, dx=40), ring(), blur=2.0),
-    W(m("c_ex3"), "R", [(m("c_ex3"), (836, 520, 1.12)), (m("c_cl1"), (836, 500, 1.3))], ring()),
-    W(m("c_cl1"), "R", [(m("c_cl1"), (840, 420, 2.0)), (m("c_ref2"), (840, 420, 2.15))], ring(), blur=1.5),
-    W(m("c_ref2"), "R", (836, 520, 1.15), ring()),
+    RW(m("c_fight"), (836, 520, 1.12)),
+    RW(e2, [(e2, (850, 470, 1.55)), (m("c_ed7"), (850, 470, 1.62))]),
+    RW(m("c_ed7"), on("R", ED_R[0], ED_R[1], "eddie", 0.55, dx=40), blur=2.0),
+    RW(m("c_da7"), on("R", *DA_R, "dana", 0.55, dx=-40), blur=2.0),
+    RW(m("c_ed8"), on("R", ED_R[0], ED_R[1], "eddie", 0.55, dx=40), blur=2.0),
+    RW(m("c_ex3"), (836, 520, 1.12)),
+    RW(e3b, [(e3b, (760, 480, 1.45)), (e3c, (760, 480, 1.5))]),
+    RW(e3c, (836, 520, 1.12)),
+    RW(e3d, [(e3d, (836, 530, 1.05)), (m("c_wince"), (836, 510, 1.18))]),
+    W(m("c_wince"), "S", (836, 700, 1.5), ringside(face=wince, looks=("dir", 0.0, -0.35, 0.0))),
+    RW(e3e, [(e3e, (836, 500, 1.3)), (m("c_cl1"), (836, 480, 1.45))]),
+    RW(m("c_cl1"), [(m("c_cl1"), (840, 420, 2.0)), (m("c_ref2"), (840, 420, 2.15))], blur=1.5),
+    RW(m("c_ref2"), (900, 520, 1.15)),
     W(m("c_fj3"), "S", (836, 700, 1.5), ringside()),
-    W(m("c_cl2"), "R", [(m("c_cl2"), (840, 400, 2.3)), (m("bell2"), (840, 400, 2.6))], ring(), blur=2.0),
-    W(tbell2, "R", [(tbell2, (836, 520, 1.12)), (m("c_ann4"), (836, 510, 1.18))], ring()),
+    RW(m("c_cl2"), [(m("c_cl2"), (840, 400, 2.3)), (m("bell2"), (840, 400, 2.6))], blur=2.0),
+    RW(tbell2, [(tbell2, (836, 520, 1.12)), (m("c_ann4"), (836, 510, 1.18))]),
 ]
 S7 = [
-    W(m("c_ann4"), "R", (836, 500, 1.3), ring_end()),
-    W(m("c_ed9"), "R", on("R", *ED_R, "eddie", 0.55, dx=40), ring_end(), blur=2.0),
-    W(m("c_da9"), "R", on("R", *DA_R, "dana", 0.55, dx=-40), ring_end(), blur=2.0),
+    RW(m("c_ann4"), (836, 500, 1.3), ring_end()),
+    RW(m("c_ed9"), on("R", 500, ED_R[1], "eddie", 0.55, dx=40), ring_end(close=True), blur=2.0),
+    RW(m("c_da9"), on("R", *DA_R, "dana", 0.55, dx=-40), ring_end(close=True), blur=2.0),
     W(m("c_fj4"), "S", (836, 700, 1.5), ringside()),
-    W(tt0, "R", [(tt0, (836, 520, 1.12)), (m("glance"), (836, 520, 1.2))], ring_end()),
-    W(m("climb"), "R", (840, 500, 1.3), ring_end()),
-    W(m("rollout"), "R", [(m("rollout"), (836, 520, 1.12)), (m("c_end"), (980, 520, 1.12))], ring_end()),
+    RW(tt0, [(tt0, (836, 520, 1.12)), (m("glance"), (836, 520, 1.2))], ring_end()),
+    RW(m("climb"), (840, 500, 1.3), ring_end()),
+    RW(m("rollout"), [(m("rollout"), (836, 520, 1.12)), (m("c_end"), (980, 520, 1.12))], ring_end()),
     W(m("c_end"), "S", [(m("c_end"), (836, 690, 1.35)), (m("black"), (836, 700, 1.55))],
       ringside(face=[(m("c_end"), 1e9, -0.15, -0.05)], looks=("dir", 0.9, 0.0, 0.25))),
     card(m("black"), "black"),
@@ -489,6 +519,8 @@ CAPTIONS = [(s["t"] + 0.3, min(s["end"], s["t"] + 3.3), "place", *s["caption"]) 
 
 
 def shot_at(t):
+    from film.actors import _install_camera
+    _install_camera()                    # the fight's camera shakes and snap zooms (render is loaded by now)
     return _shot_at(SHOTS, t)
 
 

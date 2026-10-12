@@ -178,3 +178,131 @@ def lid(lay, s, it, t, M, sc):
     al = cv2.resize(al, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
     reg = lay[y0:y1, x0:x1]
     lay[y0:y1, x0:x1] = np.dstack([img, al]) + reg * (1 - al[..., None])
+
+
+# ---------------------------------------------------------------- fight effects (house look: flat colour, ink outline)
+def _canvas(lay, X, Y, R):
+    x0, y0 = int(max(0, X - R - 4)), int(max(0, Y - R - 4))
+    x1, y1 = int(min(lay.shape[1], X + R + 5)), int(min(lay.shape[0], Y + R + 5))
+    return x0, y0, x1, y1
+
+
+def _over(lay, x0, y0, rgb, al):
+    h, w = al.shape
+    reg = lay[y0:y0 + h, x0:x0 + w]
+    lay[y0:y0 + h, x0:x0 + w] = np.dstack([rgb * al[..., None], al]) + reg * (1 - al[..., None])
+
+
+def impact(lay, s, it, t, M, sc):
+    """an impact burst: a spiky star, white in the middle, yellow round it, inked; it pops out in 2 frames and is
+    gone in 6"""
+    u = (t - it["t0"]) * 30.0
+    if u < 0 or u > 7:
+        return
+    grow = min(1.0, 0.45 + 0.3 * u)
+    fade = 1.0 if u < 3 else max(0.0, 1 - (u - 3) / 4)
+    X, Y = M[0, 0] * it["at"][0] + M[0, 2], M[1, 1] * it["at"][1] + M[1, 2]
+    R = it["size"] * sc * grow
+    x0, y0, x1, y1 = _canvas(lay, X, Y, R)
+    if x1 <= x0 or y1 <= y0:
+        return
+    K = 4
+    h, w = (y1 - y0) * K, (x1 - x0) * K
+    rng = np.random.default_rng(int(it["t0"] * 1000) % 99991)
+    n = 11
+    ang = np.linspace(0, 2 * np.pi, 2 * n, endpoint=False) + rng.uniform(0, 0.3)
+    rad = np.where(np.arange(2 * n) % 2 == 0, 1.0, 0.45) * rng.uniform(0.8, 1.05, 2 * n)
+    cx, cy = (X - x0) * K, (Y - y0) * K
+
+    def poly(scale):
+        return np.int32(np.stack([cx + np.cos(ang) * rad * R * K * scale, cy + np.sin(ang) * rad * R * K * scale], 1))
+    rgb = np.zeros((h, w, 3), np.float32)
+    al = np.zeros((h, w), np.float32)
+    for scale, col in ((1.0, None), (0.92, (1.0, 0.86, 0.15)), (0.55, (1.0, 1.0, 0.96))):
+        m = np.zeros((h, w), np.uint8)
+        cv2.fillPoly(m, [poly(scale)], 255, cv2.LINE_AA)
+        mm = m.astype(np.float32) / 255
+        c = np.float32(INK) / 255 if col is None else np.float32(col)
+        rgb = rgb * (1 - mm[..., None]) + c * mm[..., None]
+        al = np.maximum(al, mm)
+    rgb = cv2.resize(rgb, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+    al = cv2.resize(al, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA) * fade
+    _over(lay, x0, y0, rgb, al)
+
+
+def sweat(lay, s, it, t, M, sc):
+    """drops of sweat flung off on a hit: each on its own arc, gone in half a second"""
+    u = t - it["t0"]
+    if u < 0 or u > 0.55:
+        return
+    rng = np.random.default_rng(int(it["t0"] * 977) % 99991)
+    for i in range(it["n"]):
+        vx = it["dir"] * rng.uniform(0.6, 1.4) * it["size"] * 3.2
+        vy = -rng.uniform(0.6, 1.5) * it["size"] * 3.0
+        x = it["at"][0] + vx * u + rng.uniform(-0.2, 0.2) * it["size"]
+        y = it["at"][1] + vy * u + 0.5 * 2600 * u * u * it["size"] / 110
+        X, Y = M[0, 0] * x + M[0, 2], M[1, 1] * y + M[1, 2]
+        r = rng.uniform(0.05, 0.09) * it["size"] * sc
+        x0, y0, x1, y1 = _canvas(lay, X, Y, 2 * r)
+        if x1 <= x0 or y1 <= y0:
+            continue
+        K = 4
+        h, w = (y1 - y0) * K, (x1 - x0) * K
+        m = np.zeros((h, w), np.uint8)
+        ink = np.zeros((h, w), np.uint8)
+        c = (int((X - x0) * K), int((Y - y0) * K))
+        ang = np.degrees(np.arctan2(vy + 2600 * u * it["size"] / 110, vx)) + 180
+        pts = cv2.ellipse2Poly(c, (int(r * K * 1.5), int(r * K)), int(ang), 0, 360, 10)
+        cv2.fillPoly(ink, [pts], 255, cv2.LINE_AA)
+        pts2 = cv2.ellipse2Poly(c, (int(r * K * 1.2), int(r * K * 0.72)), int(ang), 0, 360, 10)
+        cv2.fillPoly(m, [pts2], 255, cv2.LINE_AA)
+        mi, mm = ink.astype(np.float32) / 255, m.astype(np.float32) / 255
+        rgb = np.float32(INK)[None, None] / 255 * (1 - mm[..., None]) + np.float32([0.72, 0.88, 1.0]) * mm[..., None]
+        rgb = cv2.resize(rgb, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+        al = cv2.resize(mi, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA) * (1 - max(0, u - 0.35) / 0.2)
+        _over(lay, x0, y0, rgb, np.clip(al, 0, 1))
+
+
+def speed(lay, s, it, t, M, sc):
+    """speed lines trailing a fast move: a few white streaks, there for a few frames"""
+    u = (t - it["t0"]) / max(1e-3, it["dur"])
+    if u < 0 or u > 1:
+        return
+    rng = np.random.default_rng(int(it["t0"] * 733) % 99991)
+    a = (1 - u) * 0.8
+    for i in range(it.get("n", 5)):
+        oy = rng.uniform(-0.5, 0.5) * it["spread"]
+        L = it["len"] * rng.uniform(0.6, 1.0)
+        xa = it["at"][0] - it["dir"] * L * (0.3 + 0.7 * u)
+        xb = it["at"][0] - it["dir"] * L * (1.0 + 0.4 * u)
+        Xa, Ya = M[0, 0] * xa + M[0, 2], M[1, 1] * (it["at"][1] + oy) + M[1, 2]
+        Xb = M[0, 0] * xb + M[0, 2]
+        x0, x1 = int(max(0, min(Xa, Xb) - 4)), int(min(lay.shape[1], max(Xa, Xb) + 4))
+        y0, y1 = int(max(0, Ya - 6)), int(min(lay.shape[0], Ya + 6))
+        if x1 <= x0 or y1 <= y0:
+            continue
+        m = np.zeros((y1 - y0, x1 - x0), np.float32)
+        cv2.line(m, (int(Xa - x0), int(Ya - y0)), (int(Xb - x0), int(Ya - y0)), 1.0, max(1, int(3 * sc)), cv2.LINE_AA)
+        _over(lay, x0, y0, np.ones(m.shape + (3,), np.float32), m * a)
+
+
+def flashes(img, s, t, M, sc, region, rate=6.0, seed=1):
+    """press camera flashes popping in the crowd: (x0, y0, x1, y1) plate px, `rate` a second, 2 frames each"""
+    f = int(t * 30)
+    out = img
+    for k in (f, f - 1):
+        rng = np.random.default_rng(k * 7919 + seed)
+        n = rng.poisson(rate / 30.0 * 2)
+        for _ in range(n):
+            x = rng.uniform(region[0], region[2])
+            y = rng.uniform(region[1], region[3])
+            X, Y = M[0, 0] * x + M[0, 2], M[1, 1] * y + M[1, 2]
+            r = rng.uniform(6, 14) * sc * (1.0 if k == f else 0.6)
+            x0, y0 = int(max(0, X - 3 * r)), int(max(0, Y - 3 * r))
+            x1, y1 = int(min(out.shape[1], X + 3 * r)), int(min(out.shape[0], Y + 3 * r))
+            if x1 <= x0 or y1 <= y0:
+                continue
+            yy, xx = np.mgrid[y0:y1, x0:x1].astype(np.float32)
+            g = np.exp(-(((xx - X) ** 2 + (yy - Y) ** 2) / (r * r)))[..., None]
+            out[y0:y1, x0:x1] = out[y0:y1, x0:x1] * (1 - 0.85 * g) + 0.98 * g
+    return out
