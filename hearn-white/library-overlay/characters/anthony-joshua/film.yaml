@@ -1,8 +1,8 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/anthony-joshua_check.jpg after any change.
 drawings:
-  front: {sheet: reference/fury_joshua-clean.png, box: [408, 507, 601, 1020], faces: F, marks: {eyes: [[485, 563, 6, 4], [513, 563, 6, 4]], mouth: [486, 593, 512, 593, 499, 593], chin: 610, neck: [499, 630], head: [455, 510, 545, 620]}}
-  walk: {sheet: reference/fury_joshua-clean.png, box: [594, 520, 851, 1025], faces: R, plain: false, plain: true}
-  point_down: {sheet: reference/fury_joshua-clean.png, box: [839, 522, 1039, 1026], faces: F, plain: true}
-  crossed: {sheet: reference/fury_joshua-clean.png, box: [1048, 520, 1244, 1027], faces: F, marks: {eyes: [[1142, 573, 6, 4], [1169, 579, 6, 4]], mouth: [1130, 603, 1153, 604, 1141, 603], chin: 620, neck: [1145, 640], head: [1095, 520, 1190, 630]}}
-  seated: {sheet: reference/fury_joshua-clean.png, box: [1246, 656, 1444, 1029], faces: F}
+  front: {sheet: reference/cuts/fury_joshua/front.png, box: [0, 0, 193, 513], faces: F, marks: {eyes: [[77, 56, 6, 4], [105, 56, 6, 4]], mouth: [78, 86, 104, 86, 91, 86], chin: 103, neck: [91, 123], head: [47, 3, 137, 113]}, from: 'fury_joshua.png [408, 507, 601, 1020]', jaw: 1.4}
+  walk: {sheet: reference/cuts/fury_joshua/walk.png, box: [0, 0, 257, 505], faces: R, plain: true, from: 'fury_joshua.png [594, 520, 851, 1025]'}
+  point_down: {sheet: reference/cuts/fury_joshua/point_down.png, box: [0, 0, 200, 504], faces: F, plain: true, from: 'fury_joshua.png [839, 522, 1039, 1026]'}
+  crossed: {sheet: reference/cuts/fury_joshua/crossed.png, box: [0, 0, 196, 507], faces: F, marks: {eyes: [[94, 53, 6, 4], [121, 59, 6, 4]], mouth: [82, 83, 105, 84, 93, 83], chin: 100, neck: [97, 120], head: [47, 0, 142, 110]}, from: 'fury_joshua.png [1048, 520, 1244, 1027]', jaw: 1.4}
+  seated: {sheet: reference/cuts/fury_joshua/seated.png, box: [0, 0, 198, 373], faces: F, from: 'fury_joshua.png [1246, 656, 1444, 1029]', jaw: 1.4}

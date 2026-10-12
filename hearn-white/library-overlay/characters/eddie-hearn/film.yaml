@@ -1,33 +1,33 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/eddie-hearn_check.jpg after any change.
 drawings:
-  front: {sheet: reference/eddie_casual-clean.png, box: [497, 4, 655, 361], faces: F}
-  q34: {sheet: reference/eddie_casual-clean.png, box: [834, 5, 987, 364], faces: R}
-  side: {sheet: reference/eddie_casual-clean.png, box: [1210, 3, 1336, 362], faces: R}
-  point: {sheet: reference/eddie_casual-clean.png, box: [61, 374, 318, 719], faces: F}
-  palms: {sheet: reference/eddie_casual-clean.png, box: [432, 372, 724, 717], faces: F}
-  crossed: {sheet: reference/eddie_casual-clean.png, box: [828, 365, 1006, 717], faces: F}
-  hips: {sheet: reference/eddie_casual-clean.png, box: [1172, 365, 1390, 718], faces: F}
-  shrug: {sheet: reference/eddie_casual-clean.png, box: [33, 721, 369, 1076], faces: F}
-  stop: {sheet: reference/eddie_casual-clean.png, box: [439, 718, 679, 1079], faces: F}
-  mic: {sheet: reference/eddie_casual-clean.png, box: [828, 720, 1063, 1076], faces: F}
-  crouch: {sheet: reference/eddie_casual-clean.png, box: [1137, 737, 1427, 1079], faces: F}
-  guard: {sheet: reference/eddie_boxing-clean.png, box: [417, 4, 658, 348], faces: R}
-  jab: {sheet: reference/eddie_boxing-clean.png, box: [766, 11, 1076, 346], faces: R}
-  jab_long: {sheet: reference/eddie_boxing-clean.png, box: [1101, 15, 1439, 347], faces: R}
-  guard2: {sheet: reference/eddie_boxing-clean.png, box: [58, 363, 327, 702], faces: R}
-  wind: {sheet: reference/eddie_boxing-clean.png, box: [394, 367, 684, 699], faces: R, plain: false}
-  cross: {sheet: reference/eddie_boxing-clean.png, box: [745, 370, 1106, 703], faces: R}
-  block: {sheet: reference/eddie_boxing-clean.png, box: [1152, 365, 1426, 698], faces: R}
-  crouch_guard: {sheet: reference/eddie_boxing-clean.png, box: [57, 788, 321, 1066], faces: R, plain: true}
-  cover: {sheet: reference/eddie_boxing-clean.png, box: [414, 719, 667, 1069], faces: R, plain: true}
-  tired: {sheet: reference/eddie_boxing-clean.png, box: [786, 742, 1026, 1070], faces: R, plain: true}
-  arms_up: {sheet: reference/eddie_boxing-clean.png, box: [1163, 708, 1409, 1082], faces: R, plain: true}
-  w0: {sheet: reference/eddie_walk-clean.png, box: [132, 8, 420, 466], faces: R, plain: false, plain: true}
-  w1: {sheet: reference/eddie_walk-clean.png, box: [492, 12, 767, 466], faces: R, plain: false, plain: true}
-  w2: {sheet: reference/eddie_walk-clean.png, box: [932, 8, 1139, 466], faces: R, plain: false, plain: true}
-  w3: {sheet: reference/eddie_walk-clean.png, box: [1275, 4, 1566, 464], faces: R, plain: false, plain: true}
-  w4: {sheet: reference/eddie_walk-clean.png, box: [103, 478, 397, 927], faces: R, plain: false, plain: true}
-  w5: {sheet: reference/eddie_walk-clean.png, box: [500, 474, 778, 928], faces: R, plain: false, plain: true}
-  w6: {sheet: reference/eddie_walk-clean.png, box: [915, 474, 1126, 927], faces: R, plain: false, plain: true}
-  w7: {sheet: reference/eddie_walk-clean.png, box: [1264, 479, 1569, 925], faces: R, plain: false, plain: true}
+  front: {sheet: reference/cuts/eddie_casual/front.png, box: [0, 0, 158, 357], faces: F, from: 'eddie_casual.png [497, 4, 655, 361]', marks: {eyes: [[64.6, 77.6, 8.62, 5.62], [96.5, 76.2, 7.75, 5.75]], head: [26.2, 1.2, 134.0, 136.3], mouth: [67, 108.5, 95, 108.5, 81, 107.6], chin: 123.0, neck: [76.6, 135.9]}, jaw: 1.4}
+  q34: {sheet: reference/cuts/eddie_casual/q34.png, box: [0, 0, 153, 359], faces: R, from: 'eddie_casual.png [834, 5, 987, 364]', jaw: 1.4}
+  side: {sheet: reference/cuts/eddie_casual/side.png, box: [0, 0, 126, 359], faces: R, from: 'eddie_casual.png [1210, 3, 1336, 362]', jaw: 1.4}
+  point: {sheet: reference/cuts/eddie_casual/point.png, box: [0, 0, 257, 345], faces: F, from: 'eddie_casual.png [61, 374, 318, 719]', marks: {eyes: [[135, 77, 7, 7], [168, 81, 9, 7]], mouth: [131, 110, 160, 111, 145, 109.6], chin: 130, neck: [147, 140], head: [108, 4, 214, 136]}, jaw: 1.4}
+  palms: {sheet: reference/cuts/eddie_casual/palms.png, box: [0, 0, 292, 345], faces: F, from: 'eddie_casual.png [432, 372, 724, 717]', marks: {eyes: [[138, 77, 9, 8], [168, 74, 7, 7]], mouth: [149, 108, 173.6, 101, 160, 105], chin: 128, neck: [150, 140], head: [72, 0, 186, 135]}, jaw: 1.4}
+  crossed: {sheet: reference/cuts/eddie_casual/crossed.png, box: [0, 0, 178, 352], faces: F, from: 'eddie_casual.png [828, 365, 1006, 717]', jaw: 1.4}
+  hips: {sheet: reference/cuts/eddie_casual/hips.png, box: [0, 0, 218, 353], faces: F, from: 'eddie_casual.png [1172, 365, 1390, 718]', jaw: 1.4}
+  shrug: {sheet: reference/cuts/eddie_casual/shrug.png, box: [0, 0, 336, 355], faces: F, from: 'eddie_casual.png [33, 721, 369, 1076]', jaw: 1.4}
+  stop: {sheet: reference/cuts/eddie_casual/stop.png, box: [0, 0, 240, 361], faces: F, from: 'eddie_casual.png [439, 718, 679, 1079]', jaw: 1.4}
+  mic: {sheet: reference/cuts/eddie_casual/mic.png, box: [0, 0, 235, 356], faces: F, from: 'eddie_casual.png [828, 720, 1063, 1076]', jaw: 1.4}
+  crouch: {sheet: reference/cuts/eddie_casual/crouch.png, box: [0, 0, 290, 342], faces: F, from: 'eddie_casual.png [1137, 737, 1427, 1079]', jaw: 1.4}
+  guard: {sheet: reference/cuts/eddie_boxing/guard.png, box: [0, 0, 241, 344], faces: R, from: 'eddie_boxing.png [417, 4, 658, 348]', marks: {eyes: [[137.8, 71.9, 7.0, 5.62]], head: [37.8, 0.8, 202.0, 131.1], mouth: [137, 98.5, 157, 97, 147, 97.4], chin: 114.0, neck: [143.9, 125.8]}, jaw: 1.4}
+  jab: {sheet: reference/cuts/eddie_boxing/jab.png, box: [0, 0, 310, 335], faces: R, from: 'eddie_boxing.png [766, 11, 1076, 346]', jaw: 1.4}
+  jab_long: {sheet: reference/cuts/eddie_boxing/jab_long.png, box: [0, 0, 338, 332], faces: R, from: 'eddie_boxing.png [1101, 15, 1439, 347]', jaw: 1.4}
+  guard2: {sheet: reference/cuts/eddie_boxing/guard2.png, box: [0, 0, 269, 339], faces: R, from: 'eddie_boxing.png [58, 363, 327, 702]', jaw: 1.4}
+  wind: {sheet: reference/cuts/eddie_boxing/wind.png, box: [0, 0, 290, 332], faces: R, plain: false, from: 'eddie_boxing.png [394, 367, 684, 699]', jaw: 1.4}
+  cross: {sheet: reference/cuts/eddie_boxing/cross.png, box: [0, 0, 361, 333], faces: R, from: 'eddie_boxing.png [745, 370, 1106, 703]', jaw: 1.4}
+  block: {sheet: reference/cuts/eddie_boxing/block.png, box: [0, 0, 274, 333], faces: R, from: 'eddie_boxing.png [1152, 365, 1426, 698]', jaw: 1.4}
+  crouch_guard: {sheet: reference/cuts/eddie_boxing/crouch_guard.png, box: [0, 0, 264, 278], faces: R, plain: true, from: 'eddie_boxing.png [57, 788, 321, 1066]'}
+  cover: {sheet: reference/cuts/eddie_boxing/cover.png, box: [0, 0, 253, 350], faces: R, plain: true, from: 'eddie_boxing.png [414, 719, 667, 1069]'}
+  tired: {sheet: reference/cuts/eddie_boxing/tired.png, box: [0, 0, 240, 328], faces: R, plain: true, from: 'eddie_boxing.png [786, 742, 1026, 1070]'}
+  arms_up: {sheet: reference/cuts/eddie_boxing/arms_up.png, box: [0, 0, 246, 374], faces: R, plain: true, from: 'eddie_boxing.png [1163, 708, 1409, 1082]'}
+  w0: {sheet: reference/cuts/eddie_walk/w0.png, box: [0, 0, 288, 458], faces: R, plain: true, from: 'eddie_walk.png [132, 8, 420, 466]'}
+  w1: {sheet: reference/cuts/eddie_walk/w1.png, box: [0, 0, 275, 454], faces: R, plain: true, from: 'eddie_walk.png [492, 12, 767, 466]'}
+  w2: {sheet: reference/cuts/eddie_walk/w2.png, box: [0, 0, 207, 458], faces: R, plain: true, from: 'eddie_walk.png [932, 8, 1139, 466]'}
+  w3: {sheet: reference/cuts/eddie_walk/w3.png, box: [0, 0, 291, 460], faces: R, plain: true, from: 'eddie_walk.png [1275, 4, 1566, 464]'}
+  w4: {sheet: reference/cuts/eddie_walk/w4.png, box: [0, 0, 294, 449], faces: R, plain: true, from: 'eddie_walk.png [103, 478, 397, 927]'}
+  w5: {sheet: reference/cuts/eddie_walk/w5.png, box: [0, 0, 278, 454], faces: R, plain: true, from: 'eddie_walk.png [500, 474, 778, 928]'}
+  w6: {sheet: reference/cuts/eddie_walk/w6.png, box: [0, 0, 211, 453], faces: R, plain: true, from: 'eddie_walk.png [915, 474, 1126, 927]'}
+  w7: {sheet: reference/cuts/eddie_walk/w7.png, box: [0, 0, 305, 446], faces: R, plain: true, from: 'eddie_walk.png [1264, 479, 1569, 925]'}

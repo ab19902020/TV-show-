@@ -1,6 +1,6 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/boxing-referee_check.jpg after any change.
 drawings:
-  stop: {sheet: reference/supporting_cast-clean.png, box: [455, 359, 707, 695], faces: F}
-  break: {sheet: reference/supporting_cast-clean.png, box: [732, 357, 1149, 695], faces: F}
-  card: {sheet: reference/supporting_cast-clean.png, box: [1180, 359, 1428, 695], faces: F}
+  stop: {sheet: reference/cuts/supporting_cast/stop.png, box: [0, 0, 252, 336], faces: F, from: 'supporting_cast.png [455, 359, 707, 695]', marks: {eyes: [[112, 88, 10, 8], [158, 79, 10, 8]], mouth: [128, 121, 158, 118, 143, 119.5], chin: 140, neck: [143, 150], head: [50, 0, 182, 148]}, jaw: 1.4}
+  break: {sheet: reference/cuts/supporting_cast/break.png, box: [0, 0, 417, 338], faces: F, from: 'supporting_cast.png [732, 357, 1149, 695]', marks: {eyes: [[194.5, 81, 9, 8], [226.7, 76, 9, 8]], mouth: [200, 121, 231, 116, 215, 119], chin: 143, neck: [215, 150], head: [122, 0, 262, 150]}, jaw: 1.4}
+  card: {sheet: reference/cuts/supporting_cast/card.png, box: [0, 0, 248, 336], faces: F, from: 'supporting_cast.png [1180, 359, 1428, 695]', jaw: 1.4}

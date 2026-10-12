@@ -1,6 +1,6 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/ring-announcer_check.jpg after any change.
 drawings:
-  mic: {sheet: reference/supporting_cast-clean.png, box: [485, 4, 666, 351], faces: F}
-  mic_gesture: {sheet: reference/supporting_cast-clean.png, box: [800, 5, 1106, 355], faces: F}
-  card: {sheet: reference/supporting_cast-clean.png, box: [1200, 6, 1388, 354], faces: F, plain: true}
+  mic: {sheet: reference/cuts/supporting_cast/mic.png, box: [0, 0, 181, 347], faces: F, from: 'supporting_cast.png [485, 4, 666, 351]', marks: {eyes: [[77, 90, 11, 9], [118, 84, 11, 9]], mouth: [92, 116, 114, 115, 103, 115.6], chin: 136, neck: [103, 148], head: [18, 0, 156, 142]}, jaw: 1.4}
+  mic_gesture: {sheet: reference/cuts/supporting_cast/mic_gesture.png, box: [0, 0, 306, 350], faces: F, from: 'supporting_cast.png [800, 5, 1106, 355]', marks: {eyes: [[81.6, 90, 11, 9], [123, 85, 10, 9]], mouth: [88, 117, 118, 116, 103, 116.5], chin: 137, neck: [103, 149], head: [20, 0, 160, 145]}, front_poly: [[83, 124], [86, 117], [94, 114], [104, 114], [112, 118], [115, 126], [112, 140], [104, 152], [92, 152], [85, 140]], jaw: 1.4}
+  card: {sheet: reference/cuts/supporting_cast/card.png, box: [0, 0, 188, 348], faces: F, plain: true, from: 'supporting_cast.png [1200, 6, 1388, 354]'}

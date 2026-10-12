@@ -1,8 +1,8 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/tyson-fury_check.jpg after any change.
 drawings:
-  front: {sheet: reference/fury_joshua-clean.png, box: [420, 23, 590, 454], faces: F, marks: {eyes: [[487, 62, 6, 4], [513, 62, 6, 4]], mouth: [492, 86, 507, 86, 500, 86], chin: 115, neck: [500, 125], head: [455, 22, 545, 120]}}
-  walk: {sheet: reference/fury_joshua-clean.png, box: [607, 30, 828, 454], faces: R, plain: false, plain: true}
-  point_down: {sheet: reference/fury_joshua-clean.png, box: [846, 31, 1037, 455], faces: F, plain: true}
-  crossed: {sheet: reference/fury_joshua-clean.png, box: [1052, 30, 1239, 454], faces: F, marks: {eyes: [[1135, 63, 6, 4], [1164, 72, 6, 4]], mouth: [1130, 89, 1147, 92, 1139, 90], chin: 115, neck: [1145, 128], head: [1095, 25, 1190, 125]}}
-  seated: {sheet: reference/fury_joshua-clean.png, box: [1251, 138, 1444, 453], faces: F}
+  front: {sheet: reference/cuts/fury_joshua/front.png, box: [0, 0, 170, 431], faces: F, marks: {eyes: [[67, 39, 6, 4], [93, 39, 6, 4]], mouth: [70, 62.5, 96, 62.5, 83, 61.8], chin: 92, neck: [80, 102], head: [35, -1, 125, 97]}, from: 'fury_joshua.png [420, 23, 590, 454]', jaw: 1.6}
+  walk: {sheet: reference/cuts/fury_joshua/walk.png, box: [0, 0, 221, 424], faces: R, plain: true, from: 'fury_joshua.png [607, 30, 828, 454]'}
+  point_down: {sheet: reference/cuts/fury_joshua/point_down.png, box: [0, 0, 191, 424], faces: F, plain: true, from: 'fury_joshua.png [846, 31, 1037, 455]'}
+  crossed: {sheet: reference/cuts/fury_joshua/crossed.png, box: [0, 0, 187, 424], faces: F, marks: {eyes: [[83, 33, 6, 4], [112, 42, 6, 4]], mouth: [73, 58.5, 97, 62.5, 85, 59.8], chin: 85, neck: [93, 98], head: [43, -5, 138, 95]}, from: 'fury_joshua.png [1052, 30, 1239, 454]', jaw: 1.6}
+  seated: {sheet: reference/cuts/fury_joshua/seated.png, box: [0, 0, 193, 315], faces: F, from: 'fury_joshua.png [1251, 138, 1444, 453]', marks: {eyes: [[93, 46, 8, 7], [121, 57, 9, 7]], mouth: [84, 77, 114, 82, 99, 79], chin: 108, neck: [103, 112], head: [62, 0, 155, 110]}, jaw: 1.6}

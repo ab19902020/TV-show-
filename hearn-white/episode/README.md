@@ -40,11 +40,29 @@ and "Premium towels" before the fix above.
 
 The engine is `ab19902020/AnimnationStuido-` (the film engine, `studio/film`), unchanged except one line in
 `tools/index_library.py` (the boxing sets folder). The pack's sheets are filed in the library as eight characters
-(`library/characters/<id>/`: `film.yaml` lists every drawing cut whole from the sheets, with hand-set face marks
-where detection could not see the face, and `plain: true` where a face is hidden or too small to act), seven sets
-(`library/backgrounds/boxing/`) and twelve props (`library/props/hearn-white/`). The sheets are kept as
-delivered, and a `-clean` copy of each (alpha noise and stray strokes such as motion accents removed) is what the
-film cuts from.
+(`library/characters/<id>/`), seven sets (`library/backgrounds/boxing/`) and twelve props
+(`library/props/hearn-white/`). The sheets are kept as delivered.
+
+**Cut-outs.** The pack's sheets are packed tight, so a drawing's box also holds slivers of its neighbours (a hand,
+a shoe, a foot from the row below) and motion accents. `tools/cut_drawings.py` cuts every drawing the film uses
+as its own clean PNG (`reference/cuts/<sheet>/<drawing>.png`: the figure kept whole, every stray piece dropped)
+and `film.yaml` points at those. Each is upscaled 4x and checked on magenta.
+
+**Faces and lip sync.** Every drawing a line is spoken in has its eyes and mouth marked by hand where detection
+missed them or found only a sliver of the mouth line (`film.yaml` `marks`), and opens its jaw 1.4x the engine's
+default (1.6x through Fury's beard), so the mouth shapes read at every shot size. The mouths follow the words
+and sounds of the recordings, a frame ahead, closures held two frames. The announcer's microphone is redrawn over
+his moving mouth (`front_poly`). `tools/lipcheck.py` renders every speaker's face at each line's stressed words
+and first M/B/P (`build/lipcheck.jpg`).
+
+**No head cut by the frame.** `tools/framing.py` follows every person's head through every shot, six times a
+second, and corrects the shot's camera until every head on screen is whole with headroom (a close single is
+recomposed from the pose the person is really in: kneeling, crouched, standing). Heads at the side of a shot are
+brought fully in or taken fully out, never left half in. The corrections are `film/framing.json`, keyed to each
+shot, so an edited shot is re-fitted by running the tool again. Current result: 0 heads cut in 72 shots.
+
+**Life.** Everyone standing breathes on their own rhythm and shifts their weight; a pose change lands with a
+quick settle; the attendant's steps bob her as she pushes; the trolley's wobbly wheel rattles it as it rolls.
 
 | File | What it does |
 |---|---|
@@ -55,7 +73,11 @@ film cuts from.
 | `film/things.py` | drawn in code: the BANNED board, the trolley lid on its hinge, the near ring ropes, contact shadows |
 | `film/perf.py` | the acting: whom each line is said to, its delivery, the stressed words, the looks and reactions |
 | `film/sound.py` | the mix: voices (the bin lines muffled), each set's room, crowd dipping under every line, foley on the marks, the bell, the sting, fight music that stops at the glove tap |
+| `film/framing.json` | the per-shot camera corrections from `tools/framing.py` |
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for lines with no recording |
+| `tools/dana_take_edit.py` | Dana's working take with the stray "I've entered" faded out |
+| `tools/cut_drawings.py` | every drawing cut clean from its sheet |
+| `tools/framing.py`, `tools/lipcheck.py` | the head-framing fit and the lip-sync sheet |
 
 Sizes: the pack's sheets draw the characters at different scales (the walk sheets about 1.3x the casual sheets,
 the laundry sheet 1.15x), corrected in `actors.SHEET`; the peek over the rim is a close-up head (`actors.DRAWING`).
@@ -69,6 +91,8 @@ whisper` for `lines` and `check`):
 ```sh
 python3 -m studio.film the-undercard lines        # cut every line from the recordings
 python3 -m studio.film the-undercard sound        # build/episode_audio.wav (-16 LUFS)
+FILM_EPISODE=the-undercard PYTHONPATH=episodes/the-undercard:. python3 episodes/the-undercard/tools/framing.py
+EP_RES=960x540 FILM_EPISODE=the-undercard PYTHONPATH=episodes/the-undercard:. python3 episodes/the-undercard/tools/lipcheck.py
 EP_RES=960x540 python3 -m studio.film the-undercard still 7.2 60.2 183.9   # spot stills
 EP_RES=1280x720 FILM_MEM_GB=12 python3 -m studio.film the-undercard render --jobs 4 --chunks 24 --resume
 python3 -m studio.film the-undercard sheet        # build/contact.jpg

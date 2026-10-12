@@ -5,7 +5,10 @@ edit's marks (film/timeline.py), so the picture follows the voices.
 Cameras: cam = (cx, cy, zoom), zoom 1 = the set's full width. on(x, y, who) frames a person standing at (x, y): frac
 is how much of their height fills the frame (0.5 a medium close-up, 0.9 a full figure), up shifts the frame up.
 Sets: P press area, B loading bay, C corridor, D dressing room, A arena wide, R inside the ring, S ringside seats."""
+import hashlib
 import json
+import os
+from pathlib import Path
 
 from studio.film import ep
 from studio.film.shots import Marks, card, finish, shot_at as _shot_at, world
@@ -19,7 +22,7 @@ m, ls, le, wt, we = T.m, T.ls, T.le, T.wt, T.we
 PLATES = {"P": "boxing/press-area", "B": "boxing/loading-bay", "C": "boxing/corridor", "D": "boxing/dressing-room",
           "A": "boxing/arena-wide", "R": "boxing/ring-side", "S": "boxing/ringside"}
 # perspective of each set: plate px per cm = (y - horizon) * k at floor height y
-PPC = {"P": (400, 0.0100), "B": (470, 0.0245), "C": (356, 0.0082), "D": (350, 0.0113), "A": (514, 0.0097),
+PPC = {"P": (400, 0.0100), "B": (470, 0.0204), "C": (356, 0.0082), "D": (350, 0.0113), "A": (514, 0.0097),
        "R": (289, 0.0065), "S": (640, 0.0113)}
 # what stands in front of the people: the arena's near ring rope and corner posts
 OCCL = {"A": {"ropes": [[(150, 646), (1530, 646), (1530, 664), (150, 664)],
@@ -39,15 +42,25 @@ def h_of(p, who, y):
     return CM[who] * (y - hz) * k
 
 
+class OnCam(tuple):
+    """a camera framed on one person (on()): the framing pass recomposes it from the drawing they are really in"""
+    who = frac = dx = up = None
+
+
 def on(p, x, y, who, frac=0.55, up=0.0, dx=0.0):
     """a camera on a person standing at (x, y) in set p: their top `frac` of height fills the frame"""
     h = h_of(p, who, y)
     vis = frac * h
-    return (x + dx, y - h + vis / 2 - up * h, 941.0 / vis)
+    c = OnCam((x + dx, y - h + vis / 2 - up * h, 941.0 / vis))
+    c.who, c.frac, c.dx, c.up = who, frac, dx, up
+    return c
 
 
 def W(t, p, cams, cast, blur=0.0, drift=0.35, extra_layers=(), **kw):
     cams = cams if isinstance(cams, list) else [(t, cams)]
+    first = cams[0][1]
+    if isinstance(first, OnCam):
+        kw.setdefault("subject", dict(who=first.who, frac=first.frac, dx=first.dx, up=first.up))
     layers = [("props", "scene")] + list(extra_layers)
     if p in OCCL:
         layers += [("occl", k) for k in OCCL[p]]
@@ -84,7 +97,7 @@ S1 = [
 ]
 
 # ---------------------------------------------------------------------- 1b. the loading bay
-DA_B = (520, 610)
+DA_B = (560, 585)
 tro_b0, tro_b1 = m("trolley") - 0.3, m("look_cam") + 0.6
 
 
@@ -97,7 +110,7 @@ def trolley_group(t0, t1, x0, x1, y, p, att=True, side="trolley-side", towels=Tr
         out.append(dict(prop="towel-pile", at=[(a, (x, yy - 0.86 * h)) for a, (x, yy) in path], h=0.55 * h, z=y + 0.5,
                         rot=rot or 0.0))
     if att:
-        out.append(P("attendant", "push", [(a, (x - tail * h / 287.0, yy)) for a, (x, yy) in path], z=y + 2))
+        out.append(P("attendant", "push", [(a, (x - tail * h / 287.0, yy)) for a, (x, yy) in path], z=y + 2, steps=True))
     return out
 
 
@@ -120,7 +133,7 @@ S1b = [
 ]
 
 # ====================================================================== 2. the corridor
-SEC_C, Y_C = (1000, 722), 745
+SEC_C, Y_C = (1000, 680), 700
 TH_C = 90 * (Y_C - 356) * 0.0082                         # the trolley's height in the corridor
 
 
@@ -148,7 +161,7 @@ def corridor_a():
                       (le("L010") + 0.2, 0.0)]),
             dict(fn="lid", at=[(a, (x, y - 0.93 * TH_C)) for a, (x, y) in path], w=1.08 * TH_C, z=Y_C + 1.5,
                  show=[(lid_on - 0.3, 1e9)], rot=[(lid_on - 0.3, 75.0), (lid_on, 0.0)]),
-            P("attendant", "push", [(a, (x - 0.8 * TH_C, y)) for a, (x, y) in path], z=Y_C + 2)]
+            P("attendant", "push", [(a, (x - 0.8 * TH_C, y)) for a, (x, y) in path], z=Y_C + 2, steps=True)]
 
 
 TROLLEY_TOP = Y_C - 0.86 * TH_C
@@ -161,13 +174,13 @@ def corridor_b():
     jolt = [(tb, 0.0), (tb + 0.08, 9.0), (tb + 0.35, 4.0), (tb + 0.7, 0.0)]
     tw = [(a, (x, y - 0.86 * TH_C)) for a, (x, y) in path]
     ft = m("tumble")
-    dana_path = [(t0, (path[0][1][0] + 60, TROLLEY_TOP + 18)), (tb, (930 + 60, TROLLEY_TOP + 18)),
-                 (ft, (990, TROLLEY_TOP + 10)), (ft + 0.35, (1040, TROLLEY_TOP - 40)),
-                 (ft + 0.8, (1120, Y_C - 60)), (ft + 1.1, (1130, Y_C + 40)), (ft + 1.4, (1130, Y_C + 45))]
+    dana_path = [(t0, (path[0][1][0] + 105, TROLLEY_TOP + 18)), (tb, (930 + 105, TROLLEY_TOP + 18)),
+                 (ft, (1035, TROLLEY_TOP + 10)), (ft + 0.35, (1040, TROLLEY_TOP - 40)),
+                 (ft + 0.8, (1080, Y_C - 60)), (ft + 1.1, (DA_LAND[0], DA_LAND[1])), (ft + 1.4, DA_LAND)]
     dana = P("dana", keys((t0, "peek"), (ft, "tumble1"), (ft + 0.35, "tumble2"), (ft + 0.8, "tumble3"),
                           (ft + 1.1, "prone"), (m("landed") + 0.6, "towel_head")),
-             dana_path, z=Y_C + 0.8,
-             dy=[(t0, -120.0), (t0 + 0.9, -70.0), (t0 + 1.5, 0.0), (tb, 0.0), (tb + 0.1, 8.0), (ft, 8.0),
+             dana_path, z=Y_C + 1.6, clip=[(0, TROLLEY_TOP + 10), (ft, None)],
+             dy=[(t0, -120.0), (t0 + 0.9, -70.0), (t0 + 1.5, 33.0), (tb, 33.0), (tb + 0.1, 41.0), (ft, 41.0),
                  (ft + 0.01, 0.0)],
              rot=[(ft, 0.0), (ft + 0.35, -25.0), (ft + 0.8, 15.0), (ft + 1.1, 0.0)],
              shadow=False, scale=1.0, floor=Y_C)
@@ -175,13 +188,13 @@ def corridor_b():
             dict(prop="trolley-side", at=path, h=TH_C, z=Y_C + 1, rot=jolt, pivot=1.0),
             dict(prop="towel-pile", at=tw, h=0.42 * TH_C, z=Y_C + 0.5, rot=jolt, show=[(m("tumble"), 1e9)]),
             dict(fn="lid", at=[(a, (x, y - 0.93 * TH_C)) for a, (x, y) in path], w=1.08 * TH_C, z=Y_C + 1.5,
-                 rot=[(t0 + 0.6, 0.0), (t0 + 1.4, 14.0), (tb, 14.0), (tb + 0.12, 70.0), (m("tumble") + 0.3, 110.0)]),
-            P("attendant", "push", [(a, (x - 0.8 * TH_C, y)) for a, (x, y) in path], z=Y_C + 2,
+                 rot=[(t0 + 0.6, 0.0), (t0 + 1.4, 21.0), (tb, 21.0), (tb + 0.12, 80.0), (m("tumble") + 0.3, 110.0)]),
+            P("attendant", "push", [(a, (x - 0.8 * TH_C, y)) for a, (x, y) in path], z=Y_C + 2, steps=True,
               rot=[(tb, 0.0), (tb + 0.1, 6.0), (tb + 0.5, 0.0)]),
             dana]
 
 
-FU_C, AJ_C, DA_LAND, ED_C = (1330, 772), (1530, 760), (1130, 776), (760, 770)
+FU_C, AJ_C, DA_LAND, ED_C = (1300, 705), (1490, 690), (1090, 712), (540, 706)
 S2 = [
     W(m("c_track"), "C", [(m("c_track"), (330, 560, 1.7)), (m("c_track") + 1.7, (840, 540, 1.55))], corridor_a(),
       caption=("BACKSTAGE", "Security checkpoint")),
@@ -204,7 +217,7 @@ def fury_corridor(extra=()):
 S2b = [
     W(m("c_inside"), "C", [(m("c_inside"), (470, 560, 2.3)), (m("bump"), (900, 560, 2.3))], corridor_b(), blur=1.5),
     W(m("bump"), "C", [(m("bump"), (1000, TROLLEY_TOP - 40, 6.5)), (m("tumble"), (1000, TROLLEY_TOP - 40, 7.0))],
-      corridor_b(), blur=3.0),
+      corridor_b(), blur=3.0, subject=dict(who="dana", frac=1.0, dx=0.0, up=0.0, hmax=0.62)),
     W(m("tumble"), "C", (1080, 520, 1.25), corridor_b() + fury_corridor()),
 ]
 
@@ -243,7 +256,7 @@ def corridor_c():
             dict(prop="trolley-side", at=(xt, Y_C), h=TH_C, z=Y_C + 1),
             dict(fn="lid", at=(xt, Y_C - 0.93 * TH_C), w=1.08 * TH_C, z=Y_C + 1.5, rot=110.0),
             P("attendant", "push", (xt - 0.8 * TH_C, Y_C), z=Y_C + 2, show=[(0, m("c_eddie"))]),
-            SEC_CAST | dict(at=(1000, 712)),
+            SEC_CAST | dict(at=(870, 660)),
             dana_corr(), joshua_corr(), eddie_corr(),
             dict(prop="towel", at=(1050, 772), h=60, show=[(m("c_neg") + 1.0, 1e9)], z=771,
                  dy=[(m("c_neg") + 1.0, 120.0), (m("c_neg") + 1.25, 0.0)])] + fury_corridor()
@@ -283,7 +296,7 @@ S4 = [
     W(m("c_fj1"), "C", [(m("c_fj1"), on("C", 1430, 768, "tyson", 0.62)), (m("c_prep"), on("C", 1430, 768, "tyson", 0.56))],
       CC, blur=1.0),
 ]
-ED_D, DA_D = (560, 700), (1120, 710)
+ED_D, DA_D = (600, 612), (1080, 618)
 SHADOW = ["jab", "guard", "jab2", "guard_high", "jab3", "guard", "jab4", "guard"]
 tp = m("c_prep")
 prep = [P("eddie", "tired", ED_D),
@@ -356,7 +369,7 @@ def shuffle(x0, t0, t1, amp=18, rate=1.4, ph=0.0):
 tb, tf = m("bell"), m("faceoff")
 e1, e2, e3a, e3b, e3c = m("ex1"), m("ex2"), m("ex3a"), m("ex3b"), m("ex3c")
 ts, tbell2 = m("sep"), m("bell2")
-CL_E, CL_D = (640, 785), (1030, 785)          # the clinch: heads together over the middle
+CL_E, CL_D = (600, 785), (1075, 785)          # the clinch: heads together over the middle
 eddie_fight = P("eddie",
                 keys((0, "guard"), (e1 + 0.35, "wind"), (e1 + 0.55, "jab_long"), (e1 + 1.15, "guard"),
                      (e2 + 0.35, "block"), (m("c_ed7") + 0.1, "guard"),
@@ -369,16 +382,17 @@ eddie_fight = P("eddie",
                      (e3c + 0.9, CL_E), (ts + 0.05, CL_E), (ts + 0.5, (600, ED_R[1])), (ts + 1.2, (600, ED_R[1])),
                      (ts + 1.65, CL_E), (tbell2 + 0.3, CL_E), (tbell2 + 0.8, (560, ED_R[1])), (m("c_ann4") - 0.01, (560, ED_R[1])),
                      (m("c_ann4"), (500, ED_R[1]))),
-                rot=keys((0, 0.0), (e3b + 0.35, 0.0), (e3b + 0.6, 9.0), (e3b + 1.1, 5.0), (e3c + 0.9, 16.0),
-                         (ts + 0.05, 16.0), (ts + 0.4, 0.0), (ts + 0.6, -6.0), (ts + 0.85, 5.0), (ts + 1.05, -4.0),
-                         (ts + 1.2, 0.0), (ts + 1.65, 16.0), (tbell2 + 0.3, 16.0), (tbell2 + 0.5, 0.0)),
+                rot=keys((0, 0.0), (e3b + 0.35, 0.0), (e3b + 0.6, 9.0), (e3b + 1.1, 5.0), (e3c + 0.9, 9.0),
+                         (ts + 0.05, 9.0), (ts + 0.4, 0.0), (ts + 0.6, -6.0), (ts + 0.85, 5.0), (ts + 1.05, -4.0),
+                         (ts + 1.2, 0.0), (ts + 1.65, 9.0), (tbell2 + 0.3, 9.0), (tbell2 + 0.5, 0.0)),
                 ease=True)
 dana_fight = P("dana",
                keys((0, "guard"), (e1 + 0.5, "lean_back"), (e1 + 0.8, "guard_high"), (e1 + 0.95, "lean_back"),
                     (e1 + 1.1, "guard_high"), (e1 + 1.25, "lean_back"), (e1 + 1.6, "guard"),
                     (e2 + 0.25, "jab"), (e2 + 0.75, "guard"),
                     (e3a + 0.35, "crouch_guard"), (e3a + 0.95, "guard"), (e3b + 0.35, "jab4"), (e3b + 1.1, "guard"),
-                    (ts + 0.05, "tired"), (ts + 1.2, "guard"), (tbell2 + 0.3, "arms_up"), (m("c_ann4"), "guard"),
+                    (e3c + 0.6, "tired"), (ts + 1.2, "guard"), (ts + 1.55, "tired"), (tbell2 + 0.3, "arms_up"),
+                    (m("c_ann4"), "guard"),
                     (m("climb"), "crouch_guard")),
                keys(*shuffle(DA_R[0], 0, e1 + 0.5, 14, 1.25, 1.3), (e1 + 0.5, (DA_R[0] + 30, DA_R[1])),
                     (e1 + 1.6, DA_R), (e2 + 0.25, (DA_R[0] - 120, DA_R[1])), (e2 + 0.8, DA_R),
@@ -388,9 +402,9 @@ dana_fight = P("dana",
                     (m("glance") + 0.1, (1110, DA_R[1])), (m("climb") + 0.35, (1080, DA_R[1])), (m("climb") + 0.75, (995, DA_R[1] - 4))),
                rot=keys((0, 0.0), (e1 + 0.5, 0.0), (e1 + 0.7, 16.0), (e1 + 0.85, 24.0), (e1 + 1.0, 12.0),
                         (e1 + 1.15, 22.0), (e1 + 1.3, 10.0), (e1 + 1.6, 0.0), (e3b + 0.35, 0.0), (e3b + 0.6, -9.0),
-                        (e3b + 1.1, -5.0), (e3c + 0.9, -16.0), (ts + 0.05, -16.0), (ts + 0.4, 0.0),
-                        (ts + 0.6, 6.0), (ts + 0.85, -5.0), (ts + 1.05, 4.0), (ts + 1.2, 0.0), (ts + 1.65, -16.0),
-                        (tbell2 + 0.3, -16.0), (tbell2 + 0.5, 0.0)),
+                        (e3b + 1.1, -5.0), (e3c + 0.9, -9.0), (ts + 0.05, -9.0), (ts + 0.4, 0.0),
+                        (ts + 0.6, 6.0), (ts + 0.85, -5.0), (ts + 1.05, 4.0), (ts + 1.2, 0.0), (ts + 1.65, -9.0),
+                        (tbell2 + 0.3, -9.0), (tbell2 + 0.5, 0.0)),
                dy=keys((0, 0.0), (m("climb") + 0.35, 0.0), (m("climb") + 0.7, 190.0), (m("climb") + 1.4, -440.0)),
                ease=True, clip=keys((0, None), (m("climb") + 0.72, 812 - 0.9 * 90 * (812 - 289) * 0.0065)))
 ref_fight = P("referee", keys((0, "stop"), (ls("L045") - 0.1, "break"), (ls("L045") + 1.2, "stop"),
@@ -452,6 +466,25 @@ S7 = [
 ]
 
 SHOTS = finish(sorted(S1 + S1b + S2 + S2b + S3 + S4 + S4b + S5 + S6 + S7, key=lambda s: s["t"]), TL["total"])
+# the framing pass (tools/framing.py): per shot a camera correction (move x, move y, zoom) that keeps every head
+# wholly in frame; keyed by the shot's signature, so an edited shot simply goes uncorrected until it is re-fitted
+FRAMING_FILE = Path(__file__).with_name("framing.json")
+
+
+def signature(s):
+    items = [sorted((k, repr(v)) for k, v in it.items()) for it in s.get("cast", [])]
+    return hashlib.md5(repr((s.get("plate"), round(s["t"], 2), round(s["end"], 2), s.get("cams"), items)).encode()
+                       ).hexdigest()[:12]
+
+
+if not os.environ.get("FRAMING_RAW") and FRAMING_FILE.exists():
+    _fits = json.loads(FRAMING_FILE.read_text())
+    for _s in SHOTS:
+        _c = _fits.get(signature(_s)) if _s.get("kind") == "world" else None
+        if _c:
+            _s["corr"] = tuple(_c)
+            _s["cams"] = [(tk, (c[0] + _c[0], c[1] + _c[1], c[2] * _c[2])) for tk, c in _s["cams"]]
+
 CAPTIONS = [(s["t"] + 0.3, min(s["end"], s["t"] + 3.3), "place", *s["caption"]) for s in SHOTS if s.get("caption")]
 
 

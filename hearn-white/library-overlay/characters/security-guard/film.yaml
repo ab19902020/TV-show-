@@ -1,10 +1,10 @@
 # Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
 # given face landmarks. Check build/film/security-guard_check.jpg after any change.
 drawings:
-  front: {sheet: reference/security-clean.png, box: [581, 7, 834, 436], faces: F}
-  crossed: {sheet: reference/security-clean.png, box: [978, 5, 1191, 440], faces: F}
-  stop: {sheet: reference/security-clean.png, box: [1414, 5, 1667, 439], faces: F}
-  gesture: {sheet: reference/security-clean.png, box: [49, 445, 401, 866], faces: F}
-  card: {sheet: reference/security-clean.png, box: [540, 446, 807, 867], faces: F}
-  trolley: {sheet: reference/security-clean.png, box: [917, 451, 1358, 863], faces: F, plain: true}
-  startled: {sheet: reference/security-clean.png, box: [1460, 451, 1703, 867], faces: F}
+  front: {sheet: reference/cuts/security/front.png, box: [0, 0, 253, 429], faces: F, from: 'security.png [581, 7, 834, 436]', marks: {eyes: [[107, 65, 10, 8], [151, 65, 10, 8]], mouth: [109, 85, 144, 85.6, 126.4, 85.2], chin: 116, neck: [127, 125], head: [67, 0, 183, 118]}, jaw: 1.4}
+  crossed: {sheet: reference/cuts/security/crossed.png, box: [0, 0, 213, 435], faces: F, from: 'security.png [978, 5, 1191, 440]', marks: {eyes: [[69, 65, 10, 8], [112, 68, 10, 8]], mouth: [75, 86.4, 100, 87.4, 87.4, 86.8], chin: 115, neck: [90, 125], head: [44, 0, 160, 118]}, jaw: 1.4}
+  stop: {sheet: reference/cuts/security/stop.png, box: [0, 0, 253, 434], faces: F, from: 'security.png [1414, 5, 1667, 439]', jaw: 1.4}
+  gesture: {sheet: reference/cuts/security/gesture.png, box: [0, 0, 352, 421], faces: F, from: 'security.png [49, 445, 401, 866]', marks: {eyes: [[190, 64, 10, 9], [234, 71, 9, 8]], mouth: [194, 85.6, 223, 90.4, 209, 88], chin: 115, neck: [215, 125], head: [154, 0, 284, 118]}, jaw: 1.4}
+  card: {sheet: reference/cuts/security/card.png, box: [0, 0, 267, 421], faces: F, from: 'security.png [540, 446, 807, 867]', jaw: 1.4}
+  trolley: {sheet: reference/cuts/security/trolley.png, box: [0, 0, 441, 412], faces: F, plain: true, from: 'security.png [917, 451, 1358, 863]'}
+  startled: {sheet: reference/cuts/security/startled.png, box: [0, 0, 243, 416], faces: F, from: 'security.png [1460, 451, 1703, 867]', jaw: 1.4}

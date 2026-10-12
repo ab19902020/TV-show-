@@ -78,7 +78,8 @@ def sheet_fac(key):
     if key in DRAWING:
         return DRAWING[key]
     cid, name = key.split(":")
-    stem = CAST.spec(cid)["drawings"][name].get("sheet", "").split("/")[-1].replace("-clean.png", "")
+    sheet = CAST.spec(cid)["drawings"][name].get("sheet", "")
+    stem = sheet.split("/")[-2] if "/cuts/" in sheet else sheet.split("/")[-1].replace("-clean.png", "")
     return SHEET.get(stem, 1.0)
 
 
@@ -130,6 +131,40 @@ def resolver(s, who, pos):
     return res
 
 
+PHASE = {w: i * 1.618 for i, w in enumerate(PEOPLE)}
+STILL_POSES = {"seated", "prone", "tumble1", "tumble2", "tumble3", "hug", "hug2", "crawl"}
+
+
+def life(it, key, t):
+    """what keeps a standing person alive between their poses -> (degrees, x scale, y scale) about the feet:
+    breathing (a 0.7 % rise every 3.4 s, each on their own rhythm), a slow shift of weight from foot to foot, and
+    the settle when a pose lands: a quick stretch that overshoots once and comes to rest in a quarter second"""
+    if it.get("still") or key.split(":")[1] in STILL_POSES:
+        return 0.0, 1.0, 1.0
+    ph = PHASE[it["who"]]
+    b = math.sin(2 * math.pi * t / 3.4 + ph)
+    rot = 0.45 * math.sin(2 * math.pi * t / 5.3 + 2 * ph)
+    sy, sx = 1 + 0.007 * b, 1 - 0.0025 * b
+    pose = it.get("pose")
+    w = it.get("walk")
+    walking = w and w.get("t0", -1e9) <= t < w.get("t1", 1e9)
+    if isinstance(pose, list) and not walking:
+        past = [k for (k, v), (_, pv) in zip(pose[1:], pose[:-1]) if k <= t and v != pv]
+        if past and t - max(past) < 0.3:
+            u = t - max(past)
+            st = 0.035 * math.exp(-u / 0.075) * math.cos(u * 2 * math.pi / 0.24)
+            sy *= 1 + st
+            sx *= 1 - 0.5 * st
+    if it.get("steps"):                                   # walking in one drawing (pushing the trolley): a step
+        x0, _ = at_time(it["at"], t - 0.05, it.get("ease", False))     # every 0.42 s while the feet are moving,
+        x1, _ = at_time(it["at"], t + 0.05, it.get("ease", False))     # the body rising and rocking with it
+        if abs(x1 - x0) > 0.5:
+            u = t / 0.42
+            rot += 1.6 * math.sin(math.pi * u)
+            sy *= 1 + 0.018 * abs(math.sin(math.pi * u))
+    return rot, sx, sy
+
+
 def person_matrix(s, it, key, t, M, sc):
     who = it["who"]
     cm, stand = PEOPLE[who][1], PEOPLE[who][2]
@@ -141,9 +176,10 @@ def person_matrix(s, it, key, t, M, sc):
     Fx, Fy = M[0, 0] * x + M[0, 2], M[1, 1] * (y - dy) + M[1, 2]
     mir = at_time(it.get("mirror", False), t)
     sx = -k if mir else k
-    th = math.radians(at_time(it.get("rot", 0.0), t))
+    lr, lx, ly = life(it, key, t)
+    th = math.radians(at_time(it.get("rot", 0.0), t) + lr)
     c, sn = math.cos(th), math.sin(th)
-    A = np.array([[c * sx, -sn * k], [sn * sx, c * k]])
+    A = np.array([[c * sx * lx, -sn * k * ly], [sn * sx * lx, c * k * ly]])
     off = np.array([Fx, Fy]) - A @ np.array([fx, fy])
     return np.hstack([A, off[:, None]]), mir, (Fx, Fy), h * sc
 
@@ -177,6 +213,11 @@ def draw_prop(lay, s, it, t, M, sc):
     ih, iw = im.shape[:2]
     x, y = at_time(it["at"], t, it.get("ease", False))
     y = y - at_time(it.get("dy", 0.0), t)
+    if isinstance(it["at"], list) and it["prop"].startswith(("trolley", "towel-pile")):   # rolling: the wobbly
+        xa = at_time(it["at"], t - 0.05, it.get("ease", False))[0]                          # wheel rattles it
+        xb = at_time(it["at"], t + 0.05, it.get("ease", False))[0]
+        if abs(xb - xa) > 0.5:
+            y -= 0.006 * it["h"] * (math.sin(2 * math.pi * 7.3 * t) + 0.5 * math.sin(2 * math.pi * 11.1 * t))
     h = at_time(it["h"], t) * sc
     k = h / ih
     mir = it.get("mirror", False)
@@ -191,6 +232,29 @@ def draw_prop(lay, s, it, t, M, sc):
     if it.get("clip") is not None:
         clip = (it["clip"] - (y - h / sc)) / (h / sc) * ih
     place_rgba(lay, im, np.hstack([A, off[:, None]]), clip)
+
+
+@functools.lru_cache(maxsize=16)
+def front_layer(key):
+    """the part of a drawing that is in front of its own face (a microphone held at the lips), cut from the
+    drawing itself: film.yaml front_poly (sheet px) -> (premultiplied RGBA at part px, its corner in sheet px)"""
+    cid, name = key.split(":")
+    poly = CAST.spec(cid)["drawings"][name].get("front_poly")
+    if not poly:
+        return None
+    d, _ = CAST.get(key)
+    im = d.u8[1.0]
+    P = (np.float32(poly) - [d.ox, d.oy]) * d.S
+    x0, y0 = np.floor(P.min(0)).astype(int) - 2
+    x1, y1 = np.ceil(P.max(0)).astype(int) + 2
+    x0, y0 = max(0, x0), max(0, y0)
+    m = np.zeros((y1 - y0, x1 - x0), np.uint8)
+    cv2.fillPoly(m, [np.int32(np.round((P - [x0, y0]) * 4))], 255, cv2.LINE_AA, 2)
+    m = cv2.GaussianBlur(m, (0, 0), 1.0).astype(np.float32) / 255
+    c = im[y0:y1, x0:x1].astype(np.float32) / 255
+    c[..., 3] *= m[:c.shape[0], :c.shape[1]]
+    c[..., :3] *= c[..., 3:4]
+    return c, (x0 / d.S + d.ox, y0 / d.S + d.oy), d.S
 
 
 def scene(img, s, t, M, sc):
@@ -234,6 +298,11 @@ def scene(img, s, t, M, sc):
             if it.get("shadow", True) and cl is None:
                 things.contact_shadow(lay, s, it, t, M, sc, F, Hs, at_time(it.get("dy", 0.0), t))
             E.place(lay, d, st, Ms, clip=clip, alpha=it.get("alpha", 1.0))
+            fr = front_layer(key)
+            if fr is not None:                                     # the mic back over the moving mouth
+                c, (sx0, sy0), S_ = fr
+                Af = np.hstack([Ms[:, :2] / S_, (Ms[:, :2] @ np.float64([sx0, sy0]) + Ms[:, 2])[:, None]])
+                E.warp_into(lay, c, np.float32(Af))
             for hd in it.get("holds", ()):                             # a prop in the hand: its grip at a sheet point
                 if hd["t0"] <= t < hd["t1"]:
                     gx = Ms[0, 0] * hd["at"][0] + Ms[0, 1] * hd["at"][1] + Ms[0, 2]
