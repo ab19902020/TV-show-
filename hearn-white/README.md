@@ -28,6 +28,8 @@ recordings replace the old ones. Details in `episode/README.md`, "Voices".
   said with the face clear, and the clinch shows both faces.
 - **Two dressing rooms.** Eddie changes in the red corner's room, with a puff of smoke. Dana shadowboxes alone in
   the blue corner's room down the hall.
+- **Eyes.** Every moving pupil is one clean round pupil. The drawn pupil, and the black wedges the art has in
+  many eye corners, are painted out completely, so there are no black bits. Far eyes in shadow keep their drawing.
 - **Restaged shots.** The trolley passes behind Dana, not through him. Fury points at Dana. Joshua and Eddie walk
   in. A slow tilt that crept into Dana's stance is gone. The arena referee no longer stands right behind Dana.
 

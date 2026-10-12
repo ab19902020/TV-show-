@@ -65,12 +65,16 @@ spoken in has its eyes and mouth marked (`film.yaml` `marks`), checked and refit
 `tools/markfit.py`. The announcer's microphone is redrawn over his mouth (`front_poly`).
 
 **Eyes (`film/eyes.py`).** The engine moved a pupil by cutting out the dark pixels and pasting them elsewhere,
-which left its rim and bits of the eye outline behind (the black specks in the eyes). Now, once per eye, the eye
-white is found in the art, the drawn pupil is painted out with the white's own shading, and a clean round pupil
-(the drawing's ink, the drawn pupil's size, a highlight) is drawn where the look puts it, never outside the eye
-opening. Looking where the drawing looks, the eye is left exactly as drawn. Far eyes drawn as a dark sliver keep
-their drawing and only blink. `tools/facesheet.py` renders every face's drawings with their looks and mouths
-(`build/faces_<id>.jpg`).
+which left its rim and bits of the eye outline behind (the black specks in the eyes). Many of the pack's eyes are
+drawn looking sideways, the pupil pressed into the corner and merged with the outline, and many have black wedges
+drawn in their corners. Now, once per eye: the eye white is found in the art; the drawn pupil is found as the
+round dark shape the white wraps around; everything dark inside the eye opening (the pupil and the corner wedges)
+is painted out with the white's own shading, short of the outline so the outline stays; and one clean round pupil
+(the drawing's ink, a highlight) is drawn where the look puts it, always inside the opening. Every animated eye
+shows that one pupil all the time, so an eye never pops between the drawing and the redraw, and the two pupils of
+a face are matched in size. A far eye drawn as a dark sliver past the nose keeps its drawing and only blinks.
+`tools/eyesheet.py` renders every animated eye close up, at rest, looking left, right, up and down, and half shut
+(`build/eyes_<n>.jpg`, 93 eyes); `tools/facesheet.py` renders whole faces with their mouths.
 
 **The fight (`film/fight.py`).** Each fighter's moves are written as readable moves on the edit's marks (`guard`,
 `punch`, `duck`, `windmill`, `hit`, `stumble`, `spin`) that make pose, position, lean and flip keys. Every punch is
@@ -137,7 +141,7 @@ falls; the slow motion pitches the whole room down and dulls it, then it snaps b
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for a line with no recording (none used now) |
 | `tools/cut_drawings.py` | every drawing cut clean from its sheet |
 | `tools/framing.py`, `tools/lipcheck.py` | the head-framing fit and the lip-sync sheet |
-| `tools/facesheet.py`, `tools/marksheet.py`, `tools/markfit.py` | face sheets; the eye and mouth marks drawn on every drawing and refitted |
+| `tools/facesheet.py`, `tools/eyesheet.py`, `tools/marksheet.py`, `tools/markfit.py` | face sheets; every eye close up; the eye and mouth marks drawn on every drawing and refitted |
 
 Sizes: the pack's sheets draw the characters at different scales (the walk sheets about 1.3x the casual sheets,
 the laundry sheet 1.15x), corrected in `actors.SHEET`; the peek over the rim is a close-up head (`actors.DRAWING`).
