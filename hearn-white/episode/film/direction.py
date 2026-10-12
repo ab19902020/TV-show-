@@ -72,10 +72,7 @@ def _rail():
 
 # what stands in front of the people: the arena's near ring rope and corner posts (and the seat rail at the foot of
 # the steps, used on its own); the towels in the bin
-OCCL = {"A": {"ropes": [[(150, 646), (1530, 646), (1530, 664), (150, 664)],
-                        [(146, 466), (190, 466), (190, 702), (146, 702)], [(262, 486), (306, 486), (306, 674), (262, 674)],
-                        [(1368, 486), (1414, 486), (1414, 674), (1368, 674)],
-                        [(1486, 466), (1532, 466), (1532, 702), (1486, 702)]], "rail": _rail()},
+OCCL = {"A": {"rail": _rail()},
         "I": {"towels": _towel_front()}}
 CM = {"eddie": 191, "dana": 170, "tyson": 206, "joshua": 198, "announcer": 175, "referee": 180, "attendant": 160,
       "security": 183}
@@ -622,7 +619,7 @@ Dn.to(tbo + 0.8, 1075).to(tbo + 1.5, 1090)
 tp = m("probe")
 E.punch(tp + 0.35, "jab_long", 70, wind="guard2", wind_t=0.4, hold=0.35, back=0.5, lean=5)
 Dn.duck(tp + 0.42, dur=1.1, dx=10).lift(tp + 1.0, 0.0)
-Dn.pose(m("c_da2") - 0.05, "crouch_guard").pose(ls("L049") - 0.02, "guard")
+Dn.pose(m("c_da2") - 0.05, "crouch_guard").pose(ls("L049") - 0.02, "guard_high").pose(le("L049") + 0.15, "guard")
 E.pose(ls("L050") - 0.05, "guard2").pose(le("L050") + 0.2, "guard")
 # 2. the touch: Eddie's second jab taps Dana's guard (the pair drawing: contact); Dana counters into the red gloves
 tt = m("tap")
@@ -636,7 +633,10 @@ E.pose(tt + 1.2, "block").to(tt + 1.3, 575).lean(tt + 1.2, -6.0).lean(tt + 1.6, 
 Dn.pose(tt + 1.2, "guard").to(tt + 1.35, 1100)
 # the exchange: chin talk
 E.pose(ls("L052") - 0.05, "guard2").pose(le("L052") + 0.1, "guard")
-Dn.pose(ls("L053") - 0.05, "jab").pose(le("L053") + 0.1, "guard")
+Dn.pose(ls("L053") - 0.05, "guard_high").pose(le("L053") + 0.1, "guard")
+# Dana talks with his face clear of the gloves (in guard a glove covers his chin)
+for _l in ("L051", "L056"):
+    Dn.pose(ls(_l) - 0.05, "guard_high").pose(le(_l) + 0.15, "guard")
 E.pose(ls("L054") - 0.05, "guard").pose(le("L054") + 0.2, "guard")
 # 3. indignation: Dana's counter lands on Eddie's raised gloves; any contact is an insult
 tc = m("counter")
@@ -838,7 +838,7 @@ TRO_S["at"] = [(0, TRO_S["at"][0][1])] + TRO_S["at"]
 PATH_S = TRO_S["at"]
 ATT_XS = PATH_S[0][1][0] + (ATT_S["at"][0][1][0] - PATH_S[0][1][0])
 tcb = m("climb2")
-DA_S, ED_S = (610, Y_S + 4), (330, 846)
+DA_S, ED_S = (610, Y_S + 4), (1510, 838)
 dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, "guard_high"), (le("L075") + 0.2, "guard"),
                         (tcb, "crouch_guard"), (tcb + 0.42, "guard")),
            keys((tbn, (-160, 850)), (tbn + 1.1, DA_S), (tcb + 0.45, DA_S), (tcb + 0.85, (TB_S - 20, Y_S + 2))),
@@ -847,7 +847,7 @@ dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, 
                    (tcb + 1.25, -160.0)),
            clip=keys((0, None), (tcb + 0.78, Y_S - 0.25 * TH_S)), z=Y_S - 3, show=[(tbn, tcb + 1.28)])
 eddie_s = P("eddie", keys((0, "tired"), (tbn + 1.2, "guard"), (m("c_eddie10"), "guard2"), (m("depart") + 0.3, "arms_up")),
-            keys((tbn + 0.25, (-220, 836)), (tbn + 1.25, ED_S)), steps=True, ease=True,
+            keys((tbn + 0.25, (1900, 836)), (tbn + 1.25, ED_S)), steps=True, ease=True, mirror=True,
             face=[(m("c_eddie10"), 1e9, 0.7, 0.85)], z=ED_S[1], show=[(tbn + 0.25, 1e9)])
 fare_s = dict(fn="fare", t0=tcd + 0.05, at=[(a, (x + 0.1 * TH_S, y - 0.48 * TH_S)) for a, (x, y) in PATH_S],
               h=0.36 * TH_S, rot=5.0, z=Y_S + 2.4)
@@ -864,11 +864,11 @@ S7 = [
     RW(m("c_da9"), on("R", 1070, DA_R[1], "dana", 0.55, dx=60), decision_close, blur=2.0),
     W(m("c_fj4"), "S", (836, 700, 1.5), ringside()),
     W(tst, "A", [(tst, (330, 560, 1.3)), (tbn, (300, 575, 1.36))], steps_cast, blur=0.5, occl=("rail",)),
-    W(tbn, "S", [(tbn, (760, 640, 1.22)), (m("c_da10"), (760, 636, 1.28))], outside, blur=0.5),
+    W(tbn, "S", [(tbn, (900, 640, 1.2)), (m("c_da10"), (900, 636, 1.24))], outside, blur=0.5),
     W(m("c_da10"), "S", on("S", *DA_S, "dana", 0.62, dx=40), outside, blur=2.0),
     W(m("c_att10"), "S", on("S", ATT_XS, Y_S, "attendant", 0.62, dx=-40), outside, blur=2.0),
     W(m("c_eddie10"), "S", on("S", *ED_S, "eddie", 0.5, dx=30), outside, blur=2.5),
-    W(m("climb2"), "S", [(m("climb2"), (760, 640, 1.22)), (m("black"), (620, 640, 1.18))], outside),
+    W(m("climb2"), "S", [(m("climb2"), (900, 640, 1.2)), (m("black"), (870, 640, 1.2))], outside),
     card(m("black"), "black"),
 ]
 

@@ -132,12 +132,13 @@ outline round the mouth), so with a glove held at the chin the mouth opens behin
 the ring the lines are said in drawings with the face clear (Dana drops his guard to answer, says "Pay-per-view"
 bent double; the clinch keeps both faces in shot).
 
-**Noses (`film/noses.py`).** The pack draws the ring announcer with no nose at all, and Dana's nose as a soft skin
-shape with a hair-thin tip line; at screen size both read as no nose. Each of their drawings (and Dana lying on the
-floor, climbing and tumbling, placed by hand in `film/nose_marks.json`) gets a cartoon nose
-inked in when it is loaded (the underside of the tip, a nostril wing each side, the bridge on the side the face
-turns to, a soft shadow and a highlight), in the drawing's own line colour, so it moves, scales and is lit with
-the face.
+**Noses (`film/noses.py`).** The pack draws the ring announcer with no nose at all; each of his drawings gets a
+cartoon nose inked in when it is loaded (the underside of the tip, a nostril wing each side, the bridge on the side
+the face turns to, a soft shadow and a highlight), in the drawing's own line colour, so it moves, scales and is lit
+with the face. Dana's drawings already have a nose, a soft skin shape that fades into the face at screen size;
+inking a second one over it read as two noses, so his own is strengthened instead (its shading deepened and its
+detail sharpened in an oval round it, no new shape added). The drawings with no face marks (lying on the floor,
+climbing, tumbling) are placed by hand in `film/nose_marks.json`.
 
 **Arena lighting (`film/actors.py` `stage_light`).** Dramatic lights over pathetic action: in the arena, the ring
 and at ringside the canvas sits in a pool of light with the edges falling away into the dark, soft beams come down
@@ -168,7 +169,7 @@ end title; drums under the confident bouncing that stop the moment Dana slows.
 | `film/actors.py` | the people and props in a set at true scale: poses on a beat, the walk cycle, tumbles and leans about the feet, lifts, clips, props in hands, the guard bounce, the camera shakes and snap zooms; faces through the engine's blinks, brows and looks, with the mouths and eyes below |
 | `film/mouths.py` | the drawn cartoon mouths |
 | `film/eyes.py` | the clean moving pupils |
-| `film/noses.py` | the inked noses for Dana and the announcer |
+| `film/noses.py` | the announcer's inked nose, and Dana's own nose strengthened |
 | `film/things.py` | drawn in code: the BANNED board, the trolley lid, the near ring ropes, contact shadows, impact stars, sweat, speed lines, press flashes, the puff of smoke |
 | `film/props.py` | the engine's props hook, and the blue corner's dressing room (plate E) |
 | `film/perf.py` | the acting: whom each line is said to, its delivery, the stressed words, the looks and reactions, the mouth-shape smoothing |
@@ -176,6 +177,7 @@ end title; drums under the confident bouncing that stop the moment Dana slows.
 | `film/framing.json` | the per-shot camera corrections from `tools/framing.py` |
 | `tools/dana_picks.py` | the two lines taken from Dana's second take (one is still used: "It's boxing, Eddie.") |
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for a line with no recording (L066 only) |
+| `tools/qa_sheets.py`, `tools/zoomstills.py` | two stills of every shot in sheets of nine; enlarged crops of chosen frames (the shot-by-shot review) |
 | `tools/cut_busts.py`, `tools/cut_pairs.py`, `tools/gridview.py` | how the acting heads and the paired drawings were cut (the cuts are in the library), and the grid viewer used to place face marks |
 | `tools/cut_drawings.py` | every drawing cut clean from its sheet |
 | `tools/framing.py`, `tools/lipcheck.py` | the head-framing fit and the lip-sync sheet |

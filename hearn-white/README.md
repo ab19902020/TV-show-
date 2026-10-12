@@ -31,7 +31,8 @@ is not in Eddie's new file. Send that one line and it drops straight in (details
   the over-deep duck, glove contact each way, the ropes throwing Eddie into a real clinch, and the glove clash,
   the wobble and both sitting down together before the referee hauls them up. One impact graphic.
 - **The ending on the floor**: they come down the ring steps and the bin waits at ringside, on the arena floor in
-  front of the apron (no more hovering beside the ring).
+  front of the apron (no more hovering beside the ring), and no ring rope is ever drawn across anyone.
+- **Dana's nose**: one nose, his own drawn one made clearer, instead of a second nose inked over it.
 - **Checked shot by shot**: every shot was rendered and inspected for noses, mouths, eyes, feet on the floor,
   scale and framing. Noses were added to Dana lying on the floor and climbing, the referee kept clear of the
   close-ups, the red corner's fighters set at one depth, the announcer kept out of the decision close-ups, and the

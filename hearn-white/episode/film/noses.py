@@ -185,6 +185,48 @@ def draw(full, d, faces, key, g=None):
     return res
 
 
+# Dana's drawings already have a nose: a soft skin shape with its shading underneath, which at screen size fades
+# into the face. Inking a second nose over it reads as two noses, so his own is strengthened instead: in an oval
+# round it the shading is deepened and the drawing's own detail sharpened, which adds no shape the artist did not
+# draw. (The announcer has no drawn nose at all and keeps the inked one.)
+ENHANCE = {"dana-white"}
+
+
+def enhance(full, d, faces, key, g=None):
+    g = g or geometry(d, faces, key)
+    if g is None:
+        return full
+    (tx, ty), u, turn, lw, ey = g
+    cy = ty - 0.10 * u                                        # the oval: the nose from its bridge to under the tip
+    rx, ry = 0.42 * u, 0.36 * u
+    img = full.astype(np.float32) / 255
+    H, W = img.shape[:2]
+    x0, y0 = int(max(0, tx - rx * 1.2)), int(max(0, cy - ry * 1.2))
+    x1, y1 = int(min(W, tx + rx * 1.2)), int(min(H, cy + ry * 1.2))
+    if x1 <= x0 + 4 or y1 <= y0 + 4:
+        return full
+    sub = img[y0:y1, x0:x1].copy()
+    rgb, a = sub[..., :3], sub[..., 3]
+    yy, xx = np.mgrid[y0:y1, x0:x1].astype(np.float32)
+    w = np.clip(1.25 - np.sqrt(((xx - tx) / rx) ** 2 + ((yy - cy) / ry) ** 2), 0, 1) ** 1.5
+    v, mn = rgb.max(2), rgb.min(2)
+    white = cv2.dilate(((v > 0.80) & (v - mn < 0.18)).astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+    w *= (a > 0.9) & ~white
+    sg = max(1.5, 0.05 * u)
+    blur = cv2.GaussianBlur(rgb, (0, 0), sg)
+    detail = rgb - blur
+    lv = rgb.mean(2, keepdims=True)
+    lb = blur.mean(2, keepdims=True)
+    shade = np.clip((lb - lv) / 0.10, 0, 1)                   # darker than round it: the nose's own shading
+    out = rgb + 1.3 * detail
+    out = out * (1 - 0.38 * shade * np.float32([0.92, 1.0, 1.05]))
+    out = np.clip(out, 0, 1)
+    res = rgb * (1 - w[..., None]) + out * w[..., None]
+    o = full.copy()
+    o[y0:y1, x0:x1, :3] = (np.clip(res, 0, 1) * 255).astype(np.uint8)
+    return o
+
+
 def install():
     if getattr(C.Cast, "_noses", False):
         return
@@ -197,7 +239,8 @@ def install():
         if fresh and key.split(":")[0] in WHO and key not in SKIP and (hand or (d.spec.get("mouth") and d.spec.get("eyes")
                 and not key.split(":")[1].startswith(("bust_", "pair_")))):    # the busts and pairs draw their own
             from studio.film.engine import LEVELS
-            full = draw(d.u8[1.0], d, info.get("faces", "F"), key, hand)
+            fn = enhance if key.split(":")[0] in ENHANCE else draw
+            full = fn(d.u8[1.0], d, info.get("faces", "F"), key, hand)
             d.u8 = {1.0: full}
             for L in LEVELS[1:]:
                 d.u8[L] = cv2.resize(full, None, fx=L, fy=L, interpolation=cv2.INTER_AREA)
