@@ -731,7 +731,8 @@ PAIR_R = pair_items(SPANS, PAIR_X, ED_R[1], None)
 ref_fight = P("referee", keys((0, "stop"), (ls("L065") - 0.15, "break"), (tsep + 0.9, "stop"), (thu, "break"),
                               (thu + 1.0, "stop")),
               keys((0, RF_R), (m("c_ref2") - 0.5, RF_R), (m("c_ref2") - 0.05, (1195, 700)), (tsep + 0.1, (1195, 700)),
-                   (tsep + 0.45, (1330, 650)), (tbl2, (1330, 650)), (thu, (836, 690))), look=None, ease=True, steps=True,
+                   (tsep + 0.6, (1820, 650)), (tbl2 - 0.4, (1820, 650)), (thu + 0.1, (836, 690))), look=None, ease=True,
+              steps=True,
               mirror=keys((0, False), (m("c_ref2") - 0.3, True), (tsep + 0.2, False)))
 NEAR = dict(fn="near_ropes", ys=[850, 975], z=5000, w=20, blur=3.5)
 RING_FLASH = [((40, 20, 1630, 300), 5.0, 3)]
@@ -816,17 +817,20 @@ tst, tbn, tcd = m("c_steps"), m("c_bin"), m("card")
 TREADS = [(250, 724), (190, 746), (152, 786), (122, 824), (40, 868)]    # the rope line, the three treads, the floor
 
 
-def down_steps(who, t0, mirror=False):
-    """ducking out under the ropes, then one tread at a time, each foot landing (a little dip on each tread)"""
-    xs = [(t0, TREADS[0])]
+def down_steps(who, t0, mirror=False, wait=(400, 690)):
+    """waiting in the ring, ducking out under the ropes, then one tread at a time, each foot landing (a little dip
+    on each tread)"""
+    xs = [(0, wait), (t0 - 0.3, wait), (t0, TREADS[0])]
     for i, p in enumerate(TREADS[1:]):
-        xs.append((t0 + 0.32 + 0.3 * i, p))
-    xs.append((xs[-1][0] + 0.9, (-260, 880)))                # and on, out of shot towards the bin
-    return P(who, keys((0, "crouch_guard"), (t0 + 0.3, "tired")), xs, ease=True, steps=True, mirror=mirror,
-             dy=keys(*[(t0 + 0.32 + 0.3 * i + d, v) for i in range(4) for d, v in ((0.0, 0.0), (0.12, 10.0), (0.3, 0.0))]))
+        xs.append((t0 + 0.36 + 0.32 * i, p))
+    xs.append((xs[-1][0] + 0.5, (-260, 880)))                # and on, out of shot towards the bin
+    # the steps run down the side of the ring, at its corner's depth: a person on them stays that size
+    return P(who, keys((0, "tired"), (t0 - 0.2, "crouch_guard"), (t0 + 0.3, "tired")), xs, ease=True, steps=True,
+             mirror=mirror, floor=680,
+             dy=keys(*[(t0 + 0.36 + 0.32 * i + d, v) for i in range(4) for d, v in ((0.0, 0.0), (0.12, 10.0), (0.3, 0.0))]))
 
 
-steps_cast = [down_steps("eddie", tst), down_steps("dana", tst + 1.05)]
+steps_cast = [down_steps("eddie", tst, mirror=True), down_steps("dana", tst + 1.55)]          # both heading left
 Y_S = 868                                                    # the floor in front of the apron
 TB_S = 880
 ATT_S, TRO_S, PATH_S = push("S", m("depart") - 0.1, m("depart") + 2.7, TB_S, 260, Y_S, mirror=True, step=0.55)
@@ -848,8 +852,7 @@ dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, 
                    (tcb + 1.25, -160.0)),
            clip=keys((0, None), (tcb + 0.78, Y_S - 0.25 * TH_S)), z=Y_S - 3, show=[(tbn, tcb + 1.28)])
 eddie_s = P("eddie", keys((0, "tired"), (tbn + 1.2, "guard"), (m("c_eddie10"), "guard2"), (m("depart") + 0.3, "arms_up")),
-            keys((tbn, (-240, 836)), (tbn + 1.5, ED_S)), steps=True, ease=True,
-            mirror=keys((0, False), (tbn + 1.55, True)),
+            ED_S, mirror=True,                                   # (already over by the bin at the cut)
             face=[(m("c_eddie10"), 1e9, 0.7, 0.85)], z=ED_S[1], show=[(tbn, 1e9)])
 fare_s = dict(fn="fare", t0=tcd + 0.05, at=[(a, (x + 0.1 * TH_S, y - 0.48 * TH_S)) for a, (x, y) in PATH_S],
               h=0.36 * TH_S, rot=5.0, z=Y_S + 2.4)
@@ -865,7 +868,7 @@ S7 = [
     RW(m("c_ed9"), on("R", 600, ED_R[1], "eddie", 0.55, dx=-60), decision_close, blur=2.0),
     RW(m("c_da9"), on("R", 1070, DA_R[1], "dana", 0.55, dx=60), decision_close, blur=2.0),
     W(m("c_fj4"), "S", (836, 700, 1.5), ringside()),
-    W(tst, "A", [(tst, (330, 560, 1.3)), (tbn, (300, 575, 1.36))], steps_cast, blur=0.5, occl=("rail",)),
+    W(tst, "A", [(tst, (643, 545, 1.3)), (tbn, (643, 548, 1.3))], steps_cast, occl=("rail",), locked=True, drift=0.0),
     W(tbn, "S", [(tbn, (900, 640, 1.2)), (m("c_da10"), (900, 636, 1.24))], outside, blur=0.5),
     W(m("c_da10"), "S", on("S", *DA_S, "dana", 0.62, dx=40), outside, blur=2.0),
     W(m("c_att10"), "S", on("S", ATT_XS, Y_S, "attendant", 0.62, dx=-40), outside, blur=2.0),

@@ -164,16 +164,16 @@ SEQ = [
     ("gap", 0.15, "c_da9"), ("line", "L071"),
     ("gap", 0.35, "c_fj4"), ("line", "L072"),
     ("gap", 0.2), ("line", "L073"),
-    ("gap", 1.4, "c_steps"),                  # the promoters come down the ring steps
-    ("gap", 0.9, "c_bin"),                    # the bin waits by the apron; Dana's hand on the rim
+    ("gap", 2.2, "c_steps"),                  # the promoters come down the ring steps
+    ("gap", 0.7, "c_bin"),                    # the bin waits by the apron; Dana's hand on the rim
     ("gap", 0.6, "card"),                     # she slaps a fare card on it
     ("line", "L074"),
     ("gap", 0.25, "c_da10"), ("line", "L075"),
     ("gap", 0.3, "c_att10"), ("line", "L076"),
-    ("gap", 0.95, "c_eddie10"),               # Eddie, delighted: she out-negotiated both of them
+    ("gap", 0.75, "c_eddie10"),               # Eddie, delighted: she out-negotiated both of them
     ("gap", 1.3, "climb2"),                   # Dana climbs into the bin
-    ("gap", 2.2, "depart"),                   # the wheel squeak; the end title over the departing trolley
-    ("gap", 0.4, "black"),
+    ("gap", 1.9, "depart"),                   # the wheel squeak; the end title over the departing trolley
+    ("gap", 0.3, "black"),
 ]
 
 TL = build(SEQ, L)
