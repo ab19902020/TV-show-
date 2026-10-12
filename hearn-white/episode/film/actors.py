@@ -610,7 +610,7 @@ def _install_titles():
         dr.text(((OW - wa) / 2, y), a, font=fa, fill=(255, 255, 255, 255))
         ry = y + int((big + 18) * S)
         dr.rectangle((OW / 2 - 230 * S, ry, OW / 2 + 230 * S, ry + 7 * S), fill=G.RED + (255,))
-        dr.text(((OW - wb) / 2, ry + int(20 * S)), b, font=fb, fill=G.RED + (255,))
+        dr.text(((OW - wb) / 2, ry + int(20 * S)), b, font=fb, fill=(255, 236, 200, 255) if kind == "end" else G.RED + (255,))
         return G.premult(im)
 
     G.caption_layer = functools.lru_cache(maxsize=32)(caption_layer)

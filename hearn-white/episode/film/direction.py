@@ -589,7 +589,7 @@ S5b = [
 ]
 
 # ====================================================================== 6. one disastrous round
-ED_R, DA_R, RF_R = (560, 785), (1110, 785), (1575, 640)
+ED_R, DA_R, RF_R = (560, 785), (1110, 785), (1760, 640)      # the referee waits out of shot
 H_ED, H_DA = h_of("R", "eddie", 785), h_of("R", "dana", 785)
 E = Fighter("eddie", ED_R[0], +1, ED_R[1], H_ED)
 Dn = Fighter("dana", DA_R[0], -1, DA_R[1], H_DA)
@@ -731,7 +731,7 @@ PAIR_R = pair_items(SPANS, PAIR_X, ED_R[1], None)
 ref_fight = P("referee", keys((0, "stop"), (ls("L065") - 0.15, "break"), (tsep + 0.9, "stop"), (thu, "break"),
                               (thu + 1.0, "stop")),
               keys((0, RF_R), (m("c_ref2") - 0.5, RF_R), (m("c_ref2") - 0.05, (1195, 700)), (tsep + 0.1, (1195, 700)),
-                   (tsep + 0.45, (1480, 650)), (tbl2, (1480, 650)), (thu, (836, 690))), look=None, ease=True, steps=True,
+                   (tsep + 0.45, (1330, 650)), (tbl2, (1330, 650)), (thu, (836, 690))), look=None, ease=True, steps=True,
               mirror=keys((0, False), (m("c_ref2") - 0.3, True), (tsep + 0.2, False)))
 NEAR = dict(fn="near_ropes", ys=[850, 975], z=5000, w=20, blur=3.5)
 RING_FLASH = [((40, 20, 1630, 300), 5.0, 3)]
@@ -806,7 +806,7 @@ S6 = [
 ]
 
 # ====================================================================== 7. the decision and the series button
-ann_ring = P("announcer", keys((0, "mic"), (wt("L069", "draw") - 0.1, "mic_gesture"), (le("L069") + 0.2, "mic")), (836, 655),
+ann_ring = P("announcer", keys((0, "mic"), (wt("L069", "draw") - 0.1, "mic_gesture"), (le("L069") + 0.2, "mic")), (1360, 620),
              show=[(m("c_ann4"), m("c_steps"))])
 decision = [eddie_fight, dana_fight, ann_ring, NEAR]
 decision_close = [eddie_fight, dana_fight, NEAR]
@@ -821,14 +821,15 @@ def down_steps(who, t0, mirror=False):
     xs = [(t0, TREADS[0])]
     for i, p in enumerate(TREADS[1:]):
         xs.append((t0 + 0.32 + 0.3 * i, p))
+    xs.append((xs[-1][0] + 0.9, (-260, 880)))                # and on, out of shot towards the bin
     return P(who, keys((0, "crouch_guard"), (t0 + 0.3, "tired")), xs, ease=True, steps=True, mirror=mirror,
              dy=keys(*[(t0 + 0.32 + 0.3 * i + d, v) for i in range(4) for d, v in ((0.0, 0.0), (0.12, 10.0), (0.3, 0.0))]))
 
 
-steps_cast = [down_steps("eddie", tst), down_steps("dana", tst + 0.4)]
+steps_cast = [down_steps("eddie", tst), down_steps("dana", tst + 1.05)]
 Y_S = 868                                                    # the floor in front of the apron
 TB_S = 880
-ATT_S, TRO_S, PATH_S = push("S", m("depart") - 0.1, m("depart") + 2.6, TB_S, -520, Y_S, mirror=True, step=0.5)
+ATT_S, TRO_S, PATH_S = push("S", m("depart") - 0.1, m("depart") + 2.7, TB_S, 260, Y_S, mirror=True, step=0.55)
 TH_S = TRO_S["h"]
 ATT_S["pose"] = [(0, "hip"), (tcd - 0.25, "point2"), (tcd + 0.2, "hip"), (ls("L076") - 0.05, "point2"),
                  (le("L076") + 0.3, "hip")] + [kv for kv in ATT_S["pose"] if kv[0] >= m("depart") - 0.1]
@@ -847,8 +848,9 @@ dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, 
                    (tcb + 1.25, -160.0)),
            clip=keys((0, None), (tcb + 0.78, Y_S - 0.25 * TH_S)), z=Y_S - 3, show=[(tbn, tcb + 1.28)])
 eddie_s = P("eddie", keys((0, "tired"), (tbn + 1.2, "guard"), (m("c_eddie10"), "guard2"), (m("depart") + 0.3, "arms_up")),
-            keys((tbn + 0.25, (1900, 836)), (tbn + 1.25, ED_S)), steps=True, ease=True, mirror=True,
-            face=[(m("c_eddie10"), 1e9, 0.7, 0.85)], z=ED_S[1], show=[(tbn + 0.25, 1e9)])
+            keys((tbn, (-240, 836)), (tbn + 1.5, ED_S)), steps=True, ease=True,
+            mirror=keys((0, False), (tbn + 1.55, True)),
+            face=[(m("c_eddie10"), 1e9, 0.7, 0.85)], z=ED_S[1], show=[(tbn, 1e9)])
 fare_s = dict(fn="fare", t0=tcd + 0.05, at=[(a, (x + 0.1 * TH_S, y - 0.48 * TH_S)) for a, (x, y) in PATH_S],
               h=0.36 * TH_S, rot=5.0, z=Y_S + 2.4)
 lid_s = dict(fn="lid", at=[(a, (x, y - 0.93 * TH_S)) for a, (x, y) in PATH_S], w=1.08 * TH_S, z=Y_S + 2.5,
