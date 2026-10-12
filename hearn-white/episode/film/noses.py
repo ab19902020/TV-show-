@@ -15,7 +15,9 @@ further towards the side a turned face looks to; where the drawing has a dark ti
 on it. NOSE overrides it per drawing: (dx, dy, scale) in units of u.
 
 install() hooks studio.film.cast.Cast.get (called once from film/actors.py)."""
+import json
 import math
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -28,6 +30,10 @@ NOSE = {                                                # per drawing: (dx, dy, 
     "ring-announcer:mic": (0.0, 0.07, 1.0), "ring-announcer:mic_gesture": (0.0, 0.07, 1.0),
 }
 SS = 4
+# drawings with no face marks (lying on the floor, climbing, walking, ducking): the nose placed by hand
+# (film/nose_marks.json: {name: {tip: [x, y] sheet px, u: eye distance, turn: -1/0/1} or {skip: true}})
+_NM = Path(__file__).with_name("nose_marks.json")
+MARKED = {"dana-white": json.loads(_NM.read_text())} if _NM.exists() else {}
 
 
 def _skin(img, a, x0, y0, x1, y1):
@@ -104,8 +110,19 @@ def _curve(p0, p1, p2, n=10):
     return (1 - t) ** 2 * p0 + 2 * (1 - t) * t * p1 + t ** 2 * p2
 
 
-def draw(full, d, faces, key):
-    g = geometry(d, faces, key)
+def marked(d, key):
+    """the hand-placed nose of a drawing with no face marks -> geometry() tuple, or None"""
+    cid, name = key.split(":")
+    mk = MARKED.get(cid, {}).get(name)
+    if not mk or mk.get("skip"):
+        return None
+    tx, ty = d.P(*mk["tip"])
+    u = mk["u"] * d.S
+    return (tx, ty), u, int(mk.get("turn", 0)), max(1.6, 0.034 * u), ty - 0.62 * u
+
+
+def draw(full, d, faces, key, g=None):
+    g = g or geometry(d, faces, key)
     if g is None:
         return full
     (tx, ty), u, turn, lw, ey = g
@@ -118,7 +135,8 @@ def draw(full, d, faces, key):
     if x1 <= x0 or y1 <= y0:
         return full
     skin = _skin(img, a, x0, y0, x1, y1)
-    ink = _inkcol(img, [c for i in range(0, 6, 2) for c in d.P(d.spec["mouth"][i], d.spec["mouth"][i + 1])])
+    ink = _inkcol(img, [c for i in range(0, 6, 2) for c in d.P(d.spec["mouth"][i], d.spec["mouth"][i + 1])]) \
+        if d.spec.get("mouth") else np.float32([0.16, 0.08, 0.07])
     hh, ww = (y1 - y0) * SS, (x1 - x0) * SS
     off = (x0, y0)
     yy, xx = np.mgrid[0:hh, 0:ww].astype(np.float32) / SS
@@ -175,9 +193,11 @@ def install():
     def get(self, key):
         fresh = key not in self.d
         d, info = orig(self, key)
-        if fresh and key.split(":")[0] in WHO and key not in SKIP and d.spec.get("mouth") and d.spec.get("eyes"):
+        hand = marked(d, key) if fresh and key.split(":")[0] in WHO else None
+        if fresh and key.split(":")[0] in WHO and key not in SKIP and (hand or (d.spec.get("mouth") and d.spec.get("eyes")
+                and not key.split(":")[1].startswith(("bust_", "pair_")))):    # the busts and pairs draw their own
             from studio.film.engine import LEVELS
-            full = draw(d.u8[1.0], d, info.get("faces", "F"), key)
+            full = draw(d.u8[1.0], d, info.get("faces", "F"), key, hand)
             d.u8 = {1.0: full}
             for L in LEVELS[1:]:
                 d.u8[L] = cv2.resize(full, None, fx=L, fy=L, interpolation=cv2.INTER_AREA)

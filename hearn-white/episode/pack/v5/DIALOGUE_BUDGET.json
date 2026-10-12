@@ -1,0 +1,41 @@
+{
+  "total_words": 405,
+  "speech_seconds_at_155wpm": 156.8,
+  "scenes": [
+    {
+      "scene": "00:00\u201300:26 \u2014 Eddie's ban",
+      "words": 51,
+      "speech_seconds_at_155wpm": 19.7
+    },
+    {
+      "scene": "00:26\u201300:54 \u2014 Laundry infiltration",
+      "words": 53,
+      "speech_seconds_at_155wpm": 20.5
+    },
+    {
+      "scene": "00:54\u201301:28 \u2014 The delivery",
+      "words": 58,
+      "speech_seconds_at_155wpm": 22.5
+    },
+    {
+      "scene": "01:28\u201302:03 \u2014 The challenge and preparation",
+      "words": 74,
+      "speech_seconds_at_155wpm": 28.6
+    },
+    {
+      "scene": "02:03\u201302:30 \u2014 The additional contest",
+      "words": 52,
+      "speech_seconds_at_155wpm": 20.1
+    },
+    {
+      "scene": "02:30\u201303:25 \u2014 One disastrous round",
+      "words": 85,
+      "speech_seconds_at_155wpm": 32.9
+    },
+    {
+      "scene": "03:25\u201303:48 \u2014 Decision and series button",
+      "words": 32,
+      "speech_seconds_at_155wpm": 12.4
+    }
+  ]
+}

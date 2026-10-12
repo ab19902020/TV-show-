@@ -1,48 +1,44 @@
-# The Undercard — Hearn v White (mini episode)
+# The Undercard — Hearn v White (mini episode, v5)
 
-Original fictional satire from the *Hearn v White* production pack: Eddie Hearn bans Dana White, Dana gets in by
-laundry trolley and tumbles out at Tyson Fury's feet, the two promoters negotiate themselves into a fight, and the
-fight is a draw. Seven scenes, eight characters, seven sets (and a second dressing room made from one), 91 shots,
-3 min 48 s, with the delivered voice-overs.
+Original fictional satire from the *Hearn v White* production pack, upgraded with the v5 pack: Eddie Hearn bans
+Dana White, Dana bribes the laundry attendant and is delivered at Tyson Fury's feet, the two promoters bluff
+themselves into a fight, and one disastrous round ends in a draw that both of them sell as a rematch. Seven scenes,
+eight characters, ten sets, 92 shots, 3 min 50 s, with the recordings you supplied.
 
 | Path | What |
 |---|---|
-| `The_Undercard_PREVIEW_720p.mp4` | the preview: 1280 x 720, 30 fps, 3:48, the full mix |
-| `episode/` | the editable project (copied into the engine as `episodes/the-undercard/`): the script with numbered lines, the pack as delivered (`pack/`), the voice-overs, the production (`film/`: the edit, the shots, the fight, the drawn mouths and eyes, the sound), and `README.md` with what is on screen by time, how it is made and the render steps |
-| `library-overlay/` | the new library files: the eight characters (`characters/<id>/`: the pack's sheets as delivered, a cleaned copy the film cuts from, `film.yaml` listing every drawing), the seven sets (`backgrounds/boxing/`), the twelve props (`props/hearn-white/`), the new sound effects (`audio/sfx/`: boxing bells, punches, whooshes, body falls, crowd cheers and air horn, audience laughs; CC0, credited in `manifest.json`) and the updated indexes |
+| `The_Undercard_PREVIEW_720p.mp4` | the preview: 1280 x 720, 30 fps, 3:50, the full mix |
+| `episode/` | the editable project (copied into the engine as `episodes/the-undercard/`): the v5 script, the packs as delivered (`pack/`, `pack/v5/`), the voice-overs (`voiceovers/v5/`: your new recordings, named by character), the production (`film/`: the edit, the shots, the fight, the mouths, eyes and noses, the sound), and `README.md` with what is on screen by time, how it is made and the render steps |
+| `library-overlay/` | the library files: the eight characters (`characters/<id>/`: the sheets as delivered, the cut drawings, `film.yaml` listing every drawing with its face marks; new in v5: the acting heads, the attendant's steps, the paired fight drawings), the ten sets (`backgrounds/boxing/`: new in v5, the service hall's reverse angle, inside the bin, the red corner), the props, the sound effects and the indexes |
 | `engine-overlay/` | one engine file changed: `tools/index_library.py` (the boxing sets folder) |
 | `setup.sh` | rebuilds the project: AnimnationStuido- at `1213ed0aa2c79bd2da19b4a2230171296a6a67a6`, plus the overlays and the episode |
 
-**Voices.** The delivered recordings are used for every line; there are no stand-ins. Dana's new takes replace his
-first recording (take 1 for every line, "I've entered venues in worse ways" included; take 2 for the cleaner reads
-of "It's boxing, Eddie." and "I want a bigger bin for the rematch."). Tyson Fury's and the attendant's new
-recordings replace the old ones. Details in `episode/README.md`, "Voices".
+**Voices.** Your v5 recordings are used for every new or changed line; lines whose words did not change come from
+the earlier takes. **One line is still a synthetic stand-in: L066, Eddie's "Don't. He's load-bearing."**, which
+is not in Eddie's new file. Send that one line and it drops straight in (details in `episode/README.md`, "Voices").
 
-**This version.**
-- **A real fight ending.** After the clinch they slug it out, and every punch lands: impact stars, flying sweat,
-  heads snapping back, drums speeding up. Then a double knockout: both throw an enormous cross-counter that lands
-  on the same frame (white flash, freeze), and both go over like felled trees, hitting the canvas together. Stars
-  circle their heads, birds tweet and their eyes roll. Saved by the bell, they spring up with their arms raised.
-- **Noses.** Dana and the announcer have proper noses in every drawing (the art had none, or a hairline one).
-- **Arena lighting.** A pool of light on the canvas, beams from the rig, haze and bloom.
-- **Cartoon sound.** Slide whistles, the gong, the spring, the birds, a crowd that holds its breath and erupts.
+**This version (the v5 upgrade).**
+- **The revised script** and the plan's beats: the tape on Eddie's cuff, the abandoned disguise, the shoes, the
+  inside of the bin, the stare-down at the checkpoint, the payment, the silence after "Fine", the preparation, the
+  promoters ducking through the ropes, the exit down the ring steps, the fare card, the end title over the
+  departing trolley.
+- **Close-ups on the new acting heads** for Eddie, Dana, Fury and Joshua, lip-synced and framed in the set.
+- **The attendant walks**: step drawings with the weight on the planted foot, her hands on the handle, the
+  trolley's wheels turning, a brake.
+- **The fall as a chain of causes**: the wheel hits the ramp, her foot braces, the towels lurch, the lid flips,
+  Dana grabs and misses, one arc to the floor, the shoes skid in after him.
+- **Five fight beats** with real contact, using the paired drawings: the ceremony that fizzles out, the probe and
+  the over-deep duck, glove contact each way, the ropes throwing Eddie into a real clinch, and the glove clash,
+  the wobble and both sitting down together before the referee hauls them up. One impact graphic.
+- **The ending on the floor**: they come down the ring steps and the bin waits at ringside, on the arena floor in
+  front of the apron (no more hovering beside the ring).
+- **Checked shot by shot**: every shot was rendered and inspected for noses, mouths, eyes, feet on the floor,
+  scale and framing. Noses were added to Dana lying on the floor and climbing, the referee kept clear of the
+  close-ups, the red corner's fighters set at one depth, the announcer kept out of the decision close-ups, and the
+  close-ups framed so their edges never show.
 
-The visual overhaul before it (still in):
-- **Lighting.** The people are lit by the set they stand in: the room's colour, plus rim light from its lamps on the
-  edges that face them. They no longer look pasted on.
-- **The bin, rebuilt.** Dana rises out of the towels and is thrown out over the front. He lands at Fury's feet and
-  later climbs back in. The bin's canvas is the only thing that ever hides him, so no part of him is cut off or
-  see-through.
-- **Mouths stay on faces.** A drawn mouth is clipped to the face, so it never opens on a glove. The boxing lines are
-  said with the face clear, and the clinch shows both faces.
-- **Two dressing rooms.** Eddie changes in the red corner's room, with a puff of smoke. Dana shadowboxes alone in
-  the blue corner's room down the hall.
-- **Eyes.** Every moving pupil is one clean round pupil. The drawn pupil, and the black wedges the art has in
-  many eye corners, are painted out completely, so there are no black bits. Far eyes in shadow keep their drawing.
-- **Restaged shots.** The trolley passes behind Dana, not through him. Fury points at Dana. Joshua and Eddie walk
-  in. A slow tilt that crept into Dana's stance is gone. The arena referee no longer stands right behind Dana.
+Earlier passes (still in): drawn cartoon mouths clipped to faces, clean single pupils, inked noses, set lighting
+and arena lighting, the real-recording crowd and cartoon sound.
 
-Earlier passes (still in): drawn cartoon mouths, clean drawn pupils, the tighter edit, the real-recording crowd, and
-the choreographed fight.
-
-**The 4K final has not been rendered.** It waits for approval of this preview (steps in `episode/README.md`).
+**The 4K final has not been rendered.** It waits for approval of this preview and the one missing line (steps in
+`episode/README.md`).

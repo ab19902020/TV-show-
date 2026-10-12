@@ -1,9 +1,9 @@
-"""The acting of The Undercard: whom each line is said to, its delivery (studio/film/perf.py TAGS), the words that
-get a nod, and the script's looks and reactions: Dana watching the trolley then looking into the lens for 12 frames,
-the freeze on his eyes, Eddie's four-frame eye dart, both surprised at "Fine.", Eddie's smile with panicking brows,
-Fury and Joshua's disbelieving joy. Mouths come from the recordings (lip sync a frame ahead)."""
+"""The acting of The Undercard (v5): whom each line is said to, its delivery (studio/film/perf.py TAGS) and the words
+that get a nod; the listeners' attention moves on an event, not at random (eye dart, then the head): the guard
+looking from the trolley to her face, Eddie finding the shoe, the towel, the bin and then Dana, the two promoters
+realising what they agreed to, Dana peering up from his over-the-top duck, the exhausted look after the sit-down.
+Mouths come from the recordings (lip sync a frame ahead)."""
 import json
-import math
 
 from studio.film import ep
 from studio.film.perf import Performance
@@ -18,94 +18,86 @@ m, ls, le = T.m, T.ls, T.le
 WHO = ["eddie", "dana", "tyson", "joshua", "announcer", "referee", "attendant", "security"]
 SPK = {w: w for w in WHO}
 META = {
-    "L001": ("smug", "cam", ["elite", "bald", "pussy"]), "L002": ("dry", "eddie", ["banned"]),
-    "L003": ("firm", "security", ["completely", "ticket", "list", "exceptions"]),
-    "L004": ("dry", "eddie", ["buys"]), "L005": ("smug", "security", ["especially", "expense"]),
-    "L006": ("irritated", "cam", ["banned", "boxing", "half", "twelve"]),
-    "L007": ("matter", "cam", ["worse"]),
-    "L008": ("dry", "attendant", ["bin"]), "L009": ("flat", "security", ["towels"]),
-    "L010": ("indignant", "cam", ["premium"]), "L011": ("flat", "security", ["american", "noise"]),
-    "L012": ("dry", "attendant", ["pass"]), "L013": ("flat", "security", ["bin", "mate"]),
-    "L014": ("smug", "cam", ["easy", "easiest"]),
-    "L015": ("casual", "dana", ["little", "heavyweight"]), "L016": ("indignant", "tyson", ["dana", "white"]),
-    "L017": ("casual", "dana", ["taller", "washing"]), "L018": ("annoyed", "tyson", ["help"]),
-    "L019": ("casual", "dana", ["label", "forty", "tumble"]), "L020": ("deadpan", "dana", ["undercard"]),
-    "L021": ("deadpan", "joshua", ["towels"]), "L022": ("quiet", "dana", ["american", "laundry"]),
-    "L023": ("smug", "eddie", ["terrible"]), "L024": ("disbelieving", "dana", ["pillowcase"]),
-    "L025": ("smug", "eddie", ["still"]), "L026": ("firm", "dana", ["banned"]),
-    "L027": ("smug", "eddie", ["ring", "yourself"]), "L028": ("confident", "dana", ["fine"]),
-    "L029": ("explaining", "dana", ["two", "bigger", "medicals", "kicking", "elbows", "wrestling"]),
-    "L030": ("obvious", "eddie", ["boxing", "eddie"]), "L031": ("frustrated", "dana", ["establishing", "geography"]),
-    "L032": ("deadpan", "tyson", ["stop"]), "L033": ("deadpan_happy", "joshua", ["absolutely", "years", "invoice"]),
-    "L034": ("proud", "cam", ["ladies", "special", "additional"]),
-    "L035": ("proud", "cam", ["red", "everything", "eddie", "hearn"]),
-    "L036": ("proud", "cam", ["blue", "laundry", "dana", "white"]),
-    "L037": ("serious", "cam", ["protect", "holding", "biting", "negotiating"]),
-    "L038": ("resigned", "cam", ["half"]), "L039": ("frustrated", "cam", ["go", "podcast"]),
-    "L040": ("indignant", "dana", ["actually", "hit"]), "L041": ("deadpan", "eddie", ["think"]),
-    "L042": ("salesman", "dana", ["commercial"]), "L043": ("exhausted", "eddie", ["tired"]),
-    "L044": ("exhausted", "dana", ["breathe", "demand"]), "L045": ("serious", "cam", ["break"]),
-    "L046": ("deadpan", "tyson", ["hugging", "fighting"]), "L047": ("deadpan_happy", "joshua", ["first", "deal"]),
-    "L048": ("salesman", "dana", ["rematch", "fifty"]), "L049": ("smug", "eddie", ["sixty"]),
-    "L050": ("indignant", "dana", ["bin"]), "L051": ("smug", "eddie", ["sold", "fight"]),
-    "L052": ("proud", "cam", ["round", "draw"]), "L053": ("salesman", "dana", ["unfinished", "immediate"]),
-    "L054": ("smug", "eddie", ["pay", "view"]), "L055": ("deadpan", "tyson", ["still"]),
-    "L056": ("resigned", "joshua", ["supporting", "towels"]), "L057": ("flat", "dana", ["back", "normal"]),
-    "L058": ("annoyed", "eddie", ["bigger"]), "L059": ("salesman", "dana", ["premium", "sponsor"]),
+    "L001": ("proud", "cam", ["fury", "joshua", "biggest", "improved"]), "L002": ("flat", "eddie", ["added"]),
+    "L003": ("pleased", "security", ["nobody", "banned"]), "L004": ("dry", "eddie", ["disguise"]),
+    "L005": ("smug", "security", ["bald", "furious", "parking", "know"]),
+    "L006": ("indignant", "cam", ["banned", "wasn't", "fucking"]),
+    "L007": ("matter", "attendant", ["inside"]), "L008": ("flat", "dana", ["staff"]),
+    "L009": ("flat", "attendant", ["banned"]), "L010": ("flat", "dana", ["no"]),
+    "L011": ("quiet", "attendant", ["five"]), "L012": ("matter", "dana", ["shoes", "clean"]),
+    "L013": ("indignant", "attendant", ["who"]), "L014": ("dry", "dana", ["yes", "five", "free"]),
+    "L015": ("flat", "attendant", ["there"]), "L016": ("flat", "security", ["towels"]),
+    "L017": ("smug", "cam", ["best", "fucking", "business"]), "L018": ("irritated", "dana", ["shut", "towel"]),
+    "L019": ("casual", "dana", ["fuck", "delivered", "promoter"]), "L020": ("resigned", "tyson", ["help"]),
+    "L021": ("deadpan", "dana", ["forty", "tumble"]), "L022": ("deadpan", "dana", ["card"]),
+    "L023": ("deadpan", "joshua", ["no", "floor"]), "L024": ("disbelieving", "dana", ["why", "laundry"]),
+    "L025": ("indignant", "eddie", ["security's", "shit"]), "L026": ("dry", "dana", ["pillowcase"]),
+    "L027": ("smug", "eddie", ["still", "inside"]), "L028": ("defensive", "eddie", ["defence", "laundry"]),
+    "L029": ("cold", "security", ["fucking", "parachutes"]), "L030": ("flat", "dana", ["five"]),
+    "L031": ("firm", "dana", ["out", "main", "cage"]), "L032": ("firm", "eddie", ["ring", "yourself"]),
+    "L033": ("confident", "dana", ["fine"]), "L034": ("awkward", "dana", ["bigger", "shorter", "elbows", "wrestling"]),
+    "L035": ("obvious", "eddie", ["boxing", "eddie"]), "L036": ("pleased", "dana", ["good", "equally"]),
+    "L037": ("sarcastic", "eddie", ["biggest", "boxing"]), "L038": ("salesman", "dana", ["still", "punched", "evening"]),
+    "L039": ("dry", "eddie", ["you"]), "L040": ("awkward", "dana", ["reconsidering"]),
+    "L041": ("quiet", "tyson", ["stop"]), "L042": ("deadpan_happy", "eddie", ["miss", "promoters", "money"]),
+    "L043": ("proud", "cam", ["ladies", "special", "additional"]),
+    "L044": ("proud", "cam", ["red", "expenses", "eddie", "hearn"]),
+    "L045": ("proud", "cam", ["blue", "laundry", "dana", "white"]),
+    "L046": ("serious", "cam", ["holding", "wrestling", "negotiating"]), "L047": ("concerned", "referee", ["generally"]),
+    "L048": ("frustrated", "cam", ["go", "podcast"]), "L049": ("sarcastic", "eddie", ["jab's", "shit"]),
+    "L050": ("defensive", "dana", ["opening"]), "L051": ("annoyed", "eddie", ["hands"]),
+    "L052": ("indignant", "dana", ["are"]), "L053": ("obvious", "eddie", ["chin"]),
+    "L054": ("proud", "dana", ["very", "important"]), "L055": ("indignant", "dana", ["actually", "hit"]),
+    "L056": ("obvious", "eddie", ["fight"]), "L057": ("indignant", "dana", ["photos"]),
+    "L058": ("exhausted", "eddie", ["tired"]), "L059": ("exhausted", "dana", ["building", "anticipation"]),
+    "L060": ("quiet", "eddie", ["draw", "sixty"]), "L061": ("exhausted", "dana", ["sixty"]),
+    "L062": ("smug", "eddie", ["me"]), "L063": ("firm", "dana", ["rather", "punch"]),
+    "L064": ("salesman", "dana", ["fifty", "final"]), "L065": ("serious", "eddie", ["break"]),
+    "L066": ("concerned", "referee", ["load"]), "L067": ("deadpan", "tyson", ["holding"]),
+    "L068": ("deadpan_happy", "joshua", ["partnership", "lawyer"]),
+    "L069": ("proud", "cam", ["round", "draw"]), "L070": ("salesman", "cam", ["unfinished", "rematch"]),
+    "L071": ("salesman", "cam", ["pay", "view"]), "L072": ("deadpan", "tyson", ["still", "fighting"]),
+    "L073": ("resigned", "joshua", ["supporting", "towels"]), "L074": ("flat", "dana", ["return", "grand"]),
+    "L075": ("indignant", "attendant", ["five"]), "L076": ("dry", "dana", ["pay", "view"]),
 }
 BASE = {"eddie": (-0.1, 0.1), "dana": (-0.45, -0.1), "tyson": (0.1, 0.25), "joshua": (-0.05, 0.0),
         "announcer": (0.1, 0.0), "referee": (-0.2, 0.0), "attendant": (-0.25, -0.2), "security": (-0.35, -0.05)}
-bin_dir = ("dir", -0.6, 0.45, -0.15)
-
-
-def rolling(t0, t1, step=0.09, rx=0.95, ry=0.75, ph=0.0):
-    """eyes rolling round and round (out cold, seeing stars)"""
-    out, t, k = [], t0, 0
-    while t < t1:
-        a = ph + k * 0.9
-        out.append((t, min(t1, t + step), ("dir", rx * math.cos(a), ry * math.sin(a), 0.0)))
-        t += step
-        k += 1
-    return out
-
-
-T_DOWN, T_BELL2 = m("fall") + 0.8, m("bell2")
-tdn = m("down")
-REF_LOOKS = [(tdn + 0.75, tdn + 1.05, ("dir", -0.9, 0.7, -0.3)), (tdn + 1.05, tdn + 1.35, ("dir", 0.9, 0.7, 0.3)),
-             (tdn + 1.35, tdn + 1.55, ("dir", -0.9, 0.7, -0.3)), (tdn + 1.55, m("c_ref3"), ("dir", 0.9, 0.7, 0.3)),
-             (m("c_ref3"), T_BELL2 + 0.2, "cam")]
+bin_dir = ("dir", 0.6, 0.6, 0.15)
+shoe_dir = ("dir", 0.15, 0.85, 0.05)
+towel_dir = ("dir", 0.5, 0.5, 0.15)
+rec = m("recog")
 GAZE = {
-    "dana": rolling(T_DOWN, T_BELL2, ph=1.3) + [(m("faceoff"), m("bell2"), "eddie"),
-             (m("trolley"), m("look_cam") - 0.05, "attendant"), (m("look_cam"), le("L007") + 0.3, "cam"),
-             (m("bump"), m("tumble"), "cam"), (m("glance"), m("glance") + 0.5, "eddie")],
-    "eddie": rolling(T_DOWN, T_BELL2) + [(m("faceoff"), m("bell2"), "dana"),
-              (m("dart"), m("dart") + 0.14, bin_dir), (m("dart") + 0.14, m("dart") + 0.28, "dana"),
-              (m("dart") + 0.28, m("dart") + 0.42, "security"), (m("dart") + 0.42, ls("L022"), "dana"),
-              (m("surprise"), m("c_list"), ("dir", 0.0, -0.1, 0.0)), (le("L038") - 1.4, le("L038"), "cam")],
-    "security": [(m("lid"), ls("L011"), "down")],
-    "joshua": [(m("c_aj") - 0.2, m("c_fury4"), "down")],
-    "referee": REF_LOOKS + [(m("bell"), m("c_ann4"), "eddie")],
-    "tyson": [(m("landed"), m("c_aj"), "down")],
+    "security": [(m("c_stare") - 0.1, m("c_stare") + 0.35, "down"), (m("c_stare") + 0.35, m("giveway") + 0.4, "attendant"),
+                 (ls("L015") - 0.2, le("L015") + 0.3, "down")],
+    "attendant": [(m("c_two"), m("c_pivot") - 0.05, ("dir", -0.8, 0.1, -0.3)), (m("c_stare"), m("giveway") + 0.4, "security"),
+                  (m("c_lid"), le("L018"), "down")],
+    "eddie": [(m("c_eddie") + 0.9, rec, shoe_dir), (rec, rec + 0.2, towel_dir), (rec + 0.2, rec + 0.4, bin_dir),
+              (rec + 0.4, ls("L024"), "dana"), (m("silence"), m("c_reg_e") + 0.6, ("dir", 0.0, -0.1, 0.0)),
+              (m("bounce"), m("probe"), "dana"), (m("look"), m("bell2") + 0.3, "dana"),
+              (m("tape") + 0.1, m("admire"), ("dir", -0.6, 0.0, -0.2)), (m("pays") + 0.3, m("pays") + 1.6, "attendant")],
+    "dana": [(m("collar"), ls("L006"), ("dir", 0.7, 0.0, 0.2)), (m("probe") + 0.6, m("probe") + 1.6, ("dir", -0.6, -0.8, -0.2)),
+             (m("silence"), m("c_reg_d") + 0.6, ("dir", 0.0, -0.1, 0.0)), (m("bounce"), m("probe"), "eddie"),
+             (m("look"), m("bell2") + 0.3, "eddie"), (m("c_inbin"), m("c_inbin") + 0.9, ("dir", 0.0, -0.7, 0.0))],
+    "joshua": [(m("c_aj") - 0.2, le("L023"), "down")],
+    "tyson": [(m("land"), m("c_aj"), "down")],
+    "referee": [(m("bell"), m("c_ann4"), "eddie"), (m("look"), m("helpup") + 0.5, "down")],
 }
-FIGHT_FACES = [(m("slug"), m("dko"), -0.9, -0.4, 0.1), (m("dko"), m("impact") + 0.06, -1.0, -0.6, 0.1),
-               (m("impact") + 0.06, m("fall") + 0.4, 1.0, -0.5, 0.05), (T_DOWN, T_BELL2, 0.9, 0.55, 0.15)]
 EXPR = {
-    "referee": [(m("c_ref3"), T_BELL2 + 0.4, 0.95, -0.25, 0.15)],
-    "dana": FIGHT_FACES + [(m("faceoff"), m("ex1"), -0.9, -0.35, 0.2), (m("ex1") + 0.3, m("ex1") + 1.5, 1.0, -0.4, 0.05),
-             (m("ex3a"), m("ex3b"), 0.7, -0.2, 0.05), (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2),
-             (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1), (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3),
-             (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),(m("bump"), m("tumble") + 0.6, 1.0, -0.3, 0.1), (m("surprise"), m("c_list"), 0.95, -0.15, 0.2),
-             (m("c_trolley"), m("climb"), -0.4, -0.2, 0.3)],
-    "eddie": FIGHT_FACES + [(m("faceoff"), m("ex1"), -0.9, -0.3, 0.2), (m("ex2") + 0.3, ls("L040"), 1.0, -0.45, 0.05),
-              (m("ex3b") + 0.4, m("ex3b") + 1.2, 0.85, -0.55, 0.05), (m("ex3c") + 0.6, m("ex3c") + 1.2, 0.9, -0.2, 0.05),
-              (m("ex3d"), m("ex3d") + 1.4, -1.0, -0.5, 0.2), (m("ex3d") + 1.4, m("ex3e") + 1.0, 0.9, -0.3, 0.1),
-              (m("ex3e"), m("c_cl1"), 0.2, -0.4, 0.3), (m("bell2") + 0.3, m("arms") + 1.8, 0.4, 0.8, 0.2),
-              (m("surprise"), m("c_list"), 1.0, -0.2, 0.3), (m("c_eddie"), m("dart") + 0.4, -0.7, -0.3, 0.3)],
-    "security": [(m("lid"), ls("L011"), 0.4, -0.15, 0.3)],
+    "eddie": [(m("c_eddie") + 1.0, ls("L024"), 0.75, -0.35, 0.2), (m("silence"), m("c_reg_e") + 0.6, 0.95, -0.4, 0.3),
+              (m("pays") + 0.2, m("pays") + 1.6, -0.6, -0.4, 0.2), (m("tap") + 1.2, ls("L051"), 0.8, -0.45, 0.1),
+              (m("counter") + 0.6, ls("L055"), 0.95, -0.5, 0.1), (m("windup"), m("clash"), -0.9, -0.5, 0.1),
+              (m("clash"), m("sit"), 0.9, -0.3, 0.1), (m("sit"), m("helpup"), 0.3, -0.4, 0.3),
+              (m("ropes2"), m("clinch"), 0.95, -0.4, 0.1)],
+    "dana": [(m("silence"), m("c_reg_d") + 0.6, 0.9, -0.35, 0.3), (m("probe") + 0.4, m("c_da2"), 0.95, -0.3, 0.1),
+             (m("windup"), m("clash"), -0.9, -0.5, 0.1), (m("clash"), m("sit"), 0.9, -0.3, 0.1),
+             (m("sit"), m("helpup"), 0.3, -0.4, 0.3), (m("card"), ls("L075"), 0.9, -0.4, 0.2)],
+    "security": [(m("c_stare"), m("giveway") + 0.4, 0.3, -0.15, 0.3)],
+    "attendant": [(m("c_stare"), m("giveway") + 0.4, -0.3, -0.1, 0.3)],
 }
-NOBLINK = {"dana": [(m("look_cam"), le("L007") + 0.2), (m("bump"), m("tumble"))],
-           "eddie": [(m("dart"), ls("L022"))]}
-NODS = {"tyson": [(ls("L033") + 0.2, 1, 3.0)], "attendant": [(le("L013") - 0.2, 1, 2.0)]}
+NOBLINK = {"eddie": [(rec, ls("L024"))], "attendant": [(m("c_stare"), m("giveway"))],
+           "security": [(m("c_stare") + 0.35, m("giveway"))], "dana": [(m("look"), m("bell2"))]}
+NODS = {"tyson": [(le("L021") - 0.2, 1, 2.0)], "attendant": [(le("L014") - 0.2, 1, 2.0), (le("L076") - 0.2, 1, 2.0)],
+        "joshua": [(le("L067") - 0.2, 1, 2.0)]}
 
 
 def hold_shapes(track, must=("MBP", "FV")):
@@ -118,11 +110,11 @@ def hold_shapes(track, must=("MBP", "FV")):
         j = i
         while j + 1 < n and tr[j + 1] == tr[i]:
             j += 1
-        L = j - i + 1
-        if tr[i] == "REST" and L <= 2 and 0 < i and j + 1 < n and tr[i - 1] != "REST" and tr[j + 1] != "REST":
+        L_ = j - i + 1
+        if tr[i] == "REST" and L_ <= 2 and 0 < i and j + 1 < n and tr[i - 1] != "REST" and tr[j + 1] != "REST":
             for q in range(i, j + 1):
                 tr[q] = tr[i - 1] if tr[i - 1] not in must else tr[j + 1]
-        elif L == 1 and tr[i] not in must and 0 < i < n - 1 and tr[i] != "REST":
+        elif L_ == 1 and tr[i] not in must and 0 < i < n - 1 and tr[i] != "REST":
             tr[i] = tr[i - 1] if tr[i - 1] != "REST" else tr[i + 1]
         i = j + 1
     return tr

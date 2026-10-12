@@ -1,0 +1,42 @@
+[
+  {
+    "name": "eddie_boxing_parts",
+    "prompt": "Transparent 2D puppet construction sheet for SAME Eddie Hearn cartoon from reference. Tall lean quiff dark beard. Boxing outfit WHITE VEST NAVY SHORTS RED GLOVES BLACK BOOTS. Show ISOLATED separated parts, not repeated full figures. Regular roomy 4x4 grid: head front closed slit mouth; head rightthreequarter closed slit; head profile right closed slit; white vest torso from neck to waist; pelvis navy shorts; left upper arm; left forearm; right upper arm; right forearm; red left glove; red right glove; left thigh; left shin; right thigh; right shin; pair black boots separated with space. Draw complete hidden joints with rounded overlaps, consistent scale, no text no skeleton marks no ground shadows. Bold outlined clean 2D style exactly reference, not 3D. No parts touching cell edges, genuine alpha."
+  },
+  {
+    "name": "dana_boxing_parts",
+    "prompt": "Transparent 2D puppet construction sheet for SAME Dana White bald stocky cartoon reference. BLACK VEST BLACK SHORTS BLUE GLOVES BLACK BOOTS. Show ISOLATED separated parts not repeated full figures. Regular roomy 4x4 grid: bald head front closed slit mouth; head leftthreequarter closed slit; head profile left closed slit; black vest torso neck to waist; pelvis black shorts; left upper arm; left forearm; right upper arm; right forearm; blue left glove; blue right glove; left thigh; left shin; right thigh; right shin; pair black boots separated with space. Complete hidden joints rounded overlaps consistent scale. No text no skeleton marks no ground shadows. Bold outlined clean 2D style reference. Parts not touching cell edges actual transparency.",
+    "correction": "Closed-finger padded blue BOXING gloves with white wrist cuffs; bare upper arms; rounded ankle ends; preserve heads/body/outfit and transparency."
+  },
+  {
+    "name": "eddie_acting_heads",
+    "prompt": "Transparent large head asset sheet 3x2 ONLY six separated Eddie Hearn head and neck portraits, face same reference quiff dark beard. Each includes generous gutter: front smug eyebrows; threequarter right offended disbelief; threequarter right panic sweat small bead; threequarter right exhausted heavy lids; profile right looking suspicious; front eyes closed blink. Every mouth a TINY CLOSED horizontal black slit no lip openings or teeth. Bold clean outlined 2D cartoon same art style. High detail large faces, no bodies no text no background.",
+    "correction": "Background-extraction edit requested genuine alpha with transparent gutters; residual haze remains, see inventory."
+  },
+  {
+    "name": "dana_acting_heads",
+    "prompt": "Transparent large head asset sheet 3x2 ONLY six separated Dana White bald stocky head and neck portraits SAME reference face. Front self-satisfied; threequarter left suspicious; threequarter left embarrassed blush; threequarter left panic tiny sweat bead; threequarter left exhausted heavy lids; front eyes shut blink. Every mouth a TINY CLOSED horizontal black slit no openings teeth. Bold clean outlined 2D cartoon reference. Large high detail faces no bodies no text no background.",
+    "correction": "Background-extraction edit requested genuine alpha with transparent gutters; residual haze remains, see inventory."
+  },
+  {
+    "name": "bg_ring_red_corner",
+    "prompt": "Create a NEW landscape 16:9 animation background plate in exact bold illustrated style lighting palette reference. Empty BOXING RING from red corner at oblique low waist-height angle, red padded post at far left edge, far white red blue ropes behind broad empty canvas foreground, blue corner distant diagonal right, crowd blurry drawn silhouettes, hot overhead white spotlights. Canvas lower 55% clear for fighter action. No foreground near ropes so composited fighters can move. No people in ring no text logos. Different angle from reference; perspective consistent."
+  },
+  {
+    "name": "bg_corridor_reverse",
+    "prompt": "Create NEW landscape 16:9 animation background plate opposite reverse shot of this same gritty arena service corridor, simplified bold comic outlines, same red dark concrete venue warm utility lighting. Camera at waist height, corridor across frame ending loading bay door at left, blank service lift door at rear centre, laundry chute at right, unobstructed wide floor lower half. No football logos no trident marks no writing no people trolley or characters. Usable for reverse eyelines and laundry exit."
+  },
+  {
+    "name": "laundry_attendant_steps",
+    "prompt": "Reference identity ONLY bottom-row woman laundry attendant, KEEP same brown bun Union Jack headscarf tired face grey coveralls black shoes. Transparent regular 4x2 grid 8 fullbody source poses: right-facing stepping left foot contact pushing both hands forward; rightfoot contact pushing hands same handle height; down pose bent knees pushing; passing pose pushing; stop brace with both heels down arms forward; side-eye eyebrow raised at trolley; reaching forward with towel held at waist; pointing toward exit. Every mouth TINY CLOSED black slit. Actually vary legs and knees no identical repeated contact poses, all hands props fully within generous gutters. Bold outlined same 2D art style no text background ground shadows."
+  },
+  {
+    "name": "ringside_reaction_heads",
+    "prompt": "Transparent large 3x2 head-and-shoulders portrait sheet SAME Tyson Fury and Anthony Joshua from reference. Top row Fury bald full beard grey tracksuit three poses: watching right amused raised brow; deadpan eyebrows down looking right; leaning forward eyes wide excitement. Bottom row Joshua short black textured hair navy tracksuit: looking left sceptical; eyes to Fury left unimpressed; face front eyebrow raised disbelief. Every mouth TINY CLOSED black slit, no teeth/open mouths. Exact same bold outlined 2D caricature style. No hands text chairs scenes.",
+    "correction": "Background-extraction edit requested genuine alpha with transparent gutters; residual haze remains, see inventory."
+  },
+  {
+    "name": "bg_inside_laundry",
+    "prompt": "Landscape empty interior laundry trolley POV, towels at edges, dark fabric liner, metal rim and partly open lid, warm light slit, centre space for crouched Dana. Same illustrated style, no people/text."
+  }
+]

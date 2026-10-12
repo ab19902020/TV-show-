@@ -1,7 +1,7 @@
-"""Stand-in voices for The Undercard: the pack has no recordings, so every line is spoken by Kokoro (studio.episode.tts,
-`tools/fetch_models.sh tts`) with a voice per character, the delivery's pace, and the take written to
-voiceovers/<line id>.wav. Replace any file with the actor's recording of the same line (same name) and re-run
-`python3 -m studio.film the-undercard lines`: the whole film retimes to it.
+"""TEMPORARY stand-in voices for The Undercard: a line with no recording yet is spoken by Kokoro (studio.episode.tts,
+`tools/fetch_models.sh tts`) with a voice per character and the delivery's pace, written to
+voiceovers/stand-in/<line id>.wav, so the edit can be timed before the actors' takes arrive. film/lines.py uses a
+stand-in only for a line no recording has, and lists every one it used; the film is not delivered with them.
 
     python3 episodes/the-undercard/tools/stand_in_voices.py [L001 ...]"""
 import re
@@ -17,8 +17,9 @@ VOICE = {   # who: (Kokoro voice, speed)
     "EDDIE": ("bm_george", 1.06), "DANA": ("am_michael", 1.02), "SECURITY": ("bm_fable", 0.96),
     "ATTENDANT": ("bf_emma", 0.92), "TYSON": ("bm_lewis", 1.0), "JOSHUA": ("bm_daniel", 1.0),
     "ANNOUNCER": ("am_onyx", 0.9), "REFEREE": ("am_eric", 1.0)}
-PACE = {"rapid negotiation": 1.22, "whispering": 1.08, "ceremonial": 0.88, "breathless": 0.95, "under breath": 1.1,
-        "immediate bluff": 1.0, "outraged": 1.12, "instantly pitching": 1.15, "flat": 0.92}
+PACE = {"rapid, covering panic": 1.22, "whisper, proposing": 1.05, "serious sports ceremony": 0.88,
+        "breathing hard": 0.95, "breathing hard, inventing excuse": 0.95, "outraged": 1.12, "flat": 0.92,
+        "fast recovery": 1.1, "quick correction": 1.12, "urgent, to ref": 1.12, "without looking": 0.92}
 # said as it should sound (the script's wording is unchanged on screen)
 SAY = [("…", ", "), ("—", ""), ("EDDIE HEARN", "Eddie Hearn"), ("DANA WHITE", "Dana White"), ("Mr White", "Mister White")]
 
@@ -33,7 +34,8 @@ def lines():
 
 def main(only):
     ids = tts.speaker_ids()
-    (EP / "voiceovers").mkdir(exist_ok=True)
+    out = EP / "voiceovers" / "stand-in"
+    out.mkdir(parents=True, exist_ok=True)
     for lid, who, cue, text in lines():
         if only and lid not in only:
             continue
@@ -43,7 +45,7 @@ def main(only):
         for a, b in SAY:
             say = say.replace(a, b)
         x = tts.speak(say, v, sp, ids)
-        sf.write(EP / "voiceovers" / f"{lid}.wav", x, tts.SR, subtype="PCM_16")
+        sf.write(out / f"{lid}.wav", x, tts.SR, subtype="PCM_16")
         print(f"{lid} {who:9s} {len(x) / tts.SR:5.2f}s {text}")
 
 

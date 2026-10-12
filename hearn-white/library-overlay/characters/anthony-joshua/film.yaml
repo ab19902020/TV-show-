@@ -6,3 +6,48 @@ drawings:
   point_down: {sheet: reference/cuts/fury_joshua/point_down.png, box: [0, 0, 200, 504], faces: F, plain: true, from: 'fury_joshua.png [839, 522, 1039, 1026]'}
   crossed: {sheet: reference/cuts/fury_joshua/crossed.png, box: [0, 0, 196, 507], faces: F, marks: {eyes: [[94, 53, 6, 4], [121, 59, 6, 4]], mouth: [82, 83, 105, 84, 93, 83], chin: 100, neck: [97, 120], head: [47, 0, 142, 110]}, from: 'fury_joshua.png [1048, 520, 1244, 1027]', jaw: 1.4}
   seated: {sheet: reference/cuts/fury_joshua/seated.png, box: [0, 0, 198, 373], faces: F, from: 'fury_joshua.png [1246, 656, 1444, 1029]', jaw: 1.4}
+  bust_left:
+    sheet: reference/cuts/acting_heads/bust_left.png
+    box: [0, 0, 518, 507]
+    faces: L
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [243.5, 181.5, 21.5, 9]
+      - [324.5, 164, 14, 9.5]
+      mouth: [264.5, 262, 342.5, 248, 303.5, 253.5]
+      chin: 337
+      neck: [255, 380]
+      head: [130, 6, 396, 341]
+    from: ringside_heads.png (v5 pack)
+  bust_mid:
+    sheet: reference/cuts/acting_heads/bust_mid.png
+    box: [0, 0, 477, 506]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [170.5, 159.5, 17.5, 9.5]
+      - [250.5, 171.5, 21, 9.5]
+      mouth: [151.5, 242.5, 228.5, 252.5, 190, 245.5]
+      chin: 330
+      neck: [248, 378]
+      head: [103, 6, 383, 334]
+    from: ringside_heads.png (v5 pack)
+  bust_right:
+    sheet: reference/cuts/acting_heads/bust_right.png
+    box: [0, 0, 524, 512]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [218, 160, 18.5, 10.5]
+      - [299, 171, 19.5, 9.5]
+      mouth: [204, 243, 284, 253, 244, 246]
+      chin: 329
+      neck: [250, 375]
+      head: [130, 6, 393, 333]
+    from: ringside_heads.png (v5 pack)

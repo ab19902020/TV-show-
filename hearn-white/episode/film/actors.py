@@ -120,6 +120,10 @@ def sheet_fac(key):
     if key in DRAWING:
         return DRAWING[key]
     cid, name = key.split(":")
+    if name.startswith("bust_"):
+        return bust_geom(key)[0]
+    if name.startswith("pair_"):
+        return PAIR_FAC * (PAIR_WHO[cid] if cid in PAIR_WHO else 1.0)
     sheet = CAST.spec(cid)["drawings"][name].get("sheet", "")
     stem = sheet.split("/")[-2] if "/cuts/" in sheet else sheet.split("/")[-1].replace("-clean.png", "")
     return SHEET.get(stem, 1.0)
@@ -129,7 +133,13 @@ def sheet_fac(key):
 def feet_mid(key):
     """where a drawing stands (sheet px): halfway between its feet (the middle of the bottom 12 % of the figure)
     and its lowest point. The engine's foot finder takes the lowest sole only, which in a boxing stance (one boot
-    lower than the other) puts the anchor on one foot and makes the body jump sideways between poses"""
+    lower than the other) puts the anchor on one foot and makes the body jump sideways between poses.
+    A close-up bust stands on the feet its body would have; both halves of a two-person drawing on one point"""
+    name = key.split(":")[1]
+    if name.startswith("bust_"):
+        return bust_geom(key)[1]
+    if name.startswith("pair_"):
+        return PAIRS[name[5:]]
     d, _ = CAST.get(key)
     a = d.u8[1.0][..., 3] > 128
     ys, xs = np.nonzero(a)
@@ -137,6 +147,41 @@ def feet_mid(key):
     band = ys > bot - 0.12 * (bot - top)
     x = (xs[band].min() + xs[band].max()) / 2.0
     return (float(x / d.S + d.ox), float(bot / d.S + d.oy))
+
+
+# ---------------------------------------------------------------- v5: busts and two-person drawings
+# The acting heads (reference/cuts/acting_heads, bust_*) are drawn far larger than the full figures' heads: in a
+# close-up a bust stands in for its character, its head the size and in the place the standing figure's head would
+# be (from the head marks of the bust and of the figure's "front" drawing), so a cut from a medium shot to a
+# close-up keeps the eyeline and the screen position.
+BUST_REF = {}                                   # character -> the standing drawing a bust is matched to
+
+
+@functools.lru_cache(maxsize=64)
+def bust_geom(key):
+    """-> (sheet factor, feet (bust px)) of a bust drawing"""
+    cid, name = key.split(":")
+    rk = f"{cid}:{BUST_REF.get(cid, 'front')}"
+    rd, _ = CAST.get(rk)
+    bd, _ = CAST.get(key)
+    rh, bh = rd.spec["head"], bd.spec["head"]
+    sf = sheet_fac(rk)
+    f = (rh[3] - rh[1]) * sf / (bh[3] - bh[1])
+    rfx, rfy = feet_mid(rk)
+    rcx, rcy = (rh[0] + rh[2]) / 2, (rh[1] + rh[3]) / 2
+    bcx, bcy = (bh[0] + bh[2]) / 2, (bh[1] + bh[3]) / 2
+    return f, (bcx + (rfx - rcx) * sf / f, bcy + (rfy - rcy) * sf / f)
+
+
+# The paired fight drawings (reference/cuts/pairs, pair_*: a jab landing on a guard each way, the glove clash, the
+# clinch) are split into an Eddie layer and a Dana layer on one canvas; both are drawn on the same point at the
+# same scale, so together they are the drawing, and each speaks with its own face. PAIRS: that point (canvas px,
+# the middle of the pair's feet); PAIR_FAC: canvas px -> Eddie's casual-sheet px (the pair sheet draws them a
+# little less big-headed than the boxing sheet: matched between head size and height); Dana's layer is drawn by
+# Dana's height, so his factor carries the ratio of their heights back out.
+PAIRS = {"tap_e": (264.5, 485.0), "tap_d": (261.5, 480.0), "clash": (299.0, 501.0), "clinch": (208.0, 496.0)}
+PAIR_FAC = 0.92
+PAIR_WHO = {"dana-white": (191 / 357) / (170 / 347)}
 
 
 def ppc(s, y):
@@ -190,7 +235,7 @@ def life(it, key, t):
     """what keeps a standing person alive between their poses -> (degrees, x scale, y scale) about the feet:
     breathing (a 0.7 % rise every 3.4 s, each on their own rhythm), a slow shift of weight from foot to foot, and
     the settle when a pose lands: a quick stretch that overshoots once and comes to rest in a quarter second"""
-    if it.get("still") or key.split(":")[1] in STILL_POSES:
+    if it.get("still") or key.split(":")[1] in STILL_POSES or key.split(":")[1].startswith("pair_"):
         return 0.0, 1.0, 1.0
     ph = PHASE[it["who"]]
     b = math.sin(2 * math.pi * t / 3.4 + ph)
@@ -357,6 +402,7 @@ def scene(img, s, t, M, sc):
         img = things.flashes(img, s, t, M, sc, fl[0], fl[1], seed=fl[2] if len(fl) > 2 else 1)
     lay = np.zeros((OH, OW, 4), np.float32)
     s["_heads"] = {}
+    s["_M"] = M
     for it in items:
         if "fn" in it:
             getattr(things, it["fn"])(lay, s, it, t, M, sc)
@@ -390,6 +436,7 @@ def scene(img, s, t, M, sc):
             (HX, HY), (FX, FY) = T_(hx, hy), T_(fx_, fy_)
             n_ = max(1e-3, float(np.hypot(HX - FX, HY - FY)))
             s["_heads"][it["who"]] = (HX, HY, hr * float(np.hypot(Ms[0, 0], Ms[1, 0])), ((HX - FX) / n_, (HY - FY) / n_))
+            s.setdefault("_mats", {})[it["who"]] = (Ms, key)
             fr = front_layer(key)
             if fr is not None:                                     # the mic back over the moving mouth
                 c, (sx0, sy0), S_ = fr
@@ -443,6 +490,16 @@ LIGHT = {
     "S": dict(amb=(0.97, 0.95, 1.05), amt=0.25, exp=0.98,
               rims=[((-1.0, -0.5), (1.0, 0.30, 0.28), 0.40), ((1.0, -0.5), (0.30, 0.45, 1.0), 0.40),
                     ((0.0, -1.0), (1.0, 1.0, 1.0), 0.20)]),
+    # v5: the service hall (sodium lamps on red walls), the red corner (the rig white, red left, blue right), and
+    # inside the bin (dark, the light only from the lid's gap above)
+    "Q": dict(amb=(1.12, 0.94, 0.82), amt=0.40, exp=0.96,
+              rims=[((0.0, -1.0), (1.0, 0.86, 0.62), 0.40), ((-1.0, -0.3), (1.0, 0.38, 0.22), 0.30),
+                    ((1.0, -0.3), (1.0, 0.55, 0.30), 0.24)]),
+    "K": dict(amb=(0.94, 0.96, 1.08), amt=0.25, exp=1.0,
+              rims=[((-1.0, -0.4), (1.0, 0.28, 0.25), 0.50), ((1.0, -0.4), (0.30, 0.45, 1.0), 0.45),
+                    ((0.0, -1.0), (1.0, 1.0, 1.0), 0.24)]),
+    "I": dict(amb=(0.72, 0.70, 0.78), amt=0.55, exp=0.72,
+              rims=[((0.0, -1.0), (1.0, 0.86, 0.60), 0.55)]),
 }
 
 
@@ -485,6 +542,8 @@ STAGE = {
     "A": dict(pool=(836, 640, 560, 120, 0.14, 0.24), haze=0.05, bloom=0.20,
               beams=[(420, 640, 650, 200), (836, 836, 650, 220), (1250, 1030, 650, 200)]),
     "S": dict(pool=(836, 900, 900, 320, 0.08, 0.16), haze=0.03, bloom=0.16, beams=[]),
+    "K": dict(pool=(760, 760, 760, 260, 0.14, 0.26), haze=0.05, bloom=0.20,
+              beams=[(380, 520, 900, 380), (900, 860, 900, 340), (1400, 1180, 900, 380)]),
 }
 
 
@@ -526,3 +585,52 @@ def stage_light(img, s, t, M, sc):
     bloom = cv2.GaussianBlur(bright, (0, 0), 6)
     img = img + (1 - img) * up_(bloom) * g["bloom"]
     return np.clip(img, 0, 1)
+
+
+# ---------------------------------------------------------------- v5: the series title over the first moving shot
+def _install_titles():
+    """caption kinds "series" (the title and tagline over the opening action) and "end" (the end title over the
+    departing trolley): drawn like the title card's lettering, with a soft shadow, over the picture"""
+    from PIL import Image, ImageDraw
+    from studio.film import graphics as G
+    if getattr(G, "_undercard_titles", False):
+        return
+    orig = G.caption_layer
+
+    def caption_layer(kind, a, b):
+        if kind not in ("series", "end"):
+            return orig(kind, a, b)
+        im = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
+        dr = ImageDraw.Draw(im)
+        S = RS
+        big, small = (150, 62) if kind == "series" else (120, 54)
+        y = int((760 if kind == "series" else 90) * S)
+        fa, fb = G.font(G.BEBAS, big * S), G.font(G.BEBAS, small * S)
+        wa, wb = dr.textlength(a, font=fa), dr.textlength(b, font=fb)
+        dr.text(((OW - wa) / 2, y), a, font=fa, fill=(255, 255, 255, 255))
+        ry = y + int((big + 18) * S)
+        dr.rectangle((OW / 2 - 230 * S, ry, OW / 2 + 230 * S, ry + 7 * S), fill=G.RED + (255,))
+        dr.text(((OW - wb) / 2, ry + int(20 * S)), b, font=fb, fill=G.RED + (255,))
+        return G.premult(im)
+
+    G.caption_layer = functools.lru_cache(maxsize=32)(caption_layer)
+    orig_caps = G.captions
+
+    def captions(img, t, caps):
+        out = []
+        for c in caps:
+            if c[2] in ("series", "end") and c[0] <= t < c[1]:
+                lay = G.caption_layer(c[2], c[3], c[4])
+                k = G.sm((t - c[0]) / 0.3) * (1 - G.sm((t - (c[1] - 0.3)) / 0.3))
+                sh = G.shadow_of(lay, 10, (0, 5), 0.55)
+                img = img * (1 - sh[..., None] * k)
+                img = img * (1 - lay[..., 3:4] * k) + lay[..., :3] * k
+            elif c[2] not in ("series", "end"):
+                out.append(c)
+        return orig_caps(img, t, out)
+
+    G.captions = captions
+    G._undercard_titles = True
+
+
+_install_titles()

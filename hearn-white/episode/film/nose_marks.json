@@ -1,0 +1,67 @@
+{
+ "prone": {
+  "tip": [
+   188.7,
+   89.6
+  ],
+  "u": 40.1,
+  "turn": 0
+ },
+ "climb": {
+  "tip": [
+   186.9,
+   98.2
+  ],
+  "u": 35.8,
+  "turn": 1
+ },
+ "w0": {
+  "skip": true
+ },
+ "w1": {
+  "skip": true
+ },
+ "w2": {
+  "skip": true
+ },
+ "w3": {
+  "skip": true
+ },
+ "w4": {
+  "skip": true
+ },
+ "w5": {
+  "skip": true
+ },
+ "w6": {
+  "skip": true
+ },
+ "w7": {
+  "skip": true
+ },
+ "cover": {
+  "skip": true
+ },
+ "crouch_guard": {
+  "skip": true
+ },
+ "tumble1": {
+  "tip": [
+   108.8,
+   109.3
+  ],
+  "u": 37.5,
+  "turn": 1
+ },
+ "tumble2": {
+  "skip": true
+ },
+ "tumble3": {
+  "tip": [
+   121.4,
+   143.4
+  ],
+  "u": 37.6,
+  "turn": 1
+ }
+}

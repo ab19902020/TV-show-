@@ -1,8 +1,10 @@
-"""The Undercard's soundtrack: the voices (the two lines from inside the bin muffled), each set's room, the foley the
-picture asks for, and an arena that reacts: the crowd bed dips under every line, swells ("roars") on near misses and
-the one real hit, cheers the introductions, laughs at the windmill, the spin and the slow-motion double miss, and goes
-quiet for the face-off (one cough). Real boxing bells, punches, whooshes and body falls (library/audio/sfx, CC0), a
-two-second sting before the announcer, and fight music that stops dead at the first embarrassing glove tap.
+"""The Undercard's soundtrack (v5): the voices (Dana's boast from inside the bin muffled), each set's room, the foley
+the picture asks for (the tape, the trolley's wheels and brake, the shoes, the lid, the fall told as a chain of
+sounds: the wheel's knock, the lid, the cloth, the landing, the shoes skidding on), and an arena that reacts: the bed
+dips under every line, swells for the entrance, laughs at the ducking and the towel, goes quiet when nobody throws
+anything (one cough), and gives the glove clash and the sit-down their moment. A fanfare at the bell that stops
+dead when the bouncing does; a sting under the title and the end title. Real boxing bells, punches, whooshes and
+body falls (library/audio/sfx, CC0).
 python3 -m studio.film the-undercard sound -> build/episode_audio.wav (-16 LUFS)"""
 import json
 import math
@@ -15,14 +17,14 @@ from studio.film import ep
 from studio.film.shots import Marks
 
 from film import crowdfx as C
-from film.direction import SB, SLUG, Dn, E
+from film.direction import E, Dn, DK, EK
 from film.timeline import TL
 
 L = json.loads(ep.path("lines.json").read_text())
 T = Marks(TL, L)
 m, ls, le, wt = T.m, T.ls, T.le, T.wt
 SR = A.SR
-MUFFLED = {"L010": 900, "L058": 1100}           # from inside the bin: the towels take the top off
+MUFFLED = {"L017": 900}                      # from inside the bin: the towels take the top off
 ARENA = m("c_arena")
 
 
@@ -37,9 +39,9 @@ def dialogue(bus):
         lvl = -20.0
         if lid in MUFFLED:
             y = A.lp(y, MUFFLED[lid], 4).astype(np.float32)
-            lvl = -24.0
-        if lid == "L014":
-            lvl = -22.5
+            lvl = -23.0
+        if lid in ("L060", "L018"):                  # whispered, hissed
+            lvl = -22.0
         y = np.clip(A.at_level(y, lvl), -0.95, 0.95)
         bus.add(y, v["start"])
         arena = v["start"] >= ARENA
@@ -117,29 +119,42 @@ def boing(dur=0.6, f=180.0):
     return (y * A.fade(n, 0.003, 0.05)).astype(np.float32)
 
 
+
+def tape_peel(dur=0.38, seed=9):
+    """parcel tape pulled off a board: a dense crackle that thins out"""
+    rng = np.random.default_rng(seed)
+    n = int(dur * SR)
+    out = np.zeros(n, np.float32)
+    t = 0
+    while t < n - 200:
+        k = int(rng.integers(40, 160))
+        burst = rng.standard_normal(k).astype(np.float32) * np.hanning(k).astype(np.float32)
+        out[t:t + k] += burst * rng.uniform(0.4, 1.0)
+        t += int(rng.integers(30, 90) * (1 + 2.5 * t / n))
+    out = A.bp(out, 900, 7000, 2).astype(np.float32)
+    return out * A.fade(n, 0.005, 0.08)
+
+
 # ---------------------------------------------------------------- the arena crowd
+LOUD = [("bounce", "slow"), ("probe", "c_da2"), ("tap", "c_da3"), ("counter", "c_ed_ind"), ("advance", "clinch"),
+        ("windup", "look"), ("bell2", "c_ann4")]
+
+
 def crowd_gain(a, b):
-    """the bed: dips under every line, near silence for the face-off, up for the action"""
+    """the bed: dips under every line, near silence when nobody throws anything, up for the action"""
     spans = [(v["start"] - 0.15, v["end"] + 0.2) for v in TL["lines"].values() if a <= v["start"] < b]
-    action = [(m("ex1"), m("c_ed7")), (m("c_ex3"), m("c_cl1")), (m("slug"), m("dko")), (m("bell2"), m("c_ann4"))]
+    action = [(m(x), m(y)) for x, y in LOUD]
 
     def g(tt):
-        out = np.ones_like(tt, dtype=np.float32)
+        out = np.ones_like(tt)
         for s0, s1 in spans:
-            r = np.clip(np.minimum((tt - s0) / 0.25, (s1 - tt) / 0.35), 0, 1)
-            out = out * (1 - 0.62 * r)
+            out = np.minimum(out, np.interp(tt, [s0 - 0.25, s0, s1, s1 + 0.35], [1.0, 0.42, 0.42, 1.0]))
         for s0, s1 in action:
-            r = np.clip(np.minimum((tt - s0) / 0.3, (s1 - tt) / 0.4), 0, 1)
-            out = out * (1 + 0.5 * r)
-        out *= np.interp(tt, [a, a + 1.6, m("faceoff"), m("faceoff") + 0.3, m("c_ty1") - 0.1, m("c_ty1") + 0.6],
-                         [0.3, 1.0, 1.0, 0.1, 0.1, 0.8])
-        # slow motion: the room drops away while the haymakers swing
-        out *= np.interp(tt, [m("ex3d"), m("ex3d") + 0.3, m("ex3d") + 1.5, m("ex3d") + 1.8], [1.0, 0.35, 0.35, 1.0])
-        # the wind-up: the room holds its breath; the freeze on the impact; then it erupts
-        out *= np.interp(tt, [m("dko"), m("dko") + 0.25, m("impact"), m("impact") + 0.05, m("impact") + 0.35,
-                              m("fall") + 0.5], [1.0, 0.35, 0.35, 0.05, 0.05, 1.4])
-        out *= np.interp(tt, [m("down") + 0.3, m("c_dstars"), m("c_ref3"), m("bell2")], [1.4, 0.8, 0.5, 0.5])
-        out *= np.interp(tt, [m("c_end"), m("black")], [1.0, 0.4])
+            out = np.maximum(out, np.interp(tt, [s0, s0 + 0.3, s1 - 0.2, s1], [0.0, 1.25, 1.25, 0.0]) * (out > 0))
+        out *= np.interp(tt, [m("slow") + 0.3, m("silence2"), m("c_ty1"), m("c_ty1") + 0.8], [1.0, 0.18, 0.18, 1.0])
+        out *= np.interp(tt, [m("clinch"), m("clinch") + 1.0, m("c_aj2"), m("sep")], [1.0, 0.55, 0.55, 1.0])
+        out *= np.interp(tt, [m("look"), m("look") + 0.1, m("bell2"), m("bell2") + 0.1], [1.0, 0.35, 0.35, 1.0])
+        out *= np.interp(tt, [m("c_steps"), m("c_bin") + 0.5, m("black")], [1.0, 0.55, 0.3])
         return out
     return g
 
@@ -147,177 +162,178 @@ def crowd_gain(a, b):
 def ambience(bus):
     A.bed(bus, "ambience/room-tone-hvac", m("open"), m("c_bay"), -50, lowpass=3000, fin=0.3)
     A.bed(bus, "crowd/crowd-large", m("open"), m("c_bay"), -44, lowpass=900, fin=0.3)      # the arena, beyond the wall
-    A.bed(bus, "ambience/rain-concrete", m("c_bay"), m("c_track"), -46, lowpass=5000)
-    A.bed(bus, "ambience/street-distant", m("c_bay"), m("c_track"), -44)
-    A.bed(bus, "ambience/room-tone-hvac", m("c_track"), ARENA, -44, lowpass=2400)
-    A.bed(bus, "crowd/crowd-large", m("c_track"), m("c_prep"), -48, lowpass=600)
-    A.bed(bus, "crowd/crowd-large", m("c_prep"), ARENA, -45, lowpass=700)
-    A.bed(bus, "crowd/crowd-large", ARENA, m("black"), -26, gain_fn=crowd_gain(ARENA, m("black")), fin=0.6, fout=0.05)
+    A.bed(bus, "ambience/street-distant", m("c_bay"), m("c_inbin"), -44)
+    A.bed(bus, "ambience/rain-concrete", m("c_bay"), m("c_inbin"), -47, lowpass=5000)
+    A.bed(bus, "ambience/street-distant", m("c_inbin"), m("c_check"), -50, lowpass=500)     # heard through the bin
+    A.bed(bus, "ambience/room-tone-hvac", m("c_check"), ARENA, -44, lowpass=2400)
+    A.bed(bus, "crowd/crowd-large", m("c_check"), ARENA, -48, lowpass=650)
+    A.bed(bus, "crowd/crowd-large", ARENA, m("black"), -26, gain_fn=crowd_gain(ARENA, m("black")), fin=0.8, fout=0.05)
 
 
 def reactions(bus):
-    """the arena reacting to what happens"""
-    # the arena opens: air horns and a cheer
-    A.ev(bus, "crowd/air-horn", ARENA + 0.25, -30, pan=-0.5)
-    put(bus, C.cheer(3.5, seed=3), ARENA + 0.2, -27)
-    # "EDDIE HEARN!": a mixed cheer and laugh;  "DANA WHITE!": the bigger cheer, horns
-    put(bus, C.cheer(3.0, seed=4), le("L035") - 0.2, -26)
-    put(bus, C.laugh(2.4, seed=5), le("L035") + 0.1, -31)
-    put(bus, C.cheer(3.2, seed=6), le("L036") - 0.2, -25)
-    A.ev(bus, "crowd/air-horn", le("L036") + 0.3, -31, pan=0.6)
-    # the fight
-    put(bus, C.roar(1.8, seed=11), m("ex1") + 0.42, -25)                 # Eddie's jab misses by a mile
-    put(bus, C.laugh(2.2, seed=12), m("ex1") + 0.95, -28)               # the windmill
-    put(bus, C.laugh(1.8, seed=13), m("ex2") + 0.55, -31)               # the tap
-    put(bus, C.roar(1.6, seed=14, cheer=0.4), m("ex3a") + 0.6, -27)     # the flurry
-    put(bus, C.roar(2.4, seed=15, cheer=1.0), m("ex3b") + 0.45, -22)    # the one that lands
-    put(bus, C.cheer(2.5, seed=16), m("ex3b") + 0.6, -28)
-    put(bus, C.roar(1.6, seed=17), m("ex3c") + 0.42, -25)               # the wild cross
-    put(bus, C.laugh(2.2, seed=18), m("ex3c") + 0.75, -28)              # the spin
-    # slow motion: the whole room pitched down and dulled, then it snaps back with a laugh
-    slow = A.varispeed(C.roar(1.5, seed=19).astype(np.float32), -7.0)
-    put(bus, A.lp(slow, 900, 2).astype(np.float32), m("ex3d") + 0.6, -26)
-    put(bus, C.laugh(2.6, seed=20), m("ex3d") + 1.55, -26)
-    put(bus, C.laugh(2.0, seed=21), m("sep") + 0.6, -30)                # they lean back in
-    # the slugfest: the roar builds with every punch that lands
-    put(bus, C.roar(3.2, seed=30, cheer=0.9), m("slug") + 0.4, -24)
-    put(bus, C.roar(2.0, seed=31, cheer=1.0), m("slug") + 2.0, -23)
-    # the double knockout: a huge roar a beat after the freeze, a laugh at the two of them flat out
-    put(bus, C.roar(3.0, seed=32, cheer=1.0), m("impact") + 0.35, -20)
-    put(bus, C.laugh(3.0, people=24, seed=33), m("down") + 0.3, -24)
-    put(bus, C.cheer(3.5, seed=22), m("bell2") + 0.3, -25)
-    put(bus, C.laugh(2.4, seed=23), m("arms") + 0.3, -29)
-    put(bus, C.laugh(2.6, seed=24), le("L052") + 0.1, -27)              # "a draw!"
-    put(bus, C.cheer(3.0, seed=25), le("L052") + 0.2, -29)
-    put(bus, C.laugh(2.4, seed=26), m("climb") + 0.6, -29)              # Dana climbs into the bin
+    put(bus, C.cheer(3.0, seed=40), ARENA + 0.3, -26)
+    put(bus, C.laugh(2.0, seed=41), m("ropes") + 0.4, -30)               # ducking through the ropes, badly
+    put(bus, C.cheer(2.2, seed=42), le("L044") + 0.05, -26)
+    put(bus, C.laugh(2.4, seed=43), le("L045") - 0.4, -27)               # "...by laundry delivery"
+    put(bus, C.laugh(1.8, seed=44), m("towel") + 0.9, -30)               # can't grab the towel in gloves
+    put(bus, C.cheer(2.4, seed=45), m("bounce") + 0.1, -26)
+    put(bus, C.laugh(2.4, seed=46), le("L048") + 0.05, -27)
+    put(bus, C.roar(1.4, seed=47), m("probe") + 0.6, -28)
+    put(bus, C.laugh(2.2, seed=48), m("probe") + 1.0, -28)               # the duck
+    put(bus, C.laugh(1.6, seed=49), m("tap") + 1.25, -31)
+    put(bus, C.laugh(2.0, seed=50), le("L054") + 0.1, -30)
+    put(bus, C.laugh(2.4, seed=51), le("L057") + 0.05, -27)              # the photos
+    put(bus, C.roar(2.0, seed=52, cheer=0.6), m("advance") + 0.4, -25)
+    put(bus, C.roar(1.4, seed=53), m("ropes2") + 0.05, -26)
+    put(bus, C.laugh(2.6, seed=54), m("clinch") + 0.2, -29)
+    put(bus, C.laugh(2.4, seed=55), le("L068") + 0.05, -28)
+    put(bus, C.roar(2.2, seed=56, cheer=0.9), m("windup") + 0.3, -24)
+    put(bus, C.roar(1.6, seed=57, cheer=1.0), m("clash") + 0.05, -21)
+    put(bus, C.laugh(3.2, people=24, seed=58), m("sit") + 0.35, -24)     # both sit down
+    put(bus, C.cheer(2.6, seed=59), m("bell2") + 0.2, -27)
+    put(bus, C.laugh(2.0, seed=60), le("L069") + 0.05, -29)
+    put(bus, C.laugh(2.2, seed=61), le("L071") + 0.05, -29)
 
 
 def fight(bus):
     bell = A.clip("sport/boxing-bell")
-    put(bus, A.room(bell.mean(1) if bell.ndim == 2 else bell, 1.2, 0.3), m("bell") + 0.03, -19)
-    put(bus, A.room(bell.mean(1) if bell.ndim == 2 else bell, 1.2, 0.3), m("bell2") + 0.03, -19)
+    bell = bell.mean(1) if bell.ndim == 2 else bell
+    put(bus, A.room(bell, 1.2, 0.3), m("bell") + 0.03, -19)
+    put(bus, A.room(bell, 1.2, 0.3), m("bell2") + 0.03, -19)
     whooshes = ["whoosh/whoosh-a", "whoosh/whoosh-b", "whoosh/whoosh-c", "whoosh/whoosh-d"]
-    for k, (t, kind, reach) in enumerate(sorted(E.sfx + Dn.sfx)):
+    for k, (t, kind, reach) in enumerate(sorted(E.sfx + Dn.sfx + EK.sfx + DK.sfx)):
         name = whooshes[k % 4]
         if kind == "whoosh_slow":
             y = A.varispeed(A.clip(name).mean(1) if A.clip(name).ndim == 2 else A.clip(name), -9.0)
             put(bus, y, t - 0.15, -27, pan=-0.2 if k % 2 else 0.2)
         else:
-            A.ev(bus, name, t, -28 if reach > 80 else -31, pan=-0.25 if k % 2 else 0.25,
+            A.ev(bus, name, t, -29 if reach > 80 else -32, pan=-0.25 if k % 2 else 0.25,
                  semis=1.5 if reach < 70 else -1.0)
-    # the glove tap: a squeak and a tiny thud
-    A.ev(bus, "creaks/creak-small", m("ex2") + 0.36, -24, semis=14, highpass=1200, dur=0.2)
-    A.ev(bus, "impacts/punch-c", m("ex2") + 0.36, -33, lowpass=2500)
-    # the one that lands: a real punch, the body thud under it
-    A.ev(bus, "impacts/punch-a", m("ex3b") + 0.43, -17)
-    A.ev(bus, "impacts/punch-d", m("ex3b") + 0.45, -22, semis=-4, lowpass=3000)
-    A.ev(bus, "cloth/cloth-b", m("ex3b") + 0.47, -32)
-    # ducks, stumbles, spins: cloth and feet
-    for t in (m("ex3a") + 0.2, m("ex3a") + 0.62, m("ex3a") + 1.04, m("ex3c") + 0.3):
-        A.ev(bus, "cloth/cloth-%s" % "acef"[int(t * 10) % 4], t, -34, pan=0.3)
-    for t in (m("ex3b") + 0.62, m("ex3b") + 0.8, m("ex3b") + 0.98, m("ex3c") + 0.6, m("ex3c") + 0.72):
-        A.ev(bus, "footsteps/step-%s" % "ab"[int(t * 10) % 2], t, -36, pan=-0.3)
-    A.ev(bus, "foley/body-fall-b", m("ex3e") + 0.95, -32)                # they fall into each other
-    A.ev(bus, "cloth/cloth-e", m("sep") + 0.1, -34)
-    A.ev(bus, "cloth/cloth-a", m("sep") + 1.4, -34)
-    A.ev(bus, "foley/body-fall-a", m("sep") + 1.45, -35)
-    # the slugfest: every punch lands
-    for k, (dt, A_, pose, wind) in enumerate(SLUG):
-        t = m("slug") + dt + 0.06
-        A.ev(bus, "impacts/punch-%s" % "abcdef"[k % 6], t, -19, pan=0.2 if A_ is E else -0.2, semis=(k % 3) - 1)
-        A.ev(bus, "cloth/cloth-%s" % "bdf"[k % 3], t + 0.03, -33)
-    # the wind-up: a slide whistle climbing with the trembling; the cross-counter: two punches on one frame
-    put(bus, slide_whistle(300, 1300, m("impact") - m("dko") - 0.2), m("dko") + 0.2, -30)
-    for nm, sm in (("impacts/punch-a", -2), ("impacts/punch-d", -5)):
-        A.ev(bus, nm, m("impact") + 0.06, -14, semis=sm)
-    A.ev(bus, "impacts/gong-big", m("impact") + 0.06, -26, semis=4)
-    # the fall: a slide whistle down, both bodies hit the canvas together, the ring boards boom
-    put(bus, slide_whistle(1400, 220, 0.75), m("fall"), -28)
-    for nm, pn in (("foley/body-fall-a", -0.4), ("foley/body-fall-b", 0.4)):
-        A.ev(bus, nm, m("fall") + 0.75, -17, pan=pn)
-    A.ev(bus, "impacts/tom-hit", m("fall") + 0.75, -20, semis=-9)
-    # out cold: birds tweeting round their heads until the bell; saved by it, they spring up: boing
-    put(bus, A.room(tweets(m("bell2") - m("fall") - 0.8), 0.6, 0.2), m("fall") + 0.85, -31)
-    put(bus, boing(0.6, 170), m("bell2") + 0.03, -25, pan=-0.3)
-    put(bus, boing(0.6, 210), m("bell2") + 0.06, -25, pan=0.3)
+    A.steps(bus, m("bounce"), m("slow") + 0.8, -38, pace=0.48, lowpass=1800)     # bouncing on the canvas
+    A.ev(bus, "cloth/cloth-c", m("probe") + 0.45, -33)                          # the duck
+    # the glove contacts: a soft pop and a leather squeak, never a smack
+    for t in (m("tap") + 0.28, m("tap") + 0.88, m("counter") + 0.3):
+        A.ev(bus, "impacts/punch-c", t, -29, lowpass=2600)
+        A.ev(bus, "creaks/creak-small", t + 0.01, -27, semis=14, highpass=1200, dur=0.18)
+    A.steps(bus, m("advance") + 0.1, m("ropes2") - 0.1, -36, pace=0.28, lowpass=2000)
+    A.ev(bus, "creaks/creak-long", m("ropes2") + 0.02, -24, semis=-3, dur=0.7)  # the ropes take his weight
+    put(bus, boing(0.55, 150), m("ropes2") + 0.3, -27)
+    A.ev(bus, "whoosh/whoosh-b", m("recoil") + 0.05, -27, semis=-2)
+    A.ev(bus, "foley/body-fall-b", m("clinch") - 0.02, -30)
+    A.ev(bus, "cloth/cloth-e", m("clinch") + 0.05, -32)
+    A.ev(bus, "cloth/cloth-a", m("lift") + 0.02, -33)
+    A.ev(bus, "cloth/cloth-b", m("lift") + 0.42, -33)
+    A.ev(bus, "cloth/cloth-f", m("sep") + 0.3, -31)
+    # the glove clash: the one big contact
+    A.ev(bus, "impacts/punch-a", m("clash") + 0.02, -17)
+    A.ev(bus, "impacts/punch-d", m("clash") + 0.03, -22, semis=-4, lowpass=3000)
+    A.ev(bus, "creaks/creak-short", m("wobble") + 0.1, -30, semis=-6)
+    put(bus, slide_whistle(900, 260, 0.5), m("sit") - 0.05, -31)
+    for d, nm, pn in ((0.22, "foley/body-fall-a", -0.3), (0.24, "foley/body-fall-b", 0.3)):
+        A.ev(bus, nm, m("sit") + d, -21, pan=pn)                                 # two bottoms, one thump
+    A.ev(bus, "cloth/cloth-c", m("helpup") + 0.3, -32)
+    A.ev(bus, "cloth/cloth-d", m("helpup") + 0.6, -32)
 
 
 def foley(bus):
-    # the press area
-    A.ev(bus, "cloth/cloth-a", wt("L001", "not") - 0.12, -44, pan=-0.1)
-    # the loading bay: the trolley rolls past, left to right, and the attendant's steps
-    squeaks(bus, m("trolley") - 0.3, m("look_cam") + 0.5, -36, pan=-0.8, pan_to=0.8)
-    A.steps(bus, m("trolley") - 0.2, m("look_cam") + 0.4, -42, pace=0.42, pan=-0.7, pan_to=0.7)
-    A.ev(bus, "cloth/cloth-c", m("c_shoe") + 0.2, -34)
-    A.ev(bus, "cloth/cloth-e", m("c_shoe") + 0.7, -32)
-    A.ev(bus, "cloth/cloth-b", m("c_shoe") + 0.95, -34)
-    # the corridor
-    squeaks(bus, m("c_track"), m("c_track") + 1.7, -33, pan=-0.6, pan_to=0.0)
-    A.steps(bus, m("c_track"), m("c_track") + 1.7, -42, pace=0.4, pan=-0.5, pan_to=0.0)
-    A.ev(bus, "cloth/cloth-d", ls("L010") + 0.05, -38)
-    A.ev(bus, "cloth/cloth-f", le("L010") - 0.1, -40)
-    A.ev(bus, "foley/cup-down", m("lid") + 0.3, -32, semis=-9, lowpass=3000)
-    A.ev(bus, "foley/pen-click-b", m("lid") + 0.32, -38, semis=-12)
-    squeaks(bus, m("aside"), m("bump"), -34, pan=0.0, pan_to=0.4)
-    A.steps(bus, m("aside"), m("bump"), -43, pace=0.42, pan=-0.1, pan_to=0.3)
-    # the cable protector: the bump, the freeze, the tumble, the landing
-    A.ev(bus, "impacts/tom-hit", m("bump"), -24, semis=-5)
-    A.ev(bus, "foley/cup-down", m("bump") + 0.02, -30, semis=-14)
-    A.ev(bus, "whoosh/whoosh-b", m("tumble") + 0.05, -30, semis=-3)
-    A.ev(bus, "cloth/cloth-a", m("tumble") + 0.05, -32)
-    A.ev(bus, "cloth/cloth-e", m("tumble") + 0.5, -32)
-    A.ev(bus, "foley/body-fall-a", m("tumble") + 0.9, -24)
-    A.ev(bus, "cloth/cloth-b", m("tumble") + 0.97, -30)
-    A.ev(bus, "cloth/cloth-d", m("tumble") + 1.02, -34)                 # the towel lands on his head
-    A.ev(bus, "cloth/cloth-c", m("landed") + 0.6, -36)
-    # Eddie walks in, stops
-    A.steps(bus, m("c_eddie"), m("c_eddie") + 1.6, -38, pace=0.5, pan=-0.6, pan_to=-0.4)
-    A.steps(bus, ls("L025") - 0.15, m("c_neg") + 0.3, -40, pace=0.45, pan=-0.4, pan_to=0.0)   # over to Dana
-    A.steps(bus, m("c_aj") - 0.75, m("c_aj") + 0.15, -41, pace=0.45, pan=0.8, pan_to=0.5)     # Joshua
-    A.ev(bus, "cloth/cloth-d", m("c_eddie") + 1.2, -40)
-    A.ev(bus, "cloth/cloth-f", m("c_neg") + 0.4, -38)
-    A.ev(bus, "cloth/cloth-a", m("c_neg") + 1.05, -40)
-    # the red corner's room: Eddie's quick change in a puff;  the blue corner's: Dana's shadowboxing, then puffing
-    A.ev(bus, "whoosh/whoosh-a", m("c_prep") + 0.6, -32, semis=4)
-    A.ev(bus, "cloth/cloth-e", m("c_prep") + 0.66, -34)
-    A.ev(bus, "cloth/cloth-b", m("c_prep") + 0.8, -36)
-    for i, (t, kind, reach) in enumerate(sorted(SB.sfx)):
-        A.ev(bus, "whoosh/whoosh-%s" % "cdab"[i % 4], t, -34, pan=0.1, semis=3)
-        A.ev(bus, "cloth/cloth-%s" % "acef"[i % 4], t + 0.04, -42)
-    A.ev(bus, "footsteps/step-a", m("c_prep2") + 1.55, -40)
-    # the face-off: one cough in the silence
-    bus.add(A.at_level(cough(), -31), m("cough") + 0.1, 1.0, 0.4)
-    # the exit: the trolley comes in, the climb, the roll-out, and the last squeak
-    squeaks(bus, m("c_trolley"), m("c_trolley") + 2.0, -33, pan=-0.7, pan_to=0.0)
-    A.ev(bus, "cloth/cloth-c", m("climb") + 0.6, -32)
-    A.ev(bus, "foley/body-fall-b", m("climb") + 1.2, -33, lowpass=1500)
-    squeaks(bus, m("rollout"), m("c_end") + 1.0, -32, pan=0.0, pan_to=0.9)
-    A.ev(bus, "creaks/creak-small", m("c_end") + 1.2, -30, semis=11, highpass=900, dur=0.25, pan=0.9)
+    from film import direction as D
+    # the press area: the tape, his shoes stepping back
+    put(bus, tape_peel(), m("tape") + 0.2, -27)
+    A.ev(bus, "paper/paper-short", m("admire") - 0.12, -36)
+    A.steps(bus, m("admire"), m("admire") + 0.9, -38, pace=0.42)
+    # the bay: the trolley in, her steps, the brake
+    squeaks(bus, D.tb0, D.tb1, -35, pan=-0.8, pan_to=0.1)
+    A.steps(bus, D.tb0, D.tb1, -41, pace=0.48, pan=-0.7, pan_to=0.0)
+    A.steps(bus, D.tb0, D.tb1, -43, pace=0.47, pan=-0.8, pan_to=0.3)          # Dana alongside
+    A.ev(bus, "impacts/tom-hit", D.tb1, -31, semis=-12, lowpass=900)          # the brake: clunk
+    A.ev(bus, "foley/cup-down", D.tb1 + 0.02, -31, semis=-14)
+    ts = m("shoes")
+    for t in (ts + 0.1, ts + 1.15):
+        A.ev(bus, "cloth/cloth-b", t, -36)
+    for t in (ts + 0.68, ts + 1.73):
+        A.ev(bus, "foley/cup-down", t, -30, semis=-10, lowpass=1500)          # a shoe into the towels
+    A.ev(bus, "footsteps/step-a", ts + 0.55, -38)
+    A.ev(bus, "footsteps/step-b", ts + 0.8, -38)
+    A.ev(bus, "cloth/cloth-c", m("climb_in") + 0.3, -32)
+    A.ev(bus, "foley/body-fall-b", m("climb_in") + 0.85, -33, lowpass=1500)
+    A.ev(bus, "doors/door-shut", m("climb_in") + 1.25, -34, lowpass=2500)     # the lid
+    # inside the bin
+    A.ev(bus, "cloth/cloth-a", m("c_inbin") + 0.2, -30)
+    A.ev(bus, "doors/door-shut", m("c_inbin") + 1.25, -28, lowpass=700)
+    # the checkpoint
+    squeaks(bus, D.tq0, D.tq1, -34, pan=0.8, pan_to=0.1)
+    A.steps(bus, D.tq0, D.tq1, -41, pace=0.5, pan=0.7, pan_to=0.1)
+    A.ev(bus, "creaks/creak-mid", m("c_lid") + 0.05, -31, semis=4)            # she leans on the lid
+    A.steps(bus, D.tg - 0.3, D.tg + 0.5, -40, pace=0.45, pan=-0.2)            # he steps aside
+    squeaks(bus, D.tg, D.tg + 2.0, -35, pan=0.1, pan_to=-0.8)
+    A.steps(bus, D.tg, D.tg + 2.0, -42, pace=0.5, pan=0.1, pan_to=-0.7)
+    # the delivery
+    squeaks(bus, D.tr0 - 0.2, D.t_hit, -33, pan=-0.6, pan_to=0.0)
+    A.steps(bus, D.tr0 - 0.2, D.t_hit, -41, pace=0.45, pan=-0.5, pan_to=0.0)
+    A.ev(bus, "impacts/tom-hit", D.t_hit, -24, semis=-5)                      # the wheel hits the ramp
+    A.ev(bus, "foley/cup-down", D.t_hit + 0.02, -29, semis=-14)
+    A.ev(bus, "footsteps/step-b", D.t_br + 0.02, -33)                         # her braced foot
+    A.ev(bus, "cloth/cloth-e", D.t_br + 0.1, -31)                             # the towels lurch
+    A.ev(bus, "creaks/creak-short", D.t_br + 0.15, -30, semis=2)              # the lid flips
+    A.ev(bus, "cloth/cloth-a", D.t_gr + 0.1, -32)                             # the grab
+    A.ev(bus, "whoosh/whoosh-b", D.t_tu + 0.05, -30, semis=-3)
+    A.ev(bus, "foley/body-fall-a", D.t_la, -25)
+    A.ev(bus, "cloth/cloth-b", D.t_la + 0.06, -31)
+    A.ev(bus, "foley/cup-down", D.t_la + 0.06, -31, semis=-8)                 # the shoes land and skid
+    A.ev(bus, "paper/paper-short", D.t_la + 0.1, -37, semis=-6)
+    A.ev(bus, "foley/cup-down", D.t_la + 0.11, -33, semis=-6)
+    A.ev(bus, "paper/paper-short", D.t_la + 0.2, -38, semis=-8)
+    A.ev(bus, "cloth/cloth-d", D.t_la + 0.36, -33)                            # the towel lands on his head
+    A.ev(bus, "footsteps/step-a", D.t_la + 0.05, -36)                         # Fury steps back
+    A.ev(bus, "footsteps/step-b", D.t_la + 0.25, -37)
+    A.steps(bus, D.aj_t0, D.aj_t0 + 0.8, -41, pace=0.45, pan=0.8, pan_to=0.5)  # Joshua
+    A.steps(bus, m("c_eddie") + 0.05, m("c_eddie") + 1.25, -38, pace=0.5, pan=-0.6, pan_to=-0.3)
+    A.steps(bus, ls("L025") + 0.1, ls("L026") - 0.15, -40, pace=0.45, pan=-0.3, pan_to=0.0)
+    A.ev(bus, "paper/paper-handle", m("pays") + 0.25, -33)                    # the notes
+    A.ev(bus, "paper/paper-short", m("pays") + 1.2, -34)
+    A.steps(bus, ls("L032") - 0.2, ls("L032") + 0.2, -39, pace=0.2)            # Dana steps in
+    # preparation
+    A.ev(bus, "whoosh/whoosh-a", m("c_jacket") + 0.1, -31, semis=4)
+    A.ev(bus, "cloth/cloth-e", m("c_jacket") + 0.15, -33)
+    A.ev(bus, "creaks/creak-small", m("c_strap") + 0.12, -28, semis=6, highpass=900, dur=0.2)   # the strap
+    A.ev(bus, "cloth/cloth-b", m("c_strap") + 0.1, -33)
+    t_ph = wt("L036", "both")
+    A.ev(bus, "foley/cup-down", t_ph + 0.45, -32, semis=6)                    # the phone hits the floor
+    # the arena: the ropes, the towel
+    A.ev(bus, "cloth/cloth-c", m("ropes") + 0.2, -34)
+    A.ev(bus, "cloth/cloth-a", m("ropes") + 0.35, -34)
+    A.ev(bus, "cloth/cloth-d", m("towel") + 0.3, -33)
+    bus.add(A.at_level(cough(), -30), m("silence2") + 0.45, 1.0, 0.4)
+    # the exit: down the steps, the bin, the card, in he goes, off they go
+    A.steps(bus, m("c_steps"), m("c_bin") + 0.5, -38, pace=0.32)
+    A.ev(bus, "paper/paper-handle", m("card") + 0.03, -30)
+    A.ev(bus, "foley/clap-single", m("card") + 0.05, -29)                     # the card slapped on
+    A.ev(bus, "cloth/cloth-c", m("climb2") + 0.6, -32)
+    A.ev(bus, "foley/body-fall-b", m("climb2") + 1.05, -33, lowpass=1500)
+    A.ev(bus, "doors/door-shut", m("climb2") + 1.4, -33, lowpass=2500)
+    squeaks(bus, m("depart") - 0.1, m("black") + 0.3, -32, pan=-0.2, pan_to=0.9)
+    A.steps(bus, m("depart") - 0.1, m("black"), -41, pace=0.5, pan=-0.2, pan_to=0.8)
 
 
 def music(bus):
-    # the title card: the sting and the boom
+    # under the series title
     y = A.title_sting(2.6)
     y *= A.fade(len(y), 0.05, 0.8)[:, None]
-    bus.add(A.at_level(y, -24), 0.0)
-    bus.add(A.at_level(A.big_boom(0.8), -18), 0.05)
+    bus.add(A.at_level(y, -27), m("open") + 0.3)
     # two seconds of sting before the announcer
     y = A.title_sting(2.4)
     y *= A.fade(len(y), 0.25, 0.5)[:, None]
     bus.add(A.at_level(y, -22), ARENA)
-    # the slugfest: the drums come back, faster and faster, and stop dead on the cross-counter
-    t, k = m("slug") + 0.2, 0
-    while t < m("impact"):
-        A.ev(bus, "impacts/tom-hit", t, -28 if k % 2 == 0 else -33, semis=-3 + min(5, k // 4))
+    # the fanfare at the bell: drums under the confident bouncing, gone the moment Dana slows
+    t, k = m("bell") + 0.5, 0
+    while t < m("slow") + 0.2:
+        A.ev(bus, "impacts/tom-hit", t, -28 if k % 2 == 0 else -34, semis=-3 if k % 4 else -1)
         k += 1
-        t += max(0.12, 0.34 - 0.012 * k)
-    # fight music: a drum pulse from the bell to the first embarrassing glove tap, then nothing
-    a, b = m("bell") + 0.6, m("ex2") + 0.36
-    t, k = a, 0
-    while t < b:
-        A.ev(bus, "impacts/tom-hit", t, -29 if k % 2 == 0 else -35, semis=-3 if k % 4 else -1)
-        k += 1
-        t += 0.4
+        t += 0.36
+    # the end title
+    y = A.title_sting(2.8)
+    y *= A.fade(len(y), 0.1, 0.9)[:, None]
+    bus.add(A.at_level(y, -25), m("depart") + 0.4)
 
 
 def main():

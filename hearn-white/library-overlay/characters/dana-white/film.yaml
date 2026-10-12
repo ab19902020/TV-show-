@@ -43,3 +43,125 @@ drawings:
   w5: {sheet: reference/cuts/dana_walk/w5.png, box: [0, 0, 234, 452], faces: R, plain: true, from: 'dana_walk.png [518, 475, 752, 927]'}
   w6: {sheet: reference/cuts/dana_walk/w6.png, box: [0, 0, 279, 452], faces: R, plain: true, from: 'dana_walk.png [886, 476, 1165, 928]'}
   w7: {sheet: reference/cuts/dana_walk/w7.png, box: [0, 0, 296, 451], faces: R, plain: true, from: 'dana_walk.png [1297, 476, 1593, 927]'}
+  bust_smug:
+    sheet: reference/cuts/acting_heads/bust_smug.png
+    box: [0, 0, 421, 500]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [147, 210, 29.5, 16.5]
+      - [280, 209, 29.5, 16.5]
+      mouth: [145, 312.5, 281.5, 303, 213, 312]
+      chin: 415
+      neck: [205, 465]
+      head: [9, 6, 413, 419]
+    from: acting_heads.png (v5 pack)
+  bust_side:
+    sheet: reference/cuts/acting_heads/bust_side.png
+    box: [0, 0, 418, 501]
+    faces: R
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [213, 221, 31, 13.5]
+      - [330, 196, 20, 16.5]
+      mouth: [237, 324, 349, 296, 294, 306.5]
+      chin: 409
+      neck: [238, 455]
+      head: [8, 6, 399, 413]
+    from: acting_heads.png (v5 pack)
+  bust_blush:
+    sheet: reference/cuts/acting_heads/bust_blush.png
+    box: [0, 0, 425, 501]
+    faces: R
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [213.5, 225, 32, 18.5]
+      - [328.5, 205, 22, 17.5]
+      mouth: [236, 337.5, 349, 311, 293, 319.5]
+      chin: 425
+      neck: [240, 462]
+      head: [8, 6, 407, 429]
+    from: acting_heads.png (v5 pack)
+  bust_panic:
+    sheet: reference/cuts/acting_heads/bust_panic.png
+    box: [0, 0, 441, 513]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [102, 182, 22.5, 24]
+      - [213.5, 199.5, 31, 24]
+      mouth: [75.5, 303.5, 185, 329, 130, 305.5]
+      chin: 415
+      neck: [190, 465]
+      head: [24, 6, 430, 419]
+    from: acting_heads.png (v5 pack)
+  bust_tired:
+    sheet: reference/cuts/acting_heads/bust_tired.png
+    box: [0, 0, 440, 511]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [242, 228.5, 31.5, 8.5]
+      - [354, 206, 22.5, 7.5]
+      mouth: [267.5, 340, 378, 312, 322, 315.5]
+      chin: 421
+      neck: [250, 465]
+      head: [18, 6, 426, 425]
+    from: acting_heads.png (v5 pack)
+  bust_wince:
+    sheet: reference/cuts/acting_heads/bust_wince.png
+    box: [0, 0, 422, 516]
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [157, 219.5, 35, 4]
+      - [276, 216.5, 35, 4]
+      mouth: [154.5, 336.5, 277.5, 334.5, 216, 323.5]
+      chin: 433
+      neck: [214, 475]
+      head: [6, 6, 415, 437]
+    from: acting_heads.png (v5 pack)
+  pair_tap_e:
+    sheet: reference/cuts/pairs/tap_e.png
+    box: [0, 0, 520, 505]
+    faces: L
+    plain: true
+    from: paired_fight_reference.png (matted, split per fighter)
+  pair_tap_d:
+    sheet: reference/cuts/pairs/tap_d.png
+    box: [0, 0, 516, 505]
+    faces: L
+    plain: true
+    from: paired_fight_reference.png (matted, split per fighter)
+  pair_clash:
+    sheet: reference/cuts/pairs/clash.png
+    box: [0, 0, 600, 524]
+    faces: L
+    plain: true
+    from: paired_fight_reference.png (matted, split per fighter)
+  pair_clinch:
+    sheet: reference/cuts/pairs/clinch.png
+    box: [0, 0, 425, 524]
+    faces: L
+    drawn_pupils: true
+    jaw: 1.2
+    marks:
+      eyes:
+      - [214, 166, 11, 4]
+      mouth: [180, 181, 203, 191, 192, 187]
+      chin: 208
+      neck: [215, 214]
+      head: [168, 100, 278, 210]
+    from: paired_fight_reference.png (matted, split per fighter)

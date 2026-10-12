@@ -1,77 +1,94 @@
-# THE UNDERCARD — Hearn v White
+# THE UNDERCARD — Hearn v White (v5)
 
-Original fictional comedy. Invented event, invented dialogue. Full direction: `pack/script/DIRECTORS_SCRIPT.md`.
-Deliveries in brackets are performance cues, never spoken.
+Original fictional comedy. Invented event, invented dialogue. Direction: `pack/v5/REVISED_SCRIPT.md` and
+`pack/v5/SHOT_AND_ANIMATION_PLAN.md`. Deliveries in brackets are performance cues, never spoken.
 
-## SCENE 1 — The ban (press area, loading bay)
-[L001] EDDIE: (polished, pleased with himself) Tonight is about two elite heavyweights. Not a bald American turning up and calling everybody a pussy.
-[L002] SECURITY: (dry) So Mr White's banned?
-[L003] EDDIE: (firm) Completely. No ticket. No guest list. No exceptions.
-[L004] SECURITY: And if he buys a ticket?
-[L005] EDDIE: Especially then. I don't want him enjoying himself at my expense.
-[L006] DANA: (irritated) He banned me? From boxing? Half the people in there don't even like boxing. They're there because their table cost twelve grand.
-[L007] DANA: (matter-of-fact) I've entered venues in worse ways.
+## SCENE 1 — Eddie's ban (press area, loading bay)
+[L001] EDDIE: (confident, presenting) Fury. Joshua. The biggest night in boxing. And I've already improved the undercard.
+[L002] SECURITY: (flat) Who've you added?
+[L003] EDDIE: (pleased) Nobody. I've banned Dana White.
+[L004] SECURITY: What if he comes in disguise?
+[L005] EDDIE: (dismissive) Bald head. Furious. Looks like he's arguing with a parking meter. You'll know.
+[L006] DANA: (offended) He banned me? I wasn't even coming. Now I'm fucking coming.
 
-## SCENE 2 — The world's angriest towel (corridor)
-[L008] SECURITY: What's in the bin?
-[L009] ATTENDANT: (flat) Towels.
-[L010] DANA: (muffled, offended) Premium towels.
-[L011] ATTENDANT: American machine. Makes a noise.
-[L012] SECURITY: Does it need a pass?
-[L013] ATTENDANT: It's a bin, mate.
-[L014] DANA: (whispering) Easy. Easiest entrance I've ever—
+## SCENE 2 — Laundry infiltration (loading bay, corridor)
+[L007] DANA: (businesslike) Can you get me inside?
+[L008] ATTENDANT: (without looking) Staff entrance.
+[L009] DANA: I'm banned.
+[L010] ATTENDANT: Then no.
+[L011] DANA: (quiet offer) Five hundred.
+[L012] ATTENDANT: (instant decision) Shoes off. Don't sit on the clean ones.
+[L013] DANA: (insulted) Do you know who I am?
+[L014] ATTENDANT: Yes. That's why it's five hundred. Towels go in free.
+[L015] SECURITY: (looking down) What's in there?
+[L016] ATTENDANT: Towels.
+[L017] DANA: (muffled, unable to resist) The best towels in the fucking business.
+[L018] ATTENDANT: (hissed through lid) Shut up. You're a towel.
 
-## SCENE 3 — Fury finds a promoter (corridor)
-[L015] TYSON: (casual amusement) Fuck me. They've delivered a little heavyweight.
-[L016] DANA: (trying to regain authority) I'm Dana White.
-[L017] TYSON: I know. I thought you were taller when you weren't in the washing.
-[L018] DANA: Help me up.
-[L019] TYSON: What's the label say? Forty degrees. No tumble drying.
-[L020] JOSHUA: Is this the undercard?
-[L021] TYSON: Dunno. It came with the towels.
-[L022] EDDIE: (quiet fury) Why is there an American in my laundry?
-[L023] DANA: (standing, towel still on shoulder) Your security's terrible.
-[L024] EDDIE: You're wearing a pillowcase.
-[L025] DANA: And I still got in.
+## SCENE 3 — The delivery (corridor)
+[L019] TYSON: (casual surprise) Fuck me. They've delivered a promoter.
+[L020] DANA: (dignity dented) Help me up.
+[L021] TYSON: (reading imaginary label on towel) Forty degrees. No tumble drying.
+[L022] JOSHUA: (arriving, looking down) Is he on the card?
+[L023] TYSON: No. He's on the floor.
+[L024] EDDIE: (low disbelief) Why is Dana White in my laundry?
+[L025] DANA: (stands too fast, regains balance) Your security's shit.
+[L026] EDDIE: You're wearing a pillowcase.
+[L027] DANA: And I'm still inside.
+[L028] SECURITY: (offering explanation) In my defence, the poster didn't mention laundry.
+[L029] EDDIE: (staring) It didn't mention fucking parachutes either.
+[L030] ATTENDANT: (hand out) Five hundred.
 
-## SCENE 4 — Negotiations (corridor, dressing room)
-[L026] EDDIE: You were banned.
-[L027] DANA: Put me in the ring and ban me yourself.
-[L028] EDDIE: (immediate bluff) Fine.
-[L029] EDDIE: (rapid negotiation) Two-minute rounds. Bigger gloves. Medicals. No kicking. No elbows. No wrestling.
-[L030] DANA: It's boxing, Eddie.
-[L031] EDDIE: Just establishing that before you turn it into a fucking geography lesson on martial arts.
-[L032] JOSHUA: (to Fury) Should we stop them?
-[L033] TYSON: Absolutely not. I've been waiting years for promoters to take a punch on their own invoice.
+## SCENE 4 — The challenge and preparation (corridor, dressing rooms)
+[L031] EDDIE: (controlled) Out. Before you turn my main event into an argument about cage sizes.
+[L032] DANA: (steps close) Put me in the ring. Throw me out yourself.
+[L033] EDDIE: (blurts bluff) Fine.
+[L034] EDDIE: (rapid, covering panic) Bigger gloves. Shorter rounds. No elbows. No wrestling.
+[L035] DANA: It's boxing, Eddie.
+[L036] EDDIE: Good. We're both equally unqualified.
+[L037] DANA: (mocking) What happened to the biggest night in boxing?
+[L038] EDDIE: (fast recovery) Still is. You being punched improves any evening.
+[L039] DANA: By you?
+[L040] EDDIE: That's the part I'm reconsidering.
+[L041] JOSHUA: (quiet, to Fury) Shall we stop this?
+[L042] TYSON: (eyes still on them) And miss two promoters working for their money?
 
-## SCENE 5 — Special announcement (arena)
-[L034] ANNOUNCER: (ceremonial) Ladies and gentlemen! A special announcement! One additional contest has been added to tonight's card!
-[L035] ANNOUNCER: In the red corner… a man who has negotiated absolutely everything except a way out of this… EDDIE HEARN!
-[L036] ANNOUNCER: And in the blue corner… entering by express laundry delivery… DANA WHITE!
-[L037] REFEREE: Protect yourselves at all times. No holding. No biting. No negotiating.
-[L038] EDDIE: (under breath) That's half my game gone.
+## SCENE 5 — The additional contest (arena)
+[L043] ANNOUNCER: (serious sports ceremony) Ladies and gentlemen! A special announcement! One additional contest has been added to tonight's card!
+[L044] ANNOUNCER: In the red corner… a man desperately checking whether this counts as expenses… Eddie Hearn!
+[L045] ANNOUNCER: (ceremonial) And in the blue corner… entering by laundry delivery… DANA WHITE!
+[L046] REFEREE: (stern) No holding. No wrestling. No negotiating.
+[L047] EDDIE: (genuine concern) During the round, or generally?
 
-## SCENE 6 — The fight (ring)
-[L039] TYSON: Go on! It's not a podcast!
-[L040] EDDIE: (outraged) You actually fucking hit me!
-[L041] DANA: What did you think this was?
-[L042] EDDIE: A commercial opportunity!
-[L043] DANA: (breathless) You tired?
-[L044] EDDIE: (breathless denial) I'm letting it breathe. Builds demand.
-[L045] REFEREE: Break!
-[L046] JOSHUA: They're hugging more than they're fighting.
-[L047] TYSON: That's the first deal they've agreed on.
-[L048] EDDIE: Rematch. Fifty-fifty.
-[L049] DANA: Sixty-forty.
-[L050] EDDIE: You came in a bin.
-[L051] DANA: And sold the fucking fight.
+## SCENE 6 — One disastrous round (ring)
+[L048] TYSON: (shouting from seat) Go on! It's not a fucking podcast!
+[L049] DANA: (mocking, after the missed probe) Your jab's shit.
+[L050] EDDIE: (defensive) It's an opening offer.
+[L051] DANA: Put your hands up!
+[L052] EDDIE: They are up!
+[L053] DANA: That's your chin.
+[L054] EDDIE: It's a very important chin.
+[L055] EDDIE: (indignant) You actually fucking hit me!
+[L056] DANA: (obvious) It's a fight!
+[L057] EDDIE: I thought we'd do the photos first!
+[L058] DANA: (breathing hard) You're tired.
+[L059] EDDIE: (breathing hard, inventing excuse) I'm building anticipation.
+[L060] DANA: (whisper, proposing) Call it a draw. Sixty-forty.
+[L061] EDDIE: Who gets sixty?
+[L062] DANA: Me.
+[L063] EDDIE: (summons last energy) I'd rather take another punch.
+[L064] EDDIE: (quick correction) Fifty-fifty. That's my final offer.
+[L065] REFEREE: Break!
+[L066] EDDIE: (urgent, to ref) Don't. He's load-bearing.
+[L067] JOSHUA: They're holding each other up.
+[L068] TYSON: First partnership either of them's made without a lawyer.
 
-## SCENE 7 — Decision and callback (ring, corridor)
-[L052] ANNOUNCER: After one round… the result is a draw!
-[L053] EDDIE: Unfinished business. Immediate rematch.
-[L054] DANA: Pay-per-view.
-[L055] JOSHUA: (to Fury) Are we still fighting?
-[L056] TYSON: Apparently we're supporting the towels now.
-[L057] ATTENDANT: You getting back in, or walking out like a normal prick?
-[L058] DANA: (muffled) I want a bigger bin for the rematch.
-[L059] EDDIE: (instantly pitching) Premium package. We'll put a sponsor on it.
+## SCENE 7 — Decision and series button (ring, arena floor)
+[L069] ANNOUNCER: (trying to stay professional) After one round… a draw!
+[L070] EDDIE: (immediate sales mode despite exhaustion) Unfinished business. Immediate rematch.
+[L071] DANA: Pay-per-view.
+[L072] JOSHUA: (to Fury) Are we still fighting?
+[L073] TYSON: Apparently we're supporting the towels.
+[L074] ATTENDANT: (deadpan) Return journey's a grand.
+[L075] DANA: (outraged) You said five hundred!
+[L076] ATTENDANT: That was before you were pay-per-view.

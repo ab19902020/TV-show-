@@ -1,0 +1,154 @@
+[
+  {
+    "name": "eddie_boxing_parts.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "corner": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_fraction": 0.6665102306604398
+  },
+  {
+    "name": "dana_boxing_parts.png",
+    "size": [
+      1448,
+      1086
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "corner": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_fraction": 0.6500946247062056
+  },
+  {
+    "name": "eddie_acting_heads.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "corner": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "transparent_fraction": 0.4629586537679036
+  },
+  {
+    "name": "dana_acting_heads.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "corner": [
+      41,
+      21,
+      11,
+      0
+    ],
+    "transparent_fraction": 0.3777446746826172
+  },
+  {
+    "name": "bg_ring_red_corner.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_extrema": null,
+    "corner": [
+      78,
+      3,
+      12
+    ],
+    "transparent_fraction": 0
+  },
+  {
+    "name": "bg_corridor_reverse.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_extrema": null,
+    "corner": [
+      70,
+      28,
+      12
+    ],
+    "transparent_fraction": 0
+  },
+  {
+    "name": "laundry_attendant_steps.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "corner": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "transparent_fraction": 0.5495094494063696
+  },
+  {
+    "name": "ringside_reaction_heads.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      254
+    ],
+    "corner": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "transparent_fraction": 0.4132010142008464
+  },
+  {
+    "name": "bg_inside_laundry.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  }
+]

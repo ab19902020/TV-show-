@@ -397,3 +397,256 @@ def stars(lay, s, it, t, M, sc):
         col = col * (1 - e[..., None]) + np.float32(INK) / 255 * e[..., None]
         al = np.maximum(m, e) * fade
         _over(lay, x0, y0, col, al)
+
+
+# ---------------------------------------------------------------- v5 props: flat colour, ink outline, drawn in code
+def _shapes(lay, M, sc, shapes, ss=4):
+    """polygons in plate px [(points, fill rgb 0-1, alpha, ink width plate px or 0)] rasterised supersampled"""
+    S = [np.stack([M[0, 0] * np.float32(p)[:, 0] + M[0, 2], M[1, 1] * np.float32(p)[:, 1] + M[1, 2]], 1)
+         for p, *_ in shapes]
+    allp = np.concatenate(S)
+    pad = 8 + max(w for *_, w in shapes) * sc
+    x0, y0 = np.floor(allp.min(0) - pad).astype(int)
+    x1, y1 = np.ceil(allp.max(0) + pad).astype(int)
+    x0, y0 = max(0, x0), max(0, y0)
+    x1, y1 = min(lay.shape[1], x1), min(lay.shape[0], y1)
+    if x1 <= x0 + 1 or y1 <= y0 + 1:
+        return
+    hh, ww = (y1 - y0) * ss, (x1 - x0) * ss
+    img = np.zeros((hh, ww, 3), np.float32)
+    al = np.zeros((hh, ww), np.float32)
+    for q, (_, col, a, w) in zip(S, shapes):
+        qi = np.int32(np.round((q - [x0, y0]) * ss))
+        m = np.zeros((hh, ww), np.uint8)
+        cv2.fillPoly(m, [qi], 255, cv2.LINE_AA)
+        mm = m.astype(np.float32) / 255 * a
+        img = img * (1 - mm[..., None]) + np.float32(col) * mm[..., None]
+        al = al + mm * (1 - al)
+        if w > 0:
+            e = np.zeros((hh, ww), np.uint8)
+            cv2.polylines(e, [qi], True, 255, max(1, int(round(w * sc * ss))), cv2.LINE_AA)
+            em = e.astype(np.float32) / 255
+            img = img * (1 - em[..., None]) + np.float32(INK) / 255 * em[..., None]
+            al = al + em * (1 - al)
+    img = cv2.resize(img * al[..., None], (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+    al = cv2.resize(al, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+    reg = lay[y0:y1, x0:x1]
+    lay[y0:y1, x0:x1] = np.dstack([img, al]) + reg * (1 - al[..., None])
+
+
+def _xf(pts, at, w, rot=0.0, mirror=False):
+    """unit shape (x right, y down, about (0, 0)) -> plate px: scaled by w, turned rot degrees, flipped"""
+    p = np.float32(pts) * w
+    if mirror:
+        p[:, 0] *= -1
+    th = math.radians(rot)
+    c, s_ = math.cos(th), math.sin(th)
+    return p @ np.float32([[c, s_], [-s_, c]]) + np.float32(at)
+
+
+def hand_tip(key, side=1):
+    """the far end of a drawing's reach (sheet px): the opaque point furthest along +x (side 1) or -x in the
+    upper half of the figure (a pointing hand, a punch)"""
+    from film.actors import CAST
+    d, _ = CAST.get(key)
+    a = d.u8[1.0][..., 3] > 128
+    ys, xs = np.nonzero(a)
+    top, bot = ys.min(), ys.max()
+    band = ys < top + 0.55 * (bot - top)
+    xs_, ys_ = xs[band], ys[band]
+    i = int(np.argmax(xs_ * side))
+    return (xs_[i] / d.S + d.ox, ys_[i] / d.S + d.oy)
+
+
+def _follow(s, who, side, key_at=None):
+    """a person's hand tip in plate px this frame (their drawing as just drawn)"""
+    Ms, key = s.get("_mats", {}).get(who, (None, None))
+    if Ms is None:
+        return None
+    hx, hy = hand_tip(key, side)
+    X = Ms[0, 0] * hx + Ms[0, 1] * hy + Ms[0, 2]
+    Y = Ms[1, 0] * hx + Ms[1, 1] * hy + Ms[1, 2]
+    M = s["_M"]
+    return ((X - M[0, 2]) / M[0, 0], (Y - M[1, 2]) / M[1, 1])
+
+
+def tape(lay, s, it, t, M, sc):
+    """a strip of parcel tape: pressed on the board, then stuck to a cuff (follows the hand: `follow`, `side`),
+    flapping, then flicked off to the floor"""
+    w = it["w"]
+    if t < it["t_peel"]:
+        at, rot = it["at"], it.get("rot0", -8.0)
+    elif t < it["t_drop"]:
+        h = _follow(s, it["follow"], it.get("side", 1))
+        at = h if h else it["at"]
+        rot = 70 + 35 * math.sin((t - it["t_peel"]) * 17.0) * math.exp(-(t - it["t_peel"]) * 0.6)
+    else:
+        u = min(1.0, (t - it["t_drop"]) / 0.55)
+        a0 = it["drop_at"]
+        x = a0[0] + it.get("drop_dx", 60) * u
+        y = a0[1] + (it["floor"] - a0[1]) * u * u
+        at, rot = (x, y), 70 + 300 * u                     # (lands flat: 370 degrees)
+    pts = [(-0.5, -0.11), (0.5, -0.11), (0.47, 0.0), (0.5, 0.11), (-0.5, 0.11), (-0.47, 0.0)]
+    _shapes(lay, M, sc, [(_xf(pts, at, w, rot), (0.86, 0.74, 0.52), 0.93, 0.8),
+                         (_xf([(-0.45, -0.07), (0.45, -0.07), (0.45, -0.03), (-0.45, -0.03)], at, w, rot),
+                          (0.97, 0.90, 0.72), 0.7, 0)])
+
+
+SHOE = [(-0.50, 0.10), (-0.48, -0.10), (-0.38, -0.22), (-0.15, -0.24), (0.02, -0.18), (0.20, -0.10),
+        (0.42, -0.06), (0.52, 0.00), (0.52, 0.12), (0.30, 0.16), (-0.40, 0.16)]
+SHOE_SOLE = [(-0.50, 0.10), (0.52, 0.08), (0.52, 0.16), (0.30, 0.20), (-0.42, 0.20), (-0.50, 0.15)]
+SHOE_SHINE = [(-0.30, -0.15), (-0.12, -0.18), (0.05, -0.11), (-0.10, -0.12)]
+
+
+def shoe(lay, s, it, t, M, sc):
+    """a polished black shoe, side on: at [(t, (x, y))] (its sole's middle), rot [(t, deg)], w its length"""
+    at = at_time(it["at"], t, it.get("ease", False))
+    rot = at_time(it.get("rot", 0.0), t)
+    w, mir = it["w"], it.get("mirror", False)
+    _shapes(lay, M, sc, [(_xf(SHOE, at, w, rot, mir), (0.10, 0.09, 0.10), 1.0, 1.1),
+                         (_xf(SHOE_SOLE, at, w, rot, mir), (0.30, 0.22, 0.17), 1.0, 1.1),
+                         (_xf(SHOE_SHINE, at, w, rot, mir), (0.55, 0.57, 0.62), 0.8, 0)])
+
+
+def notes(lay, s, it, t, M, sc):
+    """a little fan of banknotes passing from one hand to another: at [(t, (x, y))], w"""
+    at = at_time(it["at"], t, it.get("ease", True))
+    w = it["w"]
+    sh = []
+    for k, (col, r) in enumerate((((0.62, 0.42, 0.68), -14), ((0.80, 0.36, 0.34), 0), ((0.62, 0.42, 0.68), 13))):
+        sh.append((_xf([(-0.5, -0.27), (0.5, -0.27), (0.5, 0.27), (-0.5, 0.27)], at, w, r + at_time(it.get("rot", 0.0), t)),
+                   col, 1.0, 0.8))
+        sh.append((_xf([(0.12, -0.12), (0.34, -0.12), (0.34, 0.12), (0.12, 0.12)], at, w, r), (0.95, 0.92, 0.85), 0.9, 0))
+    _shapes(lay, M, sc, sh)
+
+
+def phone(lay, s, it, t, M, sc):
+    """a phone (screen lit), held between boxing gloves: at [(t, (x, y))], rot, w its height"""
+    at = at_time(it["at"], t, it.get("ease", False))
+    rot = at_time(it.get("rot", 0.0), t)
+    w = it["w"]
+    _shapes(lay, M, sc, [(_xf([(-0.26, -0.5), (0.26, -0.5), (0.26, 0.5), (-0.26, 0.5)], at, w, rot), (0.09, 0.09, 0.11), 1.0, 0.9),
+                         (_xf([(-0.21, -0.43), (0.21, -0.43), (0.21, 0.40), (-0.21, 0.40)], at, w, rot), (0.45, 0.72, 0.98), 1.0, 0),
+                         (_xf([(-0.15, -0.30), (0.15, -0.30), (0.15, -0.22), (-0.15, -0.22)], at, w, rot), (0.95, 0.97, 1.0), 0.9, 0)])
+
+
+@functools.lru_cache(maxsize=4)
+def fare_image(text1, text2):
+    """the fare card: a torn-off piece of white card, the price in black marker"""
+    W, H = 520, 330
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(im)
+    dr.polygon([(14, 18), (500, 8), (506, 300), (300, 318), (20, 312)], fill=(250, 248, 240, 255), outline=INK + (255,))
+    dr.line([(14, 18), (500, 8), (506, 300), (300, 318), (20, 312), (14, 18)], fill=INK + (255,), width=9)
+    f1, f2 = font(BEBAS, 92), font(BEBAS, 128)
+    dr.text(((W - dr.textlength(text1, font=f1)) / 2, 30), text1, font=f1, fill=(20, 20, 24, 255))
+    dr.text(((W - dr.textlength(text2, font=f2)) / 2, 128), text2, font=f2, fill=(205, 22, 26, 255))
+    dr.line([(90, 268), (430, 262)], fill=(205, 22, 26, 255), width=10)
+    a = np.asarray(im).astype(np.float32) / 255.0
+    a[..., :3] *= a[..., 3:4]
+    return a
+
+
+def fare(lay, s, it, t, M, sc):
+    """the fare card slapped on the side of the bin: at (centre), h, rot; it lands with a little bounce"""
+    t0 = it["t0"]
+    if t < t0:
+        return
+    u = min(1.0, (t - t0) / 0.12)
+    sq = 1.0 + 0.18 * math.exp(-(t - t0) * 14) * math.cos((t - t0) * 40)
+    im = fare_image(it.get("text1", "RETURN JOURNEY"), it.get("text2", "£1,000"))
+    x, y = at_time(it["at"], t)
+    h = it["h"] * sc * (1.25 - 0.25 * u) * sq
+    k = h / im.shape[0]
+    th = math.radians(it.get("rot", -6.0))
+    c, sn = math.cos(th), math.sin(th)
+    A = np.array([[c * k, -sn * k], [sn * k, c * k]])
+    Fx, Fy = M[0, 0] * x + M[0, 2], M[1, 1] * y + M[1, 2]
+    off = np.array([Fx, Fy]) - A @ np.array([im.shape[1] / 2, im.shape[0] / 2])
+    place_rgba(lay, im, np.hstack([A, off[:, None]]))
+
+
+# the trolley-side prop's two visible wheels (prop px of the 326 x 276 drawing): centre and tyre radius
+WHEELS = [(37.0, 248.0, 28.0), (281.0, 248.0, 28.0)]
+
+
+def wheels(lay, s, it, t, M, sc):
+    """the trolley's wheels turning as it rolls: tread marks round each tyre, turned by the distance travelled
+    (follows a trolley-side item's at/h/mirror)"""
+    tr = it["trolley"]
+    x, y = at_time(tr["at"], t, tr.get("ease", False))
+    x0 = at_time(tr["at"], -1e9)[0]
+    h = at_time(tr["h"], t)
+    k = h / 276.0
+    mir = tr.get("mirror", False)
+    th = math.radians(at_time(tr.get("rot", 0.0), t))          # the trolley tipping about its pivot
+    piv = tr.get("pivot", 1.0)
+    py_ = y - h * (1 - piv)
+    sh = []
+    for wx, wy, r in WHEELS:
+        ox, oy = ((163.0 - wx) if mir else (wx - 163.0)) * k, (wy - 276.0 * piv) * k
+        cx = x + ox * math.cos(th) - oy * math.sin(th)
+        cy = py_ + ox * math.sin(th) + oy * math.cos(th)
+        R = r * k
+        ang = (x - x0) / max(1e-3, R)
+        for j in range(6):
+            a = ang + j * math.pi / 3
+            p = [(cx + 0.78 * R * math.cos(a + d), cy + 0.78 * R * math.sin(a + d)) for d in (-0.13, 0.13)]
+            q = [(cx + 0.98 * R * math.cos(a + d), cy + 0.98 * R * math.sin(a + d)) for d in (0.11, -0.11)]
+            sh.append(([p[0], p[1], q[0], q[1]], (0.34, 0.34, 0.37), 0.95, 0))
+        hub = [(cx + 0.3 * R * math.cos(ang + j * math.pi / 4), cy + 0.3 * R * math.sin(ang + j * math.pi / 4)) for j in range(8)]
+        sh.append((hub, (0.62, 0.63, 0.66), 1.0, 0.6))
+        spot = [(cx + 0.3 * R * math.cos(ang) + 0.09 * R * math.cos(j * math.pi / 3),
+                 cy + 0.3 * R * math.sin(ang) + 0.09 * R * math.sin(j * math.pi / 3)) for j in range(6)]
+        sh.append((spot, (0.18, 0.18, 0.2), 1.0, 0))
+    _shapes(lay, M, sc, sh)
+
+
+def dark(lay, s, it, t, M, sc):
+    """the whole frame dimmed (the bin's lid shutting): alpha [(t, a)]; a lid panel sliding over the opening at
+    the top (`panel`: plate y of its edge [(t, y)]), leaving a slit of light"""
+    a = at_time(it["alpha"], t)
+    if it.get("panel"):
+        yb = at_time(it["panel"], t)
+        _shapes(lay, M, sc, [([(-400, -400), (2100, -400), (2100, yb), (-400, yb)], (0.07, 0.07, 0.08), 1.0, 0)])
+    if a > 0.002:
+        lay[:] = lay * (1 - a) + np.float32([0.02, 0.02, 0.03, 1.0]) * a
+
+
+def rope_wobble(lay, s, it, t, M, sc):
+    """three ring ropes, near and thick, shivering after a back hits them: ys (plate y at x0 and x1), cols"""
+    t0 = it["t0"]
+    amp = it.get("amp", 14.0) * math.exp(-max(0.0, t - t0) * 3.2) * (t >= t0)
+    xa, xb = it["x"]
+    for (ya, yb), col in zip(it["ys"], it["cols"]):
+        xs = np.linspace(xa, xb, 40)
+        ys = ya + (yb - ya) * (xs - xa) / (xb - xa)
+        bend = amp * np.exp(-((xs - it["hit_x"]) / it.get("spread", 260.0)) ** 2) * math.sin((t - t0) * 31.0)
+        ys = ys + bend + it.get("push", 0.0) * np.exp(-((xs - it["hit_x"]) / it.get("spread", 260.0)) ** 2) * \
+            min(1.0, max(0.0, (t - t0 + 0.25) / 0.25)) * max(0.0, 1 - (t - t0) / 0.35)
+        th = it.get("w", 16.0)
+        top = np.stack([xs, ys - th / 2], 1)
+        bot = np.stack([xs, ys + th / 2], 1)[::-1]
+        _shapes(lay, M, sc, [(np.concatenate([top, bot]), col, 1.0, 1.2)])
+
+
+def drape(lay, s, it, t, M, sc):
+    """a prop hung on a person's neck and shoulder, following their head (drawn after them): on (who), prop, h (in head
+    radii), at (offset from the head centre in head radii: x towards `side`, y down the body), rot"""
+    hd = s.get("_heads", {}).get(it["on"])
+    if not hd:
+        return
+    HX, HY, R, (ux, uy) = hd
+    side = it.get("side", 1)
+    ox, oy = it.get("at", (0.9, 1.1))
+    nx, ny = -uy, ux                                          # across the body
+    X = HX - ux * oy * R + nx * ox * R * side
+    Y = HY - uy * oy * R + ny * ox * R * side
+    im = prop_rgba(it["prop"])
+    h = it.get("h", 1.6) * R
+    k = h / im.shape[0]
+    th = math.radians(it.get("rot", 0.0) * side)
+    c, sn = math.cos(th), math.sin(th)
+    A = np.array([[c * k * side, -sn * k], [sn * k * side, c * k]])
+    off = np.array([X, Y]) - A @ np.array([im.shape[1] / 2, im.shape[0] * 0.3])
+    place_rgba(lay, im, np.hstack([A, off[:, None]]))

@@ -1,6 +1,139 @@
-# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
-# given face landmarks. Check build/film/laundry-attendant_check.jpg after any change.
 drawings:
-  push: {sheet: reference/cuts/supporting_cast/push.png, box: [0, 0, 325, 374], faces: F, marks: {eyes: [[175, 126, 13, 7], [222, 114, 11, 7]], mouth: [190, 152, 218, 151.5, 204, 150.8], chin: 170, neck: [201, 185], head: [121, 40, 251, 180]}, from: 'supporting_cast.png [439, 700, 764, 1074]', jaw: 1.4}
-  point: {sheet: reference/cuts/supporting_cast/point.png, box: [0, 0, 305, 373], faces: F, from: 'supporting_cast.png [844, 701, 1149, 1074]', jaw: 1.4}
-  towel: {sheet: reference/cuts/supporting_cast/towel.png, box: [0, 0, 211, 373], faces: F, plain: true, from: 'supporting_cast.png [1197, 703, 1408, 1076]'}
+  push:
+    sheet: reference/cuts/supporting_cast/push.png
+    box: [0, 0, 325, 374]
+    faces: F
+    marks:
+      eyes:
+      - [175, 126, 13, 7]
+      - [222, 114, 11, 7]
+      mouth: [190, 152, 218, 151.5, 204, 150.8]
+      chin: 170
+      neck: [201, 185]
+      head: [121, 40, 251, 180]
+    from: supporting_cast.png [439, 700, 764, 1074]
+    jaw: 1.4
+  point:
+    sheet: reference/cuts/supporting_cast/point.png
+    box: [0, 0, 305, 373]
+    faces: F
+    from: supporting_cast.png [844, 701, 1149, 1074]
+    jaw: 1.4
+  towel:
+    sheet: reference/cuts/supporting_cast/towel.png
+    box: [0, 0, 211, 373]
+    faces: F
+    plain: true
+    from: supporting_cast.png [1197, 703, 1408, 1076]
+  step_a:
+    sheet: reference/cuts/attendant_steps/step_a.png
+    box: [0, 0, 421, 444]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [233.5, 138.5, 16.5, 8.5]
+      - [280.5, 130.5, 13.5, 8.5]
+      mouth: [254.5, 168.5, 274, 166, 264.5, 166.5]
+      chin: 194
+      neck: [255, 208]
+      head: [152, 45, 320, 202]
+  step_b:
+    sheet: reference/cuts/attendant_steps/step_b.png
+    box: [0, 0, 346, 447]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [172, 140.5, 16, 8.5]
+      - [219, 133, 12.5, 7.5]
+      mouth: [191, 171.5, 211, 168.3, 201, 169]
+      chin: 197
+      neck: [192, 211]
+      head: [97, 46, 256, 205]
+  brace:
+    sheet: reference/cuts/attendant_steps/brace.png
+    box: [0, 0, 384, 386]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [196, 152, 17, 8.5]
+      - [245.5, 147.5, 13.5, 8]
+      mouth: [214, 184, 236, 182.3, 225, 182.5]
+      chin: 208.5
+      neck: [217, 222]
+      head: [118, 53, 295, 215]
+  step_c:
+    sheet: reference/cuts/attendant_steps/step_c.png
+    box: [0, 0, 369, 447]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [188.5, 135, 17, 8.5]
+      - [233.5, 128, 12, 7.5]
+      mouth: [207, 165.5, 228, 162.3, 217.5, 163.3]
+      chin: 193
+      neck: [208, 207]
+      head: [112, 47, 278, 200]
+  stop2:
+    sheet: reference/cuts/attendant_steps/stop2.png
+    box: [0, 0, 360, 443]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [178, 138, 16.5, 8.5]
+      - [224, 127, 13.5, 8]
+      mouth: [199, 165.8, 219, 163, 209, 163.7]
+      chin: 193
+      neck: [186, 206]
+      head: [108, 50, 274, 200]
+  hip:
+    sheet: reference/cuts/attendant_steps/hip.png
+    box: [0, 0, 263, 441]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [159, 141, 16.5, 8.5]
+      - [205.5, 125.5, 14, 8]
+      mouth: [183, 166.8, 203, 161, 193, 162.5]
+      chin: 193
+      neck: [182, 206]
+      head: [91, 50, 256, 200]
+  towel2:
+    sheet: reference/cuts/attendant_steps/towel2.png
+    box: [0, 0, 452, 443]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [196, 138, 16.5, 9]
+      - [243, 124.5, 13.5, 8]
+      mouth: [221, 164, 242, 160, 231.5, 161.3]
+      chin: 193
+      neck: [216, 208]
+      head: [127, 50, 290, 201]
+  point2:
+    sheet: reference/cuts/attendant_steps/point2.png
+    box: [0, 0, 375, 441]
+    faces: F
+    from: attendant_steps.png (v5 pack)
+    jaw: 1.4
+    marks:
+      eyes:
+      - [162, 138, 16.5, 8.5]
+      - [209, 132, 12.5, 7.5]
+      mouth: [180, 168, 201, 166.5, 190.5, 166.5]
+      chin: 194.5
+      neck: [170, 206]
+      head: [90, 50, 256, 202]

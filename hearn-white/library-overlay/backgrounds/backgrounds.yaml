@@ -285,6 +285,27 @@ boxing/arena-wide:
   - 941
   orientation: landscape
   source: bg_arena_wide.png
+boxing/corridor-reverse:
+  title: Backstage service hall, reverse angle (lift, loading door, laundry chute)
+  size:
+  - 1672
+  - 941
+  orientation: landscape
+  source: bg_corridor_reverse.png (v5 pack)
+boxing/inside-bin:
+  title: Inside the laundry trolley, towels and lid opening
+  size:
+  - 1672
+  - 941
+  orientation: landscape
+  source: bg_inside_laundry.png (v5 pack)
+boxing/ring-corner:
+  title: Empty ring, oblique angle on the red corner
+  size:
+  - 1672
+  - 941
+  orientation: landscape
+  source: bg_ring_red_corner.png (v5 pack)
 boxing/corridor:
   title: Backstage corridor, flight cases
   size:
