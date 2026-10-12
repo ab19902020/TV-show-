@@ -15,7 +15,7 @@ from studio.film import ep
 from studio.film.shots import Marks
 
 from film import crowdfx as C
-from film.direction import Dn, E
+from film.direction import SB, Dn, E
 from film.timeline import TL
 
 L = json.loads(ep.path("lines.json").read_text())
@@ -195,17 +195,25 @@ def foley(bus):
     A.ev(bus, "whoosh/whoosh-b", m("tumble") + 0.05, -30, semis=-3)
     A.ev(bus, "cloth/cloth-a", m("tumble") + 0.05, -32)
     A.ev(bus, "cloth/cloth-e", m("tumble") + 0.5, -32)
-    A.ev(bus, "foley/body-fall-a", m("tumble") + 1.08, -24)
-    A.ev(bus, "cloth/cloth-b", m("tumble") + 1.15, -30)
+    A.ev(bus, "foley/body-fall-a", m("tumble") + 0.9, -24)
+    A.ev(bus, "cloth/cloth-b", m("tumble") + 0.97, -30)
+    A.ev(bus, "cloth/cloth-d", m("tumble") + 1.02, -34)                 # the towel lands on his head
     A.ev(bus, "cloth/cloth-c", m("landed") + 0.6, -36)
     # Eddie walks in, stops
-    A.steps(bus, m("c_eddie"), m("c_eddie") + 1.8, -38, pace=0.5, pan=-0.6, pan_to=-0.2)
+    A.steps(bus, m("c_eddie"), m("c_eddie") + 1.6, -38, pace=0.5, pan=-0.6, pan_to=-0.4)
+    A.steps(bus, ls("L025") - 0.15, m("c_neg") + 0.3, -40, pace=0.45, pan=-0.4, pan_to=0.0)   # over to Dana
+    A.steps(bus, m("c_aj") - 0.75, m("c_aj") + 0.15, -41, pace=0.45, pan=0.8, pan_to=0.5)     # Joshua
     A.ev(bus, "cloth/cloth-d", m("c_eddie") + 1.2, -40)
     A.ev(bus, "cloth/cloth-f", m("c_neg") + 0.4, -38)
     A.ev(bus, "cloth/cloth-a", m("c_neg") + 1.05, -40)
-    # the dressing room: shadowboxing
-    for i in range(12):
-        A.ev(bus, "whoosh/whoosh-%s" % "cd"[i % 2], m("c_prep") + 0.18 + 0.2 * i, -38, pan=0.35, semis=2)
+    # the red corner's room: Eddie's quick change in a puff;  the blue corner's: Dana's shadowboxing, then puffing
+    A.ev(bus, "whoosh/whoosh-a", m("c_prep") + 0.6, -32, semis=4)
+    A.ev(bus, "cloth/cloth-e", m("c_prep") + 0.66, -34)
+    A.ev(bus, "cloth/cloth-b", m("c_prep") + 0.8, -36)
+    for i, (t, kind, reach) in enumerate(sorted(SB.sfx)):
+        A.ev(bus, "whoosh/whoosh-%s" % "cdab"[i % 4], t, -34, pan=0.1, semis=3)
+        A.ev(bus, "cloth/cloth-%s" % "acef"[i % 4], t + 0.04, -42)
+    A.ev(bus, "footsteps/step-a", m("c_prep2") + 1.55, -40)
     # the face-off: one cough in the silence
     bus.add(A.at_level(cough(), -31), m("cough") + 0.1, 1.0, 0.4)
     # the exit: the trolley comes in, the climb, the roll-out, and the last squeak

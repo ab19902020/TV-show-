@@ -2,7 +2,7 @@
 
 Original fictional satire from the *Hearn v White* production pack (`pack/`): Eddie bans Dana, Dana gets in by
 laundry trolley and tumbles out at Tyson Fury's feet, the two promoters negotiate themselves into a fight, and the
-fight is a draw. 1920 x 1080 master, 30 fps, 3 min 38 s, 78 shots. The preview is rendered at 1280 x 720; the 4K
+fight is a draw. 1920 x 1080 master, 30 fps, 3 min 38 s, 81 shots. The preview is rendered at 1280 x 720; the 4K
 final waits for approval of the preview.
 
 ## What's on screen, by time
@@ -11,14 +11,15 @@ final waits for approval of the preview.
 |---|---|---|---|
 | 0:00 | Title | — | THE UNDERCARD / HEARN v WHITE |
 | 0:02 | 1. The ban | press area | Eddie beside a BANNED board with Dana's face crossed out (drawn in code); points at it on "Not a bald American"; security, arms crossed; the stop hand on "No ticket..." |
-| 0:22 | | loading bay | Dana's rant; the laundry trolley rolls past behind him; he watches it, then looks into the lens and says "I've entered venues in worse ways" to us; smash cut: his shoe disappears under the towels |
-| 0:36 | 2. The angriest towel | corridor | Low tracking shot: the attendant pushes the trolley to security's raised hand; the towels twitch on "Premium towels"; she shuts the lid; he waves it through; the lid lifts on Dana's dome; the cable protector; a freeze on his eyes; three tumble drawings through the air; he lands at Fury's feet |
-| 0:54 | 3. Fury finds a promoter | corridor | Dana kneeling under a towel; Fury, then Joshua (eyeline down); Eddie walks in, stops, a four-frame eye dart (bin, Dana, security) |
-| 1:20 | 4. Negotiations | corridor | Eddie takes the towel off with his fingertips and drops it; "Fine." and both surprised; the list with a gesture per item; Fury and Joshua watching |
-| 1:45 | | dressing room | Eddie slumped in his kit; Dana shadowboxes too hard, then stops to catch his breath |
-| 1:48 | 5. Special announcement | arena | A sting and crowd swell with air horns and press flashes; the announcer in the ring; Fury and Joshua ringside; Eddie smiles with panicking brows (a mixed cheer, a laugh); Dana raises his gloves (the bigger cheer) and the attendant takes the stray towel; the referee's rules |
-| 2:29 | 6. The fight | ring | The bell (the camera shaking with it); a silent face-off, both bouncing, circling, one cough; Fury's "It's not a podcast". **Exchange 1:** Eddie winds up a long jab; Dana leans back far too far and windmills, the crowd laughs. **2:** Dana's little jab taps Eddie's guard: the squeak, a snap zoom, the fight music stops dead, Eddie's outrage. **3:** Eddie's flurry, jab jab jab, Dana bobbing under each. **4:** Dana's counter to the body lands: impact burst, flying sweat, a camera shake, Eddie knocked back and stumbling, the crowd roars. **5:** Eddie lunges with a wild cross, Dana ducks, Eddie's momentum spins him round. **6:** slow motion: both back off and throw enormous haymakers from much too far away, both miss, both spin; the whole room pitched down, then it snaps back. Fury and Joshua wince. **7:** exhausted, they stagger into a clinch, heads together; "Break!" (the referee steps in); they wobble apart and lean back in; the bell; both raise their arms; the referee scratches his head at a blank card |
-| 3:11 | 7. Decision and callback | ring, ringside | "a draw"; the attendant pushes the trolley in; Dana glances at Eddie, Eddie points, Dana hops into the bin; rolled off still bickering; Fury and Joshua staring; the last wheel squeak; black |
+| 0:22 | | loading bay | Dana's rant (wide, then a medium shot pushing in); the laundry trolley crosses well behind him; he watches it, then looks into the lens and says "I've entered venues in worse ways" to us; smash cut: his shoe disappears under the towels |
+| 0:36 | 2. The angriest towel | corridor | Low tracking shot: the attendant pushes the trolley to security's raised hand at the checkpoint; the towels twitch on "Premium towels"; she shuts the lid; he steps aside and waves it through. Inside, a close shot tracking with the bin: Dana's dome rises out of the towels and lifts the lid, his fingers on the rim; the cable protector stops the bin dead; a freeze on his eyes over the rim; he is thrown out over the front in an arc (three tumble drawings, towels flying) and lands face down at Fury's feet, a towel landing on his head |
+| 0:54 | 3. Fury finds a promoter | corridor | Dana kneeling under a towel; Fury points down at him; Joshua walks in and looks down; Eddie walks in, stops, a four-frame eye dart (bin, Dana, security) |
+| 1:20 | 4. Negotiations | corridor | Eddie walks over to Dana, takes the towel off with his fingertips and drops it; "Fine." and both surprised; the list with a gesture per item; Fury and Joshua watching from up the corridor |
+| 1:45 | | the red corner's dressing room | Eddie in his suit, reluctant; a puff of smoke and he's in his kit, slumped |
+| 1:47 | | the blue corner's dressing room | Dana alone, shadowboxing far too hard, then bent double catching his breath |
+| 1:49 | 5. Special announcement | arena | A sting and crowd swell with air horns and press flashes; the announcer in the ring; Fury and Joshua ringside; Eddie smiles with panicking brows (a mixed cheer, a laugh); Dana raises his gloves (the bigger cheer) and the attendant takes the stray towel; the referee's rules |
+| 2:29 | 6. The fight | ring | The bell (the camera shaking with it); a silent face-off, both bouncing, circling, one cough; Fury's "It's not a podcast". **Exchange 1:** Eddie winds up a long jab; Dana leans back far too far and windmills, the crowd laughs. **2:** Dana's little jab taps Eddie's guard: the squeak, a snap zoom, the fight music stops dead, Eddie's outrage ("You actually hit me!"; Dana drops his guard to answer). **3:** Eddie's flurry, jab jab jab, Dana bobbing under each. **4:** Dana's counter to the body lands: impact burst, flying sweat, a camera shake, Eddie knocked back and stumbling, the crowd roars. **5:** Eddie lunges with a wild cross, Dana ducks, Eddie's momentum spins him round. **6:** slow motion: both back off and throw enormous haymakers from much too far away, both miss, both spin; the whole room pitched down, then it snaps back. Fury and Joshua wince. **7:** exhausted, they stagger into a clinch, heads together and both faces in shot; "Break!" (the referee steps in); they wobble apart and lean back in; the bell; both raise their arms; the referee scratches his head at a blank card |
+| 3:11 | 7. Decision and callback | ring, ringside | "a draw" (Dana bent double, spent); the attendant pushes the trolley in; Dana glances at Eddie, Eddie points, Dana steps round to the side of the bin, crouches, springs over the rim and drops in out of sight (the towels puff up, the lid slams); rolled off still bickering; Fury and Joshua staring; the last wheel squeak; black |
 
 ## Voices
 
@@ -81,9 +82,30 @@ Guards bounce on the balls of the feet. The fighters watch each other from the f
 **No head cut by the frame.** `tools/framing.py` follows every person's head through every shot, six times a
 second, and corrects the shot's camera until every head on screen is whole with headroom. Heads at the side of a
 shot are brought fully in or taken fully out, never left half in. The corrections are `film/framing.json`, keyed to
-each shot, so an edited shot is re-fitted by running the tool again. Current result: 0 heads cut in 78 shots.
+each shot, so an edited shot is re-fitted by running the tool again (a shot framed by hand, like the freeze on Dana's
+eyes, is marked `locked` and left alone). Current result: 0 heads cut in 81 shots.
 `tools/lipcheck.py` renders every speaker's face at each line's stressed words and first M/B/P
 (`build/lipcheck.jpg`); every line is spoken on screen except the two from inside the bin.
+
+**The look: people lit by the set they stand in (`film/actors.py` `light`).** Characters drawn on white sheets look
+pasted onto a painted set. Each set now lights the people and props in it: the room's colour over them (cool blue
+night in the loading bay, warm practicals in the corridor and the red corner's room, the arena's red and blue) and
+rim light from the set's lamps catching the edges that face them (sodium orange and floodlight blue outside, red and
+blue from the arena's corners, white from the rig overhead), inside the ink outline, so the ink stays ink.
+
+**Two dressing rooms.** Eddie's is the pack's room (the red corner). Dana's is its own set, the blue corner down the
+hall: the same room seen the other way round, its red lockers, wall and poster turned blue, the lamps' warm light
+kept (`film/props.py`).
+
+**The bin, rebuilt.** Inside the bin Dana is the peek drawing behind the trolley's canvas, so the bin itself hides
+where his drawing ends, never a straight cut through his body; the towels sit either side of him and lift with the
+lid. He is thrown out over the front on an arc and lands at Fury's feet. At the end he climbs back in the same way:
+over the rim and down behind the canvas, which is the only thing that hides him.
+
+**Mouths stay on faces.** A drawn mouth is clipped to the face it belongs to (the region inside the face's ink
+outline round the mouth), so with a glove held at the chin the mouth opens behind the glove, never on it; and in
+the ring the lines are said in drawings with the face clear (Dana drops his guard to answer, says "Pay-per-view"
+bent double; the clinch keeps both faces in shot).
 
 **Life.** Everyone standing breathes on their own rhythm and shifts their weight; a pose change lands with a quick
 settle; the talker's head bobs with the stress of their words; the attendant's steps bob her as she pushes; the
@@ -101,12 +123,13 @@ falls; the slow motion pitches the whole room down and dulls it, then it snaps b
 |---|---|
 | `film/lines.py` | which recording each line comes from |
 | `film/timeline.py` | the dialogue edit: every line in order with the beats the script asks for, as named marks |
-| `film/direction.py` | 78 shots: each a camera in one of the seven sets with the people and props of that moment, every move keyed to the marks; the perspective of each set (`PPC`), the near rope and posts in front of the people, the fight written as moves |
+| `film/direction.py` | 81 shots: each a camera in one of the seven sets with the people and props of that moment, every move keyed to the marks; the perspective of each set (`PPC`), the near rope and posts in front of the people, the fight written as moves |
 | `film/fight.py` | the fighters' moves and the effects they make |
 | `film/actors.py` | the people and props in a set at true scale: poses on a beat, the walk cycle, tumbles and leans about the feet, lifts, clips, props in hands, the guard bounce, the camera shakes and snap zooms; faces through the engine's blinks, brows and looks, with the mouths and eyes below |
 | `film/mouths.py` | the drawn cartoon mouths |
 | `film/eyes.py` | the clean moving pupils |
-| `film/things.py` | drawn in code: the BANNED board, the trolley lid, the near ring ropes, contact shadows, impact stars, sweat, speed lines, press flashes |
+| `film/things.py` | drawn in code: the BANNED board, the trolley lid, the near ring ropes, contact shadows, impact stars, sweat, speed lines, press flashes, the puff of smoke |
+| `film/props.py` | the engine's props hook, and the blue corner's dressing room (plate E) |
 | `film/perf.py` | the acting: whom each line is said to, its delivery, the stressed words, the looks and reactions, the mouth-shape smoothing |
 | `film/sound.py`, `film/crowdfx.py` | the mix and the crowd |
 | `film/framing.json` | the per-shot camera corrections from `tools/framing.py` |

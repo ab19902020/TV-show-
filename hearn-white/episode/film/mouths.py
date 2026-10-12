@@ -112,7 +112,39 @@ def _nomouth(self):
     nm = self.img.copy()
     nm[..., :3] = cv2.cvtColor(fill, cv2.COLOR_BGR2RGB).astype(np.float32) / 255
     self._nm = nm
+    self._fm = _facemask(self, nm, mw, xc, yc)
     return nm
+
+
+def _facemask(self, nm, mw, xc, yc):
+    """where a mouth may be drawn: the face round the mouth, inside its ink outline. A glove held up to the chin, a
+    hand or a microphone is outlined in ink too, so it falls outside; the mouth is clipped to the face and never
+    drawn over them. None (no clipping) if the region found is too small to be the face."""
+    h, w = nm.shape[:2]
+    R = int(3.2 * mw) + 4
+    x0, y0, x1, y1 = max(0, int(xc) - R), max(0, int(yc) - R), min(w, int(xc) + R), min(h, int(yc) + R)
+    sub = nm[y0:y1, x0:x1]
+    v = sub[..., :3].max(2)
+    free = ((v >= 0.17) & (sub[..., 3] > 0.5)).astype(np.uint8)
+    n, lab = cv2.connectedComponents(free, connectivity=4)
+    cx, cy = int(round(xc)) - x0, int(round(yc)) - y0
+    if not (0 <= cx < lab.shape[1] and 0 <= cy < lab.shape[0]):
+        return None
+    k = lab[cy, cx]
+    if k == 0:                                   # on a dark pixel (beard, shadow): the biggest region close by
+        win = lab[max(0, cy - 3):cy + 4, max(0, cx - 3):cx + 4]
+        ks, cs = np.unique(win[win > 0], return_counts=True)
+        if len(ks) == 0:
+            return None
+        k = ks[np.argmax(cs)]
+    reg = (lab == k).astype(np.uint8)
+    if reg.sum() < 2.0 * mw * mw:
+        return None
+    reg = cv2.dilate(reg, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
+    full = np.zeros((h, w), np.float32)
+    full[y0:y1, x0:x1] = cv2.GaussianBlur(reg.astype(np.float32), (0, 0), 0.7)
+    full[:y0] = full[y1:] = 0
+    return full
 
 
 def _draw(self, img, vis, amp, smile):
@@ -135,6 +167,9 @@ def _draw(self, img, vis, amp, smile):
     h, w = img.shape[:2]
     lay = cv2.warpAffine(rgba, A, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
     al = lay[..., 3:4] * (img[..., 3:4] > 0.5)
+    fm = getattr(self, "_fm", None)
+    if fm is not None and fm.shape == al.shape[:2]:
+        al = al * fm[..., None]
     out = img.copy()
     out[..., :3] = out[..., :3] * (1 - al) + lay[..., :3] * (al / np.maximum(lay[..., 3:4], 1e-4))
     return out

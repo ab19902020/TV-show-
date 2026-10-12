@@ -2,7 +2,8 @@
 
 Original fictional satire from the *Hearn v White* production pack: Eddie Hearn bans Dana White, Dana gets in by
 laundry trolley and tumbles out at Tyson Fury's feet, the two promoters negotiate themselves into a fight, and the
-fight is a draw. Seven scenes, eight characters, seven sets, 78 shots, 3 min 38 s, with the delivered voice-overs.
+fight is a draw. Seven scenes, eight characters, seven sets (and a second dressing room made from one), 81 shots,
+3 min 38 s, with the delivered voice-overs.
 
 | Path | What |
 |---|---|
@@ -17,10 +18,20 @@ first recording (take 1 for every line, "I've entered venues in worse ways" incl
 of "It's boxing, Eddie." and "I want a bigger bin for the rematch."). Tyson Fury's and the attendant's new
 recordings replace the old ones. Details in `episode/README.md`, "Voices".
 
-**This version.** Every mouth is now a drawn cartoon mouth (ten shapes, from the recordings' sounds, placed on the
-face, tilted and sized with it) instead of a stretched drawing; every moving pupil is a clean drawn pupil (no more
-black specks). The edit is tighter (3:53 to 3:38). The crowd is built from real recordings and reacts to every beat.
-The fight is choreographed: a face-off, five exchanges with anticipation and follow-through, a real hit (impact,
-sweat, camera shake), ducks, a windmill, a spin, a slow-motion double miss, and the clinch.
+**This version (the visual overhaul).**
+- **Lighting.** The people are lit by the set they stand in: the room's colour, plus rim light from its lamps on the
+  edges that face them. They no longer look pasted on.
+- **The bin, rebuilt.** Dana rises out of the towels and is thrown out over the front. He lands at Fury's feet and
+  later climbs back in. The bin's canvas is the only thing that ever hides him, so no part of him is cut off or
+  see-through.
+- **Mouths stay on faces.** A drawn mouth is clipped to the face, so it never opens on a glove. The boxing lines are
+  said with the face clear, and the clinch shows both faces.
+- **Two dressing rooms.** Eddie changes in the red corner's room, with a puff of smoke. Dana shadowboxes alone in
+  the blue corner's room down the hall.
+- **Restaged shots.** The trolley passes behind Dana, not through him. Fury points at Dana. Joshua and Eddie walk
+  in. A slow tilt that crept into Dana's stance is gone. The arena referee no longer stands right behind Dana.
+
+Earlier passes (still in): drawn cartoon mouths, clean drawn pupils, the tighter edit, the real-recording crowd, and
+the choreographed fight.
 
 **The 4K final has not been rendered.** It waits for approval of this preview (steps in `episode/README.md`).

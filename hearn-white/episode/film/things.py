@@ -139,8 +139,8 @@ def bottle(lay, s, it, t, M, sc):
 def lid(lay, s, it, t, M, sc):
     """the trolley's lid seen from the side: a steel slab on the rim, hinged at the back (the attendant's end), its
     handle at the front; rot opens it (degrees, the front end up)"""
-    x, y = at_time(it["at"], t)
-    w, th = it["w"], it["w"] * 0.07
+    x, y = at_time(it["at"], t, it.get("ease", False))         # keyed like the trolley it sits on
+    w, th = it["w"], it["w"] * 0.10
     ang = math.radians(-at_time(it.get("rot", 0.0), t))
     hx, hy = x - w / 2, y                                   # the hinge
     pts = np.float32([[0, -th], [w, -th], [w, 0], [0, 0]])
@@ -306,3 +306,47 @@ def flashes(img, s, t, M, sc, region, rate=6.0, seed=1):
             g = np.exp(-(((xx - X) ** 2 + (yy - Y) ** 2) / (r * r)))[..., None]
             out[y0:y1, x0:x1] = out[y0:y1, x0:x1] * (1 - 0.85 * g) + 0.98 * g
     return out
+
+
+def puff(lay, s, it, t, M, sc):
+    """a cartoon puff of smoke (a quick change behind it): a cluster of round clouds that bursts out over a few
+    frames and thins away, with a ring of little ones flying off"""
+    u = (t - it["t0"]) / max(1e-3, it["dur"])
+    if u < 0 or u > 1:
+        return
+    x, y = it["at"]
+    X, Y = M[0, 0] * x + M[0, 2], M[1, 1] * y + M[1, 2]
+    R = it["size"] * sc / 2
+    grow = 1 - (1 - min(1.0, u / 0.3)) ** 2
+    fade = 1.0                                                          # solid smoke, never see-through:
+    if u > 0.55:                                                        # it breaks up and shrinks away instead
+        grow *= max(0.0, 1 - (u - 0.55) / 0.45) ** 0.7
+    rng = np.random.default_rng(int(it["t0"] * 977) % 9973)
+    blobs = [(0.0, 0.0, 0.62)] + [(np.cos(a) * 0.48, np.sin(a) * 0.62, rng.uniform(0.34, 0.46))
+                                   for a in np.linspace(0, 2 * np.pi, 9, endpoint=False) + rng.uniform(0, 0.6)]
+    blobs += [(np.cos(a) * (0.9 + 0.6 * u), np.sin(a) * (1.0 + 0.6 * u), 0.14 * (1 - u))
+              for a in np.linspace(0.3, 2 * np.pi + 0.3, 7, endpoint=False)]
+    pad = int(R * 2.2) + 8
+    x0, y0 = int(X - pad), int(Y - pad)
+    x1, y1 = int(X + pad), int(Y + pad)
+    cx0, cy0, cx1, cy1 = max(0, x0), max(0, y0), min(lay.shape[1], x1), min(lay.shape[0], y1)
+    if cx1 <= cx0 or cy1 <= cy0:
+        return
+    K = 2
+    hh, ww = (y1 - y0) * K, (x1 - x0) * K
+    fill = np.zeros((hh, ww), np.uint8)
+    for bx, by, br in blobs:
+        cv2.circle(fill, (int((X - x0 + bx * R * grow) * K), int((Y - y0 + by * R * grow) * K)),
+                   max(1, int(br * R * grow * K)), 255, -1, cv2.LINE_AA)
+    m = fill.astype(np.float32) / 255
+    ink = cv2.morphologyEx(fill, cv2.MORPH_GRADIENT, np.ones((max(3, int(3 * sc * K)),) * 2, np.uint8)).astype(np.float32) / 255
+    shade = cv2.GaussianBlur(m, (0, 0), R * K * 0.25)
+    rgb = np.ones((hh, ww, 3), np.float32) * (0.80 + 0.17 * shade)[..., None] * np.float32([0.97, 0.97, 1.0])
+    rgb = rgb * (1 - ink[..., None]) + np.float32(INK) / 255 * ink[..., None]
+    al = np.maximum(m, ink) * fade
+    rgb = cv2.resize(rgb * al[..., None], (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+    al = cv2.resize(al, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+    rgb, al = rgb[cy0 - y0:cy1 - y0, cx0 - x0:cx1 - x0], al[cy0 - y0:cy1 - y0, cx0 - x0:cx1 - x0]
+    reg = lay[cy0:cy1, cx0:cx1]
+    reg[..., :3] = reg[..., :3] * (1 - al[..., None]) + rgb
+    reg[..., 3] = reg[..., 3] * (1 - al) + al

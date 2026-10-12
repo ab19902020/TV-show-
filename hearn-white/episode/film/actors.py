@@ -43,7 +43,16 @@ def _install_camera():
     orig = R.cam_at
 
     def cam_at(s, t):
-        cx, cy, z = orig(s, t)
+        ks = s.get("cams")
+        if s.get("linear") and ks and len(ks) > 1:              # a tracking shot keeping pace with a move
+            k = max([i for i, (tk, _) in enumerate(ks) if tk <= t] or [0])
+            if k + 1 < len(ks) and t >= ks[0][0]:
+                u = min(1.0, max(0.0, (t - ks[k][0]) / max(1e-3, ks[k + 1][0] - ks[k][0])))
+                cx, cy, z = (a + (b - a) * u for a, b in zip(ks[k][1], ks[k + 1][1]))
+            else:
+                cx, cy, z = ks[k][1] if t >= ks[0][0] else ks[0][1]
+        else:
+            cx, cy, z = orig(s, t)
         for t0, amp, dur in s.get("shakes", ()):
             u = (t - t0) / dur
             if 0 <= u < 1:
@@ -135,9 +144,18 @@ def ppc(s, y):
     return max(0.05, (y - hz) * k)
 
 
+def walk_at(it, t):
+    """the walk (a dict, or one of a list of them) going on at t, or None"""
+    ws = it.get("walk")
+    for w in (ws if isinstance(ws, list) else [ws] if ws else []):
+        if w.get("t0", -1e9) <= t < w.get("t1", 1e9):
+            return w
+    return None
+
+
 def pose_at(it, t):
-    w = it.get("walk")
-    if w and w.get("t0", -1e9) <= t < w.get("t1", 1e9):
+    w = walk_at(it, t)
+    if w:
         fr = w["frames"]
         i = int(math.floor((t - w.get("t0", 0.0)) / w["cycle"] * len(fr))) % len(fr)
         return fr[i]
@@ -178,8 +196,7 @@ def life(it, key, t):
     rot = 0.45 * math.sin(2 * math.pi * t / 5.3 + 2 * ph)
     sy, sx = 1 + 0.007 * b, 1 - 0.0025 * b
     pose = it.get("pose")
-    w = it.get("walk")
-    walking = w and w.get("t0", -1e9) <= t < w.get("t1", 1e9)
+    walking = walk_at(it, t) is not None
     if isinstance(pose, list) and not walking:
         past = [k for (k, v), (_, pv) in zip(pose[1:], pose[:-1]) if k <= t and v != pv]
         if past and t - max(past) < 0.3:
@@ -330,7 +347,7 @@ def scene(img, s, t, M, sc):
             Ms, mir, F, Hs = person_matrix(s, it, key, t, M, sc)
             st = {}
             if d.has_face and not CAST.spec(key.split(":")[0])["drawings"][key.split(":")[1]].get("plain"):
-                look = it.get("look")
+                look = at_time(it.get("look"), t)
                 res = resolver(s, it["who"], pos)
                 st = perf.PERF.state(it["who"], t, (lambda g, r=res, lk=look: r(lk if lk is not None else g)),
                                      s["t"])
@@ -363,4 +380,63 @@ def scene(img, s, t, M, sc):
                     A = np.array([[c * k, -sn * k], [sn * k, c * k]])
                     off = np.array([gx, gy]) - A @ np.array([gp[0] * im.shape[1], gp[1] * im.shape[0]])
                     place_rgba(lay, im, np.hstack([A, off[:, None]]))
+    lay = light(lay, s, sc)
     return img * (1 - lay[..., 3:4]) + lay[..., :3]
+
+
+# ---------------------------------------------------------------- the people lit by the set they stand in
+# Each set's light falls on the people and props in it, so they sit in the painting instead of on top of it:
+#   amb   the room's colour over everything (rgb multiplier mixed in by `amt`) and its exposure `exp`
+#   rims  light from the set's lamps catching the edges that face them: (direction the light comes from (x, y),
+#         colour, strength); the band runs inside the ink outline (dark ink stays ink)
+LIGHT = {
+    "P": dict(amb=(0.97, 0.98, 1.05), amt=0.35, exp=1.0,
+              rims=[((-0.4, -1.0), (1.0, 0.93, 0.80), 0.30), ((1.0, -0.2), (0.45, 0.58, 1.0), 0.28)]),
+    "B": dict(amb=(0.80, 0.90, 1.14), amt=0.45, exp=0.86,
+              rims=[((1.0, -0.35), (1.0, 0.62, 0.28), 0.55), ((-1.0, -0.6), (0.40, 0.55, 1.0), 0.40)]),
+    "C": dict(amb=(1.10, 0.96, 0.84), amt=0.38, exp=0.97,
+              rims=[((0.25, -1.0), (1.0, 0.84, 0.58), 0.38), ((1.0, 0.0), (1.0, 0.42, 0.25), 0.26),
+                    ((-1.0, -0.3), (1.0, 0.70, 0.40), 0.18)]),
+    "D": dict(amb=(1.12, 0.93, 0.86), amt=0.38, exp=0.95,
+              rims=[((0.0, -1.0), (1.0, 0.80, 0.55), 0.40), ((-1.0, -0.2), (1.0, 0.32, 0.25), 0.30)]),
+    "E": dict(amb=(0.90, 0.95, 1.12), amt=0.38, exp=0.95,
+              rims=[((0.0, -1.0), (1.0, 0.85, 0.65), 0.38), ((1.0, -0.2), (0.35, 0.50, 1.0), 0.34)]),
+    "A": dict(amb=(0.96, 0.95, 1.06), amt=0.25, exp=1.0,
+              rims=[((-1.0, -0.4), (1.0, 0.28, 0.25), 0.50), ((1.0, -0.4), (0.30, 0.45, 1.0), 0.50),
+                    ((0.0, -1.0), (1.0, 1.0, 1.0), 0.22)]),
+    "R": dict(amb=(0.96, 0.95, 1.06), amt=0.25, exp=1.0,
+              rims=[((-1.0, -0.4), (1.0, 0.28, 0.25), 0.45), ((1.0, -0.4), (0.30, 0.45, 1.0), 0.45),
+                    ((0.0, -1.0), (1.0, 1.0, 1.0), 0.22)]),
+    "S": dict(amb=(0.97, 0.95, 1.05), amt=0.25, exp=0.98,
+              rims=[((-1.0, -0.5), (1.0, 0.30, 0.28), 0.40), ((1.0, -0.5), (0.30, 0.45, 1.0), 0.40),
+                    ((0.0, -1.0), (1.0, 1.0, 1.0), 0.20)]),
+}
+
+
+def _shift(a, dx, dy):
+    return cv2.warpAffine(a, np.float32([[1, 0, -dx], [0, 1, -dy]]), (a.shape[1], a.shape[0]),
+                          flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+
+
+def light(lay, s, sc):
+    g = LIGHT.get(s.get("plate"))
+    a = lay[..., 3]
+    if not g or a.max() <= 0.0:
+        return lay
+    ys, xs = np.nonzero(a > 0.002)
+    y0, y1, x0, x1 = max(0, ys.min() - 2), min(a.shape[0], ys.max() + 3), max(0, xs.min() - 2), min(a.shape[1], xs.max() + 3)
+    sub = lay[y0:y1, x0:x1]
+    al = sub[..., 3].copy()
+    rgb = sub[..., :3] * ((1 - g["amt"]) + g["amt"] * np.float32(g["amb"])) * g["exp"]
+    col = rgb / np.maximum(al, 1e-4)[..., None]                          # straight colour: ink is dark
+    lit = np.clip((col.max(2) - 0.09) / 0.14, 0, 1)
+    k = OH / 1080.0 * float(np.clip(9.0 * sc / (OW / 1672.0), 5.0, 22.0))   # the band, screen px
+    for (dx, dy), c, st in g["rims"]:
+        n = math.hypot(dx, dy)
+        sh = _shift(al, dx / n * k, dy / n * k)
+        rim = np.clip(al - sh, 0, 1)
+        rim = cv2.GaussianBlur(rim, (0, 0), 0.3 * k) * lit * al
+        add = rim[..., None] * np.float32(c) * min(1.0, st * 1.6)
+        rgb = rgb + add * (al[..., None] - rgb)                         # screen, premultiplied
+    lay[y0:y1, x0:x1, :3] = np.clip(rgb, 0, al[..., None])
+    return lay

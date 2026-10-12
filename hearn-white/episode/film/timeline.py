@@ -69,7 +69,8 @@ SEQ = [
     ("gap", 0.25, "c_fj1"), ("line", "L032"),
     ("gap", 0.15), ("line", "L033"),
     ("gap", 0.4),
-    ("gap", 3.2, "c_prep"),                   # dressing room: Eddie reluctant, Dana shadowboxes too hard
+    ("gap", 1.7, "c_prep"),                   # the red corner's room: Eddie, reluctant, changes (a puff of smoke)
+    ("gap", 2.1, "c_prep2"),                  # the blue corner's: Dana shadowboxes too hard, then catches his breath
     # ---- 5. special announcement
     ("gap", 2.0, "c_arena"),                  # arena wide, crowd swell, the sting
     ("line", "L034"),

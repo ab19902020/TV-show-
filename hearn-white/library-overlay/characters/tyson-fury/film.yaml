@@ -3,6 +3,6 @@
 drawings:
   front: {sheet: reference/cuts/fury_joshua/front.png, box: [0, 0, 170, 431], faces: F, marks: {eyes: [[67, 39, 6, 4], [93, 39, 6, 4]], mouth: [70, 62.5, 96, 62.5, 83, 61.8], chin: 92, neck: [80, 102], head: [35, -1, 125, 97]}, from: 'fury_joshua.png [420, 23, 590, 454]', jaw: 1.6}
   walk: {sheet: reference/cuts/fury_joshua/walk.png, box: [0, 0, 221, 424], faces: R, plain: true, from: 'fury_joshua.png [607, 30, 828, 454]'}
-  point_down: {sheet: reference/cuts/fury_joshua/point_down.png, box: [0, 0, 191, 424], faces: F, plain: true, from: 'fury_joshua.png [846, 31, 1037, 455]'}
+  point_down: {sheet: reference/cuts/fury_joshua/point_down.png, box: [0, 0, 191, 424], faces: F, marks: {eyes: [[106, 53, 6, 4], [133, 61, 6, 4]], mouth: [101, 79.5, 120, 81, 110.5, 80], chin: 104, neck: [118, 108], head: [78, -3, 162, 102]}, from: 'fury_joshua.png [846, 31, 1037, 455]', jaw: 1.6}
   crossed: {sheet: reference/cuts/fury_joshua/crossed.png, box: [0, 0, 187, 424], faces: F, marks: {eyes: [[83, 33, 6, 4], [112, 42, 6, 4]], mouth: [73, 58.5, 97, 62.5, 85, 59.8], chin: 85, neck: [93, 98], head: [43, -5, 138, 95]}, from: 'fury_joshua.png [1052, 30, 1239, 454]', jaw: 1.6}
   seated: {sheet: reference/cuts/fury_joshua/seated.png, box: [0, 0, 193, 315], faces: F, from: 'fury_joshua.png [1251, 138, 1444, 453]', marks: {eyes: [[93, 46, 8, 7], [121, 57, 9, 7]], mouth: [84, 77, 114, 82, 99, 79], chin: 108, neck: [103, 112], head: [62, 0, 155, 110]}, jaw: 1.6}

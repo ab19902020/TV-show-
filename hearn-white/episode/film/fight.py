@@ -32,8 +32,23 @@ class Fighter:
         return self
 
     def lean(self, t, deg):
+        """tip to deg by t: the tip starts 0.15 s before (from wherever the body is then), never drifts in from
+        the last lean seconds earlier"""
+        ks = sorted(self.rots, key=lambda kv: kv[0])
+        before = [k for k in ks if k[0] < t - 1e-6]
+        if before and t - before[-1][0] > 0.35:
+            self.rots.append((t - 0.15, self._val(ks, t - 0.15)))
         self.rots.append((t, deg))
         return self
+
+    @staticmethod
+    def _val(ks, t):
+        if t <= ks[0][0]:
+            return ks[0][1]
+        for (t0, a), (t1, b) in zip(ks, ks[1:]):
+            if t0 <= t < t1:
+                return a + (b - a) * (t - t0) / max(1e-6, t1 - t0)
+        return ks[-1][1]
 
     def lift(self, t, px):
         self.lifts.append((t, px))

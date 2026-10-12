@@ -27,6 +27,8 @@ from studio.paths import BUILD                           # noqa: E402
 import film.direction as D                               # noqa: E402
 from film import actors as A                             # noqa: E402
 
+A._install_camera()                                      # the shots' shakes, snap zooms and tracking moves
+
 W1, H1 = 1672.0, 941.0
 TOP, SIDE = 0.035 * OH, 0.012 * OW                       # headroom above, room at the sides
 OUT = D.FRAMING_FILE
@@ -182,7 +184,10 @@ def compose(s):
 def fit(s):
     """the smallest camera correction that keeps every head whole: each cut head is brought fully in (if most of it
     is in, or it is the shot's subject, or it is cut at the top) or taken fully out; where the moves disagree, or
-    the set's edge stops one, the camera goes wider (never wider than the whole set)"""
+    the set's edge stops one, the camera goes wider (never wider than the whole set). A shot marked `locked` (an
+    extreme close-up framed by hand: the freeze on Dana's eyes) is left as written."""
+    if s.get("locked"):
+        return (0.0, 0.0, 1.0), []
     dx, dy, zf = compose(s)
     zmin = 1.0 / min(z for _, (_, _, z) in s["cams"])
     zf = max(zf, zmin)
