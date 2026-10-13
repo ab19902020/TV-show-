@@ -410,7 +410,7 @@ TR_X = 930
 DA_LAND, FU_C, AJ_C = (1205, 718), (1340, 708), (1585, 690)
 FU_BACK = (1405, 700)
 SEC_C3 = (250, 655)
-ED_IN, ED_NEG = (330, 728), (850, 732)
+ED_IN, ED_NEG = (110, 728), (800, 732)                     # (he stops at the corner, clear of the attendant)
 tr0, t_hit = m("c_roll"), m("c_ramp") + 0.12
 ATT_C, TRO_C, PATH_C = push("C", tr0 - 0.2, t_hit, -300, TR_X, Y_C, step=0.45, stop="brace")
 TH_C = TRO_C["h"]
@@ -419,8 +419,10 @@ t_br, t_gr, t_tu, t_la = m("brace"), m("grab"), m("tumble"), m("land")
 jolt = [(t_hit, 0.0), (t_hit + 0.08, 8.0), (t_br + 0.2, 5.0), (t_tu + 0.3, 2.0), (t_la + 0.3, 0.0)]
 TRO_C["rot"], TRO_C["pivot"] = jolt, 1.0
 ATT_C["rot"] = [(t_hit, 0.0), (t_hit + 0.1, -5.0), (t_br + 0.3, -2.0), (t_la, 0.0)]
-ATT_C["pose"] = ATT_C["pose"] + [(t_la + 0.6, "hip"), (m("c_pay"), "point2"), (le("L030") + 0.6, "hip")]
+ATT_C["pose"] = ATT_C["pose"] + [(t_la + 0.6, "hip"), (m("c_pay"), "point"), (m("pays") + 1.3, "hip")]   # until the money is in her hand
 # paid, she steps back out of the promoters' way (two steps, facing where she goes), then turns to watch
+# after the crash she lets go of the handle and steps back out of the promoters' way
+ATT_C["at"] = ATT_C["at"] + [(t_la + 0.6, ATT_C["at"][-1][1]), (t_la + 1.2, (400, 700))]
 _tb = m("pays") + 1.4
 _xa = ATT_C["at"][-1][1]
 ATT_C["at"] = ATT_C["at"] + [(_tb, _xa), (_tb + 1.6, (-260, 690))]
@@ -436,7 +438,7 @@ fly = P("dana", keys((t_tu, "tumble1"), (t_tu + 0.28, "tumble2"), (t_tu + 0.56, 
 towel_fly = dict(prop="towel", at=arc(t_tu + 0.15, t_la + 0.35, (TR_X + 40, RIM - 20),
                                       (DA_LAND[0] + 35, DA_LAND[1] - 108), 330),
                  h=95, z=Y_C + 41, rot=[(t_tu, 0.0), (t_la + 0.35, 380.0)], show=[(t_tu + 0.15, t_la + 0.9)])
-SHOE_C1, SHOE_C2 = (1320, 724), (430, 736)                  # the second bounces back up the corridor
+SHOE_C1, SHOE_C2 = (1320, 724), (262, 738)                  # the second bounces back up the corridor
 shoes_c = [dict(fn="shoe", at=arc(t_tu + 0.1, t_la + 0.05, (TR_X + 60, RIM + 20), (1230, 724), 120, 6) +
                 slide(t_la + 0.05, t_la + 0.6, (1230, 724), SHOE_C1)[1:],
                 rot=keys((t_tu + 0.1, 0.0), (t_la + 0.05, 200.0), (t_la + 0.6, 180.0)), w=44, z=Y_C + 42),
@@ -473,20 +475,22 @@ def eddie_c():
     w0, w1 = m("c_eddie") + 0.05, m("c_eddie") + 1.25
     v0, v1 = ls("L025") + 0.1, ls("L026") - 0.15
     return P("eddie", keys((0, "q34"), (m("recog") + 0.5, "front"), (ls("L026") - 0.1, "point"),
-                           (le("L026") + 0.3, "q34"), (m("pays") + 0.2, "crossed"), (ls("L031") - 0.05, "point"),
+                           (le("L026") + 0.3, "q34"), (m("c_pay") - 0.3, "crossed"), (ls("L031") - 0.05, "point"),
                            (le("L031") + 0.3, "front"), (m("c_fine"), "palms"), (le("L033") + 0.25, "front")),
              [(w0, (-140, ED_IN[1])), (w1, ED_IN), (v0, ED_IN), (v1, ED_NEG)],
              walk=[dict(frames=W8, cycle=1.0, t0=w0, t1=w1), dict(frames=W8, cycle=0.9, t0=v0, t1=v1)],
              mirror=keys((0, False), (ls("L026") - 0.1, True), (le("L026") + 0.3, False), (ls("L028") - 0.2, True),
-                         (le("L029") + 0.3, False), (ls("L030") - 0.2, True), (ls("L031") - 0.05, False)),
+                         (le("L029") + 0.3, False)),
              show=[(m("c_eddie"), 1e9)], look=keys((0, None), (m("c_eddie") + 1.0, ("dir", 0.3, 0.8, 0.0)),
                                                     (m("recog"), None)))
 
 
-notes_c = dict(fn="notes", at=keys((m("pays") + 0.2, (DA_LAND[0] - 70, DA_LAND[1] - 300)),
-                                   (m("pays") + 0.9, (DA_LAND[0] - 70, DA_LAND[1] - 300)),
-                                   (m("pays") + 1.25, (TR_X - 230, Y_C - 290))),
-               w=46, show=[(m("pays") + 0.2, m("pays") + 1.35)], z=3000)
+# the notes: out of Dana's hand, held a moment, then tossed over Eddie's head (behind it) into her outstretched hand
+_n0 = hand_at("C", "dana", "palms", DA_LAND, -1)
+_n1 = hand_at("C", "attendant", "point", (400, 700), 1)
+notes_c = dict(fn="notes", at=keys((m("pays") + 0.15, _n0), (m("pays") + 0.4, _n0)) +
+               arc(m("pays") + 0.4, m("pays") + 0.85, _n0, _n1, 340)[1:],
+               w=46, show=[(m("pays") + 0.15, m("pays") + 1.3)], z=DA_LAND[1] + 1)   # behind Eddie (over his head), in front of the others
 
 
 def corridor_c():
@@ -515,7 +519,7 @@ S3 = [
     W(m("c_aj"), "C", [(m("c_aj"), (1500, 480, 1.4)), (m("c_fury3"), (1500, 478, 1.45))], CC, blur=1.0),
     BW(m("c_fury3"), "C", "tyson", "lean", FU_BACK, mirror=True),
     # Eddie comes round the corner, stops at the shoe, finds the towel, the bin, Dana
-    W(m("c_eddie"), "C", [(m("c_eddie"), (520, 470, 1.3)), (m("recog"), (480, 480, 1.4))], CC),
+    W(m("c_eddie"), "C", [(m("c_eddie"), (836, 470, 1.0)), (m("recog"), (836, 470, 1.02))], CC),   # the whole tableau
     BW(m("recog"), "C", "eddie", "glare", ED_IN),
     W(m("c_up"), "C", [(m("c_up"), (DA_LAND[0] - 120, 470, 1.6)), (m("c_ed4"), (DA_LAND[0] - 160, 470, 1.65))], CC,
       blur=1.0),
@@ -523,8 +527,8 @@ S3 = [
     BW(m("c_dana4"), "C", "dana", "smug", DA_LAND),
     W(m("c_sec4"), "C", on("C", *SEC_C3, "security", 0.55, dx=-70), CC, blur=2.0),
     BW(m("c_ed5"), "C", "eddie", "profile", ED_NEG, mirror=True),
-    W(m("c_pay"), "C", [(m("c_pay"), ((TR_X - 200 + DA_LAND[0]) / 2, 460, 1.6)),
-                        (m("pays") + 1.0, ((TR_X - 200 + DA_LAND[0]) / 2, 462, 1.68))], CC, blur=1.0),
+    # her hand out, Dana paying, Eddie between them watching the money go past
+    W(m("c_pay"), "C", [(m("c_pay"), (905, 455, 1.4)), (m("pays") + 1.0, (905, 457, 1.45))], CC, blur=1.0),
     BW(m("pays") + 1.0, "C", "eddie", "up", ED_NEG),
 ]
 
@@ -534,13 +538,13 @@ S4 = [
     W(m("c_close"), "C", [(m("c_close"), (two[0] + 20, 440, 1.9)), (m("silence") + 0.6, (two[0] + 20, 430, 2.05))], CC,
       blur=1.5),
     BW(m("c_reg_e"), "C", "eddie", "sweat", ED_NEG),
-    BW(m("c_reg_d"), "C", "dana", "panic", (1160, 726)),
+    BW(m("c_reg_d"), "C", "dana", "panic", (1215, 726)),
 ]
 # Dana steps right up to him for "Put me in the ring"
 for it in CC:
     if it.get("who") == "dana" and isinstance(it["pose"], list) and any(v == "prone" for _, v in it["pose"]):
-        it["at"] = it["at"] + [(ls("L032") - 0.2, (DA_LAND[0], DA_LAND[1] - 2)), (ls("L032") + 0.2, (1160, 726))]
-        it["pose"] = it["pose"] + [(ls("L032") - 0.05, "point"), (le("L032") + 0.2, "front"), (m("c_fine"), "shrug"),
+        it["at"] = it["at"] + [(ls("L032") - 0.2, (DA_LAND[0], DA_LAND[1] - 2)), (ls("L032") + 0.2, (1215, 726))]
+        it["pose"] = it["pose"] + [(ls("L032") - 0.05, "point"), (le("L032") + 0.2, "front"), (m("c_fine"), "crossed"),
                                    (le("L033") + 0.3, "front")]
         it["mirror"] = keys((0, True), (ls("L020") - 0.1, False))
 
@@ -898,7 +902,7 @@ def down_steps(who, t0, mirror=False, wait=(400, 690)):
 
 steps_cast = [down_steps("eddie", tst, mirror=True), down_steps("dana", tst + 1.55)]          # both heading left
 Y_S = 868                                                    # the floor in front of the apron
-TB_S = 880
+TB_S = 800
 ATT_S, TRO_S, PATH_S = push("S", m("depart") - 0.1, m("depart") + 2.7, TB_S, 260, Y_S, mirror=True, step=0.55)
 TH_S = TRO_S["h"]
 ATT_S["pose"] = [(0, "hip"), (tcd - 0.25, "point2"), (tcd + 0.2, "hip"), (ls("L076") - 0.05, "point2"),
@@ -909,7 +913,7 @@ TRO_S["at"] = [(0, TRO_S["at"][0][1])] + TRO_S["at"]
 PATH_S = TRO_S["at"]
 ATT_XS = PATH_S[0][1][0] + (ATT_S["at"][0][1][0] - PATH_S[0][1][0])
 tcb = m("climb2")
-DA_S, ED_S = (610, Y_S + 4), (1510, 838)
+DA_S, ED_S = (610, Y_S + 4), (1530, 838)
 dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, "guard_high"), (le("L075") + 0.2, "guard"),
                         (tcb, "crouch_guard"), (tcb + 0.42, "guard")),
            keys((tbn, (-160, 850)), (tbn + 1.1, DA_S), (tcb + 0.45, DA_S), (tcb + 0.85, (TB_S - 20, Y_S + 2))),
@@ -917,7 +921,7 @@ dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, 
            dy=keys((tcb + 0.4, 0.0), (tcb + 0.65, 0.55 * h_of("S", "dana", Y_S)), (tcb + 0.9, 0.32 * h_of("S", "dana", Y_S)),
                    (tcb + 1.25, -160.0)),
            clip=keys((0, None), (tcb + 0.78, Y_S - 0.25 * TH_S)), z=Y_S - 3, show=[(tbn, tcb + 1.28)])
-eddie_s = P("eddie", keys((0, "tired"), (tbn + 1.2, "guard"), (m("c_eddie10"), "guard2"), (m("depart") + 0.3, "arms_up")),
+eddie_s = P("eddie", keys((0, "tired"), (tbn + 1.2, "guard"), (m("c_eddie10"), "arms_up")),
             ED_S, mirror=True,                                   # (already over by the bin at the cut)
             face=[(m("c_eddie10"), 1e9, 0.7, 0.85)], z=ED_S[1], show=[(tbn, 1e9)])
 fare_s = dict(fn="fare", t0=tcd + 0.05, at=[(a, (x + 0.1 * TH_S, y - 0.48 * TH_S)) for a, (x, y) in PATH_S],
@@ -935,11 +939,11 @@ S7 = [
     RW(m("c_da9"), on("R", 1070, DA_R[1], "dana", 0.55, dx=60), decision_close, blur=2.0),
     W(m("c_fj4"), "S", (836, 700, 1.5), ringside()),
     W(tst, "A", [(tst, (643, 545, 1.3)), (tbn, (643, 548, 1.3))], steps_cast, occl=("rail",), locked=True, drift=0.0),
-    W(tbn, "S", [(tbn, (900, 640, 1.2)), (m("c_da10"), (900, 636, 1.24))], outside, blur=0.5),
+    W(tbn, "S", [(tbn, (950, 640, 1.1)), (m("c_da10"), (950, 636, 1.13))], outside, blur=0.5),
     W(m("c_da10"), "S", on("S", *DA_S, "dana", 0.62, dx=40), outside, blur=2.0),
     W(m("c_att10"), "S", on("S", ATT_XS, Y_S, "attendant", 0.62, dx=-40), outside, blur=2.0),
     W(m("c_eddie10"), "S", on("S", *ED_S, "eddie", 0.5, dx=30), outside, blur=2.5),
-    W(m("climb2"), "S", [(m("climb2"), (900, 640, 1.2)), (m("black"), (870, 640, 1.2))], outside),
+    W(m("climb2"), "S", [(m("climb2"), (950, 640, 1.1)), (m("black"), (900, 640, 1.12))], outside),
     card(m("black"), "black"),
 ]
 

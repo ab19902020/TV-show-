@@ -40,6 +40,10 @@ is not in Eddie's new file. Send that one line and it drops straight in (details
   scale and framing. Noses were added to Dana lying on the floor and climbing, the referee kept clear of the
   close-ups, the red corner's fighters set at one depth, the announcer kept out of the decision close-ups, and the
   close-ups framed so their edges never show.
+- **Polish pass**: the whole film reviewed every third of a second. Eddie's mouth in the clinch is back on his face;
+  no hand touches another or pokes into a face; everyone faces whoever they are talking to; Eddie stops clear of
+  the attendant when he arrives; she is in shot for "Five hundred", hand out, and the notes are tossed over Eddie's
+  head into it; Dana folds his arms at "Fine"; Eddie throws his arms up for the delighted beat at the end.
 
 Earlier passes (still in): drawn cartoon mouths clipped to faces, clean single pupils, inked noses, set lighting
 and arena lighting, the real-recording crowd and cartoon sound.
