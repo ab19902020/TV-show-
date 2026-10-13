@@ -5,6 +5,10 @@ inside it, with headroom. Nobody is filmed headless either: anyone more than a s
 The corrections are written to film/framing.json, which direction.py applies to the shots' cameras (each keyed to
 the shot's own camera and times, so a changed shot is re-fitted, never mis-corrected).
 
+Bodies too: nobody is sliced by the side of the frame (a hand, an elbow, a shoulder, a sliver of someone at the edge):
+each person standing in the shot is brought wholly in or taken wholly out, and a figure whose feet alone would be
+cut off at the bottom is brought down into the frame (people walking in or out of shot may cross the edge).
+
 It also checks the lip sync can be seen: for every line, whether the speaker is on screen while saying it and
 whether the drawing they are in then has a mouth the engine can animate.
 
@@ -90,6 +94,39 @@ def head_box(key):
     return _HEADS[cid][name]["head"]
 
 
+_AB = {}
+
+
+def alpha_box(key):
+    """the drawing's inked extent in its own sheet px (its image box can be much bigger: the split pair drawings keep
+    the pair's canvas)"""
+    if key not in _AB:
+        d, _ = CAST.get(key)
+        a = d.u8[1.0][..., 3] > 50
+        ys, xs = np.nonzero(a)
+        w, _h = d.size(1.0)
+        k = d.S * a.shape[1] / w
+        _AB[key] = (d.ox + xs.min() / k, d.oy + ys.min() / k, d.ox + (xs.max() + 1) / k, d.oy + (ys.max() + 1) / k)
+    return _AB[key]
+
+
+def figure_box(s, it, t, M, sc):
+    """the screen box of what is inked of a person at t"""
+    key = A.key_of(it["who"], A.pose_at(it, t))
+    Ms, *_ = A.person_matrix(s, it, key, t, M, sc)
+    x0, y0, x1, y1 = alpha_box(key)
+    P = np.float64([[x0, y0], [x1, y0], [x0, y1], [x1, y1]])
+    Q = P @ Ms[:, :2].T + Ms[:, 2]
+    fb = [Q[:, 0].min(), Q[:, 1].min(), Q[:, 0].max(), Q[:, 1].max()]
+    cl = A.at_time(it.get("clip"), t)
+    if cl is not None:
+        fb[3] = min(fb[3], M[1, 1] * cl + M[1, 2])
+    return fb, key
+
+
+BODY_SLACK = 0.03                                       # 3 % of a figure's width over the edge still counts as in
+
+
 def moving(it, t):
     """walking (or carried) across the frame at t: entering and leaving the frame at its sides is allowed"""
     if not isinstance(it.get("at"), list):
@@ -107,7 +144,7 @@ def frac_in(b):
     return ix * iy / a
 
 
-def problems(s, corr, step=1 / 6):
+def problems(s, corr, step=1 / 6, hide=()):
     """every head the frame cuts, six times a second: [(t, who, edge, include, exclude, head visible share)] where
     include / exclude are the camera moves (screen px, + = the camera moves right / down) that bring the head
     wholly in or take it wholly out of that edge (None: not allowed - a head is never cut off at the top)"""
@@ -117,9 +154,10 @@ def problems(s, corr, step=1 / 6):
     for t in times:
         M, sc = view(s, t, corr)
         for it in s["cast"]:
-            if "who" not in it or not A.visible(it, t):
+            if "who" not in it or not A.visible(it, t) or it["who"] in hide:
                 continue
             hb, fb, key = boxes(s, it, t, M, sc)
+            out += body_problems(s, it, t, M, sc, sub)
             if hb is None:
                 continue
             hin, fin = frac_in(hb), frac_in(fb)
@@ -137,6 +175,29 @@ def problems(s, corr, step=1 / 6):
                 out.append((t, it["who"], "left", hb[0] - SIDE, None if keep else hb[2], hin))
             if hb[2] > OW - SIDE and not side_ok:
                 out.append((t, it["who"], "right", hb[2] - (OW - SIDE), None if keep else hb[0] - OW, hin))
+    return out
+
+
+def body_problems(s, it, t, M, sc, sub):
+    """a figure sliced by a side of the frame, or with only its feet cut off at the bottom (same tuples as problems)"""
+    mv = moving(it, t)                                 # walking in or out: only the sides may cut them
+    (x0, y0, x1, y1), _ = figure_box(s, it, t, M, sc)
+    w, h = max(1e-6, x1 - x0), max(1e-6, y1 - y0)
+    hin = max(0.0, min(x1, OW) - max(x0, 0.0)) / w
+    vin = max(0.0, min(y1, OH) - max(y0, 0.0)) / h
+    if hin <= 0.0 or vin <= 0.0:
+        return []
+    keep = it["who"] == sub
+    out = []
+    if hin < 1 - BODY_SLACK and not mv:
+        if x0 < 0:
+            out.append((t, it["who"], "left", x0 - 2, None if keep else x1 + 2, hin))
+        if x1 > OW:
+            out.append((t, it["who"], "right", x1 - OW + 2, None if keep else x0 - OW - 2, hin))
+    if y1 > OH and 0.80 < vin < 1 - BODY_SLACK:
+        out.append((t, it["who"], "bottom", y1 - OH + 2, None, vin))
+    if y0 < 0 and vin < 1 - BODY_SLACK and y1 > 0.3 * OH:
+        out.append((t, it["who"], "top", y0 - 2, None, vin))
     return out
 
 
@@ -181,23 +242,79 @@ def compose(s):
     return cx - raw[0], cy - raw[1], z / raw[2]
 
 
+def speakers(s):
+    """who speaks during the shot (they are never left out of it)"""
+    from film.timeline import TL
+    return {v["speaker"] for v in TL["lines"].values() if v["start"] < s["end"] and v["end"] > s["t"]}
+
+
+def actors(s, step=0.1):
+    """who acts in the shot - moves, changes drawing, comes into view, or is half of a paired drawing - and so is
+    never left out of it"""
+    out = set()
+    times = list(np.arange(s["t"] + 0.01, s["end"] - 0.01, step)) + [s["end"] - 0.02]
+    for it in s["cast"]:
+        if "who" not in it:
+            continue
+        seen = [t for t in times if A.visible(it, t)]
+        if not seen:
+            continue
+        poses = {A.pose_at(it, t) for t in seen}
+        if any(str(p).startswith("pair_") for p in poses) or len(poses) > 1 or len(seen) < len(times):
+            out.add(it["who"])
+            continue
+        if isinstance(it.get("at"), list):
+            xs = [A.at_time(it["at"], t, it.get("ease", False)) for t in seen]
+            if max(abs(a[0] - xs[0][0]) + abs(a[1] - xs[0][1]) for a in xs) > 4.0:
+                out.add(it["who"])
+    return out
+
+
+def most_in(s, corr, step=1 / 6):
+    """per person, the most of their figure the frame ever shows during the shot"""
+    best = {}
+    times = list(np.arange(s["t"] + 0.01, s["end"] - 0.01, step)) + [s["end"] - 0.02]
+    for t in times:
+        M, sc = view(s, t, corr)
+        for it in s["cast"]:
+            if "who" not in it or not A.visible(it, t):
+                continue
+            (x0, y0, x1, y1), _ = figure_box(s, it, t, M, sc)
+            f = frac_in((x0, y0, x1, y1))
+            best[it["who"]] = max(best.get(it["who"], 0.0), f)
+    return best
+
+
 def fit(s):
-    """the smallest camera correction that keeps every head whole: each cut head is brought fully in (if most of it
-    is in, or it is the shot's subject, or it is cut at the top) or taken fully out; where the moves disagree, or
-    the set's edge stops one, the camera goes wider (never wider than the whole set). A shot marked `locked` (an
-    extreme close-up framed by hand: the freeze on Dana's eyes) is left as written."""
+    """the smallest camera correction that keeps every head and body whole. The shot's subject and whoever speaks
+    in it are always kept wholly in shot (the camera moves, then goes wider if it must, never wider than the whole
+    set). Anyone else the frame would slice is brought in by a small move or left out of the shot: someone mostly out
+    of frame anyway, or once the camera has gone as wide as the shot can take without losing its framing (a
+    medium shot stays a medium shot). A shot marked `locked` (an extreme close-up framed by hand: the freeze on
+    Dana's eyes) is left as written. -> ((dx, dy, zoom factor), problems left, people left out)"""
     if s.get("locked"):
-        return (0.0, 0.0, 1.0), []
+        return (0.0, 0.0, 1.0), [], []
     dx, dy, zf = compose(s)
     zmin = 1.0 / min(z for _, (_, _, z) in s["cams"])
     zf = max(zf, zmin)
+    sub = (s.get("subject") or {}).get("who")
+    keep = speakers(s) | actors(s) | ({sub} if sub else set()) | set(s.get("keep", ()))
+    zlo = max(zmin, zf * (0.92 if sub else 0.8))
     (bx0, bx1), (by0, by1) = bounds(s, zf)
     dx, dy = min(max(dx, bx0), bx1), min(max(dy, by0), by1)
+    hide = set()
+    seen = most_in(s, (dx, dy, zf))
     last = {}
-    for _ in range(80):
-        pr = problems(s, (dx, dy, zf))
+    for _ in range(120):
+        pr = problems(s, (dx, dy, zf), hide=hide)
         if not pr:
-            return (dx, dy, zf), []
+            return (dx, dy, zf), [], sorted(hide)
+        # leave out whoever is barely in shot, or anyone (but the subject and the speakers) once the shot is as wide
+        # as it may go
+        out = {p[1] for p in pr if p[1] not in keep and (seen.get(p[1], 0.0) < 0.5 or zf <= zlo + 1e-6)}
+        if out:
+            hide |= out
+            continue
         sc = scale(min(z for _, (_, _, z) in s["cams"]) * zf)
         want = {"x": [], "y": []}
         for t, who, edge, inc, exc, hin in pr:
@@ -213,7 +330,7 @@ def fit(s):
                 conflict = True
             moves[ax] = (lo - 3) if abs(lo) >= abs(hi) else (hi + 3)
             if last.get(ax) is not None and last[ax] * moves[ax] < 0:
-                conflict = True                               # two heads take turns pushing the camera: go wider
+                conflict = True                               # two people take turns pushing the camera: go wider
         last = dict(moves)
         (bx0, bx1), (by0, by1) = bounds(s, zf)
         ndx = min(max(dx + moves.get("x", 0.0) / sc, bx0), bx1)
@@ -221,13 +338,18 @@ def fit(s):
         moved = abs(ndx - dx) > 0.5 or abs(ndy - dy) > 0.5
         dx, dy = ndx, ndy
         if conflict or not moved:
-            if zf * 0.95 >= zmin - 1e-6:
+            lo_ = zlo if any(p[1] not in keep for p in pr) else zmin
+            if zf * 0.95 >= lo_ - 1e-6:
                 zf *= 0.95
-            elif zf > zmin + 1e-6:
-                zf = zmin
+            elif zf > lo_ + 1e-6:
+                zf = lo_
+            elif lo_ > zmin + 1e-6:
+                hide |= {p[1] for p in pr if p[1] not in keep}
+                if not any(p[1] not in keep for p in pr):
+                    zlo = zmin
             elif not moved:
                 break
-    return (dx, dy, zf), problems(s, (dx, dy, zf))
+    return (dx, dy, zf), problems(s, (dx, dy, zf), hide=hide), sorted(hide)
 
 
 def lips(shots):
@@ -271,21 +393,27 @@ def main():
     for s in D.SHOTS:
         if s.get("kind") != "world":
             continue
+        hide = []
         if report_only:
             pr = problems(s, s.get("corr", (0, 0, 1)))
             corr = s.get("corr", (0, 0, 1))
         else:
-            corr, pr = fit(s)
+            corr, pr, hide = fit(s)
         if pr:
             print(f"shot {s['i'] + 1:02d} {s['t']:7.2f}s  {D.PLATES[s['plate']]:22s} move ({corr[0]:+.0f}, {corr[1]:+.0f}) "
                   f"zoom x{corr[2]:.3f}  STILL {len(pr)}: " + ", ".join(sorted({f'{p[1]} {p[2]}' for p in pr})))
         total_bad += len(pr)
-        fits[D.signature(s)] = [round(c, 4) for c in corr]
+        fits[D.signature(s)] = [round(c, 4) for c in corr] + ([hide] if hide else [])
+        if hide:
+            print(f"shot {s['i'] + 1:02d} {s['t']:7.2f}s  {D.PLATES[s['plate']]:22s} left out: {', '.join(hide)}")
     if not report_only:
         OUT.write_text(json.dumps(fits, indent=1))
         print(f"wrote {OUT}")
     for s in D.SHOTS:
-        s["corr"] = tuple(fits.get(D.signature(s), (0, 0, 1))) if not report_only else s.get("corr", (0, 0, 1))
+        c = fits.get(D.signature(s), (0, 0, 1)) if not report_only else s.get("corr", (0, 0, 1))
+        s["corr"] = tuple(c[:3])
+        if len(c) > 3:
+            s["cast"] = [it for it in s["cast"] if it.get("who") not in c[3]]
     bad, off = lips(D.SHOTS)
     for lid, spk, k, n in bad:
         print(f"lip sync: {lid} {spk} on screen in a mouthless drawing at {k}/{n} words")

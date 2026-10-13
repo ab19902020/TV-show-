@@ -1,7 +1,7 @@
 """The shot list of The Undercard (v5). Every shot is a camera in one of the sets (1x plate px) with the people and
 props of that moment drawn at true scale (film/actors.py: s["cast"]); times come from the dialogue edit's marks
 (film/timeline.py), so the picture follows the voices. The pack's plan (pack/v5/SHOT_AND_ANIMATION_PLAN.md) shot by
-shot: a held camera while people act, a cut when the story moves, close-ups on the acting heads (bust_*), the
+shot: a held camera while people act, a cut when the story moves, close-ups on the people's own complete drawings, the
 fall as a chain of causes, five fight beats with real contact (the paired drawings, pair_*), one impact graphic.
 
 Cameras: cam = (cx, cy, zoom), zoom 1 = the set's full width. on(x, y, who) frames a person standing at (x, y): frac
@@ -114,6 +114,9 @@ def W(t, p, cams, cast, blur=0.0, drift=0.35, extra_layers=(), **kw):
     if p in CROWD_FLASH:
         kw.setdefault("flashes", CROWD_FLASH[p])
     occl = kw.pop("occl", True)
+    hide = kw.pop("hide", ())
+    if hide:                                          # left out of a hand-framed shot: the frame would slice them
+        cast = [it for it in cast if it.get("who") not in hide]
     if p in OCCL and occl:
         layers += [("occl", k) for k in OCCL[p] if occl is True or k in occl]
     return world(t, PLATES[p], cams[0][1], cams=cams, layers=layers, cast=cast, ppc=PPC[p], blur=blur,
@@ -166,6 +169,17 @@ def BW(t, p, who, name, at, mirror=False, others=(), dx=0.0, **kw):
     kw.setdefault("blur", 3.0)
     kw.setdefault("drift", 0.0)
     return W(t, p, bust_cam(p, who, name, at, mirror, dx), [B(who, name, at, mirror=mirror)] + list(others), **kw)
+
+
+def CU(t, p, track, at, frac=0.62, dx=0.0, up=0.0, props=(), hmax=0.5, **kw):
+    """a close-up: the person in the very drawing, pose, place and animation they have in the scene's wide shots (the
+    same track), framed from the head to the chest, alone in the frame with the set's props: never an acting head
+    stitched onto a body, never a neighbour sliced by the frame's edge"""
+    kw.setdefault("blur", 3.0)
+    kw.setdefault("drift", 0.0)
+    cam = on(p, at[0], at[1], track["who"], frac, up=up, dx=dx)
+    kw.setdefault("subject", dict(who=track["who"], frac=frac, dx=dx, up=up, hmax=hmax))
+    return W(t, p, cam, [track] + [it for it in props if "who" not in it], **kw)
 
 
 def hand_at(p, who, pose, at, side):
@@ -277,14 +291,13 @@ tape = dict(fn="tape", at=(TAPE_AT[0] + 20, TAPE_AT[1] + 10), w=92, t_peel=t_pee
             drop_at=(640, 440), floor=724, drop_dx=-40, z=2000, show=[(t_peel, 1e9)])
 tape_on_board = dict(tape, z=716, show=[(0, t_peel)])        # pressed on the board, under his arm
 press = [ed_press, sec_press, board, tape_on_board, tape]
-press_b = [P("eddie", "bust_smug", ED_P, mirror=True, shadow=False), sec_press, board, tape]
 S1 = [
     # close on the poster and his hand; he peels away with the tape stuck to his cuff, shakes it off
     W(m("open"), "P", [(m("open"), (640, 420, 1.55)), (m("admire"), (646, 422, 1.6))], press, drift=0.0),
     # he steps back to admire it, then sells it to us
     W(m("admire"), "P", [(m("admire"), (720, 455, 1.4)), (le("L001"), (800, 452, 1.5)), (m("c_ed2"), (820, 450, 1.55))],
       press),
-    BW(m("c_ed2"), "P", "eddie", "smug", ED_P, mirror=True),
+    CU(m("c_ed2"), "P", ed_press, ED_P, props=press),
     W(m("c_sec2"), "P", (990, 500, 1.55), press, blur=1.0),
     W(m("c_ed3"), "P", [(m("c_ed3"), on("P", *ED_P, "eddie", 0.66)), (m("c_secreact"), on("P", *ED_P, "eddie", 0.6))],
       press, blur=2.0),
@@ -300,8 +313,7 @@ S1b = [
     W(m("c_bay"), "B", [(m("c_bay"), (836, 470, 1.0)), (m("collar"), (760, 455, 1.12))], [bay_dana],
       caption=("LOADING BAY", "Same night · outside")),
     # the disguise idea: a shifty look; then embarrassment
-    BW(m("collar"), "B", "dana", "side", DA_B),
-    BW(m("collar") + 0.65, "B", "dana", "blush", DA_B),
+    CU(m("collar"), "B", bay_dana, DA_B),
     W(ls("L006"), "B", [(ls("L006"), on("B", *DA_B, "dana", 0.80)), (m("trolley_in"), on("B", *DA_B, "dana", 0.72))],
       [bay_dana], blur=2.0),
 ]
@@ -326,7 +338,7 @@ dana_bay2 = P("dana", keys((0, "w0"), (tb1 + 0.05, "q34"), (ls("L007") - 0.05, "
                            (ls("L009") - 0.05, "palms"), (le("L009") + 0.2, "q34"), (m("c_insult"), "palms"),
                            (le("L013") + 0.2, "q34"), (t_sh, "crouch"), (t_sh + 0.45, "stop"), (t_sh + 1.05, "crouch"),
                            (t_sh + 1.5, "stop"), (m("climb_in"), "climb")),
-              keys((tb0, (DA_IN[0] - 1250, DA_IN[1])), (tb1, DA_IN), (m("climb_in"), DA_IN),
+              keys((0, (DA_IN[0] - 1450, DA_IN[1])), (tb0, (DA_IN[0] - 1450, DA_IN[1])), (tb1, DA_IN), (m("climb_in"), DA_IN),
                    (m("climb_in") + 0.5, (TB_STOP + 70, Y_B - 4))),
               walk=dict(frames=W8, cycle=0.95, t0=tb0, t1=tb1), mirror=keys((0, False), (tb1 + 0.05, True)),
               rot=wob(t_sh + 0.45, 0.6, 9.0, 3) + wob(t_sh + 1.5, 0.45, 6.0, 2),
@@ -351,9 +363,9 @@ S2 = [
     W(m("trolley_in"), "B", [(m("trolley_in"), (700, 450, 1.25)), (m("c_wheels"), (840, 455, 1.3))], bay2),
     # low: the wheels and her feet; the brake
     W(m("c_wheels"), "B", [(m("c_wheels"), (TB_STOP - 60, Y_B - 90, 3.4)), (m("c_two"), (TB_STOP - 40, Y_B - 90, 3.5))],
-      bay2, blur=2.0, drift=0.0, locked=True),
+      bay2, blur=2.0, drift=0.0, locked=True, hide=("attendant", "dana")),
     W(m("c_two"), "B", [(m("c_two"), (mid_b[0], 455, 1.65)), (m("c_offer"), (mid_b[0], 452, 1.75))], bay2, blur=1.0),
-    BW(m("c_offer"), "B", "dana", "smug", DA_IN, others=bay2[:4]),
+    CU(m("c_offer"), "B", dana_bay2, DA_IN, props=bay2),
     W(m("c_pivot"), "B", [(m("c_pivot"), (mid_b[0], 455, 1.5)), (m("shoes"), (mid_b[0], 452, 1.58))], bay2, blur=1.0),
     # the shoes: one off, a hop, the other; in he goes
     W(m("shoes"), "B", [(m("shoes"), (DA_IN[0] - 140, 420, 1.3)), (m("c_inbin"), (DA_IN[0] - 160, 425, 1.36))],
@@ -366,8 +378,8 @@ inbin_light = dict(fn="dark", alpha=keys((m("c_inbin") + 0.6, 0.0), (m("c_inbin"
                    panel=keys((m("c_inbin") + 0.6, -120.0), (m("c_inbin") + 1.25, 185.0)), z=5000)
 inbin_shoes = [dict(fn="shoe", at=(540, 700), rot=-32.0, w=210, z=3000),
                dict(fn="shoe", at=(1130, 706), rot=34.0, w=210, mirror=True, z=3000)]
-inbin = [B("dana", "blush", DA_I, look=("dir", 0.0, -0.6, 0.0)), inbin_light]
-inbin_dark = [B("dana", "smug", DA_I), dict(fn="dark", alpha=0.5, panel=185.0, z=5000)]
+inbin = [P("dana", "front", DA_I, look=("dir", 0.0, -0.6, 0.0), shadow=False), inbin_light]
+inbin_dark = [P("dana", "crossed", DA_I, shadow=False), dict(fn="dark", alpha=0.5, panel=185.0, z=5000)]
 S2a = [W(m("c_inbin"), "I", [(m("c_inbin"), (836, 470, 1.0)), (m("c_check"), (836, 490, 1.08))], inbin, drift=0.0)]
 
 # ---------------------------------------------------------------------- 2b. the checkpoint: reverse corridor
@@ -407,10 +419,10 @@ S2b = [
 # misses, and goes over the front in one arc to Fury's feet; his shoes skid on after him.
 Y_C = 700
 TR_X = 930
-DA_LAND, FU_C, AJ_C = (1205, 718), (1340, 708), (1585, 690)
+DA_LAND, FU_C, AJ_C = (1205, 718), (1340, 708), (1555, 690)   # (Joshua wholly inside the set)
 FU_BACK = (1405, 700)
 SEC_C3 = (250, 655)
-ED_IN, ED_NEG = (110, 728), (800, 732)                     # (he stops at the corner, clear of the attendant)
+ED_IN, ED_NEG = (135, 728), (800, 732)                     # (he stops at the corner, clear of the attendant)
 tr0, t_hit = m("c_roll"), m("c_ramp") + 0.12
 ATT_C, TRO_C, PATH_C = push("C", tr0 - 0.2, t_hit, -300, TR_X, Y_C, step=0.45, stop="brace")
 TH_C = TRO_C["h"]
@@ -455,7 +467,7 @@ fury_c = P("tyson", keys((0, "front"), (t_la - 0.05, "walk"), (t_la + 0.3, "fron
 aj_t0 = m("c_aj") - 0.6
 joshua_c = P("joshua", keys((0, "walk"), (aj_t0 + 0.8, "front"), (le("L023") + 0.4, "crossed")),
              keys((aj_t0, (1850, AJ_C[1])), (aj_t0 + 0.8, AJ_C), (m("c_eddie") - 0.01, AJ_C),
-                  (m("c_eddie"), (1590, 650))), steps=True, ease=True,
+                  (m("c_eddie"), (1560, 650))), steps=True, ease=True,
              mirror=keys((0, True), (aj_t0 + 0.85, False)), show=[(aj_t0, 1e9)], look="dana")
 
 
@@ -490,7 +502,10 @@ _n0 = hand_at("C", "dana", "palms", DA_LAND, -1)
 _n1 = hand_at("C", "attendant", "point", (400, 700), 1)
 notes_c = dict(fn="notes", at=keys((m("pays") + 0.15, _n0), (m("pays") + 0.4, _n0)) +
                arc(m("pays") + 0.4, m("pays") + 0.85, _n0, _n1, 340)[1:],
-               w=46, show=[(m("pays") + 0.15, m("pays") + 1.3)], z=DA_LAND[1] + 1)   # behind Eddie (over his head), in front of the others
+               w=46, show=[(m("pays") + 0.15, m("pays") + 1.0)], z=DA_LAND[1] + 1)   # behind Eddie (over his head), in front of the others
+
+
+ED_TR, DA_TR = eddie_c(), dana_floor()
 
 
 def corridor_c():
@@ -498,7 +513,7 @@ def corridor_c():
             dict(fn="wheels", trolley=TRO_C, z=Y_C + 1.2),
             towels_on(PATH_C, TH_C, Y_C + 0.5, rot=jolt, pivot=1.0,
                       dy=[(t_br, 0.0), (t_br + 0.15, 28.0), (t_br + 0.4, 8.0), (t_la, 0.0)]),
-            lid_c, peek, fly, towel_fly, fury_c, joshua_c, dana_floor(), eddie_c(), notes_c,
+            lid_c, peek, fly, towel_fly, fury_c, joshua_c, DA_TR, ED_TR, notes_c,
             P("security", keys((0, "front"), (ls("L028") - 0.1, "gesture"), (le("L028") + 0.4, "crossed")),
               keys((m("c_dana4"), (-160, SEC_C3[1])), (m("c_sec4") - 0.1, SEC_C3)), look=None, steps=True,
               show=[(m("c_dana4"), 1e9)])] + shoes_c
@@ -508,28 +523,28 @@ CC = corridor_c()
 two = ((ED_NEG[0] + DA_LAND[0]) / 2, Y_C)
 S3 = [
     # low, tracking with the trolley; the ramp; the chain: brace, the lid, the grab, the fall, the landing
-    W(m("c_roll"), "C", [(t_, (max(250.0, x_ - 240), 560, 1.9)) for t_, (x_, _) in PATH_C if m("c_roll") <= t_ <= m("c_ramp")] +
-      [(m("c_ramp"), (TR_X - 240, 560, 1.9))], CC, linear=True, blur=1.0),
+    W(m("c_roll"), "C", [(t_, (max(250.0, x_ - 240), 540, 1.8)) for t_, (x_, _) in PATH_C if m("c_roll") <= t_ <= m("c_ramp")] +
+      [(m("c_ramp"), (TR_X - 240, 540, 1.8))], CC, linear=True, blur=1.0),
     W(m("c_ramp"), "C", [(m("c_ramp"), (960, 640, 4.2)), (m("brace"), (960, 640, 4.4))], CC, blur=2.0, drift=0.0),
     W(m("brace"), "C", [(m("brace"), (1000, 470, 1.25)), (m("land") + 0.5, (1060, 475, 1.25))], CC, drift=0.0),
     # from the floor: Fury very tall
     W(m("c_pov"), "C", on("C", *FU_BACK, "tyson", 1.02, up=-0.02, dx=-60), CC, blur=1.5),
     W(m("c_dana1"), "C", on("C", *DA_LAND, "dana", 0.9, dx=40), CC, blur=2.0),
-    BW(m("c_fury2"), "C", "tyson", "side", FU_BACK, mirror=True),
+    CU(m("c_fury2"), "C", fury_c, FU_BACK, props=CC),
     W(m("c_aj"), "C", [(m("c_aj"), (1500, 480, 1.4)), (m("c_fury3"), (1500, 478, 1.45))], CC, blur=1.0),
-    BW(m("c_fury3"), "C", "tyson", "lean", FU_BACK, mirror=True),
+    CU(m("c_fury3"), "C", fury_c, FU_BACK, props=CC),
     # Eddie comes round the corner, stops at the shoe, finds the towel, the bin, Dana
     W(m("c_eddie"), "C", [(m("c_eddie"), (836, 470, 1.0)), (m("recog"), (836, 470, 1.02))], CC),   # the whole tableau
-    BW(m("recog"), "C", "eddie", "glare", ED_IN),
+    CU(m("recog"), "C", ED_TR, ED_IN, props=CC),
     W(m("c_up"), "C", [(m("c_up"), (DA_LAND[0] - 120, 470, 1.6)), (m("c_ed4"), (DA_LAND[0] - 160, 470, 1.65))], CC,
       blur=1.0),
     W(m("c_ed4"), "C", on("C", *ED_NEG, "eddie", 0.62, dx=40), CC, blur=2.0),
-    BW(m("c_dana4"), "C", "dana", "smug", DA_LAND),
+    CU(m("c_dana4"), "C", DA_TR, DA_LAND, props=CC),
     W(m("c_sec4"), "C", on("C", *SEC_C3, "security", 0.55, dx=-70), CC, blur=2.0),
-    BW(m("c_ed5"), "C", "eddie", "profile", ED_NEG, mirror=True),
+    CU(m("c_ed5"), "C", ED_TR, ED_NEG, props=CC),
     # her hand out, Dana paying, Eddie between them watching the money go past
     W(m("c_pay"), "C", [(m("c_pay"), (905, 455, 1.4)), (m("pays") + 1.0, (905, 457, 1.45))], CC, blur=1.0),
-    BW(m("pays") + 1.0, "C", "eddie", "up", ED_NEG),
+    CU(m("pays") + 1.0, "C", ED_TR, ED_NEG, props=CC),
 ]
 
 # ====================================================================== 4. the challenge
@@ -537,8 +552,8 @@ S4 = [
     W(m("c_out"), "C", on("C", *ED_NEG, "eddie", 0.62, dx=-30), CC, blur=2.0),
     W(m("c_close"), "C", [(m("c_close"), (two[0] + 20, 440, 1.9)), (m("silence") + 0.6, (two[0] + 20, 430, 2.05))], CC,
       blur=1.5),
-    BW(m("c_reg_e"), "C", "eddie", "sweat", ED_NEG),
-    BW(m("c_reg_d"), "C", "dana", "panic", (1215, 726)),
+    CU(m("c_reg_e"), "C", ED_TR, ED_NEG, props=CC),
+    CU(m("c_reg_d"), "C", DA_TR, (1215, 726), props=CC),
 ]
 # Dana steps right up to him for "Put me in the ring"
 for it in CC:
@@ -571,14 +586,13 @@ phone_q = dict(fn="phone", at=keys((tph, PH), (wt("L036", "both") - 0.05, PH))
                show=[(tph, 1e9)], z=3000)
 watchers = [P("tyson", "crossed", FU_Q, look="dana"), P("joshua", "crossed", AJ_Q, look="eddie")]
 kit = [ed_kit, da_kit, puff, phone_q] + watchers
-fj_busts = [B("tyson", "side", FU_Q, mirror=True), B("joshua", "left", AJ_Q)]
 S4b = [
     W(tj, "Q", on("Q", *ED_Q, "eddie", 0.8, dx=40), kit, blur=1.5, caption=("THE CORRIDOR", "Ten minutes later")),
     W(ts_, "Q", on("Q", *DA_Q, "dana", 0.7, dx=-40), kit, blur=2.0),
     W(tph, "Q", on("Q", *ED_Q, "eddie", 0.62, dx=60), kit, blur=2.0),
     W(m("c_kit"), "Q", [(m("c_kit"), (850, 520, 1.12)), (m("c_fj"), (850, 512, 1.2))], kit, blur=0.5),
-    BW(m("c_fj"), "Q", "joshua", "left", AJ_Q, blur=3.5),
-    BW(ls("L042") - 0.1, "Q", "tyson", "side", FU_Q, mirror=True, blur=3.5),
+    CU(m("c_fj"), "Q", watchers[1], AJ_Q, props=kit, blur=3.5),
+    CU(ls("L042") - 0.1, "Q", watchers[0], FU_Q, props=kit, blur=3.5),
 ]
 
 # ====================================================================== 5. the additional contest: the arena
@@ -754,14 +768,13 @@ Dn.pose(tcs - 0.06, "jab4").hold(tcs - 0.06).to(tcs, MEET + GD[0] - 6).lean(tcs,
 E.hold(tcs + 0.12).to(tcs + 0.3, MEET - GE[0] - 60).lean(tcs + 0.3, -7.0)          # the jolt back up the arms
 Dn.hold(tcs + 0.12).to(tcs + 0.3, MEET + GD[0] + 60).lean(tcs + 0.3, 7.0)
 CLASH_AT = (MEET, ED_R[1] - 0.5 * (GE[1] + GD[1]))
-# they wobble, the knees go, and both sit down on the same beat
-for F_, x, s in ((E, 520, -1), (Dn, 1150, 1)):
+# they wobble, the knees go, and both drop into a crouch on the same beat (their whole drawings, feet on the canvas)
+for F_, x, s in ((E, 470, -1), (Dn, 1200, 1)):
     F_.pose(twb, "tired").hold(twb).to(twb + 0.05, x).lean(twb, 0.0)
     for i, d in enumerate((0.1, 0.3, 0.5, 0.68)):
         F_.lean(twb + d, s * (9.0 - 2 * i) * (-1) ** i)
-    F_.lean(tsit, 0.0).lift(tsit, 0.0).lift(tsit + 0.22, -0.43 * F_.h).lift(tsit + 0.3, -0.40 * F_.h)
-    F_.lift(thu + 0.35, -0.40 * F_.h).lift(thu + 0.95, 0.0).lean(thu + 0.95, 0.0)
-    F_.pose(thu + 0.9, "guard" if F_ is E else "tired")
+    F_.lean(tsit, 0.0).pose(tsit + 0.08, "crouch_guard").lean(tsit + 0.2, s * 4.0).lean(tsit + 0.4, 0.0)
+    F_.pose(thu + 0.45, "tired").pose(thu + 0.9, "guard" if F_ is E else "tired").lean(thu + 0.95, 0.0)
 FIGHT_FX = [dict(fn="impact", t0=tcs, at=CLASH_AT, size=150, z=6010)]
 SHAKES = [(tcs, 14.0, 0.45)]
 KICKS = [(tt + 0.29, 1.04, 0.4), (tt + 0.89, 1.04, 0.4), (tc + 0.31, 1.06, 0.5), (tcs, 1.08, 0.6)]
@@ -864,16 +877,16 @@ S6 = [
     W(trc, "K", [(trc, (660, 410, 1.2)), (tcl, (650, 400, 1.26))], corner),
     # the clinch: side on, tight; each face; the referee
     RW(tcl, [(tcl, (836, 360, 2.0)), (ls("L060"), (836, 350, 2.15))], blur=1.0),
-    RW(ls("L060"), [(ls("L060"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 + 10, 2.35)),
-                    (le("L062"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 + 10, 2.5))], blur=2.5, locked=True),
+    RW(ls("L060"), [(ls("L060"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 - 20, 2.15)),
+                    (le("L062"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 - 20, 2.25))], blur=2.5, locked=True),
     RW(ls("L063"), [(ls("L063"), (836, 380, 1.9)), (ls("L064"), (836, 372, 2.0))], blur=1.0),
     RW(m("c_ref2"), [(m("c_ref2"), (900, 400, 1.7)), (m("c_aj2"), (900, 395, 1.78))], blur=1.0),
-    BW(m("c_aj2"), "S", "joshua", "mid", (1120, 1000), blur=3.5),
-    BW(m("c_ty2"), "S", "tyson", "lean", (520, 1000), blur=3.5),
+    CU(m("c_aj2"), "S", SEATED[1], (1120, 945), props=[SEATED[3]], blur=3.5),
+    CU(m("c_ty2"), "S", SEATED[0], (520, 945), props=[SEATED[2]], blur=3.5),
     # apart; the wind-up; glove meets glove; the wobble; both sit; the look; the bell; up they come
-    RW(tsep, [(tsep, (836, 480, 1.2)), (tcs, (836, 470, 1.25))]),
+    RW(tsep, [(tsep, (836, 480, 1.2)), (tcs, (836, 470, 1.25))], hide=("referee",)),
     RW(tcs, [(tcs, (836, 470, 1.05)), (twb + 0.6, (836, 480, 1.1))]),
-    RW(tsit - 0.15, (836, ED_R[1] - 941 / (2 * 1.75), 1.75), locked=True, drift=0.0),
+    RW(tsit - 0.15, (836, ED_R[1] + 40 - 941 / (2 * 1.45), 1.45), drift=0.0),
 ]
 
 # ====================================================================== 7. the decision and the series button
@@ -913,7 +926,7 @@ TRO_S["at"] = [(0, TRO_S["at"][0][1])] + TRO_S["at"]
 PATH_S = TRO_S["at"]
 ATT_XS = PATH_S[0][1][0] + (ATT_S["at"][0][1][0] - PATH_S[0][1][0])
 tcb = m("climb2")
-DA_S, ED_S = (610, Y_S + 4), (1530, 838)
+DA_S, ED_S = (610, Y_S + 4), (1500, 838)
 dana_s = P("dana", keys((0, "tired"), (tbn + 1.1, "guard"), (ls("L075") - 0.05, "guard_high"), (le("L075") + 0.2, "guard"),
                         (tcb, "crouch_guard"), (tcb + 0.42, "guard")),
            keys((tbn, (-160, 850)), (tbn + 1.1, DA_S), (tcb + 0.45, DA_S), (tcb + 0.85, (TB_S - 20, Y_S + 2))),
@@ -954,8 +967,19 @@ SHOTS = finish(sorted(S1 + S1b + S2 + S2a + S2b + S3 + S4 + S4b + S5 + S5b + S6 
 FRAMING_FILE = Path(__file__).with_name("framing.json")
 
 
+def _canon(v):
+    """a value's repr that is the same in every run (a set's order changes with Python's hash seed)"""
+    if isinstance(v, (set, frozenset)):
+        return "{" + ", ".join(sorted(_canon(x) for x in v)) + "}"
+    if isinstance(v, dict):
+        return "{" + ", ".join(f"{_canon(k)}: {_canon(x)}" for k, x in sorted(v.items(), key=lambda kv: str(kv[0]))) + "}"
+    if isinstance(v, (list, tuple)):
+        return ("[" if isinstance(v, list) else "(") + ", ".join(_canon(x) for x in v) + ("]" if isinstance(v, list) else ")")
+    return repr(v)
+
+
 def signature(s):
-    items = [sorted((k, repr(v)) for k, v in it.items()) for it in s.get("cast", [])]
+    items = [sorted((k, _canon(v)) for k, v in it.items()) for it in s.get("cast", [])]
     return hashlib.md5(repr((s.get("plate"), round(s["t"], 2), round(s["end"], 2), s.get("cams"), items)).encode()
                        ).hexdigest()[:12]
 
@@ -965,8 +989,10 @@ if not os.environ.get("FRAMING_RAW") and FRAMING_FILE.exists():
     for _s in SHOTS:
         _c = _fits.get(signature(_s)) if _s.get("kind") == "world" else None
         if _c:
-            _s["corr"] = tuple(_c)
+            _s["corr"] = tuple(_c[:3])
             _s["cams"] = [(tk, (c[0] + _c[0], c[1] + _c[1], c[2] * _c[2])) for tk, c in _s["cams"]]
+            if len(_c) > 3:                                # left out of this shot: the frame would slice them
+                _s["cast"] = [it for it in _s["cast"] if it.get("who") not in _c[3]]
 
 CAPTIONS = [(s["t"] + 0.3, min(s["end"], s["t"] + 3.3), "place", *s["caption"]) for s in SHOTS if s.get("caption")] + \
     CAPTIONS_EXTRA

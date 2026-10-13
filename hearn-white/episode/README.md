@@ -19,7 +19,7 @@ the fight is a draw that both of them immediately sell as a rematch. 1920 x 1080
 | 1:28 | 4. The challenge | corridor | "Out." Dana steps right up to him. "Fine." Silence. Eddie realises (a sweat bead), Dana realises |
 | 1:37 | | corridor, in kit | Preparation: Eddie's jacket off (a puff); Dana's glove strap yanked too tight; Eddie can't work his phone in gloves and drops it; the two of them bickering in their kit while Fury and Joshua watch. Joshua: "Shall we stop this?" Fury: "And miss two promoters working for their money?" |
 | 1:59 | 5. The additional contest | arena | The crowd swells into the arena; the promoters duck through the ropes, badly; the announcer's introductions, played straight; Eddie's confident smile with panicking brows; Dana raises his gloves; the attendant reaches through the ropes and takes the towel off his shoulder. In the ring, the referee's rules; "During the round, or generally?" |
-| 2:31 | 6. One disastrous round | ring, red corner | **1. Ceremony:** the bell; both bounce on their toes, full of it; Dana slows first, Eddie notices and stops too; nothing happens; one cough. Fury: "It's not a fucking podcast!" **2. Probing:** Eddie's long, slow, tentative jab; Dana ducks much too deep and peers up from under his gloves ("Your jab's shit." "It's an opening offer."). **3. Indignation:** Eddie's second jab taps Dana's guard; Dana counters into the red gloves (the paired drawings: real glove contact); the chin argument; Dana's counter lands on Eddie's raised gloves: "You actually fucking hit me!" "It's a fight!" "I thought we'd do the photos first!" (he strikes a pose). **4. The ropes:** at the red corner, Dana comes forward, three steps and two punches; Eddie backpedals onto the ropes, which throw him back into Dana: a real clinch (the paired clinch drawing: Eddie taller, leaning down, Dana braced). The whispered negotiation in a tight two-shot; Dana lifts a glove an inch and Eddie dives back in; "Break!" "Don't. He's load-bearing." Joshua and Fury, each in close-up. **5. The finish:** the referee prises them apart; both load up an enormous finish, trembling; glove meets glove (the one impact graphic, a two-frame flash); they wobble, the knees go, and both sit down on the same beat; the exhausted look, held; the bell; the referee hauls them up |
+| 2:31 | 6. One disastrous round | ring, red corner | **1. Ceremony:** the bell; both bounce on their toes, full of it; Dana slows first, Eddie notices and stops too; nothing happens; one cough. Fury: "It's not a fucking podcast!" **2. Probing:** Eddie's long, slow, tentative jab; Dana ducks much too deep and peers up from under his gloves ("Your jab's shit." "It's an opening offer."). **3. Indignation:** Eddie's second jab taps Dana's guard; Dana counters into the red gloves (the paired drawings: real glove contact); the chin argument; Dana's counter lands on Eddie's raised gloves: "You actually fucking hit me!" "It's a fight!" "I thought we'd do the photos first!" (he strikes a pose). **4. The ropes:** at the red corner, Dana comes forward, three steps and two punches; Eddie backpedals onto the ropes, which throw him back into Dana: a real clinch (the paired clinch drawing: Eddie taller, leaning down, Dana braced). The whispered negotiation in a tight two-shot; Dana lifts a glove an inch and Eddie dives back in; "Break!" "Don't. He's load-bearing." Joshua and Fury, each in close-up. **5. The finish:** the referee prises them apart; both load up an enormous finish, trembling; glove meets glove (the one impact graphic, a two-frame flash); they wobble, the knees go, and both drop into a crouch on the same beat; the exhausted look, held; the bell; the referee steps in between and hauls them up |
 | 3:30 | 7. Decision and button | ring, ringside | "After one round... a draw!" "Unfinished business. Immediate rematch." "Pay-per-view." Fury and Joshua. The promoters come down the ring steps; on the floor by the apron the bin is waiting; she slaps a fare card on it (RETURN JOURNEY £1,000, lettered in the engine); "You said five hundred!" "That was before you were pay-per-view."; Eddie, delighted (and a little impressed); Dana climbs in; the lid shuts; the wheel squeak; the end title over the departing trolley |
 
 ## Voices
@@ -79,17 +79,13 @@ a face are matched in size. A far eye drawn as a dark sliver past the nose keeps
 `tools/eyesheet.py` renders every animated eye close up, at rest, looking left, right, up and down, and half shut
 (`build/eyes_<n>.jpg`, 93 eyes); `tools/facesheet.py` renders whole faces with their mouths.
 
-**The v5 art.** The acting heads (`reference/cuts/acting_heads/bust_*.png`: six each for Eddie and Dana, three
-each for Fury and Joshua) are cut from their sheets with the haze dropped, and every one has its eyes and mouth
-marked, so close-ups are on the big heads and still lip-sync. Eddie's and Dana's acting heads are drawn with
-only a sliver of collar, so on their own they read as floating heads: each is set on the character's own body
-(`tools/make_closeups.py`: the body drawing scaled to the head, its own head taken off, the acting head put on at
-the chin, its collar fading into the shirt) and their close-ups are head and shoulders of a whole person
-(`close_*` drawings). Fury's and Joshua's are drawn with their hoodies' shoulders and are used as they are. A bust
-stands where its character stands: its head
-the size and in the place the full figure's head would be (`actors.bust_geom`), so a cut from a medium shot to a
-close-up keeps the eyeline; the close-up is framed from the drawing itself so its cut-off bottom edge is never in
-shot (`direction.bust_cam`). The paired fight reference was cut from its dark backdrop with an anime matting
+**Close-ups.** Every close-up is on the person's own complete drawing: the very drawing, pose, place and animation
+they have in the scene's wide shots (one track per person, `direction.CU`), framed from the head to the chest,
+alone in the frame with the set's props, so nobody's head is stitched onto a body and no neighbour is sliced by
+the frame. The v5 acting heads (`reference/cuts/acting_heads/bust_*.png`) and the stitched `close_*` drawings
+made from them (`tools/make_closeups.py`) are still in the library but no longer used: the acting heads are drawn
+with a sliver of collar (Eddie and Dana) or shoulders cut off flat at the sides (Fury and Joshua), and set on a
+body they read as a head on someone else's shoulders. The paired fight reference was cut from its dark backdrop with an anime matting
 model (rembg, isnet-anime) and each pair split into an Eddie layer and a Dana layer on one canvas
 (`tools/cut_pairs.py`): drawn on the same point they are the drawing, and each speaks with his own face; the
 clinch, a jab landing on a guard each way, and the glove clash. The attendant's eight new full-figure drawings
@@ -109,14 +105,20 @@ man's guard (`glove` / `land`: the glove's reach measured in each drawing), with
 advance, the ropes giving and throwing Eddie back (the ropes in the red corner shiver, `things.rope_wobble`), and
 the paired clinch drawing, which starts and ends on a cut; the separation, the trembling wind-up, the two big
 punches meeting glove to glove in the middle of the ring (the one impact graphic and a two-frame white emphasis),
-the wobble and the simultaneous sit-down, framed waist-up, and the referee hauling them up. The crowd, the bounce on
+the wobble and the knees going on the same beat (both drop into a deep crouch, their whole drawings with their feet
+on the canvas), and the referee stepping in between to haul them up. The crowd, the bounce on
 the canvas, the soft glove pops and leather squeaks, the ropes' creak and spring follow the same keys.
 
-**No head cut by the frame.** `tools/framing.py` follows every person's head through every shot, six times a
-second, and corrects the shot's camera until every head on screen is whole with headroom. Heads at the side of a
-shot are brought fully in or taken fully out, never left half in. The corrections are `film/framing.json`, keyed to
-each shot, so an edited shot is re-fitted by running the tool again (a shot framed by hand, like the freeze on Dana's
-eyes, every close-up on an acting head, is marked `locked` and left alone).
+**Nobody cut by the frame.** `tools/framing.py` follows every person through every shot, six times a second
+(their head, and the inked extent of their whole drawing), and corrects the shot's camera until every head is whole
+with headroom and nobody is sliced by a side of the frame: no hand, elbow or shoulder clipped, no sliver of someone
+at the edge, no feet chopped off at the bottom of a wide. The shot's subject, whoever speaks, and whoever acts in the
+shot (moves, changes drawing, comes into view, or is half of a paired drawing) are always kept wholly in; anyone
+else is brought in by a small move or left out of that shot, so a medium shot stays a medium shot. People walking in
+or out of shot may cross its sides. The corrections (and who is left out) are `film/framing.json`, keyed to each shot,
+so an edited shot is re-fitted by running the tool again (a shot framed by hand, like the freeze on Dana's eyes, is
+marked `locked` and left alone). `tools/cutoffs.py` lists anyone the frame still slices (none), and
+`tools/facing.py` anyone turned away from the person they are talking to (none).
 `tools/lipcheck.py` renders every speaker's face at each line's stressed words and first M/B/P
 (`build/lipcheck.jpg`); every line is spoken on screen except the two from inside the bin.
 
@@ -185,10 +187,10 @@ end title; drums under the confident bouncing that stop the moment Dana slows.
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for a line with no recording (L066 only) |
 | `tools/qa_sheets.py`, `tools/zoomstills.py` | two stills of every shot in sheets of nine; enlarged crops of chosen frames (the shot-by-shot review) |
 | `tools/facing.py` | lists anyone turned away from the person they are talking to, at every line and every shot |
-| `tools/make_closeups.py` | Eddie's and Dana's acting heads set on their own bodies (the close-up drawings) |
+| `tools/make_closeups.py` | Eddie's and Dana's acting heads set on their own bodies (the `close_*` drawings; no longer used) |
 | `tools/cut_busts.py`, `tools/cut_pairs.py`, `tools/gridview.py` | how the acting heads and the paired drawings were cut (the cuts are in the library), and the grid viewer used to place face marks |
 | `tools/cut_drawings.py` | every drawing cut clean from its sheet |
-| `tools/framing.py`, `tools/lipcheck.py` | the head-framing fit and the lip-sync sheet |
+| `tools/framing.py`, `tools/cutoffs.py`, `tools/facing.py`, `tools/lipcheck.py` | the framing fit (heads and bodies), the cut-off and facing checks, and the lip-sync sheet |
 | `tools/facesheet.py`, `tools/eyesheet.py`, `tools/marksheet.py`, `tools/markfit.py` | face sheets; every eye close up; the eye and mouth marks drawn on every drawing and refitted |
 
 Sizes: the pack's sheets draw the characters at different scales (the walk sheets about 1.3x the casual sheets,
