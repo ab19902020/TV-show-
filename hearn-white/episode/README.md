@@ -81,7 +81,12 @@ a face are matched in size. A far eye drawn as a dark sliver past the nose keeps
 
 **The v5 art.** The acting heads (`reference/cuts/acting_heads/bust_*.png`: six each for Eddie and Dana, three
 each for Fury and Joshua) are cut from their sheets with the haze dropped, and every one has its eyes and mouth
-marked, so close-ups are on the big heads and still lip-sync. A bust stands where its character stands: its head
+marked, so close-ups are on the big heads and still lip-sync. Eddie's and Dana's acting heads are drawn with
+only a sliver of collar, so on their own they read as floating heads: each is set on the character's own body
+(`tools/make_closeups.py`: the body drawing scaled to the head, its own head taken off, the acting head put on at
+the chin, its collar fading into the shirt) and their close-ups are head and shoulders of a whole person
+(`close_*` drawings). Fury's and Joshua's are drawn with their hoodies' shoulders and are used as they are. A bust
+stands where its character stands: its head
 the size and in the place the full figure's head would be (`actors.bust_geom`), so a cut from a medium shot to a
 close-up keeps the eyeline; the close-up is framed from the drawing itself so its cut-off bottom edge is never in
 shot (`direction.bust_cam`). The paired fight reference was cut from its dark backdrop with an anime matting
@@ -178,6 +183,7 @@ end title; drums under the confident bouncing that stop the moment Dana slows.
 | `tools/dana_picks.py` | the two lines taken from Dana's second take (one is still used: "It's boxing, Eddie.") |
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for a line with no recording (L066 only) |
 | `tools/qa_sheets.py`, `tools/zoomstills.py` | two stills of every shot in sheets of nine; enlarged crops of chosen frames (the shot-by-shot review) |
+| `tools/make_closeups.py` | Eddie's and Dana's acting heads set on their own bodies (the close-up drawings) |
 | `tools/cut_busts.py`, `tools/cut_pairs.py`, `tools/gridview.py` | how the acting heads and the paired drawings were cut (the cuts are in the library), and the grid viewer used to place face marks |
 | `tools/cut_drawings.py` | every drawing cut clean from its sheet |
 | `tools/framing.py`, `tools/lipcheck.py` | the head-framing fit and the lip-sync sheet |

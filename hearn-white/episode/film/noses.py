@@ -237,7 +237,7 @@ def install():
         d, info = orig(self, key)
         hand = marked(d, key) if fresh and key.split(":")[0] in WHO else None
         if fresh and key.split(":")[0] in WHO and key not in SKIP and (hand or (d.spec.get("mouth") and d.spec.get("eyes")
-                and not key.split(":")[1].startswith(("bust_", "pair_")))):    # the busts and pairs draw their own
+                and not key.split(":")[1].startswith(("bust_", "pair_", "close_")))):    # the busts and pairs draw their own
             from studio.film.engine import LEVELS
             fn = enhance if key.split(":")[0] in ENHANCE else draw
             full = fn(d.u8[1.0], d, info.get("faces", "F"), key, hand)

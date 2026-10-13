@@ -105,7 +105,7 @@ def on(p, x, y, who, frac=0.55, up=0.0, dx=0.0):
 
 def W(t, p, cams, cast, blur=0.0, drift=0.35, extra_layers=(), **kw):
     cams = cams if isinstance(cams, list) else [(t, cams)]
-    if any(str(it.get("pose", "")).startswith("bust_") for it in cast):
+    if any(str(it.get("pose", "")).startswith(("bust_", "close_")) for it in cast):
         kw.setdefault("locked", True)                 # a close-up on an acting head is framed by hand
     first = cams[0][1]
     if isinstance(first, OnCam):
@@ -124,17 +124,27 @@ def P(who, pose, at, **kw):
     return dict(who=who, pose=pose, at=at, **kw)
 
 
+# Eddie's and Dana's acting heads on their own bodies (tools/make_closeups.py): a close-up is a whole person
+CLOSE = {("eddie", "smug"): "close_smug_front", ("eddie", "glare"): "close_glare_front",
+         ("eddie", "profile"): "close_glare_front", ("eddie", "up"): "close_up_front",
+         ("eddie", "sweat"): "close_sweat_front", ("dana", "smug"): "close_smug_front",
+         ("dana", "side"): "close_side_q34", ("dana", "blush"): "close_blush_front",
+         ("dana", "panic"): "close_panic_front"}
+
+
 def B(who, name, at, **kw):
-    """a close-up bust: stands where its body would, no contact shadow"""
+    """a close-up on an acting head: Eddie and Dana on their own bodies (CLOSE), Fury and Joshua's busts (drawn
+    with their shoulders) standing where their bodies would"""
     kw.setdefault("shadow", False)
-    return dict(who=who, pose=f"bust_{name}", at=at, **kw)
+    return dict(who=who, pose=CLOSE.get((who, name), f"bust_{name}"), at=at, **kw)
 
 
 def bust_cam(p, who, name, at, mirror=False, dx=0.0, room=0.12):
     """the close-up on a bust: from a little above the head to just above the drawing's cut-off bottom edge (that
     edge is never in shot), centred on the head"""
     from film.actors import CAST, PEOPLE, feet_mid, sheet_fac
-    key = f"{PEOPLE[who][0]}:bust_{name}"
+    pose = B(who, name, at)["pose"]
+    key = f"{PEOPLE[who][0]}:{pose}"
     d, _ = CAST.get(key)
     x, y = at
     k = h_of(p, who, y) / PEOPLE[who][2] * sheet_fac(key)          # plate px per sheet px
@@ -143,7 +153,10 @@ def bust_cam(p, who, name, at, mirror=False, dx=0.0, room=0.12):
     by1 = d.oy + h_ / d.S
     hx0, hy0, hx1, hy1 = d.spec["head"]
     top = y + (hy0 - fy) * k - room * (hy1 - hy0) * k
-    bot = y + (by1 - fy) * k - 0.07 * (by1 - hy0) * k
+    if pose.startswith("close_"):                                  # a whole person: head and shoulders, the chest
+        bot = y + (hy1 - fy) * k + 0.62 * (hy1 - hy0) * k
+    else:
+        bot = y + (by1 - fy) * k - 0.07 * (by1 - hy0) * k
     hx = ((hx0 + hx1) / 2 - fx) * k
     return (x + (-hx if mirror else hx) + dx, (top + bot) / 2, 941.0 / (bot - top))
 
@@ -258,7 +271,7 @@ S1 = [
     # he steps back to admire it, then sells it to us
     W(m("admire"), "P", [(m("admire"), (720, 455, 1.4)), (le("L001"), (800, 452, 1.5)), (m("c_ed2"), (820, 450, 1.55))],
       press),
-    BW(m("c_ed2"), "P", "eddie", "smug", ED_P, mirror=True, others=[sec_press, board, tape]),
+    BW(m("c_ed2"), "P", "eddie", "smug", ED_P, mirror=True, others=[board, tape]),
     W(m("c_sec2"), "P", (990, 500, 1.55), press, blur=1.0),
     W(m("c_ed3"), "P", [(m("c_ed3"), on("P", *ED_P, "eddie", 0.66)), (m("c_secreact"), on("P", *ED_P, "eddie", 0.6))],
       press, blur=2.0),

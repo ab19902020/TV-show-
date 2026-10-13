@@ -122,6 +122,8 @@ def sheet_fac(key):
     cid, name = key.split(":")
     if name.startswith("bust_"):
         return bust_geom(key)[0]
+    if name.startswith("close_"):
+        return CAST.spec(cid)["drawings"][name]["close_fac"]
     if name.startswith("pair_"):
         return PAIR_FAC * (PAIR_WHO[cid] if cid in PAIR_WHO else 1.0)
     sheet = CAST.spec(cid)["drawings"][name].get("sheet", "")

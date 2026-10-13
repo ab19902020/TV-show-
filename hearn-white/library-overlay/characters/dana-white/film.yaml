@@ -1,48 +1,384 @@
-# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
-# given face landmarks. Check build/film/dana-white_check.jpg after any change.
 drawings:
-  front: {sheet: reference/cuts/dana_casual/front.png, box: [0, 0, 217, 347], faces: F, from: 'dana_casual.png [542, 11, 759, 358]', marks: {eyes: [[96.4, 52.5, 7.88, 4.5], [130.2, 52.2, 7.75, 4.5]], head: [21.2, 0.0, 198.2, 131.5], mouth: [103.0, 79.0, 121.0, 79.0, 112.0, 78.0], chin: 102.5, neck: [105.1, 116.5]}, jaw: 1.4}
-  q34: {sheet: reference/cuts/dana_casual/q34.png, box: [0, 0, 181, 347], faces: R, from: 'dana_casual.png [873, 12, 1054, 359]', jaw: 1.4}
-  side: {sheet: reference/cuts/dana_casual/side.png, box: [0, 0, 135, 345], faces: R, from: 'dana_casual.png [1205, 12, 1340, 357]', jaw: 1.4}
-  point: {sheet: reference/cuts/dana_casual/point.png, box: [0, 0, 291, 349], faces: F, from: 'dana_casual.png [46, 376, 337, 725]', marks: {eyes: [[150, 51, 6, 6], [178, 62, 9, 5]], head: [0.8, 0.5, 270.2, 132.5], mouth: [143, 83, 171, 90, 157, 85.4], chin: 111.8, neck: [164.2, 125.6]}, jaw: 1.4}
-  palms: {sheet: reference/cuts/dana_casual/palms.png, box: [0, 0, 306, 350], faces: F, from: 'dana_casual.png [444, 369, 750, 719]', marks: {eyes: [[137.5, 56, 9, 6], [170, 44.5, 6.5, 7]], head: [49.0, 0.0, 281.5, 132.8], mouth: [143, 84.5, 171, 76, 157, 79.6], chin: 105.5, neck: [155.4, 119.0]}, jaw: 1.4}
-  crossed: {sheet: reference/cuts/dana_casual/crossed.png, box: [0, 0, 193, 351], faces: F, from: 'dana_casual.png [837, 371, 1030, 722]', jaw: 1.4}
-  hips: {sheet: reference/cuts/dana_casual/hips.png, box: [0, 0, 273, 350], faces: F, from: 'dana_casual.png [1142, 370, 1415, 720]', jaw: 1.4}
-  shrug: {sheet: reference/cuts/dana_casual/shrug.png, box: [0, 0, 355, 341], faces: F, from: 'dana_casual.png [29, 732, 384, 1073]', marks: {eyes: [[162, 48, 8, 7], [196, 57, 9, 7]], mouth: [155, 78, 183, 80, 169, 77.5], chin: 105, neck: [175, 112], head: [128, 0, 240, 108]}, jaw: 1.4}
-  stop: {sheet: reference/cuts/dana_casual/stop.png, box: [0, 0, 231, 343], faces: F, from: 'dana_casual.png [466, 731, 697, 1074]', jaw: 1.4}
-  mic: {sheet: reference/cuts/dana_casual/mic.png, box: [0, 0, 234, 347], faces: F, from: 'dana_casual.png [812, 729, 1046, 1076]', jaw: 1.4}
-  crouch: {sheet: reference/cuts/dana_casual/crouch.png, box: [0, 0, 294, 327], faces: F, from: 'dana_casual.png [1124, 743, 1418, 1070]', jaw: 1.4}
-  guard: {sheet: reference/cuts/dana_boxing/guard.png, box: [0, 0, 253, 349], faces: L, from: 'dana_boxing.png [439, 6, 692, 355]', marks: {eyes: [[69.5, 73.0, 3.0, 3.5], [100.5, 71.1, 11.5, 7.12]], head: [23.5, 0.8, 215.5, 133.0], mouth: [80.0, 103.0, 96.0, 104.7, 88.0, 103.0], chin: 156.0, neck: [110.0, 179.8]}, jaw: 1.4}
-  jab: {sheet: reference/cuts/dana_boxing/jab.png, box: [0, 0, 312, 347], faces: L, from: 'dana_boxing.png [751, 8, 1063, 355]', jaw: 1.4, marks: {eyes: [[122.0, 75.5, 3.5, 4.0], [153.2, 72.8, 11.25, 6.75]], head: [0.0, 0.8, 276.2, 132.2], mouth: [126.8, 106.6, 151.2, 107.2, 139.0, 105.4], chin: 128.5, neck: [139.0, 144.1]}}
-  jab2: {sheet: reference/cuts/dana_boxing/jab2.png, box: [0, 0, 340, 347], faces: L, from: 'dana_boxing.png [1092, 8, 1432, 355]', jaw: 1.4, marks: {eyes: [[156.5, 74.5, 3.0, 4.0], [186.1, 69.9, 10.88, 6.88]], head: [0.8, 0.8, 314.5, 132.2], mouth: [160.5, 103.5, 184.5, 104.0, 172.5, 102.4], chin: 125.2, neck: [172.5, 140.7]}}
-  jab3: {sheet: reference/cuts/dana_boxing/jab3.png, box: [0, 0, 318, 337], faces: L, from: 'dana_boxing.png [31, 371, 349, 708]', jaw: 1.4, marks: {eyes: [[123.5, 68.0, 2.0, 3.5], [152.8, 65.5, 10.25, 5.25]], head: [0.0, 0.5, 281.5, 128.3], mouth: [126.8, 95.8, 150.8, 96.9, 138.8, 94.9], chin: 117.0, neck: [138.8, 131.4]}}
-  guard_high: {sheet: reference/cuts/dana_boxing/guard_high.png, box: [0, 0, 292, 339], faces: L, from: 'dana_boxing.png [410, 370, 702, 709]', jaw: 1.4, marks: {eyes: [[162.4, 65.9, 10.88, 6.62], [192.5, 67.5, 4.0, 4.0]], head: [0.8, 0.0, 255.8, 128.3], mouth: [164.0, 97.5, 187.0, 96.7, 175.5, 96.0], chin: 161.8, neck: [169.1, 188.7]}}
-  jab4: {sheet: reference/cuts/dana_boxing/jab4.png, box: [0, 0, 360, 335], faces: L, from: 'dana_boxing.png [725, 374, 1085, 709]', jaw: 1.4, marks: {eyes: [[150.0, 70.5, 1.5, 3.0], [181.4, 68.9, 8.38, 4.62]], head: [0.8, 0.0, 324.2, 126.9], mouth: [158.8, 98.3, 177.8, 100.0, 168.2, 98.5], chin: 119.8, neck: [168.2, 134.1]}}
-  lean_back: {sheet: reference/cuts/dana_boxing/lean_back.png, box: [0, 0, 287, 333], faces: L, from: 'dana_boxing.png [1126, 374, 1413, 707]', jaw: 1.4, marks: {eyes: [[187.5, 44.5, 5.0, 3.0], [219.5, 56.5, 10.25, 6.25]], head: [89.8, 0.0, 286.8, 126.2], mouth: [179.0, 71.7, 196.0, 78.5, 187.5, 74.0], chin: 135.8, neck: [211.2, 158.0]}}
-  crouch_guard: {sheet: reference/cuts/dana_boxing/crouch_guard.png, box: [0, 0, 278, 273], faces: L, plain: true, from: 'dana_boxing.png [65, 785, 343, 1058]'}
-  cover: {sheet: reference/cuts/dana_boxing/cover.png, box: [0, 0, 267, 329], faces: L, plain: true, from: 'dana_boxing.png [428, 729, 695, 1058]'}
-  tired: {sheet: reference/cuts/dana_boxing/tired.png, box: [0, 0, 238, 333], faces: F, from: 'dana_boxing.png [800, 734, 1038, 1067]', jaw: 1.4, marks: {eyes: [[21.2, 86.6, 7.0, 3.38], [56.1, 79.2, 10.62, 4.75]], head: [0.8, 0.0, 201.2, 126.3], mouth: [35.8, 114.4, 60.8, 111.1, 48.2, 111.4], chin: 130.2, neck: [48.2, 143.4]}}
-  arms_up: {sheet: reference/cuts/dana_boxing/arms_up.png, box: [0, 0, 253, 358], faces: L, marks: {eyes: [[80, 80, 4, 3], [113, 81, 11, 6]], mouth: [79, 107, 101, 109, 90, 107.5], chin: 125, neck: [110, 135], head: [70, 30, 172, 128]}, from: 'dana_boxing.png [1167, 710, 1420, 1068]', jaw: 1.4}
-  hug: {sheet: reference/cuts/dana_laundry/hug.png, box: [0, 0, 281, 314], faces: F, plain: true, from: 'dana_laundry.png [50, 15, 331, 329]'}
-  hug2: {sheet: reference/cuts/dana_laundry/hug2.png, box: [0, 0, 254, 312], faces: F, plain: true, from: 'dana_laundry.png [388, 14, 642, 326]'}
-  peek: {sheet: reference/cuts/dana_laundry/peek.png, box: [0, 0, 343, 169], faces: F, marks: {eyes: [[161, 104, 17, 12], [227, 104, 17, 12]], mouth: [182, 144, 211, 144, 196, 144], chin: 153, neck: [196, 165], head: [99, -3, 259, 167]}, from: 'dana_laundry.png [701, 153, 1044, 322]', jaw: 1.4}
-  crawl: {sheet: reference/cuts/dana_laundry/crawl.png, box: [0, 0, 354, 310], faces: F, plain: true, from: 'dana_laundry.png [1086, 13, 1440, 323]'}
-  tumble1: {sheet: reference/cuts/dana_laundry/tumble1.png, box: [0, 0, 351, 340], faces: F, plain: true, from: 'dana_laundry.png [11, 347, 362, 687]'}
-  tumble2: {sheet: reference/cuts/dana_laundry/tumble2.png, box: [0, 0, 345, 324], faces: F, plain: true, from: 'dana_laundry.png [371, 346, 716, 670]'}
-  tumble3: {sheet: reference/cuts/dana_laundry/tumble3.png, box: [0, 0, 370, 311], faces: F, plain: true, from: 'dana_laundry.png [726, 374, 1096, 685]'}
-  prone: {sheet: reference/cuts/dana_laundry/prone.png, box: [0, 0, 387, 150], faces: F, plain: true, from: 'dana_laundry.png [1053, 524, 1440, 674]'}
-  towel_head: {sheet: reference/cuts/dana_laundry/towel_head.png, box: [0, 0, 283, 378], faces: F, from: 'dana_laundry.png [45, 683, 328, 1061]', marks: {eyes: [[128.8, 82.8, 11.5, 9.75], [167.8, 74.2, 9.25, 9.5]], head: [9.0, 0.8, 277.8, 143.8], mouth: [134, 113, 167, 109, 150, 108.6], chin: 140.5, neck: [148.5, 157.9]}, jaw: 1.4}
-  towel_shoulder: {sheet: reference/cuts/dana_laundry/towel_shoulder.png, box: [0, 0, 267, 414], faces: F, from: 'dana_laundry.png [396, 660, 663, 1074]', marks: {eyes: [[134.6, 68.9, 9.38, 6.62], [165.6, 58.1, 7.12, 7.62]], head: [12.2, 0.5, 253.5, 157.2], mouth: [153.0, 87.6, 165.0, 85.2, 159.0, 85.0], chin: 114.0, neck: [153.2, 128.1]}, jaw: 1.4}
-  dust: {sheet: reference/cuts/dana_laundry/dust.png, box: [0, 0, 248, 400], faces: F, from: 'dana_laundry.png [766, 672, 1014, 1072]', jaw: 1.4}
-  climb: {sheet: reference/cuts/dana_laundry/climb.png, box: [0, 0, 312, 321], faces: F, plain: true, from: 'dana_laundry.png [1109, 680, 1421, 1001]'}
-  w0: {sheet: reference/cuts/dana_walk/w0.png, box: [0, 0, 293, 459], faces: R, plain: true, from: 'dana_walk.png [84, 10, 377, 469]'}
-  w1: {sheet: reference/cuts/dana_walk/w1.png, box: [0, 0, 211, 459], faces: R, plain: true, from: 'dana_walk.png [519, 10, 730, 469]'}
-  w2: {sheet: reference/cuts/dana_walk/w2.png, box: [0, 0, 278, 460], faces: R, plain: true, from: 'dana_walk.png [882, 9, 1160, 469]'}
-  w3: {sheet: reference/cuts/dana_walk/w3.png, box: [0, 0, 284, 459], faces: R, plain: true, from: 'dana_walk.png [1297, 9, 1581, 468]'}
-  w4: {sheet: reference/cuts/dana_walk/w4.png, box: [0, 0, 312, 454], faces: R, plain: true, from: 'dana_walk.png [83, 475, 395, 929]'}
-  w5: {sheet: reference/cuts/dana_walk/w5.png, box: [0, 0, 234, 452], faces: R, plain: true, from: 'dana_walk.png [518, 475, 752, 927]'}
-  w6: {sheet: reference/cuts/dana_walk/w6.png, box: [0, 0, 279, 452], faces: R, plain: true, from: 'dana_walk.png [886, 476, 1165, 928]'}
-  w7: {sheet: reference/cuts/dana_walk/w7.png, box: [0, 0, 296, 451], faces: R, plain: true, from: 'dana_walk.png [1297, 476, 1593, 927]'}
+  front:
+    sheet: reference/cuts/dana_casual/front.png
+    box: [0, 0, 217, 347]
+    faces: F
+    from: dana_casual.png [542, 11, 759, 358]
+    marks:
+      eyes:
+      - [96.4, 52.5, 7.88, 4.5]
+      - [130.2, 52.2, 7.75, 4.5]
+      head: [21.2, 0.0, 198.2, 131.5]
+      mouth: [103.0, 79.0, 121.0, 79.0, 112.0, 78.0]
+      chin: 102.5
+      neck: [105.1, 116.5]
+    jaw: 1.4
+  q34:
+    sheet: reference/cuts/dana_casual/q34.png
+    box: [0, 0, 181, 347]
+    faces: R
+    from: dana_casual.png [873, 12, 1054, 359]
+    jaw: 1.4
+  side:
+    sheet: reference/cuts/dana_casual/side.png
+    box: [0, 0, 135, 345]
+    faces: R
+    from: dana_casual.png [1205, 12, 1340, 357]
+    jaw: 1.4
+  point:
+    sheet: reference/cuts/dana_casual/point.png
+    box: [0, 0, 291, 349]
+    faces: F
+    from: dana_casual.png [46, 376, 337, 725]
+    marks:
+      eyes:
+      - [150, 51, 6, 6]
+      - [178, 62, 9, 5]
+      head: [0.8, 0.5, 270.2, 132.5]
+      mouth: [143, 83, 171, 90, 157, 85.4]
+      chin: 111.8
+      neck: [164.2, 125.6]
+    jaw: 1.4
+  palms:
+    sheet: reference/cuts/dana_casual/palms.png
+    box: [0, 0, 306, 350]
+    faces: F
+    from: dana_casual.png [444, 369, 750, 719]
+    marks:
+      eyes:
+      - [137.5, 56, 9, 6]
+      - [170, 44.5, 6.5, 7]
+      head: [49.0, 0.0, 281.5, 132.8]
+      mouth: [143, 84.5, 171, 76, 157, 79.6]
+      chin: 105.5
+      neck: [155.4, 119.0]
+    jaw: 1.4
+  crossed:
+    sheet: reference/cuts/dana_casual/crossed.png
+    box: [0, 0, 193, 351]
+    faces: F
+    from: dana_casual.png [837, 371, 1030, 722]
+    jaw: 1.4
+  hips:
+    sheet: reference/cuts/dana_casual/hips.png
+    box: [0, 0, 273, 350]
+    faces: F
+    from: dana_casual.png [1142, 370, 1415, 720]
+    jaw: 1.4
+  shrug:
+    sheet: reference/cuts/dana_casual/shrug.png
+    box: [0, 0, 355, 341]
+    faces: F
+    from: dana_casual.png [29, 732, 384, 1073]
+    marks:
+      eyes:
+      - [162, 48, 8, 7]
+      - [196, 57, 9, 7]
+      mouth: [155, 78, 183, 80, 169, 77.5]
+      chin: 105
+      neck: [175, 112]
+      head: [128, 0, 240, 108]
+    jaw: 1.4
+  stop:
+    sheet: reference/cuts/dana_casual/stop.png
+    box: [0, 0, 231, 343]
+    faces: F
+    from: dana_casual.png [466, 731, 697, 1074]
+    jaw: 1.4
+  mic:
+    sheet: reference/cuts/dana_casual/mic.png
+    box: [0, 0, 234, 347]
+    faces: F
+    from: dana_casual.png [812, 729, 1046, 1076]
+    jaw: 1.4
+  crouch:
+    sheet: reference/cuts/dana_casual/crouch.png
+    box: [0, 0, 294, 327]
+    faces: F
+    from: dana_casual.png [1124, 743, 1418, 1070]
+    jaw: 1.4
+  guard:
+    sheet: reference/cuts/dana_boxing/guard.png
+    box: [0, 0, 253, 349]
+    faces: L
+    from: dana_boxing.png [439, 6, 692, 355]
+    marks:
+      eyes:
+      - [69.5, 73.0, 3.0, 3.5]
+      - [100.5, 71.1, 11.5, 7.12]
+      head: [23.5, 0.8, 215.5, 133.0]
+      mouth: [80.0, 103.0, 96.0, 104.7, 88.0, 103.0]
+      chin: 156.0
+      neck: [110.0, 179.8]
+    jaw: 1.4
+  jab:
+    sheet: reference/cuts/dana_boxing/jab.png
+    box: [0, 0, 312, 347]
+    faces: L
+    from: dana_boxing.png [751, 8, 1063, 355]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [122.0, 75.5, 3.5, 4.0]
+      - [153.2, 72.8, 11.25, 6.75]
+      head: [0.0, 0.8, 276.2, 132.2]
+      mouth: [126.8, 106.6, 151.2, 107.2, 139.0, 105.4]
+      chin: 128.5
+      neck: [139.0, 144.1]
+  jab2:
+    sheet: reference/cuts/dana_boxing/jab2.png
+    box: [0, 0, 340, 347]
+    faces: L
+    from: dana_boxing.png [1092, 8, 1432, 355]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [156.5, 74.5, 3.0, 4.0]
+      - [186.1, 69.9, 10.88, 6.88]
+      head: [0.8, 0.8, 314.5, 132.2]
+      mouth: [160.5, 103.5, 184.5, 104.0, 172.5, 102.4]
+      chin: 125.2
+      neck: [172.5, 140.7]
+  jab3:
+    sheet: reference/cuts/dana_boxing/jab3.png
+    box: [0, 0, 318, 337]
+    faces: L
+    from: dana_boxing.png [31, 371, 349, 708]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [123.5, 68.0, 2.0, 3.5]
+      - [152.8, 65.5, 10.25, 5.25]
+      head: [0.0, 0.5, 281.5, 128.3]
+      mouth: [126.8, 95.8, 150.8, 96.9, 138.8, 94.9]
+      chin: 117.0
+      neck: [138.8, 131.4]
+  guard_high:
+    sheet: reference/cuts/dana_boxing/guard_high.png
+    box: [0, 0, 292, 339]
+    faces: L
+    from: dana_boxing.png [410, 370, 702, 709]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [162.4, 65.9, 10.88, 6.62]
+      - [192.5, 67.5, 4.0, 4.0]
+      head: [0.8, 0.0, 255.8, 128.3]
+      mouth: [164.0, 97.5, 187.0, 96.7, 175.5, 96.0]
+      chin: 161.8
+      neck: [169.1, 188.7]
+  jab4:
+    sheet: reference/cuts/dana_boxing/jab4.png
+    box: [0, 0, 360, 335]
+    faces: L
+    from: dana_boxing.png [725, 374, 1085, 709]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [150.0, 70.5, 1.5, 3.0]
+      - [181.4, 68.9, 8.38, 4.62]
+      head: [0.8, 0.0, 324.2, 126.9]
+      mouth: [158.8, 98.3, 177.8, 100.0, 168.2, 98.5]
+      chin: 119.8
+      neck: [168.2, 134.1]
+  lean_back:
+    sheet: reference/cuts/dana_boxing/lean_back.png
+    box: [0, 0, 287, 333]
+    faces: L
+    from: dana_boxing.png [1126, 374, 1413, 707]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [187.5, 44.5, 5.0, 3.0]
+      - [219.5, 56.5, 10.25, 6.25]
+      head: [89.8, 0.0, 286.8, 126.2]
+      mouth: [179.0, 71.7, 196.0, 78.5, 187.5, 74.0]
+      chin: 135.8
+      neck: [211.2, 158.0]
+  crouch_guard:
+    sheet: reference/cuts/dana_boxing/crouch_guard.png
+    box: [0, 0, 278, 273]
+    faces: L
+    plain: true
+    from: dana_boxing.png [65, 785, 343, 1058]
+  cover:
+    sheet: reference/cuts/dana_boxing/cover.png
+    box: [0, 0, 267, 329]
+    faces: L
+    plain: true
+    from: dana_boxing.png [428, 729, 695, 1058]
+  tired:
+    sheet: reference/cuts/dana_boxing/tired.png
+    box: [0, 0, 238, 333]
+    faces: F
+    from: dana_boxing.png [800, 734, 1038, 1067]
+    jaw: 1.4
+    marks:
+      eyes:
+      - [21.2, 86.6, 7.0, 3.38]
+      - [56.1, 79.2, 10.62, 4.75]
+      head: [0.8, 0.0, 201.2, 126.3]
+      mouth: [35.8, 114.4, 60.8, 111.1, 48.2, 111.4]
+      chin: 130.2
+      neck: [48.2, 143.4]
+  arms_up:
+    sheet: reference/cuts/dana_boxing/arms_up.png
+    box: [0, 0, 253, 358]
+    faces: L
+    marks:
+      eyes:
+      - [80, 80, 4, 3]
+      - [113, 81, 11, 6]
+      mouth: [79, 107, 101, 109, 90, 107.5]
+      chin: 125
+      neck: [110, 135]
+      head: [70, 30, 172, 128]
+    from: dana_boxing.png [1167, 710, 1420, 1068]
+    jaw: 1.4
+  hug:
+    sheet: reference/cuts/dana_laundry/hug.png
+    box: [0, 0, 281, 314]
+    faces: F
+    plain: true
+    from: dana_laundry.png [50, 15, 331, 329]
+  hug2:
+    sheet: reference/cuts/dana_laundry/hug2.png
+    box: [0, 0, 254, 312]
+    faces: F
+    plain: true
+    from: dana_laundry.png [388, 14, 642, 326]
+  peek:
+    sheet: reference/cuts/dana_laundry/peek.png
+    box: [0, 0, 343, 169]
+    faces: F
+    marks:
+      eyes:
+      - [161, 104, 17, 12]
+      - [227, 104, 17, 12]
+      mouth: [182, 144, 211, 144, 196, 144]
+      chin: 153
+      neck: [196, 165]
+      head: [99, -3, 259, 167]
+    from: dana_laundry.png [701, 153, 1044, 322]
+    jaw: 1.4
+  crawl:
+    sheet: reference/cuts/dana_laundry/crawl.png
+    box: [0, 0, 354, 310]
+    faces: F
+    plain: true
+    from: dana_laundry.png [1086, 13, 1440, 323]
+  tumble1:
+    sheet: reference/cuts/dana_laundry/tumble1.png
+    box: [0, 0, 351, 340]
+    faces: F
+    plain: true
+    from: dana_laundry.png [11, 347, 362, 687]
+  tumble2:
+    sheet: reference/cuts/dana_laundry/tumble2.png
+    box: [0, 0, 345, 324]
+    faces: F
+    plain: true
+    from: dana_laundry.png [371, 346, 716, 670]
+  tumble3:
+    sheet: reference/cuts/dana_laundry/tumble3.png
+    box: [0, 0, 370, 311]
+    faces: F
+    plain: true
+    from: dana_laundry.png [726, 374, 1096, 685]
+  prone:
+    sheet: reference/cuts/dana_laundry/prone.png
+    box: [0, 0, 387, 150]
+    faces: F
+    plain: true
+    from: dana_laundry.png [1053, 524, 1440, 674]
+  towel_head:
+    sheet: reference/cuts/dana_laundry/towel_head.png
+    box: [0, 0, 283, 378]
+    faces: F
+    from: dana_laundry.png [45, 683, 328, 1061]
+    marks:
+      eyes:
+      - [128.8, 82.8, 11.5, 9.75]
+      - [167.8, 74.2, 9.25, 9.5]
+      head: [9.0, 0.8, 277.8, 143.8]
+      mouth: [134, 113, 167, 109, 150, 108.6]
+      chin: 140.5
+      neck: [148.5, 157.9]
+    jaw: 1.4
+  towel_shoulder:
+    sheet: reference/cuts/dana_laundry/towel_shoulder.png
+    box: [0, 0, 267, 414]
+    faces: F
+    from: dana_laundry.png [396, 660, 663, 1074]
+    marks:
+      eyes:
+      - [134.6, 68.9, 9.38, 6.62]
+      - [165.6, 58.1, 7.12, 7.62]
+      head: [12.2, 0.5, 253.5, 157.2]
+      mouth: [153.0, 87.6, 165.0, 85.2, 159.0, 85.0]
+      chin: 114.0
+      neck: [153.2, 128.1]
+    jaw: 1.4
+  dust:
+    sheet: reference/cuts/dana_laundry/dust.png
+    box: [0, 0, 248, 400]
+    faces: F
+    from: dana_laundry.png [766, 672, 1014, 1072]
+    jaw: 1.4
+  climb:
+    sheet: reference/cuts/dana_laundry/climb.png
+    box: [0, 0, 312, 321]
+    faces: F
+    plain: true
+    from: dana_laundry.png [1109, 680, 1421, 1001]
+  w0:
+    sheet: reference/cuts/dana_walk/w0.png
+    box: [0, 0, 293, 459]
+    faces: R
+    plain: true
+    from: dana_walk.png [84, 10, 377, 469]
+  w1:
+    sheet: reference/cuts/dana_walk/w1.png
+    box: [0, 0, 211, 459]
+    faces: R
+    plain: true
+    from: dana_walk.png [519, 10, 730, 469]
+  w2:
+    sheet: reference/cuts/dana_walk/w2.png
+    box: [0, 0, 278, 460]
+    faces: R
+    plain: true
+    from: dana_walk.png [882, 9, 1160, 469]
+  w3:
+    sheet: reference/cuts/dana_walk/w3.png
+    box: [0, 0, 284, 459]
+    faces: R
+    plain: true
+    from: dana_walk.png [1297, 9, 1581, 468]
+  w4:
+    sheet: reference/cuts/dana_walk/w4.png
+    box: [0, 0, 312, 454]
+    faces: R
+    plain: true
+    from: dana_walk.png [83, 475, 395, 929]
+  w5:
+    sheet: reference/cuts/dana_walk/w5.png
+    box: [0, 0, 234, 452]
+    faces: R
+    plain: true
+    from: dana_walk.png [518, 475, 752, 927]
+  w6:
+    sheet: reference/cuts/dana_walk/w6.png
+    box: [0, 0, 279, 452]
+    faces: R
+    plain: true
+    from: dana_walk.png [886, 476, 1165, 928]
+  w7:
+    sheet: reference/cuts/dana_walk/w7.png
+    box: [0, 0, 296, 451]
+    faces: R
+    plain: true
+    from: dana_walk.png [1297, 476, 1593, 927]
   bust_smug:
     sheet: reference/cuts/acting_heads/bust_smug.png
     box: [0, 0, 421, 500]
@@ -165,3 +501,63 @@ drawings:
       neck: [215, 214]
       head: [168, 100, 278, 210]
     from: paired_fight_reference.png (matted, split per fighter)
+  close_smug_front:
+    image: reference/cuts/closeups/close_smug_front.png
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [867.3, 490.2, 70.8, 39.6]
+      - [1186.5, 487.8, 70.8, 39.6]
+      mouth: [862.5, 736.2, 1190.1, 713.4, 1025.7, 735.0]
+      chin: 982.2
+      neck: [1006.5, 1102.2]
+      head: [536.1, 0.6, 1505.7, 991.8]
+    close_fac: 0.104421
+    from: bust_smug on front
+  close_side_q34:
+    image: reference/cuts/closeups/close_side_q34.png
+    faces: R
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [1026.2, 516.6, 74.4, 32.4]
+      - [1307.0, 456.6, 48.0, 39.6]
+      mouth: [1083.8, 763.8, 1352.6, 696.6, 1220.6, 721.8]
+      chin: 967.8
+      neck: [1086.2, 1078.2]
+      head: [534.2, 0.6, 1472.6, 977.4]
+    close_fac: 0.107527
+    from: bust_side on q34
+  close_blush_front:
+    image: reference/cuts/closeups/close_blush_front.png
+    faces: R
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [967.5, 526.2, 76.8, 44.4]
+      - [1243.5, 478.2, 52.8, 42.0]
+      mouth: [1021.5, 796.2, 1292.7, 732.6, 1158.3, 753.0]
+      chin: 1006.2
+      neck: [1031.1, 1095.0]
+      head: [474.3, 0.6, 1431.9, 1015.8]
+    close_fac: 0.101929
+    from: bust_blush on front
+  close_panic_front:
+    image: reference/cuts/closeups/close_panic_front.png
+    faces: F
+    drawn_pupils: true
+    jaw: 1.3
+    marks:
+      eyes:
+      - [795.3, 423.0, 54.0, 57.6]
+      - [1062.9, 465.0, 74.4, 57.6]
+      mouth: [731.7, 714.6, 994.5, 775.8, 862.5, 719.4]
+      chin: 982.2
+      neck: [1006.5, 1102.2]
+      head: [608.1, 0.6, 1582.5, 991.8]
+    close_fac: 0.104421
+    from: bust_panic on front

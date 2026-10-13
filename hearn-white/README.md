@@ -24,7 +24,8 @@ is not in Eddie's new file. Send that one line and it drops straight in (details
   inside of the bin, the stare-down at the checkpoint, the payment, the silence after "Fine", the preparation, the
   promoters ducking through the ropes, the exit down the ring steps, the fare card, the end title over the
   departing trolley.
-- **Close-ups on the new acting heads** for Eddie, Dana, Fury and Joshua, lip-synced and framed in the set.
+- **Close-ups on the new acting heads** for Eddie, Dana, Fury and Joshua, lip-synced and framed in the set; Eddie
+  and Dana are head and shoulders on their own bodies (suit, polo), never floating heads.
 - **The attendant walks**: step drawings with the weight on the planted foot, her hands on the handle, the
   trolley's wheels turning, a brake.
 - **The fall as a chain of causes**: the wheel hits the ramp, her foot braces, the towels lurch, the lid flips,
