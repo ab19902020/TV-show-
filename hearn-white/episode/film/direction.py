@@ -525,7 +525,8 @@ S3 = [
     # low, tracking with the trolley; the ramp; the chain: brace, the lid, the grab, the fall, the landing
     W(m("c_roll"), "C", [(t_, (max(250.0, x_ - 240), 540, 1.8)) for t_, (x_, _) in PATH_C if m("c_roll") <= t_ <= m("c_ramp")] +
       [(m("c_ramp"), (TR_X - 240, 540, 1.8))], CC, linear=True, blur=1.0),
-    W(m("c_ramp"), "C", [(m("c_ramp"), (960, 640, 4.2)), (m("brace"), (960, 640, 4.4))], CC, blur=2.0, drift=0.0),
+    W(m("c_ramp"), "C", [(m("c_ramp"), (960, 640, 4.2)), (m("brace"), (960, 640, 4.4))], CC, blur=2.0, drift=0.0,
+      locked=True, hide=("attendant", "dana")),                  # the wheel and the ramp alone
     W(m("brace"), "C", [(m("brace"), (1000, 470, 1.25)), (m("land") + 0.5, (1060, 475, 1.25))], CC, drift=0.0),
     # from the floor: Fury very tall
     W(m("c_pov"), "C", on("C", *FU_BACK, "tyson", 1.02, up=-0.02, dx=-60), CC, blur=1.5),
@@ -629,7 +630,8 @@ S5 = [
     W(m("c_ed_conf"), "A", on("A", *ED_A, "eddie", 0.55), arena, blur=2.0),
     W(m("c_ann3"), "A", [(m("c_ann3"), (1000, 520, 1.6)), (m("c_da_in"), (1040, 520, 1.7))], arena, blur=1.0),
     W(m("c_da_in"), "A", [(m("c_da_in"), on("A", *DA_A, "dana", 0.95, dx=60)),
-                          (m("c_ref"), on("A", *DA_A, "dana", 0.9, dx=80))], arena, blur=1.5),
+                          (m("c_ref"), on("A", *DA_A, "dana", 0.9, dx=80))], arena, blur=1.5,
+      keep=("attendant",)),                                      # she takes the towel off his shoulder
 ]
 
 # ---------------------------------------------------------------------- 5b. the referee's instructions (in the ring)
@@ -862,7 +864,8 @@ S6 = [
       blur=10.0, shakes=[(tb + 0.05, 10.0, 0.5), (tb + 0.33, 8.0, 0.4)]),
     # held wide: the bounce, the slowing, the nothing
     RW(tbo, [(tbo, (836, 510, 1.12)), (m("c_ty1"), (836, 505, 1.16))]),
-    W(m("c_ty1"), "S", (650, 700, 1.9), ringside(face=[(m("c_ty1"), m("c_probe"), -0.6, -0.3)])),
+    W(m("c_ty1"), "S", (650, 700, 1.9), [it for i, it in enumerate(ringside(face=[(m("c_ty1"), m("c_probe"), -0.6, -0.3)]))
+                                         if i in (0, 2)]),        # Fury and his own chair
     RW(m("c_probe"), [(m("c_probe"), (850, 500, 1.3)), (m("c_da2"), (860, 500, 1.36))]),
     RW(m("c_da2"), on("R", *DA_R, "dana", 0.6, dx=-40), blur=2.0),
     RW(m("c_ed2b"), on("R", *ED_R, "eddie", 0.55, dx=40), blur=2.0),

@@ -298,7 +298,8 @@ def fit(s):
     zmin = 1.0 / min(z for _, (_, _, z) in s["cams"])
     zf = max(zf, zmin)
     sub = (s.get("subject") or {}).get("who")
-    keep = speakers(s) | actors(s) | ({sub} if sub else set()) | set(s.get("keep", ()))
+    # a shot framed on one person keeps them and whoever speaks; any other shot also keeps whoever acts in it
+    keep = speakers(s) | ({sub} if sub else actors(s)) | set(s.get("keep", ()))
     zlo = max(zmin, zf * (0.92 if sub else 0.8))
     (bx0, bx1), (by0, by1) = bounds(s, zf)
     dx, dy = min(max(dx, bx0), bx1), min(max(dy, by0), by1)
