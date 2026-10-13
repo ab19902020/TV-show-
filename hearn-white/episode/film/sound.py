@@ -212,7 +212,7 @@ def fight(bus):
     A.steps(bus, m("bounce"), m("slow") + 0.8, -38, pace=0.48, lowpass=1800)     # bouncing on the canvas
     A.ev(bus, "cloth/cloth-c", m("probe") + 0.45, -33)                          # the duck
     # the glove contacts: a soft pop and a leather squeak, never a smack
-    for t in (m("tap") + 0.28, m("tap") + 0.88, m("counter") + 0.3):
+    for t in (m("tap") + 0.29, m("tap") + 0.89, m("counter") + 0.31):
         A.ev(bus, "impacts/punch-c", t, -29, lowpass=2600)
         A.ev(bus, "creaks/creak-small", t + 0.01, -27, semis=14, highpass=1200, dur=0.18)
     A.steps(bus, m("advance") + 0.1, m("ropes2") - 0.1, -36, pace=0.28, lowpass=2000)
@@ -225,8 +225,8 @@ def fight(bus):
     A.ev(bus, "cloth/cloth-b", m("lift") + 0.42, -33)
     A.ev(bus, "cloth/cloth-f", m("sep") + 0.3, -31)
     # the glove clash: the one big contact
-    A.ev(bus, "impacts/punch-a", m("clash") + 0.02, -17)
-    A.ev(bus, "impacts/punch-d", m("clash") + 0.03, -22, semis=-4, lowpass=3000)
+    A.ev(bus, "impacts/punch-a", m("clash"), -17)
+    A.ev(bus, "impacts/punch-d", m("clash") + 0.01, -22, semis=-4, lowpass=3000)
     A.ev(bus, "creaks/creak-short", m("wobble") + 0.1, -30, semis=-6)
     put(bus, slide_whistle(900, 260, 0.5), m("sit") - 0.05, -31)
     for d, nm, pn in ((0.22, "foley/body-fall-a", -0.3), (0.24, "foley/body-fall-b", 0.3)):

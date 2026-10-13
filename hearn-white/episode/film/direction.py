@@ -246,7 +246,7 @@ def towels_on(path, th, z, **kw):
 
 
 # ====================================================================== 1. Eddie's ban: press area
-BOARD, ED_TAPE, ED_P, SEC_P = (520, 715), (705, 722), (840, 722), (1215, 705)
+BOARD, ED_TAPE, ED_P, SEC_P = (520, 715), (705, 722), (905, 722), (1310, 705)
 t_peel, t_drop = m("tape") + 0.2, m("admire") - 0.15
 ed_press = P("eddie", keys((0, "point"), (t_peel, "stop"), (m("admire") + 0.05, "hips"), (ls("L001") - 0.05, "front"),
                            (wt("L001", "biggest") - 0.1, "palms"), (wt("L001", "improved") - 0.1, "point"),
@@ -261,9 +261,10 @@ ed_press = P("eddie", keys((0, "point"), (t_peel, "stop"), (m("admire") + 0.05, 
                       (t_peel + 0.45, -2.0), (t_peel + 0.6, 0.0)))
 sec_press = P("security", keys((0, "crossed"), (ls("L004") - 0.1, "gesture"), (le("L004") + 0.3, "crossed")), SEC_P)
 board = dict(fn="board", at=BOARD, h=480)
-tape = dict(fn="tape", at=(662, 430), w=92, t_peel=t_peel, t_drop=t_drop, follow="eddie", side=-1,
-            drop_at=(640, 440), floor=724, drop_dx=-40, z=2000)
-press = [ed_press, sec_press, board, tape]
+tape = dict(fn="tape", at=(622, 318), w=92, t_peel=t_peel, t_drop=t_drop, follow="eddie", side=-1,
+            drop_at=(640, 440), floor=724, drop_dx=-40, z=2000, show=[(t_peel, 1e9)])
+tape_on_board = dict(tape, z=716, show=[(0, t_peel)])        # pressed on the board, under his arm
+press = [ed_press, sec_press, board, tape_on_board, tape]
 press_b = [P("eddie", "bust_smug", ED_P, mirror=True, shadow=False), sec_press, board, tape]
 S1 = [
     # close on the poster and his hand; he peels away with the tape stuck to his cuff, shakes it off
@@ -634,16 +635,38 @@ E.punch(tp + 0.35, "jab_long", 70, wind="guard2", wind_t=0.4, hold=0.35, back=0.
 Dn.duck(tp + 0.42, dur=1.1, dx=10).lift(tp + 1.0, 0.0)
 Dn.pose(m("c_da2") - 0.05, "crouch_guard").pose(ls("L049") - 0.02, "guard_high").pose(le("L049") + 0.15, "guard")
 E.pose(ls("L050") - 0.05, "guard2").pose(le("L050") + 0.2, "guard")
-# 2. the touch: Eddie's second jab taps Dana's guard (the pair drawing: contact); Dana counters into the red gloves
+
+
+def glove(F, pose):
+    """where a fighter's lead glove is in a drawing: (x ahead of the feet along his facing, y above them), ring px"""
+    from film.actors import PEOPLE, feet_mid, sheet_fac
+    from film.things import hand_tip
+    key = f"{PEOPLE[F.who][0]}:{pose}"
+    fx, fy = feet_mid(key)
+    tx, ty = hand_tip(key, F.facing)
+    k = F.h / PEOPLE[F.who][2] * sheet_fac(key)
+    return abs(tx - fx) * k, (fy - ty) * k
+
+
+def land(A, a_pose, V, v_pose, into=8.0):
+    """the lunge that puts A's glove in `a_pose` onto V's lead glove in `v_pose` (`into` px into it)"""
+    ga, gv = glove(A, a_pose)[0], glove(V, v_pose)[0]
+    return abs(V.x - A.x) - ga - gv + into
+
+
+# 2. the touch: Eddie's second jab taps Dana's guard (the glove really meets the glove); Dana counters into the red
+# gloves. Contact is shown with each fighter's own drawings, the jab reaching exactly to the guard: no swapping to
+# another drawing mid-shot
 tt = m("tap")
 CONTACT = []                                               # (t0, t1, pair) the pair drawing replaces both fighters
-E.pose(tt, "guard2").to(tt + 0.25, 620)
-CONTACT.append((tt + 0.28, tt + 0.62, "tap_e"))
-E.pose(tt + 0.62, "guard").to(tt + 0.75, 590)
-Dn.pose(tt + 0.62, "guard_high").to(tt + 0.75, 1060)
-CONTACT.append((tt + 0.88, tt + 1.2, "tap_d"))
-E.pose(tt + 1.2, "block").to(tt + 1.3, 575).lean(tt + 1.2, -6.0).lean(tt + 1.6, 0.0)
-Dn.pose(tt + 1.2, "guard").to(tt + 1.35, 1100)
+E.pose(tt, "guard2")
+E.punch(tt + 0.22, "jab", land(E, "jab", Dn, "guard"), wind="guard2", wind_t=0.14, hold=0.18, back=0.3, lean=3,
+        lines=False)
+Dn.hit(tt + 0.29, pose="guard", knock=12, lean=4, settle=0.35, sweat=False)
+Dn.punch(tt + 0.82, "jab", land(Dn, "jab", E, "block"), wind="guard_high", wind_t=0.14, hold=0.18, back=0.32, lean=3,
+         lines=False)
+E.hit(tt + 0.89, pose="block", knock=18, lean=6, settle=0.45, sweat=False)
+E.pose(tt + 1.4, "guard")
 # the exchange: chin talk
 E.pose(ls("L052") - 0.05, "guard2").pose(le("L052") + 0.1, "guard")
 Dn.pose(ls("L053") - 0.05, "guard_high").pose(le("L053") + 0.1, "guard")
@@ -653,10 +676,11 @@ for _l in ("L051", "L056"):
 E.pose(ls("L054") - 0.05, "guard").pose(le("L054") + 0.2, "guard")
 # 3. indignation: Dana's counter lands on Eddie's raised gloves; any contact is an insult
 tc = m("counter")
-Dn.pose(tc, "guard_high").to(tc + 0.2, 1070)
-CONTACT.append((tc + 0.3, tc + 0.62, "tap_d"))
-E.pose(tc + 0.62, "block").to(tc + 0.75, 560).lean(tc + 0.62, -8.0).lean(tc + 1.0, 0.0)
-Dn.pose(tc + 0.62, "guard").to(tc + 0.8, 1100)
+Dn.punch(tc + 0.24, "jab2", land(Dn, "jab2", E, "block"), wind="guard_high", wind_t=0.18, hold=0.2, back=0.35, lean=4,
+         lines=False)
+E.pose(tc + 0.2, "block")
+E.hit(tc + 0.31, pose="block", knock=30, lean=8, settle=0.6, sweat=False)
+E.pose(tc + 0.95, "guard")
 E.pose(ls("L055") - 0.05, "guard2").pose(le("L055") + 0.1, "guard")
 E.pose(ls("L057") - 0.05, "arms_up").pose(le("L057") + 0.25, "guard")      # strikes a pose for the photos
 # 4. (the red corner, K) Dana comes forward; Eddie backpedals onto the ropes; they throw him back: the clinch
@@ -679,36 +703,40 @@ for i in range(3):                                         # three short steps, 
 EK.to(tro, EK_ROPE[0]).lean(tro, -14.0).lean(tro + 0.25, -20.0).lean(tro + 0.55, 6.0)     # the ropes take him...
 EK.pose(trc, "cross").to(trc + 0.35, CL_K[0] - 60).lean(trc + 0.3, 14.0)                    # ...and throw him back
 DK.duck(trc + 0.15, dur=0.4, dx=8)
-CONTACT_K = [(tcl, m("c_ty2") + 2.0, "clinch")]
+CONTACT_K = []                                             # (the clinch starts on the cut to the ring)
 ROPE_HIT = tro
 # 5. the clinch (dialogue), the break, the big finish, the glove clash, the sit-down, the help up
 tlf, tsep, twu, tcs, twb, tsit, tlk, tbl2, thu = (m(k) for k in ("lift", "sep", "windup", "clash", "wobble", "sit", "look",
                                                                  "bell2", "helpup"))
-# the clinch in the ring (side on), with a moment apart when Dana lifts a glove
-CL_SPANS = [(tcl - 0.01, tlf), (tlf + 0.4, tsep + 0.2)]
-for a, b in CL_SPANS:
-    CONTACT.append((a, b, "clinch"))
-E.pose(tlf, "cover").hold(tlf).to(tlf + 0.05, 640).pose(tlf + 0.4, "cover")
-Dn.pose(tlf, "guard_high").hold(tlf).to(tlf + 0.05, 1040)
+# the clinch in the ring (side on): from the cut into the ring to the cut out of it, held whole (a cut in and a cut
+# out: never a swap between drawings in the middle of a shot)
+CONTACT.append((tcl, tsep, "clinch"))
 # the referee prises them apart; each staggers back
-E.pose(tsep + 0.2, "tired").hold(tsep + 0.2).to(tsep + 0.7, 560).lean(tsep + 0.35, -6.0).lean(tsep + 0.7, 0.0)
-Dn.pose(tsep + 0.2, "tired").hold(tsep + 0.2).to(tsep + 0.7, 1110).lean(tsep + 0.35, 6.0).lean(tsep + 0.7, 0.0)
-# both load up an enormous finish, trembling with effort
-E.pose(twu + 0.3, "wind").hold(twu + 0.3).to(twu + 0.6, 620).lean(twu + 0.5, -8.0).tremble(twu + 0.55, tcs - 0.05, -8.0)
-Dn.pose(twu + 0.3, "guard_high").hold(twu + 0.3).to(twu + 0.6, 1050).lean(twu + 0.5, 8.0).tremble(twu + 0.55, tcs - 0.05, 8.0)
-CONTACT.append((tcs, twb, "clash"))
+E.pose(tsep, "tired").hold(tsep).to(tsep + 0.01, 700).to(tsep + 0.5, 560).lean(tsep + 0.15, -6.0).lean(tsep + 0.5, 0.0)
+Dn.pose(tsep, "tired").hold(tsep).to(tsep + 0.01, 980).to(tsep + 0.5, 1110).lean(tsep + 0.15, 6.0).lean(tsep + 0.5, 0.0)
+# both load up an enormous finish, backing off and trembling with effort; then both throw: glove meets glove in the
+# middle of the ring
+E.pose(twu + 0.3, "wind").hold(twu + 0.3).to(twu + 0.6, 440).lean(twu + 0.5, -8.0).tremble(twu + 0.55, tcs - 0.12, -8.0)
+Dn.pose(twu + 0.3, "guard_high").hold(twu + 0.3).to(twu + 0.6, 1230).lean(twu + 0.5, 8.0).tremble(twu + 0.55, tcs - 0.12, 8.0)
+GE, GD = glove(E, "jab_long"), glove(Dn, "jab4")
+MEET = PAIR_X
+E.pose(tcs - 0.06, "jab_long").hold(tcs - 0.06).to(tcs, MEET - GE[0] + 6).lean(tcs, 3.0)
+Dn.pose(tcs - 0.06, "jab4").hold(tcs - 0.06).to(tcs, MEET + GD[0] - 6).lean(tcs, -3.0)
+E.hold(tcs + 0.12).to(tcs + 0.3, MEET - GE[0] - 60).lean(tcs + 0.3, -7.0)          # the jolt back up the arms
+Dn.hold(tcs + 0.12).to(tcs + 0.3, MEET + GD[0] + 60).lean(tcs + 0.3, 7.0)
+CLASH_AT = (MEET, ED_R[1] - 0.5 * (GE[1] + GD[1]))
 # they wobble, the knees go, and both sit down on the same beat
-for F_, x, s in ((E, 600, -1), (Dn, 1070, 1)):
+for F_, x, s in ((E, 520, -1), (Dn, 1150, 1)):
     F_.pose(twb, "tired").hold(twb).to(twb + 0.05, x).lean(twb, 0.0)
     for i, d in enumerate((0.1, 0.3, 0.5, 0.68)):
         F_.lean(twb + d, s * (9.0 - 2 * i) * (-1) ** i)
     F_.lean(tsit, 0.0).lift(tsit, 0.0).lift(tsit + 0.22, -0.43 * F_.h).lift(tsit + 0.3, -0.40 * F_.h)
     F_.lift(thu + 0.35, -0.40 * F_.h).lift(thu + 0.95, 0.0).lean(thu + 0.95, 0.0)
     F_.pose(thu + 0.9, "guard" if F_ is E else "tired")
-FIGHT_FX = [dict(fn="impact", t0=tcs + 0.02, at=(PAIR_X + (250 - 299) * PK, ED_R[1] - (501 - 42) * PK), size=150, z=6010)]
-SHAKES = [(tcs + 0.02, 14.0, 0.45)]
-KICKS = [(tt + 0.3, 1.05, 0.4), (tt + 0.9, 1.05, 0.4), (tc + 0.32, 1.06, 0.5), (tcs + 0.02, 1.08, 0.6)]
-FLASHES = [(tcs + 0.02, 0.07)]                              # a 2-frame white emphasis on the one impact
+FIGHT_FX = [dict(fn="impact", t0=tcs, at=CLASH_AT, size=150, z=6010)]
+SHAKES = [(tcs, 14.0, 0.45)]
+KICKS = [(tt + 0.29, 1.04, 0.4), (tt + 0.89, 1.04, 0.4), (tc + 0.31, 1.06, 0.5), (tcs, 1.08, 0.6)]
+FLASHES = [(tcs, 0.07)]                              # a 2-frame white emphasis on the one impact
 
 
 def pair_items(spans, x, y, scale_of):
@@ -763,7 +791,7 @@ def RW(t, cams, cast=None, **kw):
 
 eddie_k = EK.item(P, show=[(0, tcl)])
 dana_k = DK.item(P, show=[(0, tcl)])
-PAIR_K = pair_items(CONTACT_K, CL_K[0], CL_K[1], None)
+PAIR_K = []
 corner = [eddie_k, dana_k] + PAIR_K
 SEATED = [P("tyson", "seated", (520, 945), z=946), P("joshua", "seated", (1120, 945), z=946),
           dict(prop="folding-chair", at=(520, 925), h=420, z=900), dict(prop="folding-chair", at=(1120, 925), h=420, z=900)]
@@ -804,9 +832,9 @@ S6 = [
     # the red corner: the advance, the ropes, the recoil into the clinch
     W(tad, "K", [(tad, (800, 420, 1.12)), (tro, (720, 410, 1.18))], corner, shakes=[(tro + 0.05, 9.0, 0.35)]),
     W(tro, "K", [(tro, (480, 340, 1.8)), (trc, (480, 340, 1.9))], corner, blur=1.0, shakes=[(tro + 0.05, 9.0, 0.35)]),
-    W(trc, "K", [(trc, (660, 410, 1.2)), (tcl + 0.6, (650, 400, 1.3))], corner, kicks=[(tcl, 1.05, 0.5)]),
+    W(trc, "K", [(trc, (660, 410, 1.2)), (tcl, (650, 400, 1.26))], corner),
     # the clinch: side on, tight; each face; the referee
-    RW(tcl + 0.6, [(tcl + 0.6, (836, 360, 2.0)), (ls("L060"), (836, 350, 2.15))], blur=1.0),
+    RW(tcl, [(tcl, (836, 360, 2.0)), (ls("L060"), (836, 350, 2.15))], blur=1.0),
     RW(ls("L060"), [(ls("L060"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 + 10, 2.35)),
                     (le("L062"), ((CL_DF[0] + CL_EF[0]) / 2, (CL_DF[1] + CL_EF[1]) / 2 + 10, 2.5))], blur=2.5, locked=True),
     RW(ls("L063"), [(ls("L063"), (836, 380, 1.9)), (ls("L064"), (836, 372, 2.0))], blur=1.0),

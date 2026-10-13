@@ -104,12 +104,13 @@ shoulder, the lid's shadow inside the bin.
 **The fight (`film/fight.py`, `direction.py` section 6).** Each fighter's moves are written as readable moves on
 the edit's marks (`guard`, `punch`, `duck`, `hit`, `lean`, `lift`) that make pose, position, lean and lift keys, in
 the five beats of the plan: the confident bounce that dies away (Dana's first, then Eddie's); the slow probing jab
-and the over-deep duck; glove contact each way, shown with the paired drawings (`CONTACT`: while a pair is on
-screen it replaces both fighters); the advance, the ropes giving and throwing Eddie back (the ropes in the red
-corner shiver, `things.rope_wobble`), the paired clinch; the separation, the trembling wind-up, the glove clash
-(the one impact graphic and a two-frame white emphasis), the wobble and the simultaneous sit-down, framed waist-up,
-and the referee hauling them up. The crowd, the bounce on the canvas, the soft glove pops and leather squeaks, the
-ropes' creak and spring follow the same keys.
+and the over-deep duck; glove contact each way, every punch lunging exactly as far as puts its glove on the other
+man's guard (`glove` / `land`: the glove's reach measured in each drawing), with no swap of drawings mid-shot; the
+advance, the ropes giving and throwing Eddie back (the ropes in the red corner shiver, `things.rope_wobble`), and
+the paired clinch drawing, which starts and ends on a cut; the separation, the trembling wind-up, the two big
+punches meeting glove to glove in the middle of the ring (the one impact graphic and a two-frame white emphasis),
+the wobble and the simultaneous sit-down, framed waist-up, and the referee hauling them up. The crowd, the bounce on
+the canvas, the soft glove pops and leather squeaks, the ropes' creak and spring follow the same keys.
 
 **No head cut by the frame.** `tools/framing.py` follows every person's head through every shot, six times a
 second, and corrects the shot's camera until every head on screen is whole with headroom. Heads at the side of a

@@ -58,6 +58,14 @@ def board_image():
     # Dana's face (the angry head from the expressions sheet)
     ex = Image.open(CHARACTERS / "eddie-hearn" / "reference" / "expressions.png").convert("RGBA")
     head = ex.crop((385, 581, 557, 797))
+    a_ = (np.asarray(head)[..., 3] > 40).astype(np.uint8)           # the face only: not its neighbours' slivers
+    n_, lab_, st_, _ = cv2.connectedComponentsWithStats(a_, 8)
+    if n_ > 2:
+        k_ = 1 + int(np.argmax(st_[1:, cv2.CC_STAT_AREA]))
+        keep_ = cv2.dilate((lab_ == k_).astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
+        arr = np.asarray(head).copy()
+        arr[..., 3] = np.where(keep_, arr[..., 3], 0)
+        head = Image.fromarray(arr)
     head = head.resize((int(head.width * 3.6), int(head.height * 3.6)), Image.LANCZOS)
     im.alpha_composite(head, ((W - head.width) // 2, 200))
     # the red cross, hand-painted
@@ -478,8 +486,12 @@ def tape(lay, s, it, t, M, sc):
         at, rot = it["at"], it.get("rot0", -8.0)
     elif t < it["t_drop"]:
         h = _follow(s, it["follow"], it.get("side", 1))
-        at = h if h else it["at"]
-        rot = 70 + 35 * math.sin((t - it["t_peel"]) * 17.0) * math.exp(-(t - it["t_peel"]) * 0.6)
+        rot = 80 + 30 * math.sin((t - it["t_peel"]) * 17.0) * math.exp(-(t - it["t_peel"]) * 0.6)
+        if h:                                              # hanging from the fingers: one end on the fingertip
+            r_ = math.radians(rot)
+            at = (h[0] + 0.45 * w * math.cos(r_), h[1] + 0.45 * w * math.sin(r_))
+        else:
+            at = it["at"]
     else:
         u = min(1.0, (t - it["t_drop"]) / 0.55)
         a0 = it["drop_at"]
