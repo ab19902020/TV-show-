@@ -379,12 +379,12 @@ drawings:
     box: [0, 0, 425, 524]
     faces: R
     drawn_pupils: true
-    jaw: 1.2
+    jaw: 0.9
     marks:
       eyes:
       - [192, 117, 12, 4]
-      mouth: [172, 150, 196, 153, 184, 152.5]
-      chin: 172
+      mouth: [160.0, 149.5, 183.0, 150.5, 172.0, 150.6]
+      chin: 166
       neck: [175, 186]
       head: [120, 40, 250, 176]
     from: paired_fight_reference.png (matted, split per fighter)

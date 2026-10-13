@@ -184,6 +184,7 @@ end title; drums under the confident bouncing that stop the moment Dana slows.
 | `tools/dana_picks.py` | the two lines taken from Dana's second take (one is still used: "It's boxing, Eddie.") |
 | `tools/stand_in_voices.py` | Kokoro stand-in takes for a line with no recording (L066 only) |
 | `tools/qa_sheets.py`, `tools/zoomstills.py` | two stills of every shot in sheets of nine; enlarged crops of chosen frames (the shot-by-shot review) |
+| `tools/facing.py` | lists anyone turned away from the person they are talking to, at every line and every shot |
 | `tools/make_closeups.py` | Eddie's and Dana's acting heads set on their own bodies (the close-up drawings) |
 | `tools/cut_busts.py`, `tools/cut_pairs.py`, `tools/gridview.py` | how the acting heads and the paired drawings were cut (the cuts are in the library), and the grid viewer used to place face marks |
 | `tools/cut_drawings.py` | every drawing cut clean from its sheet |
