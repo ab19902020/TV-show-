@@ -256,24 +256,24 @@ def _soil(img, t, t0):
 
 
 def _confetti(img, t, t0):
-    """Leeds-coloured confetti: yellow, blue and white, falling and fluttering"""
+    """Leeds-coloured confetti: yellow, blue and white, raining down from the top of the frame, fluttering"""
     k = t - t0
     if k < 0:
         return img
     rng = np.random.default_rng(11)
-    n = 160
-    xs, v0 = rng.uniform(0, 1920, n), rng.uniform(-900, -300, n)
-    ph, cols = rng.uniform(0, 6.3, n), rng.integers(0, 3, n)
+    n = 180
+    xs, y0s = rng.uniform(0, 1920, n), rng.uniform(-700, -30, n)
+    vs, ph, cols = rng.uniform(380, 640, n), rng.uniform(0, 6.3, n), rng.integers(0, 3, n)
     lay = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    for x0, v, p_, c in zip(xs, v0, ph, cols):
-        y = 1080 + v * k + 520 * k * k - 40
+    for x0, y0, v, p_, c in zip(xs, y0s, vs, ph, cols):
+        y = y0 + v * k
         if not -20 < y < 1100:
             continue
-        x = x0 + 30 * math.sin(k * 5 + p_)
-        w = 14 * abs(math.cos(k * 7 + p_)) + 3
+        x = x0 + 34 * math.sin(k * 4 + p_)
+        w = 13 * abs(math.cos(k * 6 + p_)) + 3
         col = (YELLOW, LBLUE, (250, 250, 250))[c] + (255,)
-        d.rectangle([P(x - w), P(y - 9), P(x + w), P(y + 9)], fill=col)
+        d.rectangle([P(x - w), P(y - 8), P(x + w), P(y + 8)], fill=col, outline=(20, 20, 20, 200))
     return over(img, lay)
 
 
@@ -413,7 +413,7 @@ def corridor_plant(img, s, t, M, sc):
     from film.direction import CORR_PLANT
     x, y, h = CORR_PLANT
     k = t - s["t"]
-    steps = [0.7, 1.5, 2.4, 3.1]
+    steps = [0.6, 1.3, 2.0, 2.7]
     dx = sum(sm((k - a) / 0.12) for a in steps) * 16
     hop = sum(math.sin(math.pi * min(1, max(0, (k - a) / 0.12))) for a in steps) * 6
     return _feet_paste(img, plant_whole(True), M, x + dx, y - hop, h)
@@ -438,7 +438,7 @@ def hedge_wide(img, s, t, M, sc):
     b = SP.binoculars("side")
     k = t - s["t"]
     ang = -6 + 9 * math.sin(k * 0.9)
-    SP.paste(img, b, OW * 0.50, OH * 0.70, 0.5 * RS, ang, anchor=(60, 180))
+    SP.paste(img, b, OW * 0.50, OH * 0.68, 0.62 * RS, ang, anchor=(60, 180))
     SP.paste(img, _hedge_bump(), OW * 0.47, OH * 0.80, 0.55 * RS)
     return img
 

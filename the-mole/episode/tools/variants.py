@@ -67,8 +67,14 @@ def leeds(pose):
     badge_box = blob(sat, ((r > 200) & (g > 140) & (b < 70)).astype(float))
     greyish = (np.abs(r - b) < 30) & (np.abs(r - g) < 30)
     logo_box = blob(greyish & (l > 165), np.ones(l.shape))
-    # black cloth -> white cloth: the ink (darkest) stays, the fill turns white with its folds kept as soft grey
-    dark = band & (l < 75) & ~warm
+    # black cloth -> white cloth: the ink (darkest) stays, the fill turns white with its folds kept as soft grey.
+    # Only the cloth itself: opaque, and clear of the silhouette's soft edge and of the skin (the hands, the neck),
+    # so the dark fringe round them stays an outline instead of turning into a white halo
+    from scipy import ndimage as ndi
+    opaque = al > 200
+    skin = opaque & (r > 165) & (g > 105) & (b > 70) & (r - b > 45)         # (the badge has no blue in it)
+    clear = ndi.binary_erosion(opaque, iterations=2) & ~ndi.binary_dilation(skin, iterations=2)
+    dark = band & (l < 75) & ~warm & clear
     t = smooth(l, 9.0, 22.0)                                   # 0 on the ink, 1 on the cloth
     white = np.clip(224 + (l - 28) * 1.1, 196, 250)
     shade = white[..., None] * np.array([1.0, 1.0, 1.02])

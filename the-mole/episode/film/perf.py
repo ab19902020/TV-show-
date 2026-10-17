@@ -123,7 +123,9 @@ SHUT = {"licho": [(m("cut_compose") + 0.1, m("cut_compose") + 0.9),
 FORCED = {"wilcox": [m("cut_strain") + 0.5, m("cut_strain") + 0.8, m("cut_strain") + 1.05, ls("L041") + 0.5],
           "licho": [le("L030") + 0.2, le("L017") + 0.9]}
 NOBLINK = {"licho": [(m("cut_tutorial"), m("cut_corr")), (m("cut_point"), le("L038") + 0.2),
-                     (m("clap"), ls("L015"))],
+                     (m("clap"), ls("L015")), (m("freeze") - 0.4, m("freeze") + 0.3),
+                     (m("cut_spidey") - 0.3, m("cut_hedges"))],
+           "wilcox": [(m("freeze") - 0.4, m("freeze") + 0.3), (m("cut_spidey") - 0.3, m("cut_hedges"))],
            "omar": [(m("cut_omar"), m("cut_l053"))]}
 BODY = {
     "licho": [(ls("L015") - 0.1, le("L015"), 0.6, 0.0, 0.3),               # leaning in to whisper

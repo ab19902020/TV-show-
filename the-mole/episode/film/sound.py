@@ -133,6 +133,21 @@ def add(bus, y, t, level):
     bus.add(A.at_level(y, level), t)
 
 
+def tinny(name, dur, fout=0.7, start=0.0):
+    """a recorded clip as it comes out of a laptop or tablet speaker: a short slice, band-limited, fading out"""
+    y = A.clip(name)
+    if y.ndim == 2:
+        y = y.mean(1)
+    y = y[int(start * SR):int((start + dur) * SR)].astype(np.float32)
+    y = A.bp(y, 350, 4200).astype(np.float32)
+    n = len(y)
+    e = np.ones(n, np.float32)
+    nf, nb = int(0.03 * SR), int(fout * SR)
+    e[:nf] = np.linspace(0, 1, nf)
+    e[-nb:] *= np.linspace(1, 0, nb) ** 1.5
+    return st(y * e)
+
+
 def main():
     dlg, amb, fx, mus = A.Bus(), A.Bus(), A.Bus(), A.Bus()
     A.dialogue(dlg, room_s=0.25, room_db=-26)
@@ -157,7 +172,7 @@ def main():
     add(fx, hit(), m("cut_spygate") + 0.68, -28)
     add(mus, A.strings([65, 98, 131, 156], 3.0, attack=1.5, release=1.0, bright=700), m("cut_tutorial"), -30)
     # ---- 3
-    for k in (0.7, 1.5, 2.4, 3.1):                                 # the plant shuffles: a squeak each time
+    for k in (0.6, 1.3, 2.0, 2.7):                                 # the plant shuffles: a squeak each time
         add(fx, st(tone(1900 + 300 * k, 0.07, 0.4) * env(int(0.07 * SR), 0.003, 0.03)), m("cut_corr") + k, -36)
         add(fx, A.clip("footsteps/step-a"), m("cut_corr") + k, -36)
     add(fx, A.clip("foley/pen-click-a"), m("hangup"), -30)
@@ -171,7 +186,7 @@ def main():
     for r in (0.35, 0.95):
         add(fx, A.clip("foley/pen-click-a"), m("cut_laptop") + r, -30)
     add(fx, ping(), m("cut_goal"), -24)
-    add(fx, A.clip("crowd/crowd-large"), m("cut_goal") + 0.05, -32)
+    add(fx, tinny("crowd/crowd-large", 2.2, 0.9, start=3.0), m("cut_goal") + 0.05, -40)   # the goal, from the laptop
     add(fx, A.big_boom(0.9), m("boom"), -16)
     add(fx, whoosh(0.5, 200, 3000), m("boom"), -26)
     add(mus, sting(0), m("scream1"), -24)
@@ -181,7 +196,7 @@ def main():
     # ---- 4
     add(fx, whoosh(0.3, 400, 3000), m("cut_back") - 0.1, -32)
     add(fx, ping(), m("ping"), -22)
-    add(fx, A.clip("sport/whistle-ref"), m("ping") + 0.2, -30)
+    add(fx, tinny("sport/whistle-ref", 1.0, 0.3), m("ping") + 0.2, -36)
     add(mus, A.strings([82, 87], 1.5, attack=0.8, release=0.5, bright=600), m("cut_point"), -34)
     add(mus, A.strings([110, 117, 123], 1.6, attack=1.0, release=0.4, bright=900), m("cut_strain"), -30)
     # ---- 5
@@ -194,7 +209,7 @@ def main():
     add(fx, cricket(3), m("cut_omar") + 0.5, -30)
     add(fx, A.clip("foley/cup-down"), m("cut_omar") + 1.9, -34)
     # ---- 7
-    add(fx, A.clip("crowd/applause-big"), m("cut_tablet") + 0.05, -36)
+    add(fx, tinny("crowd/crowd-large", 1.8, 0.8, start=3.0), m("cut_tablet") + 0.05, -42)  # the tablet's goal
     add(fx, A.clip("cloth/cloth-a"), m("cut_plant2") + 0.6, -30)
     add(fx, whoosh(0.35, 200, 2500, seed=41), m("cut_w057") - 0.3, -30)   # the plant bursts: a whoosh, his line clear
     add(fx, A.big_boom(0.5), le("L057") + 0.02, -26)                    # and the bits land
