@@ -30,3 +30,14 @@ drawings:
   jump:       {sheet: reference/model-sheet.png, box: [805, 1088, 897, 1243], faces: F, x8: true}
   hoodie:     {sheet: reference/model-sheet.png, box: [924, 1088, 999, 1248], faces: F, x8: true}
   unitedshirt: {sheet: reference/model-sheet.png, box: [1016, 1089, 1101, 1248], faces: F, x8: true}
+  # composites: the expression heads on the full body (episodes/lecher-vs-rio/tools/heads_on_body.py)
+  b-head: {image: reference/composite/head.png, faces: F, jaw: 1.6, marks: {"eyes": [[551.3, 448.8, 54.2, 42.2], [751.9, 448.8, 54.2, 42.2]], "mouth": [595.3, 691.5, 709.7, 691.5, 652.5, 700.5], "chin": 833.0, "head": [190.2, -89.8, 1113.0, 873.1], "neck": [651.6, 863.1]}}
+  b-neutral: {image: reference/composite/neutral.png, faces: F, jaw: 1.6, marks: {"eyes": [[550.4, 484.8, 55.2, 44.2], [752.8, 484.8, 55.2, 44.2]], "mouth": [603.4, 740.2, 699.1, 740.2, 651.2, 749.8], "chin": 869.0, "head": [186.1, -62.0, 1117.1, 909.5], "neck": [651.6, 899.4]}}
+  b-angry: {image: reference/composite/angry.png, faces: F, jaw: 1.6, marks: {"eyes": [[530.8, 581.2, 57.9, 41.4], [772.4, 560.5, 57.9, 41.4]], "mouth": [592.9, 822.7, 758.3, 822.7, 675.6, 806.1], "chin": 955.0, "head": [95.9, -156.4, 1207.3, 1003.3], "neck": [651.6, 991.2]}}
+  b-confused: {image: reference/composite/confused.png, faces: R, marks: {"eyes": [[558.2, 504.2, 52.9, 49.1], [745.0, 441.4, 45.4, 49.1]], "head": [222.0, -2.3, 1081.2, 894.4], "neck": [651.6, 885.0]}}
+  b-shouting: {image: reference/composite/shouting.png, faces: F, marks: {"eyes": [[553.1, 401.1, 47.5, 41.2], [750.1, 400.5, 44.3, 41.2]], "head": [198.5, -121.2, 1104.7, 824.4], "neck": [651.6, 814.5]}}
+  b-scared: {image: reference/composite/scared.png, faces: F, marks: {"eyes": [[553.9, 417.3, 53.5, 53.5], [749.3, 392.3, 46.4, 53.5]], "head": [202.2, -109.8, 1101.0, 828.1], "neck": [651.6, 818.3]}}
+  b-happy: {image: reference/composite/happy.png, faces: F, marks: {"eyes": [[554.1, 484.2, 50.2, 50.2], [749.1, 455.5, 32.2, 46.6]], "head": [203.1, -43.0, 1100.1, 893.0], "neck": [651.6, 883.2]}}
+  b-suspicious: {image: reference/composite/suspicious.png, faces: R, marks: {"eyes": [[557.6, 575.3, 46.6, 38.8], [745.6, 516.3, 35.0, 38.8]], "head": [219.2, 65.2, 1084.0, 967.6], "neck": [651.6, 958.2]}}
+  b-disgusted: {image: reference/composite/disgusted.png, faces: R, marks: {"eyes": [[554.3, 605.2, 38.4, 21.3], [748.9, 574.5, 34.1, 29.9]], "head": [204.0, 78.8, 1099.2, 1012.9], "neck": [651.6, 1003.2]}}
+  b-silly: {image: reference/composite/silly.png, faces: F, marks: {"eyes": [[558.5, 463.0, 47.4, 44.0], [744.7, 398.7, 40.6, 47.4]], "head": [223.3, -41.5, 1079.9, 852.2], "neck": [651.6, 842.9]}}

@@ -269,14 +269,14 @@ def _plates(img, t, span):
     from studio.film.stage import SONG  # noqa: F401 (no song here: plates on a steady count)
     n = min(12, int((t - a) / ((b - a) / 12)) + 1)
     spr = plate_sprite()
-    w = P(230)
+    w = P(210)
     h = int(spr.size[1] * w / spr.size[0])
     pl = spr.resize((w, h), Image.LANCZOS)
     lay = Image.new("RGBA", (OW, OH), (0, 0, 0, 0))
     for side, x in ((0, P(130)), (1, P(1190))):
         for i in range(n if side == 0 else max(0, n - 3)):
             lean = (i ** 1.6) * 0.8 * (1 if side == 0 else -1) * (1 + 0.15 * math.sin(t * 7))
-            y = P(905) - i * int(h * 0.38)
+            y = P(770) - i * int(h * 0.38)
             tm = a + i * (b - a) / 12
             if t - tm < 0.12:
                 y -= int(P(60) * (1 - (t - tm) / 0.12))
@@ -444,7 +444,11 @@ def post_end(s, t):
 # ---------------------------------------------------------------- the split screen
 def split(s, t):
     from studio.film import render as R
-    a = R.render_single(s["left"], t)
+    sh = dict(s["left"])
+    for tk, dk in s.get("lkeys", []):
+        if t >= tk:
+            sh["draw"] = "saeed-the-lecher:" + dk
+    a = R.render_single(sh, t)
     b = R.render_single(s["right"], t)
     h = OW // 4
     img = np.concatenate([a[:, h:h + OW // 2], b[:, h:h + OW // 2]], axis=1).copy()
@@ -463,3 +467,34 @@ def split(s, t):
             c = 60 if i < dots else 180
             d.ellipse([OW // 2 - P(52) + i * P(36), P(962), OW // 2 - P(28) + i * P(36), P(986)], fill=(c, c, c, 255))
     return over(img, lay)
+
+
+# ---------------------------------------------------------------- his room, the United mug taken off the desk
+@functools.lru_cache(maxsize=2)
+def plate_image(k):
+    """plate Y without the red mug that sat in front of his chair (it covered his chin in every close-up): the
+    mug painted out of the 4x plate from the desk and chair round it. Other plates: the library's (None)."""
+    if k != "Y":
+        return None
+    cache = ep.path("plate_Y.png")
+    if cache.exists():
+        return cv2.cvtColor(cv2.imread(str(cache)), cv2.COLOR_BGR2RGB)
+    from studio.episode.upscale import upscaled
+    from studio.paths import BACKGROUNDS
+    from film.direction import RED_MUG
+    big = upscaled(BACKGROUNDS / "lecher-vs-rio" / "fan-channel-desk.png", 4.0)          # BGR
+    # every row across the mug, its coaster and its reflection filled straight across from the clean desk and chair
+    # either side (they are all horizontal bands: the desk's edge, its gloss, the chair's base), feathered in
+    x0, x1, y0, y1 = 622 * 4, 746 * 4, 540 * 4, 652 * 4
+    f = big.astype(np.float32)
+    L = f[y0:y1, x0 - 6:x0].mean(1)
+    Rr = f[y0:y1, x1:x1 + 6].mean(1)
+    u = np.linspace(0, 1, x1 - x0, dtype=np.float32)[None, :, None]
+    fill = L[:, None] * (1 - u) + Rr[:, None] * u
+    fill += np.random.default_rng(2).normal(0, 1.5, fill.shape).astype(np.float32)        # the paint's grain
+    m = np.zeros((y1 - y0, x1 - x0), np.float32)
+    m[8:-8, 8:-8] = 1
+    a = cv2.GaussianBlur(m, (0, 0), 4)[..., None]
+    big[y0:y1, x0:x1] = np.clip(f[y0:y1, x0:x1] * (1 - a) + fill * a, 0, 255).astype(np.uint8)
+    cv2.imwrite(str(cache), big)
+    return big[..., ::-1].copy()

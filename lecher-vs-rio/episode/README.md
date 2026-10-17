@@ -43,6 +43,24 @@ Glazers. Rio replies, first as a post and then as a video from his podcast studi
 - `film/sound.py`: the lines, room tone, and synthesised pings, whooshes, keyboard clicks, cricket, siren, crash
   hits and plate clinks.
 
+**Saeed's body.** His sheet's expression cells are heads with a stub of shoulder, so filmed alone the head floats.
+`tools/heads_on_body.py` puts every expression head on his full-body front drawing. Each head is scaled chin to chin
+and centred on the body's face. Below the cheekbones only the face is kept (skin, ears, the open mouth's inside, and
+the jaw's outline): the bust's shoulders and collar go, and his own collar and shirt show under the double chin. This
+gives `b-head`, `b-neutral`, `b-angry`, `b-confused`, `b-shouting`, `b-scared`, `b-happy`, `b-suspicious`,
+`b-disgusted` and `b-silly`, each with eye, mouth, head-box and neck landmarks. The head nods and tilts on the body,
+the mouth lip-syncs on head, neutral and angry, and the drawn expressions swap on the words.
+
+**His chair.** `direction.room()` frames his room per shot from the framing: his gaming chair is centred behind him,
+its headrest just above his head, and the room's own desk lines up exactly under the desk in front of him. He sits
+in his chair at every size. The United mug that sat in front of the chair (and covered his chin) is painted out of
+the plate, its reflection too (`props.plate_image`).
+
+**Acting.** He pumps forward on every stressed word, sinks when Rio calls him out, leans into the rant, slumps on
+"eat my feelings" and sits back pleased at the end. He shakes his head on "Neither", and tilts it on "Brilliant
+Rio", "why I'm fat" and "Funny how...". Gestures change on the words: jabbing at the lens, palms up, arms folded,
+chin in hand.
+
 Saeed (`library/characters/saeed-the-lecher/`) is filmed from whole drawings cut from his model sheet and upscaled
 8x: front, three-quarter and side heads, nine expressions, five upper-body gestures, legs and outfits. His
 open-mouth drawings (`head`, `neutral`, `pointing`) have the mouth painted shut (`close_mouth`) so the lip sync
