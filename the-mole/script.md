@@ -4,7 +4,7 @@
 
 **Speaking cast:** NARRATOR (deep, serious documentary voice), LISANDRO (Lisandro "Licho" Martinez), WILCOX (Jason Wilcox). Omar Berrada appears but does not speak. All dialogue and events are invented parody.
 
-**Timing guide:** about three and a half minutes. The 63 lines have 472 spoken words, about 3:10 at 150 words per minute, plus about 25 seconds for the silent gags (the unzip, the soil explosion, the long silences). The recordings decide the real length. Director notes in italics are not spoken.
+**Timing guide:** about three and a half minutes. The 63 lines have 470 spoken words, about 3:10 at 150 words per minute, plus about 25 seconds for the silent gags (the unzip, the soil explosion, the long silences). The recordings decide the real length. Director notes in italics are not spoken.
 
 **The real things the jokes hang on:** Wilcox played for Blackburn (they won the 1994-95 league one point ahead of United), then Leeds (1999-2004). After that he ran Manchester City's academy, then he was Southampton's director of football. In 2019 Leeds were caught spying on Derby's training ground ("Spygate"), and their manager Marcelo Bielsa answered with a 70-minute presentation. Omar Berrada came to United from City Football Group. Alexis Mac Allister is Licho's World Cup-winning Argentina teammate, and he plays for Liverpool.
 
@@ -97,7 +97,7 @@
 
 *In the corner, the plant's leaves part. Two eyes, wide.*
 
-[L025] LISANDRO: Madre mía.
+[L025] LISANDRO: Madre mia.
 
 *BBC live text: GOAL! Wilcox explodes out of his chair, both arms up.*
 
@@ -143,7 +143,7 @@
 
 *Wilcox straightens his collar and opens his mouth. Nothing comes out. Sweat. His eye twitches. It is like watching a vampire try to eat garlic.*
 
-[L041] WILCOX: Leeds are... r... really well coached, to be fair.
+[L041] WILCOX: Leeds are... really well coached, to be fair.
 
 *Licho turns to the documentary camera, devastated.*
 

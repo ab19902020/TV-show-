@@ -1,0 +1,18 @@
+name: Jason Wilcox
+short: Wilcox
+role: executive
+style: house
+note: Manchester United's director of football. Filmed from the user's cut-out pose drawings (reference/poses/, house
+  style 2.5D, black club tracksuit) and the All or Something model sheet (reference/model-sheet.png). Leeds-top
+  variants are painted by episodes/the-mole/tools/variants.py (reference/variants/).
+likeness: 'Director of football: short swept-back light brown hair, big ears, black Manchester United zip top and
+  tracksuit bottoms, white trainers.'
+outfits:
+  tracksuit:
+    description: Black Manchester United zip top with red stripes, black tracksuit bottoms, white trainers.
+    sheets: []
+reference:
+  model-sheet.png: 'Model sheet (from All or Something, style 1, 2.5D): turnaround, head views, five expressions, mouth
+    shapes, hand poses, gesture poses (arms crossed, pointing, explaining, holding tablet, thinking), walk and run'
+  poses/: 'Cut-out full-body poses from the user: pockets, crossarms, point, shrug, shrug2, phone, clipboard, sit,
+    crouch, walk, back'

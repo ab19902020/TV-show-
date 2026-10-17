@@ -40,7 +40,7 @@ Clony AI runs on ElevenLabs. Its expressive voice model (Eleven v3) acts on the 
 11. [deadpan] When United score, he claps like this.
 12. [whispers] When Leeds score, I hear him in the toilet... Screaming.
 13. [whispers] Target is in the office. Target is drinking tea. White mug... Of course.
-14. [gasps] [whispers] Madre mía.
+14. [gasps] [whispers] Madre mia.
 15. [shouting] I KNEW IT!
 16. [deadpan] It looks like Leeds.
 17. [sarcastic] In their shirt?
@@ -70,7 +70,7 @@ Clony AI runs on ElevenLabs. Its expressive voice model (Eleven v3) acts on the 
 7. [sighs] [sad] It was a difficult time for me.
 8. [shouting] Oh, that's NEVER a penalty, ref!
 9. [nervous] Say what?
-10. [strained] Leeds are... r... [happily] really well coached, to be fair.
+10. [strained] Leeds are... [happily] really well coached, to be fair.
 11. [confident] Slide one. My commitment to Manchester United, as a percentage. Up eleven percent on last season.
 12. [nervous] [fast] We don't need to get into the baseline.
 13. [serious] I bleed red. I always have.

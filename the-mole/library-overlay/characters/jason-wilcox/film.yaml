@@ -1,0 +1,16 @@
+# Drawings this character is filmed in (studio/film/art.py): each is upscaled 4x (8x with x8) and given face
+# landmarks. Check build/film/jason-wilcox_check.jpg after any change.
+# poses/: the user's cut-out full-body poses (black club tracksuit). variants/leeds-*: the same poses in a white
+# Leeds top (episodes/the-mole/tools/variants.py).
+drawings:
+  pockets:     {image: reference/poses/pockets.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false}
+  crossarms:   {image: reference/poses/crossarms.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false}
+  phone:       {image: reference/poses/phone.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false}
+  clipboard:   {image: reference/poses/clipboard.png, up: true, jaw: 2.7, faces: R, auto_holes: false, marks: {mouth: [80, 123, 98, 124, 89, 122], chin: 140, neck: [89, 154]}}
+  walk:        {image: reference/poses/walk.png, up: true, jaw: 2.7, faces: R, auto_holes: false}
+  l-pockets:   {image: reference/variants/leeds-pockets.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false}
+  l-shrug:     {image: reference/variants/leeds-shrug.png, up: true, jaw: 2.7, faces: F, auto_holes: false}
+  l-shrug2:    {image: reference/variants/leeds-shrug2.png, up: true, jaw: 2.7, faces: F, auto_holes: false, marks: {mouth: [118, 117, 137, 117, 127.5, 115.5], chin: 136, neck: [127.5, 151]}}
+  l-point:     {image: reference/variants/leeds-point.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false, head: [18, 3, 140, 136]}
+  l-back:      {image: reference/variants/leeds-back.png, up: true, faces: B, plain: true, auto_holes: false}
+  l-scream:    {image: reference/variants/leeds-scream.png, up: true, x8: true, jaw: 2.7, faces: F, auto_holes: false}   # mouth wide open (episodes/the-mole/tools/variants.py)

@@ -1,6 +1,6 @@
 {
   "episode": "All or Something: The Mole",
-  "word_count": 472,
+  "word_count": 470,
   "lines_count": 63,
   "scenes": [
     {
@@ -306,8 +306,8 @@
       "id": "L025",
       "scene": 3,
       "character": "LISANDRO",
-      "text": "Madre m\u00eda.",
-      "words": 3,
+      "text": "Madre mia.",
+      "words": 2,
       "delivery": "a horrified whisper"
     },
     {
@@ -434,8 +434,8 @@
       "id": "L041",
       "scene": 4,
       "character": "WILCOX",
-      "text": "Leeds are... r... really well coached, to be fair.",
-      "words": 9,
+      "text": "Leeds are... really well coached, to be fair.",
+      "words": 8,
       "delivery": "straining to say it like it physically hurts, then it comes out warm and relieved"
     },
     {

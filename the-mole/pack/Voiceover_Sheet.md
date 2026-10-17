@@ -24,7 +24,7 @@ One recording per character, the lines in order, with a second of silence betwee
 
 ## LISANDRO (Licho) — Argentine accent, intense, completely sincere, sure he is the hero of a spy film
 
-31 lines, 195 words. Save as `voiceovers/lisandro.mp3`.
+31 lines, 194 words. Save as `voiceovers/lisandro.mp3`.
 
 1. **Shhh. I am not here.** *(a hissed whisper, dead serious)* `L004`
 2. **I am a defender. My job is to smell danger before it happens.** *(talking head: calm, proud, very sincere)* `L005`
@@ -39,7 +39,7 @@ One recording per character, the lines in order, with a second of silence betwee
 11. **When United score, he claps like this.** *(flat; then he does one limp clap)* `L014`
 12. **When Leeds score, I hear him in the toilet. Screaming.** *(a whisper on 'Screaming')* `L015`
 13. **Target is in the office. Target is drinking tea. White mug. Of course.** *(whispered into a wrist like a secret agent)* `L019`
-14. **Madre mía.** *(a horrified whisper)* `L025`
+14. **Madre mia.** *(a horrified whisper)* `L025`
 15. **I knew it!** *(THE BIG ONE: a triumphant, furious shout)* `L027`
 16. **It looks like Leeds.** *(flat, unimpressed)* `L030`
 17. **In their shirt?** *(flat)* `L032`
@@ -60,7 +60,7 @@ One recording per character, the lines in order, with a second of silence betwee
 
 ## JASON WILCOX — Lancashire, calm corporate football-executive voice that cracks into a proper fan whenever Leeds come up
 
-17 lines, 134 words. Save as `voiceovers/wilcox.mp3`.
+17 lines, 133 words. Save as `voiceovers/wilcox.mp3`.
 
 1. **Absolutely. We're fully aligned. Red through and through. One club, one vision, one process.** *(smooth corporate phone voice, very pleased with himself)* `L020`
 2. **Come on, Leeds. Come on, lads.** *(an intimate whisper to the laptop)* `L024`
@@ -71,7 +71,7 @@ One recording per character, the lines in order, with a second of silence betwee
 7. **It was a difficult time for me.** *(small, sad, honest)* `L036`
 8. **Oh, that's never a penalty, ref!** *(he can't help it: a proper fan's shout at the laptop)* `L037`
 9. **Say what?** *(playing dumb, voice cracking)* `L039`
-10. **Leeds are... r... really well coached, to be fair.** *(straining to say it like it physically hurts, then it comes out warm and relieved)* `L041`
+10. **Leeds are... really well coached, to be fair.** *(straining to say it like it physically hurts, then it comes out warm and relieved)* `L041`
 11. **Slide one. My commitment to Manchester United, as a percentage. Up eleven percent on last season.** *(confident presenter, laser-pointer energy)* `L044`
 12. **We don't need to get into the baseline.** *(too quickly)* `L046`
 13. **I bleed red. I always have.** *(talking head: sincere, hand on heart)* `L049`

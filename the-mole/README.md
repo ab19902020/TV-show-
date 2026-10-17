@@ -1,40 +1,21 @@
 # All or Something: The Mole
 
-Lisandro Martinez is sure Manchester United has a mole, and he is sure it is the director of football, Jason
-Wilcox. He goes undercover: first in a hedge, then in a pot plant. At three o'clock Wilcox locks his door, closes the
-blinds and unzips his United top. Underneath is a Leeds shirt, and he is refreshing the Leeds live page on BBC Sport.
-Leeds score, Wilcox sings, the plant explodes, and Licho shouts "I knew it!" After that come the excuses, a
-seventy-minute PowerPoint, the CEO in a City scarf, and the spy getting spied on.
+Lisandro Martinez is sure Manchester United has a mole, and that it is the director of football, Jason Wilcox. He
+goes undercover in a hedge, then in a pot plant. At three o'clock Wilcox locks his door, closes the blinds and unzips
+his United top: a Leeds top underneath, the Leeds live page on BBC Sport. Leeds score, Wilcox sings, the plant
+explodes: "I KNEW IT!" Then come the excuses, a seventy-minute PowerPoint, the CEO in a City scarf, and the spy
+getting spied on.
 
-**Status: the script is written and the voiceovers are next.** The animation is made once the recordings arrive.
+**[`The_Mole_1080p.mp4`](The_Mole_1080p.mp4)**: 3:49, 1920x1080, with your Clony AI voices.
+[`The_Mole_share.mp4`](The_Mole_share.mp4) is a smaller copy for sending.
 
 | File | What it is |
 |---|---|
-| [`script.md`](script.md) | The full director's script: seven scenes, 63 lines, and the action and gags. About 3½ minutes. |
-| [`pack/Voiceover_Sheet.md`](pack/Voiceover_Sheet.md) | **What to record**: every line per character, in order, with how to play it. |
-| [`pack/Clony_AI_Lines.md`](pack/Clony_AI_Lines.md), `pack/Clony_AI/*.txt` | **The same lines with Clony AI (ElevenLabs v3) expression tags**, e.g. `[whispers]`, `[shouting]`, `...` pauses, CAPITALS for stress. |
-| `pack/Voice_Lines/NARRATOR.txt`, `LISANDRO.txt`, `WILCOX.txt` | Only the words, one line per paragraph (to paste into a voice tool). |
-| `pack/Actor_Line_Index.csv`, `pack/Dialogue.json` | Line IDs, scenes, word counts and delivery notes. |
-| `cast.yaml` | Who plays whom (library characters) and the test voices. |
+| [`script.md`](script.md) | The director's script: seven scenes, 63 lines (61 recorded). |
+| [`pack/`](pack/) | The voice pack: the voiceover sheet, the Clony AI lines with expression tags, line files, the index. |
+| [`episode/`](episode/) | The episode's production in the studio engine (`episodes/the-mole/` of AnimnationStuido-): the recordings, `film/` (edit, shots, acting, props, sound), `tools/variants.py` (the costume paint), and its own README with the scene-by-scene breakdown. |
+| [`library-overlay/`](library-overlay/) | What was added to the studio library: Jason Wilcox (new: your poses, the model sheet, the Leeds-top variants), Lisandro Martinez (your poses, camouflage and scream variants), Omar Berrada's City scarf, and five documentary sets (interview chair, corridor, tactics room, CEO's office, locker room). |
+| [`engine-overlay/`](engine-overlay/) | Two small engine changes: `art.py` can upscale a cut-out drawing (`up: true`), and `voices.py` splits long fast reads so Whisper hears all of them. |
 
-## Recording
-
-Make one recording per character (`narrator.mp3`, `lisandro.mp3`, `wilcox.mp3`), with the lines in order and about a
-second of silence between them. Say the words as written, because each line is cut out by matching its words.
-Re-takes are fine: the last take wins. Narrator: 15 lines, Lisandro: 31 lines, Wilcox: 17 lines.
-
-## Cast and sets for the animation
-
-- **Lisandro Martinez:** the expression, lip-sync and turnaround sheets in
-  `manchester-united-documentary/assets/characters/lisandro-martinez/`.
-- **Jason Wilcox:** the All or Something model sheet (black United tracksuit) in the All-or-something- repo. The
-  Leeds shirt under the tracksuit is painted onto that drawing.
-- **Omar Berrada** (does not speak): already in the studio library.
-- **Sets:**
-  - Carrington's entrance, from All-or-something-.
-  - The director of football's office: the library's `club/managers-office`.
-  - The boardroom with the tactics screen, from All-or-something-; the screen carries the PowerPoint.
-  - The CEO's office.
-  - The players' lounge.
-- **Props:** the pot plant (with trainers), the hedge, the white mug, the BBC Sport live page and the conspiracy
-  board.
+The two lines that weren't recorded (the narrator's "Next time, on All or Something..." and Wilcox's "We're not
+here.") are covered by the end card and the NEXT WEEK caption. Send those two clips and they can go back in.

@@ -1,0 +1,23 @@
+# Drawings this character is filmed in (studio/film/art.py): each is upscaled 4x (8x with x8) and given face
+# landmarks. Check build/film/lisandro-martinez_check.jpg after any change.
+# poses/: the user's cut-out full-body poses (house style 2.5D, home kit). variants/camo-*: the same with camouflage
+# paint under his eyes (episodes/the-mole/tools/variants.py).
+drawings:
+  squad:     {sheet: ../../reference/squad/manchester-united-squad.png, box: [928, 593, 1103, 946], jaw: 2.3, faces: F}     # the squad sheet
+  stand:     {image: reference/poses/stand.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false, marks: {mouth: [80, 128, 110, 128, 95, 127], chin: 147.6, neck: [95, 162]}}
+  crossarms: {image: reference/poses/crossarms.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false}
+  point:     {image: reference/poses/point.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false, head: [20, 3, 160, 146]}
+  facepalm:  {image: reference/poses/facepalm.png, up: true, jaw: 2.3, faces: F, auto_holes: false, ed: 37, marks: {eyes: [[82, 107, 1.2, 0.8], [110, 105, 1.2, 0.8]], mouth: [70, 137, 94, 137, 82, 136], chin: 152, neck: [85, 165]}}
+  shrug:     {image: reference/poses/shrug.png, up: true, jaw: 2.3, faces: F, auto_holes: false, marks: {mouth: [133, 128, 156, 126, 144.5, 126], chin: 147.5, neck: [144.5, 162]}}
+  shrug2:    {image: reference/poses/shrug2.png, up: true, jaw: 2.3, faces: F, auto_holes: false, marks: {mouth: [135, 127, 158, 125, 146.5, 125], chin: 146.5, neck: [146.5, 161.6]}}
+  tablet:    {image: reference/poses/tablet.png, up: true, jaw: 2.3, faces: R, auto_holes: false, marks: {eyes: [[87, 106, 13, 12], [118, 108, 9, 11]], mouth: [83, 134, 105, 134, 94, 133], chin: 150, neck: [95, 163]}}
+  crouch:    {image: reference/poses/crouch.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false, head: [42, 3, 172, 145], marks: {eyes: [[105.6, 95, 13, 11], [141, 96, 9, 10]], mouth: [112, 124, 135, 124, 123, 123], chin: 140, neck: [123, 150]}}
+  # camouflage paint (scenes 1 to 4 and the last hedge)
+  c-crouch:    {image: reference/variants/camo-crouch.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false, head: [42, 3, 172, 145], marks: {eyes: [[105.6, 95, 13, 11], [141, 96, 9, 10]], mouth: [112, 124, 135, 124, 123, 123], chin: 140, neck: [123, 150]}}
+  c-crossarms: {image: reference/variants/camo-crossarms.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false}
+  c-point:     {image: reference/variants/camo-point.png, up: true, x8: true, jaw: 2.3, faces: F, auto_holes: false, head: [20, 3, 160, 146]}
+  c-shrug:     {image: reference/variants/camo-shrug.png, up: true, jaw: 2.3, faces: F, auto_holes: false, marks: {mouth: [133, 128, 156, 126, 144.5, 126], chin: 147.5, neck: [144.5, 162]}}
+  c-facepalm:  {image: reference/variants/camo-facepalm.png, up: true, jaw: 2.3, faces: F, auto_holes: false, ed: 37, marks: {eyes: [[82, 107, 1.2, 0.8], [110, 105, 1.2, 0.8]], mouth: [70, 137, 94, 137, 82, 136], chin: 152, neck: [85, 165]}}
+  c-stand:     {image: reference/variants/camo-stand.png, up: true, jaw: 2.3, faces: F, auto_holes: false, marks: {mouth: [80, 128, 110, 128, 95, 127], chin: 147.6, neck: [95, 162]}}
+  scream:      {image: reference/variants/scream-stand.png, up: true, jaw: 2.3, faces: F, auto_holes: false}   # mouth wide open
+  c-scream:    {image: reference/variants/camo-scream.png, up: true, jaw: 2.3, faces: F, auto_holes: false}
