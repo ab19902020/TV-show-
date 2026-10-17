@@ -1,0 +1,64 @@
+id,scene,character,text,words,delivery
+L001,1,NARRATOR,Carrington. The beating heart of Manchester United.,7,"slow, grave, big pause after 'Carrington'"
+L002,1,NARRATOR,"A place built on hard work, on loyalty, and on a deep, unshakeable hatred of Leeds.",16,"same gravity all the way, then lean on 'hatred of Leeds'"
+L003,1,NARRATOR,But one man believes the club has a mole.,9,ominous; let 'mole' hang
+L004,1,LISANDRO,Shhh. I am not here.,5,"a hissed whisper, dead serious"
+L005,2,LISANDRO,I am a defender. My job is to smell danger before it happens.,13,"talking head: calm, proud, very sincere"
+L006,2,LISANDRO,And this building smells of Leeds.,6,"quiet, ominous, a little sniff before 'Leeds'"
+L007,2,LISANDRO,Jason Wilcox. Director of football. Look at his career.,9,like a detective presenting the suspect
+L008,2,LISANDRO,Blackburn. He won the league against United.,7,outraged
+L009,2,LISANDRO,Leeds. I don't need to explain.,6,"flat, disgusted; the name says it all"
+L010,2,LISANDRO,Manchester City.,2,can barely get it out
+L011,2,LISANDRO,"Southampton. Okay, Southampton is fine.",5,shrug; totally relaxed about Southampton
+L012,2,LISANDRO,This is not a CV. This is a criminal record.,10,"slow, deadly serious; punch 'criminal record'"
+L013,2,LISANDRO,"Every day, he drinks his tea from a white mug. Why white, Jason? Why always white?",16,"building; 'Why white, Jason?' to the ceiling, unhinged"
+L014,2,LISANDRO,"When United score, he claps like this.",7,flat; then he does one limp clap
+L015,2,LISANDRO,"When Leeds score, I hear him in the toilet. Screaming.",10,a whisper on 'Screaming'
+L016,2,NARRATOR,"In twenty nineteen, Leeds were caught spying on another club's training ground.",12,dry documentary fact
+L017,2,NARRATOR,Lisandro considers this a tutorial.,5,bone-dry; a beat before 'a tutorial'
+L018,3,NARRATOR,Day one of the surveillance operation.,6,"serious, a little thrill in it"
+L019,3,LISANDRO,Target is in the office. Target is drinking tea. White mug. Of course.,13,whispered into a wrist like a secret agent
+L020,3,WILCOX,"Absolutely. We're fully aligned. Red through and through. One club, one vision, one process.",14,"smooth corporate phone voice, very pleased with himself"
+L021,3,NARRATOR,"At two fifty-eight, the director of football locked his door.",11,true-crime slow
+L022,3,NARRATOR,"At two fifty-nine, he closed the blinds.",8,"same, slower"
+L023,3,NARRATOR,And at three o'clock... he let it breathe.,8,long pause after 'three o'clock'; 'he let it breathe' almost tender
+L024,3,WILCOX,"Come on, Leeds. Come on, lads.",6,an intimate whisper to the laptop
+L025,3,LISANDRO,Madre mía.,3,a horrified whisper
+L026,3,WILCOX,Yes! Get in! Marching on together!,6,"full-throated joy, singing the last two words"
+L027,3,LISANDRO,I knew it!,3,"THE BIG ONE: a triumphant, furious shout"
+L028,3,NARRATOR,The mole had been found. The plant did not survive.,10,deadpan; a beat before 'The plant did not survive'
+L029,4,WILCOX,Lisandro! This isn't what it looks like.,7,"panicking, too high"
+L030,4,LISANDRO,It looks like Leeds.,4,"flat, unimpressed"
+L031,4,WILCOX,It's scouting. Data-led opposition scouting. I'm immersing myself in the enemy.,12,"gabbling management-speak, faster and faster"
+L032,4,LISANDRO,In their shirt?,3,flat
+L033,4,WILCOX,"Method scouting. It's very modern. You wouldn't understand, you were in a plant.",13,trying to sound confident and failing
+L034,4,LISANDRO,Turn around.,2,"cold, slow"
+L035,4,LISANDRO,You signed your own shirt?,5,disbelief
+L036,4,WILCOX,It was a difficult time for me.,7,"small, sad, honest"
+L037,4,WILCOX,"Oh, that's never a penalty, ref!",6,he can't help it: a proper fan's shout at the laptop
+L038,4,LISANDRO,Say it.,2,"quiet, menacing"
+L039,4,WILCOX,Say what?,2,"playing dumb, voice cracking"
+L040,4,LISANDRO,Leeds are rubbish.,3,"slow, every word separate"
+L041,4,WILCOX,"Leeds are... r... really well coached, to be fair.",9,"straining to say it like it physically hurts, then it comes out warm and relieved"
+L042,4,LISANDRO,He cannot say it. He is sick.,7,"to camera, heartbroken, like a doctor with bad news"
+L043,5,NARRATOR,Mr Wilcox requested a right of reply.,7,grave
+L044,5,WILCOX,"Slide one. My commitment to Manchester United, as a percentage. Up eleven percent on last season.",16,"confident presenter, laser-pointer energy"
+L045,5,LISANDRO,Up from what?,3,flat
+L046,5,WILCOX,We don't need to get into the baseline.,8,too quickly
+L047,5,NARRATOR,The presentation lasted seventy minutes.,5,deadpan
+L048,5,LISANDRO,Seventy minutes of PowerPoint. You know who else does this? Bielsa. Leeds. Case closed.,14,talking head: building to a triumphant 'Case closed'
+L049,5,WILCOX,I bleed red. I always have.,6,"talking head: sincere, hand on heart"
+L050,5,WILCOX,There might be a bit of white in there. That's medical.,11,"quieter, avoiding eye contact; rushed 'That's medical'"
+L051,6,LISANDRO,So I go to the top. Omar will know what to do.,12,"determined, heroic"
+L052,6,LISANDRO,Omar! We have a mole!,5,"bursting in, urgent, triumphant"
+L053,6,LISANDRO,I knew it.,3,"barely a whisper, total defeat"
+L054,6,NARRATOR,Omar Berrada joined United from Manchester City. Lisandro had not done the reading.,13,dry; a beat before 'Lisandro had not done the reading'
+L055,7,NARRATOR,"That night, Lisandro Martinez believed he was the last loyal man at Carrington.",13,"gentle, almost sentimental"
+L056,7,LISANDRO,"Vamos, Alexis. Vamos, hermano.",4,a loving whisper
+L057,7,WILCOX,I knew it!,3,the same triumphant shout Licho did
+L058,7,LISANDRO,It's Argentina! It's different!,4,"high, panicking, fast"
+L059,7,WILCOX,"He plays for Liverpool, Lisandro!",5,outraged
+L060,7,LISANDRO,It's a red shirt.,4,"tiny voice, hopeful"
+L061,7,NARRATOR,"Next time, on All or Something: Sir Jim, and his other football club.",13,"trailer voice, dramatic"
+L062,7,LISANDRO,Shhh. We are not here.,5,hissed whisper (the same as his first line)
+L063,7,WILCOX,We're not here.,3,"whispered back, very pleased to be included"

@@ -1,0 +1,618 @@
+{
+  "episode": "All or Something: The Mole",
+  "word_count": 472,
+  "lines_count": 63,
+  "scenes": [
+    {
+      "scene": 1,
+      "title": "THE HEDGE",
+      "lines": [
+        "L001",
+        "L002",
+        "L003",
+        "L004"
+      ]
+    },
+    {
+      "scene": 2,
+      "title": "THE EVIDENCE",
+      "lines": [
+        "L005",
+        "L006",
+        "L007",
+        "L008",
+        "L009",
+        "L010",
+        "L011",
+        "L012",
+        "L013",
+        "L014",
+        "L015",
+        "L016",
+        "L017"
+      ]
+    },
+    {
+      "scene": 3,
+      "title": "THE OPERATION",
+      "lines": [
+        "L018",
+        "L019",
+        "L020",
+        "L021",
+        "L022",
+        "L023",
+        "L024",
+        "L025",
+        "L026",
+        "L027",
+        "L028"
+      ]
+    },
+    {
+      "scene": 4,
+      "title": "BUSTED",
+      "lines": [
+        "L029",
+        "L030",
+        "L031",
+        "L032",
+        "L033",
+        "L034",
+        "L035",
+        "L036",
+        "L037",
+        "L038",
+        "L039",
+        "L040",
+        "L041",
+        "L042"
+      ]
+    },
+    {
+      "scene": 5,
+      "title": "THE RIGHT OF REPLY",
+      "lines": [
+        "L043",
+        "L044",
+        "L045",
+        "L046",
+        "L047",
+        "L048",
+        "L049",
+        "L050"
+      ]
+    },
+    {
+      "scene": 6,
+      "title": "GOING TO THE TOP",
+      "lines": [
+        "L051",
+        "L052",
+        "L053",
+        "L054"
+      ]
+    },
+    {
+      "scene": 7,
+      "title": "THE SPY WHO SPIED ME",
+      "lines": [
+        "L055",
+        "L056",
+        "L057",
+        "L058",
+        "L059",
+        "L060",
+        "L061",
+        "L062",
+        "L063"
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "id": "L001",
+      "scene": 1,
+      "character": "NARRATOR",
+      "text": "Carrington. The beating heart of Manchester United.",
+      "words": 7,
+      "delivery": "slow, grave, big pause after 'Carrington'"
+    },
+    {
+      "id": "L002",
+      "scene": 1,
+      "character": "NARRATOR",
+      "text": "A place built on hard work, on loyalty, and on a deep, unshakeable hatred of Leeds.",
+      "words": 16,
+      "delivery": "same gravity all the way, then lean on 'hatred of Leeds'"
+    },
+    {
+      "id": "L003",
+      "scene": 1,
+      "character": "NARRATOR",
+      "text": "But one man believes the club has a mole.",
+      "words": 9,
+      "delivery": "ominous; let 'mole' hang"
+    },
+    {
+      "id": "L004",
+      "scene": 1,
+      "character": "LISANDRO",
+      "text": "Shhh. I am not here.",
+      "words": 5,
+      "delivery": "a hissed whisper, dead serious"
+    },
+    {
+      "id": "L005",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "I am a defender. My job is to smell danger before it happens.",
+      "words": 13,
+      "delivery": "talking head: calm, proud, very sincere"
+    },
+    {
+      "id": "L006",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "And this building smells of Leeds.",
+      "words": 6,
+      "delivery": "quiet, ominous, a little sniff before 'Leeds'"
+    },
+    {
+      "id": "L007",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Jason Wilcox. Director of football. Look at his career.",
+      "words": 9,
+      "delivery": "like a detective presenting the suspect"
+    },
+    {
+      "id": "L008",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Blackburn. He won the league against United.",
+      "words": 7,
+      "delivery": "outraged"
+    },
+    {
+      "id": "L009",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Leeds. I don't need to explain.",
+      "words": 6,
+      "delivery": "flat, disgusted; the name says it all"
+    },
+    {
+      "id": "L010",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Manchester City.",
+      "words": 2,
+      "delivery": "can barely get it out"
+    },
+    {
+      "id": "L011",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Southampton. Okay, Southampton is fine.",
+      "words": 5,
+      "delivery": "shrug; totally relaxed about Southampton"
+    },
+    {
+      "id": "L012",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "This is not a CV. This is a criminal record.",
+      "words": 10,
+      "delivery": "slow, deadly serious; punch 'criminal record'"
+    },
+    {
+      "id": "L013",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "Every day, he drinks his tea from a white mug. Why white, Jason? Why always white?",
+      "words": 16,
+      "delivery": "building; 'Why white, Jason?' to the ceiling, unhinged"
+    },
+    {
+      "id": "L014",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "When United score, he claps like this.",
+      "words": 7,
+      "delivery": "flat; then he does one limp clap"
+    },
+    {
+      "id": "L015",
+      "scene": 2,
+      "character": "LISANDRO",
+      "text": "When Leeds score, I hear him in the toilet. Screaming.",
+      "words": 10,
+      "delivery": "a whisper on 'Screaming'"
+    },
+    {
+      "id": "L016",
+      "scene": 2,
+      "character": "NARRATOR",
+      "text": "In twenty nineteen, Leeds were caught spying on another club's training ground.",
+      "words": 12,
+      "delivery": "dry documentary fact"
+    },
+    {
+      "id": "L017",
+      "scene": 2,
+      "character": "NARRATOR",
+      "text": "Lisandro considers this a tutorial.",
+      "words": 5,
+      "delivery": "bone-dry; a beat before 'a tutorial'"
+    },
+    {
+      "id": "L018",
+      "scene": 3,
+      "character": "NARRATOR",
+      "text": "Day one of the surveillance operation.",
+      "words": 6,
+      "delivery": "serious, a little thrill in it"
+    },
+    {
+      "id": "L019",
+      "scene": 3,
+      "character": "LISANDRO",
+      "text": "Target is in the office. Target is drinking tea. White mug. Of course.",
+      "words": 13,
+      "delivery": "whispered into a wrist like a secret agent"
+    },
+    {
+      "id": "L020",
+      "scene": 3,
+      "character": "WILCOX",
+      "text": "Absolutely. We're fully aligned. Red through and through. One club, one vision, one process.",
+      "words": 14,
+      "delivery": "smooth corporate phone voice, very pleased with himself"
+    },
+    {
+      "id": "L021",
+      "scene": 3,
+      "character": "NARRATOR",
+      "text": "At two fifty-eight, the director of football locked his door.",
+      "words": 11,
+      "delivery": "true-crime slow"
+    },
+    {
+      "id": "L022",
+      "scene": 3,
+      "character": "NARRATOR",
+      "text": "At two fifty-nine, he closed the blinds.",
+      "words": 8,
+      "delivery": "same, slower"
+    },
+    {
+      "id": "L023",
+      "scene": 3,
+      "character": "NARRATOR",
+      "text": "And at three o'clock... he let it breathe.",
+      "words": 8,
+      "delivery": "long pause after 'three o'clock'; 'he let it breathe' almost tender"
+    },
+    {
+      "id": "L024",
+      "scene": 3,
+      "character": "WILCOX",
+      "text": "Come on, Leeds. Come on, lads.",
+      "words": 6,
+      "delivery": "an intimate whisper to the laptop"
+    },
+    {
+      "id": "L025",
+      "scene": 3,
+      "character": "LISANDRO",
+      "text": "Madre m\u00eda.",
+      "words": 3,
+      "delivery": "a horrified whisper"
+    },
+    {
+      "id": "L026",
+      "scene": 3,
+      "character": "WILCOX",
+      "text": "Yes! Get in! Marching on together!",
+      "words": 6,
+      "delivery": "full-throated joy, singing the last two words"
+    },
+    {
+      "id": "L027",
+      "scene": 3,
+      "character": "LISANDRO",
+      "text": "I knew it!",
+      "words": 3,
+      "delivery": "THE BIG ONE: a triumphant, furious shout"
+    },
+    {
+      "id": "L028",
+      "scene": 3,
+      "character": "NARRATOR",
+      "text": "The mole had been found. The plant did not survive.",
+      "words": 10,
+      "delivery": "deadpan; a beat before 'The plant did not survive'"
+    },
+    {
+      "id": "L029",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "Lisandro! This isn't what it looks like.",
+      "words": 7,
+      "delivery": "panicking, too high"
+    },
+    {
+      "id": "L030",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "It looks like Leeds.",
+      "words": 4,
+      "delivery": "flat, unimpressed"
+    },
+    {
+      "id": "L031",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "It's scouting. Data-led opposition scouting. I'm immersing myself in the enemy.",
+      "words": 12,
+      "delivery": "gabbling management-speak, faster and faster"
+    },
+    {
+      "id": "L032",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "In their shirt?",
+      "words": 3,
+      "delivery": "flat"
+    },
+    {
+      "id": "L033",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "Method scouting. It's very modern. You wouldn't understand, you were in a plant.",
+      "words": 13,
+      "delivery": "trying to sound confident and failing"
+    },
+    {
+      "id": "L034",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "Turn around.",
+      "words": 2,
+      "delivery": "cold, slow"
+    },
+    {
+      "id": "L035",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "You signed your own shirt?",
+      "words": 5,
+      "delivery": "disbelief"
+    },
+    {
+      "id": "L036",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "It was a difficult time for me.",
+      "words": 7,
+      "delivery": "small, sad, honest"
+    },
+    {
+      "id": "L037",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "Oh, that's never a penalty, ref!",
+      "words": 6,
+      "delivery": "he can't help it: a proper fan's shout at the laptop"
+    },
+    {
+      "id": "L038",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "Say it.",
+      "words": 2,
+      "delivery": "quiet, menacing"
+    },
+    {
+      "id": "L039",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "Say what?",
+      "words": 2,
+      "delivery": "playing dumb, voice cracking"
+    },
+    {
+      "id": "L040",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "Leeds are rubbish.",
+      "words": 3,
+      "delivery": "slow, every word separate"
+    },
+    {
+      "id": "L041",
+      "scene": 4,
+      "character": "WILCOX",
+      "text": "Leeds are... r... really well coached, to be fair.",
+      "words": 9,
+      "delivery": "straining to say it like it physically hurts, then it comes out warm and relieved"
+    },
+    {
+      "id": "L042",
+      "scene": 4,
+      "character": "LISANDRO",
+      "text": "He cannot say it. He is sick.",
+      "words": 7,
+      "delivery": "to camera, heartbroken, like a doctor with bad news"
+    },
+    {
+      "id": "L043",
+      "scene": 5,
+      "character": "NARRATOR",
+      "text": "Mr Wilcox requested a right of reply.",
+      "words": 7,
+      "delivery": "grave"
+    },
+    {
+      "id": "L044",
+      "scene": 5,
+      "character": "WILCOX",
+      "text": "Slide one. My commitment to Manchester United, as a percentage. Up eleven percent on last season.",
+      "words": 16,
+      "delivery": "confident presenter, laser-pointer energy"
+    },
+    {
+      "id": "L045",
+      "scene": 5,
+      "character": "LISANDRO",
+      "text": "Up from what?",
+      "words": 3,
+      "delivery": "flat"
+    },
+    {
+      "id": "L046",
+      "scene": 5,
+      "character": "WILCOX",
+      "text": "We don't need to get into the baseline.",
+      "words": 8,
+      "delivery": "too quickly"
+    },
+    {
+      "id": "L047",
+      "scene": 5,
+      "character": "NARRATOR",
+      "text": "The presentation lasted seventy minutes.",
+      "words": 5,
+      "delivery": "deadpan"
+    },
+    {
+      "id": "L048",
+      "scene": 5,
+      "character": "LISANDRO",
+      "text": "Seventy minutes of PowerPoint. You know who else does this? Bielsa. Leeds. Case closed.",
+      "words": 14,
+      "delivery": "talking head: building to a triumphant 'Case closed'"
+    },
+    {
+      "id": "L049",
+      "scene": 5,
+      "character": "WILCOX",
+      "text": "I bleed red. I always have.",
+      "words": 6,
+      "delivery": "talking head: sincere, hand on heart"
+    },
+    {
+      "id": "L050",
+      "scene": 5,
+      "character": "WILCOX",
+      "text": "There might be a bit of white in there. That's medical.",
+      "words": 11,
+      "delivery": "quieter, avoiding eye contact; rushed 'That's medical'"
+    },
+    {
+      "id": "L051",
+      "scene": 6,
+      "character": "LISANDRO",
+      "text": "So I go to the top. Omar will know what to do.",
+      "words": 12,
+      "delivery": "determined, heroic"
+    },
+    {
+      "id": "L052",
+      "scene": 6,
+      "character": "LISANDRO",
+      "text": "Omar! We have a mole!",
+      "words": 5,
+      "delivery": "bursting in, urgent, triumphant"
+    },
+    {
+      "id": "L053",
+      "scene": 6,
+      "character": "LISANDRO",
+      "text": "I knew it.",
+      "words": 3,
+      "delivery": "barely a whisper, total defeat"
+    },
+    {
+      "id": "L054",
+      "scene": 6,
+      "character": "NARRATOR",
+      "text": "Omar Berrada joined United from Manchester City. Lisandro had not done the reading.",
+      "words": 13,
+      "delivery": "dry; a beat before 'Lisandro had not done the reading'"
+    },
+    {
+      "id": "L055",
+      "scene": 7,
+      "character": "NARRATOR",
+      "text": "That night, Lisandro Martinez believed he was the last loyal man at Carrington.",
+      "words": 13,
+      "delivery": "gentle, almost sentimental"
+    },
+    {
+      "id": "L056",
+      "scene": 7,
+      "character": "LISANDRO",
+      "text": "Vamos, Alexis. Vamos, hermano.",
+      "words": 4,
+      "delivery": "a loving whisper"
+    },
+    {
+      "id": "L057",
+      "scene": 7,
+      "character": "WILCOX",
+      "text": "I knew it!",
+      "words": 3,
+      "delivery": "the same triumphant shout Licho did"
+    },
+    {
+      "id": "L058",
+      "scene": 7,
+      "character": "LISANDRO",
+      "text": "It's Argentina! It's different!",
+      "words": 4,
+      "delivery": "high, panicking, fast"
+    },
+    {
+      "id": "L059",
+      "scene": 7,
+      "character": "WILCOX",
+      "text": "He plays for Liverpool, Lisandro!",
+      "words": 5,
+      "delivery": "outraged"
+    },
+    {
+      "id": "L060",
+      "scene": 7,
+      "character": "LISANDRO",
+      "text": "It's a red shirt.",
+      "words": 4,
+      "delivery": "tiny voice, hopeful"
+    },
+    {
+      "id": "L061",
+      "scene": 7,
+      "character": "NARRATOR",
+      "text": "Next time, on All or Something: Sir Jim, and his other football club.",
+      "words": 13,
+      "delivery": "trailer voice, dramatic"
+    },
+    {
+      "id": "L062",
+      "scene": 7,
+      "character": "LISANDRO",
+      "text": "Shhh. We are not here.",
+      "words": 5,
+      "delivery": "hissed whisper (the same as his first line)"
+    },
+    {
+      "id": "L063",
+      "scene": 7,
+      "character": "WILCOX",
+      "text": "We're not here.",
+      "words": 3,
+      "delivery": "whispered back, very pleased to be included"
+    }
+  ]
+}

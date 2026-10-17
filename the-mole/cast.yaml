@@ -1,0 +1,6 @@
+# Who speaks in this episode and who plays them. character = the library id (library/characters/<id>/).
+# voice / speed: the text-to-speech voice for test runs only; the user's recordings (voiceovers/<who>.mp3) replace them.
+# Omar Berrada appears in scene 6 but does not speak.
+NARRATOR: {character: null,              voice: bm_fable,  speed: 0.92}
+LISANDRO: {character: lisandro-martinez, outfit: training, voice: em_alex,  speed: 1.0}
+WILCOX:   {character: jason-wilcox,      outfit: tracksuit, voice: bm_george, speed: 1.0}

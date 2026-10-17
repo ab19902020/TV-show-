@@ -12,6 +12,7 @@ Animated TV-studio scenes with lip-synced characters.
 | [Evra and Ronaldo: "The Lunch" (portrait)](evra-ronaldo-lunch/) | [`evra_ronaldo_lunch.mp4`](evra-ronaldo-lunch/evra_ronaldo_lunch.mp4) |
 | [The White Pelé: Wayne Rooney music video](white-pele/) | [`White_Pele_PREVIEW_720p.mp4`](white-pele/White_Pele_PREVIEW_720p.mp4) |
 | [The Lecher vs Rio: a YouTube beef](lecher-vs-rio/) | [`The_Lecher_vs_Rio_1080p.mp4`](lecher-vs-rio/The_Lecher_vs_Rio_1080p.mp4) |
+| [All or Something: The Mole (script and voice lines; animation after the voiceovers)](the-mole/) | [`Voiceover_Sheet.md`](the-mole/pack/Voiceover_Sheet.md) |
 
 ## Make a new video
 
