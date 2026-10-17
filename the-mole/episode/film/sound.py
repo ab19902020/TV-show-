@@ -182,7 +182,7 @@ def main():
     add(fx, whoosh(0.3, 400, 3000), m("cut_back") - 0.1, -32)
     add(fx, ping(), m("ping"), -22)
     add(fx, A.clip("sport/whistle-ref"), m("ping") + 0.2, -30)
-    add(mus, A.strings([82, 87], 1.6, attack=0.8, release=0.6, bright=600), m("cut_point"), -30)
+    add(mus, A.strings([82, 87], 1.5, attack=0.8, release=0.5, bright=600), m("cut_point"), -34)
     add(mus, A.strings([110, 117, 123], 1.6, attack=1.0, release=0.4, bright=900), m("cut_strain"), -30)
     # ---- 5
     add(fx, A.clip("paper/page-turn"), wt("L044", "commitment") - 0.1, -32)
@@ -196,7 +196,8 @@ def main():
     # ---- 7
     add(fx, A.clip("crowd/applause-big"), m("cut_tablet") + 0.05, -36)
     add(fx, A.clip("cloth/cloth-a"), m("cut_plant2") + 0.6, -30)
-    add(fx, A.big_boom(0.6), m("cut_w057"), -20)
+    add(fx, whoosh(0.35, 200, 2500, seed=41), m("cut_w057") - 0.3, -30)   # the plant bursts: a whoosh, his line clear
+    add(fx, A.big_boom(0.5), le("L057") + 0.02, -26)                    # and the bits land
     add(mus, sting(5), m("scream"), -22)
     add(fx, scratch(), m("cut_spidey") + 0.5, -20)
     add(fx, slurp(0.8), m("sip") + 0.6, -28)
