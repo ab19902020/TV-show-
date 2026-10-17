@@ -12,6 +12,7 @@ seventy-minute PowerPoint, the CEO in a City scarf, and the spy getting spied on
 |---|---|
 | [`script.md`](script.md) | The full director's script: seven scenes, 63 lines, and the action and gags. About 3½ minutes. |
 | [`pack/Voiceover_Sheet.md`](pack/Voiceover_Sheet.md) | **What to record**: every line per character, in order, with how to play it. |
+| [`pack/Clony_AI_Lines.md`](pack/Clony_AI_Lines.md), `pack/Clony_AI/*.txt` | **The same lines with Clony AI (ElevenLabs v3) expression tags**, e.g. `[whispers]`, `[shouting]`, `...` pauses, CAPITALS for stress. |
 | `pack/Voice_Lines/NARRATOR.txt`, `LISANDRO.txt`, `WILCOX.txt` | Only the words, one line per paragraph (to paste into a voice tool). |
 | `pack/Actor_Line_Index.csv`, `pack/Dialogue.json` | Line IDs, scenes, word counts and delivery notes. |
 | `cast.yaml` | Who plays whom (library characters) and the test voices. |
