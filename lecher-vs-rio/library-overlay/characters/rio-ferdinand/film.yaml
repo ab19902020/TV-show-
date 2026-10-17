@@ -1,0 +1,22 @@
+# Drawings this character is filmed in (studio/film/art.py): each is cut whole from its sheet, upscaled 4x and
+# given face landmarks. Check build/film/rio-ferdinand_check.jpg after any change.
+drawings:
+  front: {kit: casual/front, faces: F}
+  # The White Pelé (episodes/white-pele): the rooney-g-unit scene's approved drawings (reference/poses/) and the
+  # model sheet's gesture, walk and turnaround poses
+  mic:     {image: reference/poses/rio-mic.png, faces: L, marks: {eyes: [[512.5, 229.0, 29.5, 29.0], [591.0, 214.5, 21.0, 29.5]], mouth: [508, 338, 612, 334, 562, 344], chin: 405}}
+  laugh:   {image: reference/poses/rio-laugh.png, faces: R}
+  folded:  {sheet: reference/model-sheet.png, box: [596, 1056, 688, 1193], faces: F, x8: true, extend: 0.5}
+  rally:   {sheet: reference/model-sheet.png, box: [698, 1056, 814, 1193], faces: F, x8: true, extend: 0.5}
+  shrug:   {sheet: reference/model-sheet.png, box: [806, 1056, 970, 1193], faces: F, x8: true, extend: 0.5}
+  laughbent: {sheet: reference/model-sheet.png, box: [970, 1056, 1084, 1193], faces: R, x8: true, extend: 0.3}
+  walk1: {sheet: reference/model-sheet.png, box: [180, 1240, 274, 1380], faces: R, x8: true, plain: true}
+  walk2: {sheet: reference/model-sheet.png, box: [290, 1240, 364, 1380], faces: R, x8: true, plain: true}
+  walk3: {sheet: reference/model-sheet.png, box: [366, 1240, 460, 1380], faces: R, x8: true, plain: true}
+  back:  {image: reference/white-pele/back.png, faces: B, plain: true}   # model sheet back view, leg paper cut (make_art rio-back)
+  q34:   {sheet: reference/model-sheet.png, box: [776, 158, 914, 482], faces: R, x8: true}
+  run1:  {sheet: reference/model-sheet.png, box: [586, 1238, 712, 1380], faces: R, x8: true, plain: true}
+  run2:  {sheet: reference/model-sheet.png, box: [752, 1238, 890, 1380], faces: R, x8: true, plain: true}
+  palms: {image: reference/upgrade/palms.png, faces: F}
+  laughbent2: {image: reference/upgrade/laughbent2.png, faces: R}
+  scarf: {image: reference/upgrade/scarf.png, faces: F, marks: {eyes: [[950, 525, 52, 45], [1080, 500, 45, 52]], mouth: [950, 668, 1110, 668, 1030, 680], chin: 800}}

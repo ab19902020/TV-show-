@@ -1,0 +1,16 @@
+name: Saeed
+short: Saeed
+role: guest
+style: house
+height_cm: 178
+note: 'Saeed, "The Lecher": Manchester United influencer / content creator. Model sheet supplied by the user
+  (Style 1, 2.5D animation). Filmed from whole drawings cut from the sheet (film.yaml); no puppet kit.'
+likeness: 'Heavy-set man, short black curly hair, brown skin, round face, big white eyes; black Nike-style
+  oversized t-shirt, black joggers, black-and-white high-top trainers.'
+outfits:
+  casual:
+    description: Black oversized t-shirt, black joggers, black-and-white high-tops.
+    sheets: []
+reference:
+  model-sheet.png: 'Character model sheet: turnaround, head views, nine expressions, mouth/phoneme set, hand poses,
+    upper-body gesture poses, leg poses, outfit variations'

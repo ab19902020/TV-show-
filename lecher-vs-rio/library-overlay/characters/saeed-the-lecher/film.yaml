@@ -1,0 +1,32 @@
+# Saeed, "The Lecher": drawings cut whole from his model sheet (reference/model-sheet.png, Style 1), each upscaled
+# 8x (studio/film/art.py). Boxes are sheet px.
+drawings:
+  hero:       {sheet: reference/model-sheet.png, box: [8, 92, 291, 708], faces: F, x8: true}           # hands on head, gobsmacked
+  front:      {sheet: reference/model-sheet.png, box: [303, 128, 452, 455], faces: F, x8: true}
+  q34l:       {sheet: reference/model-sheet.png, box: [455, 128, 597, 455], faces: L, x8: true}
+  side:       {sheet: reference/model-sheet.png, box: [600, 128, 722, 455], faces: R, x8: true}
+  q34r:       {sheet: reference/model-sheet.png, box: [732, 128, 868, 455], faces: R, x8: true}
+  back:       {sheet: reference/model-sheet.png, box: [874, 128, 1028, 455], faces: B, x8: true, plain: true}
+  head:       {sheet: reference/model-sheet.png, box: [303, 515, 455, 681], faces: F, jaw: 1.7, x8: true, auto_holes: false, close_mouth: [381, 633.5, 9.3, 11.8], marks: {eyes: [[364.2, 589.2, 9, 7], [397.5, 589.2, 9, 7]], mouth: [371.5, 629.5, 390.5, 629.5, 381, 631], chin: 653, head: [306, 518, 452, 668], neck: [381, 665]}}
+  head34l:    {sheet: reference/model-sheet.png, box: [458, 518, 626, 681], faces: L, x8: true, auto_holes: false}
+  head34r:    {sheet: reference/model-sheet.png, box: [789, 519, 949, 681], faces: R, x8: true, auto_holes: false}
+  neutral:    {sheet: reference/model-sheet.png, box: [21, 742, 149, 882], faces: F, jaw: 1.7, x8: true, auto_holes: false, close_mouth: [87, 843.5, 6.6, 7.9], marks: {eyes: [[73.3, 805.8, 7.5, 6], [100.8, 805.8, 7.5, 6]], mouth: [80.5, 840.5, 93.5, 840.5, 87, 841.8], chin: 858, head: [24, 745, 147, 872], neck: [87, 868]}}
+  angry:      {sheet: reference/model-sheet.png, box: [151, 742, 274, 882], faces: F, jaw: 1.5, x8: true, auto_holes: false, marks: {eyes: [[197.5, 810.8, 7, 5], [226.7, 808.3, 7, 5]], mouth: [205, 840, 225, 840, 215, 838], chin: 856, head: [154, 745, 272, 872], neck: [213, 868]}}
+  shouting:   {sheet: reference/model-sheet.png, box: [276, 742, 402, 882], faces: F, x8: true, auto_holes: false, marks: {eyes: [[323.8, 796.3, 7.5, 6.5], [354.9, 796.2, 7, 6.5]]}}
+  confused:   {sheet: reference/model-sheet.png, box: [404, 742, 525, 882], faces: R, x8: true, auto_holes: false, marks: {eyes: [[456.6, 808, 7, 6.5], [481.3, 799.7, 6, 6.5]]}}
+  scared:     {sheet: reference/model-sheet.png, box: [527, 742, 646, 882], faces: F, x8: true, auto_holes: false, marks: {eyes: [[578.2, 798.6, 7.5, 7.5], [605.6, 795.1, 6.5, 7.5]]}}
+  happy:      {sheet: reference/model-sheet.png, box: [648, 742, 773, 882], faces: F, x8: true, auto_holes: false, marks: {eyes: [[709.8, 807.9, 7, 7], [737, 803.9, 4.5, 6.5]]}}
+  suspicious: {sheet: reference/model-sheet.png, box: [775, 742, 899, 882], faces: R, x8: true, auto_holes: false, marks: {eyes: [[837.4, 815.2, 6, 5], [861.6, 807.6, 4.5, 5]]}}
+  disgusted:  {sheet: reference/model-sheet.png, box: [902, 742, 1036, 882], faces: R, x8: true, auto_holes: false, marks: {eyes: [[959.6, 810.8, 4.5, 2.5], [982.4, 807.2, 4, 3.5]]}}
+  silly:      {sheet: reference/model-sheet.png, box: [1038, 742, 1202, 882], faces: F, x8: true, auto_holes: false, marks: {eyes: [[1097.3, 807.8, 7, 6.5], [1124.8, 798.3, 6, 7]]}}
+  armshead:   {sheet: reference/model-sheet.png, box: [16, 1088, 135, 1246], faces: F, x8: true, auto_holes: false, marks: {eyes: [[68.2, 1126.2, 3.5, 3.5], [85.5, 1126.3, 3.5, 3.5]]}}
+  pointing:   {sheet: reference/model-sheet.png, box: [131, 1093, 236, 1246], faces: F, jaw: 1.5, x8: true, auto_holes: false, close_mouth: [200.2, 1148.6, 6, 3.5]}
+  explaining: {sheet: reference/model-sheet.png, box: [233, 1093, 349, 1246], faces: F, x8: true, auto_holes: false}
+  crossarms:  {sheet: reference/model-sheet.png, box: [348, 1092, 450, 1246], faces: F, jaw: 1.5, x8: true, auto_holes: false}
+  thinking:   {sheet: reference/model-sheet.png, box: [449, 1092, 537, 1246], faces: R, jaw: 1.4, x8: true, auto_holes: false}
+  stand:      {sheet: reference/model-sheet.png, box: [549, 1091, 617, 1240], faces: F, x8: true}
+  walk:       {sheet: reference/model-sheet.png, box: [628, 1097, 716, 1240], faces: R, x8: true}
+  run:        {sheet: reference/model-sheet.png, box: [711, 1102, 813, 1241], faces: R, x8: true}
+  jump:       {sheet: reference/model-sheet.png, box: [805, 1088, 897, 1243], faces: F, x8: true}
+  hoodie:     {sheet: reference/model-sheet.png, box: [924, 1088, 999, 1248], faces: F, x8: true}
+  unitedshirt: {sheet: reference/model-sheet.png, box: [1016, 1089, 1101, 1248], faces: F, x8: true}
