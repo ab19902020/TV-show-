@@ -56,11 +56,31 @@ def bigtext(s,xy,size,fill,rot=0):
     for k in range(14,0,-1): L.text((xy[0]+k*S,xy[1]+k*S),s,font=F(size),fill=(60,10,10),anchor='mm',stroke_width=10*S,stroke_fill=(0,0,0))
     L.text(xy,s,font=F(size),fill=fill,anchor='mm',stroke_width=10*S,stroke_fill=(0,0,0))
     im.alpha_composite(lay.rotate(rot,center=xy,resample=Image.BICUBIC))
-bigtext('I KNEW IT!',(int(0.73*w),int(0.15*h)),168,(255,232,0),rot=4)
-ban=Image.new('RGBA',(w,h)); B=ImageDraw.Draw(ban); c=(0.22*w,0.09*h)
-B.rounded_rectangle([0.02*w,0.025*h,0.42*w,0.155*h],radius=16*S,fill=(200,16,30),outline=(255,255,255),width=6*S)
-B.text(c,'UNITED HAS A MOLE',font=F(62),fill=(255,255,255),anchor='mm',stroke_width=4*S,stroke_fill=(0,0,0))
+bigtext('I KNEW IT!',(int(0.74*w),int(0.14*h)),160,(255,232,0),rot=4)
+# the accusation: banner, the Leeds badge circled with an arrow, name tags
+ban=Image.new('RGBA',(w,h)); B=ImageDraw.Draw(ban); c=(0.225*w,0.095*h)
+B.rounded_rectangle([0.015*w,0.02*h,0.435*w,0.17*h],radius=16*S,fill=(29,66,138),outline=(255,205,0),width=7*S)
+B.text(c,'SECRET LEEDS FAN?!',font=F(66),fill=(255,232,0),anchor='mm',stroke_width=4*S,stroke_fill=(0,0,0))
 im.alpha_composite(ban.rotate(-3,center=c,resample=Image.BICUBIC))
+d=ImageDraw.Draw(im)
+bx,by,br=0.245*w,0.885*h,0.075*w
+for wd,col in ((16*S,(0,0,0)),(9*S,(255,30,30))):
+    d.ellipse([bx-br,by-br*0.8,bx+br,by+br*0.8],outline=col,width=wd)
+ax0,ay0,ax1,ay1=0.47*w,0.60*h,bx+br*0.95,by-br*0.35
+for wd,col in ((22*S,(0,0,0)),(12*S,(255,30,30))):
+    d.line([(ax0,ay0),(ax1,ay1)],fill=col,width=wd)
+ang=math.atan2(ay1-ay0,ax1-ax0); L=48*S
+for col,e in (((0,0,0),10*S),((255,30,30),0)):
+    pts=[(ax1+math.cos(ang)*e,ay1+math.sin(ang)*e),(ax1-L*math.cos(ang-0.5),ay1-L*math.sin(ang-0.5)),(ax1-L*math.cos(ang+0.5),ay1-L*math.sin(ang+0.5))]
+    d.polygon(pts,fill=col)
+def tag(text,x,y,fill,fg,rot):
+    t=Image.new('RGBA',(w,h)); T=ImageDraw.Draw(t); f=F(52)
+    tw=T.textlength(text,font=f); pad=18*S
+    T.rounded_rectangle([x-tw/2-pad,y-34*S,x+tw/2+pad,y+34*S],radius=10*S,fill=fill,outline=(255,255,255),width=5*S)
+    T.text((x,y),text,font=f,fill=fg,anchor='mm',stroke_width=3*S,stroke_fill=(0,0,0))
+    im.alpha_composite(t.rotate(rot,center=(x,y),resample=Image.BICUBIC))
+tag('JASON WILCOX',0.20*w,0.235*h,(255,205,0),(255,255,255),-3)
+tag('LISANDRO MARTINEZ',0.80*w,0.93*h,(200,16,30),(255,255,255),2)
 out=im.convert('RGB').resize((W,H),Image.LANCZOS); a=np.asarray(out).astype(np.float32)
 Y,X=np.mgrid[0:H,0:W]; v=np.sqrt(((X-W/2)/W)**2+((Y-H/2)/H)**2)
 a*=np.clip(1.1-0.55*v,0.6,1)[...,None]; a=(a-128)*1.08+128
