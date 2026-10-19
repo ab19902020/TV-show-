@@ -61,8 +61,22 @@ def rig(char, name):
     bottom = ys.max()
     feet_x = xs[ys > bottom - 12].mean()
     eyes_mid = np.mean([e.c for e in eyes], 0) if eyes else np.array([xs.mean(), ys.min() + 0.3 * (bottom - ys.min())])
+    # middle of the body: the chest band between the chin and the hands (seated) or the belt (standing)
+    y0 = int(eyes_mid[1] + 0.40 * (bottom - eyes_mid[1]))
+    y1 = int(eyes_mid[1] + 0.52 * (bottom - eyes_mid[1]))
+    band = np.where(a[y0:y1] > 128)[1]
+    torso_x = 0.5 * (np.percentile(band, 8) + np.percentile(band, 92))
     return dict(eyes=eyes, mouth=mouth, feet=np.array([feet_x, bottom]), eyes_mid=eyes_mid,
-                top=ys.min(), size=a.shape)
+                torso=np.array([torso_x, eyes_mid[1]]), top=ys.min(), size=a.shape)
+
+
+def anchor(char, pose, pl):
+    """the drawing point that goes at the placement's `pos`:
+    eyes (heads line up between poses), feet (standing), or torso (seated: the body's middle at the
+    height of the eyes, so the body stays in the chair whatever the drawing)"""
+    r = rig(char, pose)
+    a = {"eyes": r["eyes_mid"], "feet": r["feet"], "torso": r["torso"]}[pl.get("anchor", "eyes")]
+    return a + np.array(pl.get("nudge", {}).get(pose, (0, 0))) * 4
 
 
 @lru_cache(maxsize=48)

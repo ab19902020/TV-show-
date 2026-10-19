@@ -33,7 +33,11 @@ of that character's lines. The three recordings are `src/brent.mp3`, `src/gareth
 
 - Tim sits LEFT and Gareth sits RIGHT. Brent stands behind the desks at Gareth's right, mirrored so that he faces in
   towards them. He is mirrored in every shot, so his hair never flips between cuts.
+- Tim and Gareth sit squarely in their chairs. Each one is placed by the middle of his body, set on the middle of his
+  chair (measured from the blue upholstery), so every drawing of him stays in the seat. Gareth stays in the upright
+  seated drawing throughout, with his biro in his right hand.
 - The seated men are hidden by the desk below the desk top's far edge, except for their hands, which rest on the desk.
+  The hand cut-out follows the hand's own ink line, so none of the trousers the hands rest on in the drawing shows.
   Brent stands, so he is hidden below the desk edge.
 - Set changes (in `sets.py`):
   - The two-shot desks have full modesty panels, so seated legs are hidden by the desk, not cut off.

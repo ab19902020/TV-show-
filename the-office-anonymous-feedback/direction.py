@@ -54,9 +54,9 @@ def ev(t, kind, **args):
 
 
 # ------------------------------------------------------------------ cameras (world px of each plate)
-TWO = (920, 372, 1310)          # Tim, Gareth and Brent
-MED_BG = (1200, 392, 930)       # Brent and Gareth
-BRENT_MED = (1300, 332, 700)    # Brent, Gareth's shoulder at frame left
+TWO = (958, 376, 1380)          # Tim, Gareth and Brent
+MED_BG = (1236, 392, 930)       # Brent and Gareth
+BRENT_MED = (1340, 332, 700)    # Brent, Gareth's shoulder at frame left
 TIM_1 = (862, 505, 1300)
 GAR_1 = (915, 492, 1300)
 INTERVIEW = (846, 448, 1000)
@@ -134,7 +134,6 @@ key("brent", "pose", s["t0"], "01_neutral")
 key("brent", "rot", s["t0"], 0.0)
 key("brent", "smile", s["t0"], 0.35)
 look("brent", s["t0"], "gareth")
-key("gareth", "pose", s["t0"], "16_typing")
 ev(s["t0"] + 0.4, "pen_tap", who="gareth")
 look("gareth", s["t0"], "pad")
 look("gareth", s["t0"] + 0.75, "brent")
@@ -179,7 +178,7 @@ key("brent", "smile", w("B03", "constructive") + 0.15, 0.5)  # ...and is put bac
 look("brent", w("B03", "who") - 0.25, "men")
 look("gareth", w("B03", "who"), "brent")
 SHOTS[-1]["cam"].append((w("B03", "who") - 0.2, MED_BG))
-SHOTS[-1]["cam"].append((w("B03", "that") + 0.6, (1215, 380, 860)))   # the small documentary reframe
+SHOTS[-1]["cam"].append((w("B03", "that") + 0.6, (1252, 380, 860)))   # the small documentary reframe
 SHOTS[-1]["t1"] = e + 1.0
 cursor = SHOTS[-1]["t1"]
 # ---- SHOT 07: Tim single

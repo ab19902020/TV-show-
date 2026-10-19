@@ -4,12 +4,11 @@ import cast, engine
 
 
 def draw(frame, Mcam, z, char, pose, facekey, pl, desk=None, alpha=1.0, rot=0.0, dy=0.0, hands=True):
-    """pl: placement dict(pos=(x, y) world, scale, anchor='eyes'|'feet', mirror=bool)
+    """pl: placement dict(pos=(x, y) world, scale, anchor='eyes'|'feet'|'torso', mirror=bool)
     desk: (cut_y, front_y) world rows: below cut only the hands show, below front nothing."""
     rgb, a = cast.posed(char, pose, facekey)
     r = cast.rig(char, pose)
-    anchor = r["eyes_mid"] if pl.get("anchor", "eyes") == "eyes" else r["feet"]
-    anchor = anchor + np.array(pl.get("nudge", {}).get(pose, (0, 0))) * 4
+    anchor = cast.anchor(char, pose, pl)
     pos = (pl["pos"][0], pl["pos"][1] + dy)
     M = engine.actor_matrix(anchor, pos, pl["scale"], z, Mcam, pl.get("mirror", False), rot)
     hm = engine.hand_mask(char, pose) if desk else None

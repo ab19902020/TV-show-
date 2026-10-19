@@ -110,6 +110,8 @@ def actor_matrix(anchor_px, pos, scale, z, Mcam, mirror=False, rot=0.0, w_px=Non
 # ------------------------------------------------------------------ hands (what stays visible on the desk)
 @lru_cache(maxsize=None)
 def hand_mask(char, pose):
+    """the hands (and bare forearms) of a seated drawing, with their own black outline but none of the trousers
+    they rest on: what stays visible in front of the desk top"""
     rgb, a = cast.drawing(char, pose)
     r = cast.rig(char, pose)
     skin = r["eyes"][0].skin if r["eyes"] else np.array([240, 180, 130.])
@@ -122,8 +124,14 @@ def hand_mask(char, pose):
     for i in range(1, n):
         if st[i, cv2.CC_STAT_AREA] > 900:
             keep[lab == i] = 1
-    keep = cv2.dilate(keep, np.ones((15, 15), np.uint8))
-    return cv2.GaussianBlur(keep.astype(np.float32), (0, 0), 2.0)
+    keep = cv2.morphologyEx(keep, cv2.MORPH_CLOSE, np.ones((9, 9), np.uint8))
+    # grow through the ink line only: near-black pixels (the trousers are a lighter charcoal)
+    ink = ((rgb.max(2) < 21) & (a > 128)).astype(np.uint8)
+    k3 = np.ones((3, 3), np.uint8)
+    for _ in range(12):
+        keep = keep | (cv2.dilate(keep, k3) & ink)
+    keep = cv2.dilate(keep, k3)          # half a pixel past the line, for the anti-aliasing
+    return cv2.GaussianBlur(keep.astype(np.float32), (0, 0), 0.8)
 
 
 # ------------------------------------------------------------------ finishing

@@ -17,29 +17,30 @@ WHO = {"brent": "brent", "gareth": "gareth", "tim": "tim"}
 # where each character is on each set (world px of that plate)
 PLACE = {
     "desks": dict(
-        tim=dict(pos=(530, 300), scale=2.25, anchor="eyes"),
-        gareth=dict(pos=(1080, 312), scale=2.25, anchor="eyes"),
-        brent=dict(pos=(1432, 656), scale=2.25, anchor="feet", mirror=True, nudge={"12_lean_forward": (-21, 0)}),
+        # the seated men: the middle of the body on the middle of the chair (measured from the upholstery)
+        tim=dict(pos=(533.5, 300), scale=2.25, anchor="torso"),
+        gareth=dict(pos=(1153.5, 306), scale=2.25, anchor="torso"),
+        brent=dict(pos=(1488, 656), scale=2.25, anchor="feet", mirror=True, nudge={"12_lean_forward": (-21, 0)}),
     ),
-    "tim": dict(tim=dict(pos=(858, 478), scale=3.0, anchor="eyes")),
-    "gareth": dict(gareth=dict(pos=(905, 443), scale=3.0, anchor="eyes")),
+    "tim": dict(tim=dict(pos=(855, 478), scale=3.0, anchor="torso")),
+    "gareth": dict(gareth=dict(pos=(913, 440), scale=3.0, anchor="torso")),
     "interview": dict(brent=dict(pos=(842, 818), scale=2.2, anchor="feet", mirror=True,
                                  nudge={"19_seated_folded_arms": (-29, 2)})),
 }
 DESK = {"desks": (497, 548), "tim": (745, 2000), "gareth": (668, 2000)}
 SEATED = {"tim", "gareth"}
 # prop placement per set
-BOX = {"desks": ((1326, 540), 1.32), "gareth": ((1272, 708), 1.75)}
-PAD = {"desks": ((1104, 541), 1.55), "gareth": ((948, 728), 2.05)}
-PEN = {"desks": 1.55, "gareth": 2.05}
+BOX = {"desks": ((1352, 540), 1.32), "gareth": ((1272, 708), 1.75)}
+PAD = {"desks": ((1088, 543), 1.55), "gareth": ((822, 742), 2.05)}
+PEN = {"desks": 2.4, "gareth": 3.2}
 # hand points on the drawings (native px, as drawn): where a held prop sits
 HAND = {
     ("David_Brent", "02_talking_gesture"): (238, 133),
     ("David_Brent", "08_wave"): (66, 101),
     ("Gareth_Keenan", "16_typing"): (163, 146),
-    ("Gareth_Keenan", "13_seated_front"): (112, 166),
+    ("Gareth_Keenan", "13_seated_front"): (118, 170),     # under the fingers of his right hand
 }
-SLIP_ON_BOX = (1330, 452)
+SLIP_ON_BOX = (1356, 452)
 
 # ------------------------------------------------------------------ tracks
 TR = dict(smile=0.28, lid=0.12, rot=0.45, dy=0.3, pen_up=0.25)
@@ -85,8 +86,7 @@ def settle(c, t, setname):
 
     def head(pose):
         r = cast.rig(CH[c], pose)
-        anchor = r["eyes_mid"] if pl.get("anchor", "eyes") == "eyes" else r["feet"]
-        anchor = anchor + np.array(pl.get("nudge", {}).get(pose, (0, 0))) * 4
+        anchor = cast.anchor(CH[c], pose, pl)
         top = np.array([r["eyes_mid"][0], r["top"]], float) if r["eyes"] else np.array([anchor[0], r["top"]], float)
         d = (top - anchor) / 4 * pl["scale"]
         if pl.get("mirror"):
@@ -211,8 +211,7 @@ def facekey(c, t, mirror):
 
 
 def actor_M(c, pose, t, pl, Mcam, z, setname):
-    r = cast.rig(CH[c], pose)
-    anchor = r["eyes_mid"] if pl.get("anchor", "eyes") == "eyes" else r["feet"]
+    anchor = cast.anchor(CH[c], pose, pl)
     dy = value(c, "dy", t)
     breath = 0.9 * np.sin(2 * np.pi * t / {"tim": 4.1, "gareth": 3.6, "brent": 4.6}[c] + len(c))
     pos = (pl["pos"][0], pl["pos"][1] + dy + breath * (0.4 if c in SEATED else 0.0))
@@ -250,8 +249,7 @@ def draw_prop(frame, prop, Mcam, world_pos, scale, rot=0.0):
 def hand_world(c, pose, t, setname, Mcam, z):
     """world position of the hand point on the drawing"""
     pl = PLACE[setname][c]
-    r = cast.rig(CH[c], pose)
-    anchor = r["eyes_mid"] if pl.get("anchor", "eyes") == "eyes" else r["feet"]
+    anchor = cast.anchor(CH[c], pose, pl)
     _, pos, rot = actor_M(c, pose, t, pl, Mcam, z, setname)
     M = engine.actor_matrix(anchor, pos, pl["scale"], None, np.array([[1.0, 0, 0], [0, 1.0, 0]]),
                             pl.get("mirror", False), rot)
@@ -279,19 +277,21 @@ def slip_state(t):
 
 
 def pen_pose(t):
-    """Gareth's pen: offset of the tip wiggle while writing, tap dip, raise"""
+    """Gareth's pen in his hand: (extra rotation, dx, dy) in pen-scale units. Writing is small strokes of the
+    tip, the tap is a quick dip, and raising it tips it upright off the pad."""
     rot, dx, dy = 0.0, 0.0, 0.0
     for t0, a in events("write"):
         if t0 <= t < t0 + a["dur"]:
             k = t - t0
-            dx += 2.2 * np.sin(2 * np.pi * 6.5 * k) + 6 * (k / a["dur"])
-            dy += 1.2 * np.sin(2 * np.pi * 9.1 * k + 1)
-            rot += 4 * np.sin(2 * np.pi * 6.5 * k)
+            rot += 5 * np.sin(2 * np.pi * 6.5 * k)
+            dx += 0.8 * np.sin(2 * np.pi * 3.1 * k)
+            dy += 0.5 * np.sin(2 * np.pi * 9.1 * k + 1)
     for t0, a in events("pen_tap"):
         if t0 - 0.12 <= t < t0 + 0.18:
-            k = (t - (t0 - 0.12)) / 0.3
-            dy += 6 * np.sin(np.pi * k)
-    dy -= 9 * value("gareth", "pen_up", t)
+            rot -= 14 * np.sin(np.pi * (t - (t0 - 0.12)) / 0.3)
+    up = value("gareth", "pen_up", t)
+    rot += 48 * up
+    dy -= 2.0 * up
     return rot, dx, dy
 
 
@@ -358,6 +358,14 @@ def render_frame(t):
         (px, py), ps = PAD[name]
         draw_prop(frame, props.notebook(), Mcam, (px, py), ps)
     actors = PLACE.get(name, {})
+    # Gareth's biro: in his right hand all the way through (under his fingers: the end shows past the
+    # outside of his hand; drawn before him so his hand covers the grip)
+    gpose = pose_at("gareth", t)[0]
+    if "gareth" in actors and (CH["gareth"], gpose) in HAND:
+        prot, pdx, pdy = pen_pose(t)
+        hx, hy = hand_world("gareth", gpose, t, name, Mcam, z)
+        sc = PEN[name]
+        draw_prop(frame, props.pen(), Mcam, (hx + pdx * sc, hy + pdy * sc), sc, rot=-154 + prot)
     poses = {}
     for c in ("tim", "gareth", "brent"):
         if c in actors:
@@ -369,18 +377,6 @@ def render_frame(t):
         draw_prop(frame, props.box(), Mcam, (bx, by), bs)
         if where == "lid" and name == "desks":
             draw_prop(frame, props.slip(1.0), Mcam, SLIP_ON_BOX, 1.0, rot=-8)
-    # Gareth's pen: in his hand when he is writing (16), otherwise on the pad
-    if "gareth" in poses:
-        pose = poses["gareth"]
-        sc = PLACE[name]["gareth"]["scale"] / 2.25
-        prot, pdx, pdy = pen_pose(t)
-        if pose == "16_typing":
-            hx, hy = hand_world("gareth", pose, t, name, Mcam, z)
-            draw_prop(frame, props.pen(), Mcam, (hx + pdx * sc - 4 * sc, hy + pdy * sc + 3 * sc), PEN[name],
-                      rot=-55 + prot)
-        elif name in PAD:
-            (px, py), ps = PAD[name]
-            draw_prop(frame, props.pen(), Mcam, (px + 8 * ps, py - 8 * ps), PEN[name], rot=-12)
     # the slip in Brent's hand
     if "brent" in poses and where == "hand" and (CH["brent"], poses["brent"]) in HAND:
         hx, hy = hand_world("brent", poses["brent"], t, name, Mcam, z)
