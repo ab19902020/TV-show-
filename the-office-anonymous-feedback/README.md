@@ -1,6 +1,6 @@
 # The Office: "Anonymous Feedback"
 
-**Final video:** [`anonymous_feedback.mp4`](anonymous_feedback.mp4) (1920×1080, 25 fps, about 1:40, the Clony AI voices)
+**Final video:** [`anonymous_feedback.mp4`](anonymous_feedback.mp4) (1920×1080, 25 fps, 1:40, the Clony AI voices)
 
 An original fan sketch with David Brent, Gareth Keenan and Tim Canterbury, made from [`BRIEF.md`](BRIEF.md). Brent brings in
 an anonymous suggestions box to look approachable on camera. Gareth has numbered the slips and kept a list of who had

@@ -22,6 +22,8 @@ wait
 : > build/chunks/list.txt
 for i in $(seq 0 $((J-1))); do echo "file 'c$i.mp4'" >> build/chunks/list.txt; done
 T0S=$(python3 -c "print($A/25)"); DUR=$(python3 -c "print(($B-$A)/25)")
+# chunks are a near-lossless intermediate (CRF 17); the delivery is one even encode that stays under GitHub's 100 MB
 ffmpeg -v error -y -f concat -safe 0 -i build/chunks/list.txt -ss "$T0S" -t "$DUR" -i build/mix.wav \
-  -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -shortest -movflags +faststart "$OUT"
+  -map 0:v -map 1:a -c:v libx264 -preset slow -crf ${CRF:-21} -pix_fmt yuv420p -g 50 \
+  -c:a aac -b:a 256k -movflags +faststart "$OUT"
 echo "wrote $OUT"
