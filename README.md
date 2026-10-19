@@ -13,6 +13,7 @@ Animated TV-studio scenes with lip-synced characters.
 | [The White Pelé: Wayne Rooney music video](white-pele/) | [`White_Pele_PREVIEW_720p.mp4`](white-pele/White_Pele_PREVIEW_720p.mp4) |
 | [The Lecher vs Rio: a YouTube beef](lecher-vs-rio/) | [`The_Lecher_vs_Rio_1080p.mp4`](lecher-vs-rio/The_Lecher_vs_Rio_1080p.mp4) |
 | [All or Something: The Mole](the-mole/) | [`The_Mole_1080p.mp4`](the-mole/The_Mole_1080p.mp4) |
+| [Rio, the Beg Friend (portrait)](rio-beg-friend/) | [`Rio_Beg_Friend_1080x1920.mp4`](rio-beg-friend/Rio_Beg_Friend_1080x1920.mp4) |
 
 ## Make a new video
 
